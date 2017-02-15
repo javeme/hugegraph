@@ -41,13 +41,13 @@ public class StructureBasicSuite extends AbstractGremlinSuite {
      * as needed to enforce tests upon implementations.
      */
     private static final Class<?>[] allTests = new Class<?>[] {
-            //CommunityGeneratorTest.class,
+            // CommunityGeneratorTest.class,
             DetachedGraphTest.class,
             DetachedEdgeTest.class,
             DetachedVertexPropertyTest.class,
             DetachedPropertyTest.class,
             DetachedVertexTest.class,
-            //DistributionGeneratorTest.class,
+            // DistributionGeneratorTest.class,
             EdgeTest.class,
             FeatureSupportTest.class,
             IoCustomTest.class,

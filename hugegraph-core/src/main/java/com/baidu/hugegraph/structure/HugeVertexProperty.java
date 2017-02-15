@@ -58,7 +58,7 @@ public class HugeVertexProperty<V> implements VertexProperty<V> {
 
     @Override
     public Object id() {
-        //TODO
+        // TODO
         return (long) (this.key.hashCode() + this.value.hashCode() + this.vertex.id().hashCode());
     }
 

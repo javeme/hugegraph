@@ -52,7 +52,7 @@ public class HugeVertex extends HugeElement implements Vertex {
             throw VertexProperty.Exceptions.metaPropertiesNotSupported();
         }
         this.setProperties(key, value);
-        //update property
+        // update property
         ((HugeGraph) this.graph()).vertexService.updateProperty(this, key, value);
         return new HugeVertexProperty<>(this.graph(), this, key, value);
     }

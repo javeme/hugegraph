@@ -35,7 +35,7 @@ public class HugeEdge extends HugeElement implements Edge {
     }
 
     public HugeEdge(final Graph graph, final Object id, final String label, final Vertex inVertex, final
-    Vertex outVertex) {
+        Vertex outVertex) {
         super(graph, id, label);
         this.inVertex = inVertex;
         this.outVertex = outVertex;
