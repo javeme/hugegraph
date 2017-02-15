@@ -40,14 +40,15 @@ public class HugeGraphProvider extends AbstractGraphProvider {
                                                     LoadGraphWith.GraphData graphData) {
         return new HashMap<String, Object>() {{
             put(Graph.GRAPH, HugeGraph.class.getName());
-            put(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,"sh01-sjws-tjdata20.sh01.baidu.com");
-            put(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT,"8218");}};
+            put(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM, "sh01-sjws-tjdata20.sh01.baidu.com");
+            put(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, "8218");
+        }};
     }
 
     @Override
     public void clear(Graph graph, Configuration configuration) throws Exception {
-        if(graph != null){
-            ((HugeGraph)graph).close(true);
+        if (graph != null) {
+            ((HugeGraph) graph).close(true);
         }
     }
 

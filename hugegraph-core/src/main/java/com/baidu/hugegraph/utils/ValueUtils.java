@@ -79,6 +79,7 @@ public class ValueUtils {
             throw new IllegalArgumentException("Unexpected data of type : " + o.getClass().getName());
         }
     }
+
     public static byte[] serialize(Object o) {
         PositionedByteRange buffer = new SimplePositionedMutableByteRange(4096);
         serialize(buffer, o);
@@ -192,7 +193,9 @@ public class ValueUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T deserialize(byte[] target) {
-        if (target == null) return null;
+        if (target == null) {
+            return null;
+        }
         PositionedByteRange buffer = new SimplePositionedByteRange(target);
         return deserialize(buffer);
     }
@@ -279,10 +282,12 @@ public class ValueUtils {
         buffer.get();  // discard salt
         return deserialize(buffer);
     }
+
     /**
      * Returns the salt for a given value.
      *
      * @param value the value
+     *
      * @return the salt to prepend to {@code value}
      */
     public static byte getSaltingByte(byte[] value) {
@@ -291,7 +296,9 @@ public class ValueUtils {
     }
 
     private static int calculateHashCode(byte a[]) {
-        if (a == null) return 0;
+        if (a == null) {
+            return 0;
+        }
         int result = 1;
         for (byte b : a) {
             result = 31 * result + b;

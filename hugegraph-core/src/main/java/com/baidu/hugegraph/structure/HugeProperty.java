@@ -4,8 +4,6 @@
 package com.baidu.hugegraph.structure;
 
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -20,7 +18,7 @@ public class HugeProperty<V> implements Property<V> {
     protected final String key;
     protected final V value;
 
-    public HugeProperty(final Graph graph, final HugeElement element, final String key, final V value){
+    public HugeProperty(final Graph graph, final HugeElement element, final String key, final V value) {
         this.graph = graph;
         this.element = element;
         this.key = key;

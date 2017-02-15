@@ -36,7 +36,7 @@ public class HugeGraphFeatures implements Graph.Features {
         return StringFactory.featureString(this);
     }
 
-    public class HugeGraphGraphFeatures implements GraphFeatures{
+    public class HugeGraphGraphFeatures implements GraphFeatures {
         @Override
         public boolean supportsComputer() {
             return false;
@@ -64,7 +64,7 @@ public class HugeGraphFeatures implements Graph.Features {
 
     }
 
-    public class HugeGraphVertexFeatures implements VertexFeatures{
+    public class HugeGraphVertexFeatures implements VertexFeatures {
         @Override
         public boolean supportsMetaProperties() {
             return false;
@@ -81,7 +81,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
     }
 
-    public class HugeGraphEdgeFeatures implements EdgeFeatures{
+    public class HugeGraphEdgeFeatures implements EdgeFeatures {
 
     }
 

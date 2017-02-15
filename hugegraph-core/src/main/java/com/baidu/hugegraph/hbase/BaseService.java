@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
@@ -40,7 +39,8 @@ public abstract class BaseService {
     protected final HugeGraph graph;
     protected Table table;
     protected Connection connection;
-    public BaseService(HugeGraph graph){
+
+    public BaseService(HugeGraph graph) {
         this.graph = graph;
         init();
         initTable(this.connection);
@@ -51,21 +51,24 @@ public abstract class BaseService {
     /**
      * Init hbase connection
      */
-    protected void init(){
+    protected void init() {
         Configuration hbaseConf = HBaseConfiguration.create();
-        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,graph.configuration().getString(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM));
-        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT,graph.configuration().getString
+        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,
+                graph.configuration().getString(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM));
+        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, graph.configuration().getString
                 (HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT));
         try {
             this.connection = ConnectionFactory.createConnection(hbaseConf);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     protected Scan getPropertyScan(String label) {
         Scan scan = new Scan();
         SingleColumnValueFilter valueFilter = new SingleColumnValueFilter(Constants.DEFAULT_FAMILY_BYTES,
-                Constants.LABEL_BYTES, CompareFilter.CompareOp.EQUAL, new BinaryComparator(ValueUtils.serialize(label)));
+                Constants.LABEL_BYTES, CompareFilter.CompareOp.EQUAL,
+                new BinaryComparator(ValueUtils.serialize(label)));
         valueFilter.setFilterIfMissing(true);
         scan.setFilter(valueFilter);
         return scan;
@@ -74,7 +77,8 @@ public abstract class BaseService {
     protected Scan getPropertyScan(String label, byte[] key, byte[] val) {
         Scan scan = new Scan();
         SingleColumnValueFilter labelFilter = new SingleColumnValueFilter(Constants.DEFAULT_FAMILY_BYTES,
-                Constants.LABEL_BYTES, CompareFilter.CompareOp.EQUAL, new BinaryComparator(ValueUtils.serialize(label)));
+                Constants.LABEL_BYTES, CompareFilter.CompareOp.EQUAL,
+                new BinaryComparator(ValueUtils.serialize(label)));
         labelFilter.setFilterIfMissing(true);
         SingleColumnValueFilter valueFilter = new SingleColumnValueFilter(Constants.DEFAULT_FAMILY_BYTES,
                 key, CompareFilter.CompareOp.EQUAL, new BinaryComparator(val));
@@ -85,17 +89,16 @@ public abstract class BaseService {
     }
 
     /**
-     *
      * @param element
      * @param keyValues
      */
-    public void updateProperty(HugeElement element, Object... keyValues){
+    public void updateProperty(HugeElement element, Object... keyValues) {
 
         Put put = new Put(ValueUtils.serializeWithSalt(element.id()));
         for (int i = 0; i < keyValues.length; i = i + 2) {
-            if (!keyValues[i].equals(T.id) && !keyValues[i].equals(T.label)){
-                byte[] keyBytes = Bytes.toBytes((String)keyValues[i]);
-                byte[] valueBytes = ValueUtils.serialize(keyValues[i+1]);
+            if (!keyValues[i].equals(T.id) && !keyValues[i].equals(T.label)) {
+                byte[] keyBytes = Bytes.toBytes((String) keyValues[i]);
+                byte[] valueBytes = ValueUtils.serialize(keyValues[i + 1]);
                 put.addColumn(Constants.DEFAULT_FAMILY_BYTES, keyBytes, valueBytes);
             }
 
@@ -105,14 +108,16 @@ public abstract class BaseService {
                 ValueUtils.serialize(element.getUpdatedAt()));
         try {
             table.put(put);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @VisibleForTesting
     public void close(boolean clear) {
-        if (clear) clear();
+        if (clear) {
+            clear();
+        }
         try {
             table.close();
         } catch (IOException e) {
@@ -136,7 +141,9 @@ public abstract class BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (scanner != null) scanner.close();
+            if (scanner != null) {
+                scanner.close();
+            }
         }
     }
 }

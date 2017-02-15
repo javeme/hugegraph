@@ -24,7 +24,7 @@ public class HugeVertexProperty<V> implements VertexProperty<V> {
     protected final String key;
     protected final V value;
 
-    public HugeVertexProperty(final Graph graph, final HugeVertex vertex, final String key, final V value){
+    public HugeVertexProperty(final Graph graph, final HugeVertex vertex, final String key, final V value) {
         this.graph = graph;
         this.vertex = vertex;
         this.key = key;

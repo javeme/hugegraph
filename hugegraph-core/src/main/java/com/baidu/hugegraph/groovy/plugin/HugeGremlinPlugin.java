@@ -22,7 +22,8 @@ public class HugeGremlinPlugin extends AbstractGremlinPlugin {
     }};
 
     @Override
-    public void pluginTo(final PluginAcceptor pluginAcceptor) throws PluginInitializationException, IllegalEnvironmentException {
+    public void pluginTo(final PluginAcceptor pluginAcceptor)
+            throws PluginInitializationException, IllegalEnvironmentException {
         pluginAcceptor.addImports(IMPORTS);
     }
 

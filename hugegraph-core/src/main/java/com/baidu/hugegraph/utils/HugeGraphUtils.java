@@ -43,10 +43,11 @@ public class HugeGraphUtils {
     }
 
     /**
-     *
      * @param scanner
      * @param graph
+     *
      * @return
+     *
      * @throws IOException
      */
     public static Iterator<Vertex> parseVertexScanner(ResultScanner scanner, HugeGraph
@@ -54,10 +55,10 @@ public class HugeGraphUtils {
             throws IOException {
         Result result;
         HugeVertex element;
-        List<Vertex> lst= new ArrayList<>();
-        while ((result=scanner.next()) != null){
-            element = (HugeVertex)parseResult(HugeElement.ElementType.VERTEX, result, graph);
-            if(element != null){
+        List<Vertex> lst = new ArrayList<>();
+        while ((result = scanner.next()) != null) {
+            element = (HugeVertex) parseResult(HugeElement.ElementType.VERTEX, result, graph);
+            if (element != null) {
                 lst.add(element);
             }
         }
@@ -65,20 +66,21 @@ public class HugeGraphUtils {
     }
 
     /**
-     *
      * @param scanner
      * @param graph
+     *
      * @return
+     *
      * @throws IOException
      */
     public static Iterator<Edge> parseEdgeScanner(ResultScanner scanner, HugeGraph
-            graph) throws IOException{
+            graph) throws IOException {
         Result result;
         HugeEdge element;
-        List<Edge> lst= new ArrayList<>();
-        while ((result=scanner.next()) != null){
-            element = (HugeEdge)parseResult(HugeElement.ElementType.EDGE, result, graph);
-            if(element != null){
+        List<Edge> lst = new ArrayList<>();
+        while ((result = scanner.next()) != null) {
+            element = (HugeEdge) parseResult(HugeElement.ElementType.EDGE, result, graph);
+            if (element != null) {
                 lst.add(element);
             }
         }
@@ -86,13 +88,13 @@ public class HugeGraphUtils {
     }
 
     /**
-     *
      * @param result
      * @param graph
+     *
      * @return
      */
-    public static HugeElement parseResult(HugeElement.ElementType elementType, Result result, HugeGraph graph){
-        if(result.isEmpty()){
+    public static HugeElement parseResult(HugeElement.ElementType elementType, Result result, HugeGraph graph) {
+        if (result.isEmpty()) {
             return null;
         }
 
@@ -115,15 +117,15 @@ public class HugeGraphUtils {
         }
 
         HugeElement element = null;
-        if(HugeElement.ElementType.VERTEX.equals(elementType)){
-            element = new HugeVertex(graph,id,label);
+        if (HugeElement.ElementType.VERTEX.equals(elementType)) {
+            element = new HugeVertex(graph, id, label);
 
-        }else if (HugeElement.ElementType.EDGE.equals(elementType)){
-            Object outVertexId =  ValueUtils.deserialize(result.getValue(Constants.DEFAULT_FAMILY_BYTES,Constants
+        } else if (HugeElement.ElementType.EDGE.equals(elementType)) {
+            Object outVertexId = ValueUtils.deserialize(result.getValue(Constants.DEFAULT_FAMILY_BYTES, Constants
                     .FROM_BYTES));
-            Object inVertexId = ValueUtils.deserialize(result.getValue(Constants.DEFAULT_FAMILY_BYTES,Constants
+            Object inVertexId = ValueUtils.deserialize(result.getValue(Constants.DEFAULT_FAMILY_BYTES, Constants
                     .TO_BYTES));
-            element = new HugeEdge(graph,id,label, new HugeVertex(graph,inVertexId,null),new HugeVertex(graph,
+            element = new HugeEdge(graph, id, label, new HugeVertex(graph, inVertexId, null), new HugeVertex(graph,
                     outVertexId, null));
         }
 
@@ -138,8 +140,9 @@ public class HugeGraphUtils {
         Map<String, Object> props = new HashMap<>();
         for (int i = 0; i < keyValues.length; i = i + 2) {
             Object key = keyValues[i];
-            if (key.equals(T.id) || key.equals(T.label))
+            if (key.equals(T.id) || key.equals(T.label)) {
                 continue;
+            }
             String keyStr = key.toString();
             Object value = keyValues[i + 1];
             ElementHelper.validateProperty(keyStr, value);

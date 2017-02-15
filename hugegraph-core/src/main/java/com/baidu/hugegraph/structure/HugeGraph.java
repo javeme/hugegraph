@@ -4,7 +4,6 @@
 package com.baidu.hugegraph.structure;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,29 +26,31 @@ import com.google.common.annotations.VisibleForTesting;
  * Created by zhangsuochao on 17/1/16.
  */
 @Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
-public final class HugeGraph implements Graph{
+public final class HugeGraph implements Graph {
 
     private static final Logger logger = LoggerFactory.getLogger(HugeGraph.class);
     protected VertexService vertexService = null;
     protected EdgeService edgeService = null;
     protected HugeGraphConfiguration configuration = null;
-    /**
-     * Construct a HugeGraph instance
-     * @return
-     */
-    public static HugeGraph open(final Configuration configuration){
-        HugeGraphConfiguration conf = new HugeGraphConfiguration();
-        conf.copy(configuration);
-        conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,"sh01-sjws-tjdata20.sh01.baidu.com");
-        conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT,"8218");
-        logger.info("Open HugeGraph");
-        return new HugeGraph(conf);
-    }
 
-    public HugeGraph(HugeGraphConfiguration configuration){
+    public HugeGraph(HugeGraphConfiguration configuration) {
         this.configuration = configuration;
         this.vertexService = new VertexService(this);
         this.edgeService = new EdgeService(this);
+    }
+
+    /**
+     * Construct a HugeGraph instance
+     *
+     * @return
+     */
+    public static HugeGraph open(final Configuration configuration) {
+        HugeGraphConfiguration conf = new HugeGraphConfiguration();
+        conf.copy(configuration);
+        conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM, "sh01-sjws-tjdata20.sh01.baidu.com");
+        conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, "8218");
+        logger.info("Open HugeGraph");
+        return new HugeGraph(conf);
     }
 
     @Override
@@ -58,8 +59,8 @@ public final class HugeGraph implements Graph{
         Object idValue = ElementHelper.getIdValue(keyValues).orElse(null);
         idValue = HugeGraphUtils.generateIdIfNeeded(idValue);
         final String label = ElementHelper.getLabelValue(keyValues).orElse(Vertex.DEFAULT_LABEL);
-        logger.info("Adding vertex with id:{},lable:{}",idValue,label);
-        HugeVertex vertex= new HugeVertex(this,idValue,label);
+        logger.info("Adding vertex with id:{},lable:{}", idValue, label);
+        HugeVertex vertex = new HugeVertex(this, idValue, label);
         Long currentTime = System.currentTimeMillis();
         vertex.setCreatedAt(currentTime);
         vertex.setUpdatedAt(currentTime);
@@ -80,14 +81,14 @@ public final class HugeGraph implements Graph{
 
     @Override
     public Iterator<Vertex> vertices(Object... vertexIds) {
-        if(vertexIds.length == 0){
+        if (vertexIds.length == 0) {
             return vertexService.vertices();
         }
         List<Vertex> vertices = new ArrayList<>();
         Vertex v;
-        for(Object id:vertexIds){
+        for (Object id : vertexIds) {
             v = vertexService.findVertex(id);
-            if(v != null){
+            if (v != null) {
                 vertices.add(v);
             }
         }
@@ -96,16 +97,16 @@ public final class HugeGraph implements Graph{
 
     @Override
     public Iterator<Edge> edges(Object... edgeIds) {
-        if(edgeIds.length==0){
+        if (edgeIds.length == 0) {
             //all edges
             return this.edgeService.edges();
         }
 
         List<Edge> edges = new ArrayList<>();
         Edge edge;
-        for (Object id :edgeIds){
+        for (Object id : edgeIds) {
             edge = this.edgeService.findEdge(id);
-            if(edge != null){
+            if (edge != null) {
                 edges.add(edge);
             }
         }
@@ -133,11 +134,11 @@ public final class HugeGraph implements Graph{
         return new HugeGraphFeatures();
     }
 
-    public VertexService getVertexService(){
+    public VertexService getVertexService() {
         return this.vertexService;
     }
 
-    public EdgeService getEdgeService(){
+    public EdgeService getEdgeService() {
         return this.edgeService;
     }
 
