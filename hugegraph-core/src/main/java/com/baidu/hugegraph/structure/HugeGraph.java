@@ -21,10 +21,12 @@ import org.slf4j.LoggerFactory;
 import com.baidu.hugegraph.hbase.EdgeService;
 import com.baidu.hugegraph.hbase.VertexService;
 import com.baidu.hugegraph.utils.HugeGraphUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Created by zhangsuochao on 17/1/16.
  */
+@Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
 public final class HugeGraph implements Graph{
 
     private static final Logger logger = LoggerFactory.getLogger(HugeGraph.class);
@@ -35,8 +37,9 @@ public final class HugeGraph implements Graph{
      * Construct a HugeGraph instance
      * @return
      */
-    public static HugeGraph open(){
+    public static HugeGraph open(final Configuration configuration){
         HugeGraphConfiguration conf = new HugeGraphConfiguration();
+        conf.copy(configuration);
         conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,"sh01-sjws-tjdata20.sh01.baidu.com");
         conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT,"8218");
         logger.info("Open HugeGraph");
@@ -67,12 +70,12 @@ public final class HugeGraph implements Graph{
 
     @Override
     public <C extends GraphComputer> C compute(Class<C> graphComputerClass) throws IllegalArgumentException {
-        return null;
+        throw Graph.Exceptions.graphComputerNotSupported();
     }
 
     @Override
     public GraphComputer compute() throws IllegalArgumentException {
-        return null;
+        throw Graph.Exceptions.graphComputerNotSupported();
     }
 
     @Override
@@ -95,7 +98,7 @@ public final class HugeGraph implements Graph{
     public Iterator<Edge> edges(Object... edgeIds) {
         if(edgeIds.length==0){
             //all edges
-            return null;
+            return this.edgeService.edges();
         }
 
         List<Edge> edges = new ArrayList<>();
@@ -112,12 +115,7 @@ public final class HugeGraph implements Graph{
 
     @Override
     public Transaction tx() {
-        return null;
-    }
-
-    @Override
-    public void close() throws Exception {
-
+        throw Exceptions.transactionsNotSupported();
     }
 
     @Override
@@ -130,11 +128,27 @@ public final class HugeGraph implements Graph{
         return this.configuration;
     }
 
+    @Override
+    public Features features() {
+        return new HugeGraphFeatures();
+    }
+
     public VertexService getVertexService(){
         return this.vertexService;
     }
 
     public EdgeService getEdgeService(){
         return this.edgeService;
+    }
+
+    @Override
+    public void close() {
+        close(false);
+    }
+
+    @VisibleForTesting
+    public void close(boolean clear) {
+        this.edgeService.close(clear);
+        this.vertexService.close(clear);
     }
 }

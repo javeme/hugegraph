@@ -19,7 +19,7 @@ public class VertexServiceTest {
 
     @Test
     public void testQueryByLabel(){
-        HugeGraph graph = HugeGraph.open();
+        HugeGraph graph = HugeGraph.open(null);
         VertexService vertexService = new VertexService(graph);
         Iterator<Vertex> it = vertexService.vertices("Book");
         while (it.hasNext()){

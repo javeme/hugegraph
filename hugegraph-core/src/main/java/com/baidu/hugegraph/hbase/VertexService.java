@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
@@ -24,6 +25,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +93,8 @@ public class VertexService extends BaseService {
         ResultScanner scanner ;
         try {
             scanner = table.getScanner(new Scan());
-            return HugeGraphUtils.parseScanner(scanner, this.graph);
+            return HugeGraphUtils.parseVertexScanner( scanner, this
+                    .graph);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -108,7 +111,7 @@ public class VertexService extends BaseService {
         ResultScanner scanner ;
         try {
             scanner = table.getScanner(this.getPropertyScan(label));
-            return HugeGraphUtils.parseScanner(scanner, this.graph);
+            return HugeGraphUtils.parseVertexScanner(scanner, this.graph);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());

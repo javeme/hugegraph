@@ -18,7 +18,7 @@ public class EdgeServiceTest {
 
     @Test
     public void testAddEdge(){
-        HugeGraph graph = HugeGraph.open();
+        HugeGraph graph = HugeGraph.open(null);
         EdgeService edgeService = new EdgeService(graph);
 
         Vertex v1 = (HugeVertex)graph.addVertex(T.id,1,T.label,"Person","name","Tony","age",30);

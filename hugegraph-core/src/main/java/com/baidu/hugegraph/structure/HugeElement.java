@@ -80,9 +80,18 @@ public abstract class HugeElement implements Element {
             if (!keyValues[i].equals(T.id) && !keyValues[i].equals(T.label))
                 this.properties.put((String) keyValues[i], keyValues[i + 1]);
         }
+
     }
 
     public void setPropertyMap(Map<String,Object> map){
         this.properties = map;
+    }
+
+    public <V> V getProperty(String key) {
+        if (properties != null) {
+            V val = (V) properties.get(key);
+            if (val != null) return val;
+        }
+        return null;
     }
 }

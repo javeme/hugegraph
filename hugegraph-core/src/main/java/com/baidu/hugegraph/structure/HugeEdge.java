@@ -3,7 +3,10 @@
  */
 package com.baidu.hugegraph.structure;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -48,8 +51,15 @@ public class HugeEdge extends HugeElement implements Edge {
     }
 
     @Override
-    public <V> Property<V> property(String key, V value) {
-        return null;
+    public <V> HugeProperty<V> property(final String key) {
+        return new HugeProperty<>(this.graph(),this,key,this.getProperty(key));
+    }
+
+    @Override
+    public <V> HugeProperty<V> property(String key, V value) {
+        this.setProperties(key, value);
+        ((HugeGraph)this.graph()).edgeService.updateProperty(this, key, value);
+        return new HugeProperty<>(this.graph(),this,key,value);
     }
 
     @Override
@@ -58,8 +68,13 @@ public class HugeEdge extends HugeElement implements Edge {
     }
 
     @Override
-    public <V> Iterator< Property<V>> properties(String... propertyKeys) {
-        return null;
+    public  Iterator< Property> properties(String... propertyKeys) {
+        List<Property> propertyList = new ArrayList<>();
+        for(String pk:propertyKeys){
+            HugeProperty p =new HugeProperty(this.graph(),this,pk,this.getProperties().get(pk));
+            propertyList.add(p);
+        }
+        return propertyList.iterator();
     }
 
     public void setProperties(Object... keyValues){
@@ -74,4 +89,10 @@ public class HugeEdge extends HugeElement implements Edge {
 
         return Direction.IN.equals(direction) ? inVertex : outVertex;
     }
+
+
+//    @Override
+//    public  <V> V value(final String key) throws NoSuchElementException {
+//        return this.property(key).orElseThrow(() -> Property.Exceptions.propertyDoesNotExist(this,key));
+//    }
 }

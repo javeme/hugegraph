@@ -4,12 +4,15 @@
 package com.baidu.hugegraph.hbase;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -71,6 +74,22 @@ public class EdgeService extends BaseService {
         return null;
     }
 
+    /**
+     * all edges
+     * @return
+     */
+    public Iterator<Edge> edges(){
+        ResultScanner scanner ;
+        try {
+            scanner = table.getScanner(new Scan());
+            return HugeGraphUtils.parseEdgeScanner(scanner, this
+                    .graph);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
     private Put constructInsertion(HugeEdge edge){
         final String label = edge.label() != null ? edge.label() : Edge.DEFAULT_LABEL;
         Put put = new Put(ValueUtils.serializeWithSalt(edge.id()));
