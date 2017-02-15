@@ -27,23 +27,23 @@ import com.baidu.hugegraph.structure.HugeVertexProperty;
 public class HugeGraphProvider extends AbstractGraphProvider {
 
     private static final Set<Class> IMPLEMENTATIONS = new HashSet<Class>() { {
-        add(HugeEdge.class);
-        add(HugeElement.class);
-        add(HugeGraph.class);
-        add(HugeProperty.class);
-        add(HugeVertex.class);
-        add(HugeVertexProperty.class);
-    }
+            add(HugeEdge.class);
+            add(HugeElement.class);
+            add(HugeGraph.class);
+            add(HugeProperty.class);
+            add(HugeVertex.class);
+            add(HugeVertexProperty.class);
+        }
     };
 
     @Override
     public Map<String, Object> getBaseConfiguration(String s, Class<?> aClass, String s1,
                                                     LoadGraphWith.GraphData graphData) {
         return new HashMap<String, Object>() { {
-            put(Graph.GRAPH, HugeGraph.class.getName());
-            put(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM, "sh01-sjws-tjdata20.sh01.baidu.com");
-            put(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, "8218");
-        }
+                put(Graph.GRAPH, HugeGraph.class.getName());
+                put(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM, "sh01-sjws-tjdata20.sh01.baidu.com");
+                put(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, "8218");
+            }
         };
     }
 
