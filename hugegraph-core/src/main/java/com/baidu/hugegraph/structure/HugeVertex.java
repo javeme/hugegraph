@@ -3,12 +3,12 @@
  */
 package com.baidu.hugegraph.structure;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.util.ElementHelper;
@@ -20,28 +20,41 @@ import com.baidu.hugegraph.utils.HugeGraphUtils;
  */
 public class HugeVertex extends HugeElement implements Vertex {
 
-
-    public HugeVertex(final HugeGraph graph,final Object id,final String label){
-        super(graph,id,label);
+    public HugeVertex(final HugeGraph graph, final Object id, final String label) {
+        super(graph, id, label);
     }
 
     @Override
     public Edge addEdge(String label, Vertex inVertex, Object... keyValues) {
         ElementHelper.legalPropertyKeyValueArray(keyValues);
         Object idValue = HugeGraphUtils.generateIdIfNeeded(null);
-        HugeEdge edge = new HugeEdge(this.graph(),idValue,label,inVertex,this);
+        HugeEdge edge = new HugeEdge(this.graph(), idValue, label, inVertex, this);
         Long currentTime = System.currentTimeMillis();
         edge.setCreatedAt(currentTime);
         edge.setUpdatedAt(currentTime);
         edge.setProperties(keyValues);
-        ((HugeGraph)this.graph()).getEdgeService().addEdge(edge);
+        ((HugeGraph) this.graph()).getEdgeService().addEdge(edge);
         return edge;
     }
 
     @Override
-    public <V> VertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value,
-                                          Object... keyValues) {
-        return null;
+    public <V> HugeVertexProperty<V> property(final String key) {
+        return new HugeVertexProperty<>(this.graph(), this, key, this.getProperty(key));
+    }
+
+    @Override
+    public <V> HugeVertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value,
+                                              Object... keyValues) {
+        if (cardinality != VertexProperty.Cardinality.single) {
+            throw VertexProperty.Exceptions.multiPropertiesNotSupported();
+        }
+        if (keyValues.length > 0) {
+            throw VertexProperty.Exceptions.metaPropertiesNotSupported();
+        }
+        this.setProperties(key, value);
+        // update property
+        ((HugeGraph) this.graph()).vertexService.updateProperty(this, key, value);
+        return new HugeVertexProperty<>(this.graph(), this, key, value);
     }
 
     @Override
@@ -54,7 +67,6 @@ public class HugeVertex extends HugeElement implements Vertex {
         return null;
     }
 
-
     @Override
     public void remove() {
 
@@ -62,7 +74,13 @@ public class HugeVertex extends HugeElement implements Vertex {
 
     @Override
     public <V> Iterator<VertexProperty<V>> properties(String... propertyKeys) {
-        return null;
+        List<VertexProperty<V>> propertyList = new ArrayList<>();
+        for (String pk : propertyKeys) {
+            HugeVertexProperty hp = new
+                    HugeVertexProperty(this.graph(), this, pk, this.getProperties().get(pk));
+            propertyList.add(hp);
+        }
+        return propertyList.iterator();
     }
 
 }

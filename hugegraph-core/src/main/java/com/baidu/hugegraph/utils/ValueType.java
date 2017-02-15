@@ -50,10 +50,6 @@ public enum ValueType {
         this.code = (byte) code;
     }
 
-    public byte getCode() {
-        return code;
-    }
-
     public static ValueType valueOf(int typeCode) {
         switch (typeCode) {
             case 1:
@@ -101,6 +97,10 @@ public enum ValueType {
             default:
                 return null;
         }
+    }
+
+    public byte getCode() {
+        return code;
     }
 
 }

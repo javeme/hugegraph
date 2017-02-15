@@ -15,19 +15,14 @@ public class HugeGraphConfiguration extends AbstractConfiguration {
 
     private final PropertiesConfiguration conf;
 
-    public static class Keys{
-        public static final String ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
-        public static final String ZOOKEEPER_CLIENTPORT = "hbase.zookeeper.property.clientPort";
-    }
-
-    public HugeGraphConfiguration(){
+    public HugeGraphConfiguration() {
         conf = new PropertiesConfiguration();
         conf.setDelimiterParsingDisabled(true);
     }
 
     @Override
     protected void addPropertyDirect(String key, Object value) {
-        conf.addProperty(key,value);
+        conf.addProperty(key, value);
     }
 
     @Override
@@ -48,5 +43,10 @@ public class HugeGraphConfiguration extends AbstractConfiguration {
     @Override
     public Iterator<String> getKeys() {
         return conf.getKeys();
+    }
+
+    public static class Keys {
+        public static final String ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
+        public static final String ZOOKEEPER_CLIENTPORT = "hbase.zookeeper.property.clientPort";
     }
 }

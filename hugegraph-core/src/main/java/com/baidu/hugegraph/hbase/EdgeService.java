@@ -4,13 +4,15 @@
 package com.baidu.hugegraph.hbase;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.slf4j.Logger;
@@ -38,40 +40,58 @@ public class EdgeService extends BaseService {
     public void initTable(Connection connection) {
         try {
             this.table = connection.getTable(TableName.valueOf(Constants.EDGES));
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
         }
     }
 
-    public void addEdge(HugeEdge edge){
+    public void addEdge(HugeEdge edge) {
         Put put = constructInsertion(edge);
         try {
             this.table.put(put);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
     /**
-     *
      * @param id
+     *
      * @return
      */
-    public Edge findEdge(Object id){
+    public Edge findEdge(Object id) {
         Get get = new Get(ValueUtils.serializeWithSalt(id));
-        try{
+        try {
             Result result = this.table.get(get);
-            return (HugeEdge)HugeGraphUtils.parseResult(HugeElement.ElementType.EDGE,result, graph);
-        }catch (IOException e){
+            return (HugeEdge) HugeGraphUtils.parseResult(HugeElement.ElementType.EDGE, result, graph);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    private Put constructInsertion(HugeEdge edge){
+    /**
+     * all edges
+     *
+     * @return
+     */
+    public Iterator<Edge> edges() {
+        ResultScanner scanner;
+        try {
+            scanner = table.getScanner(new Scan());
+            return HugeGraphUtils.parseEdgeScanner(scanner, this
+                    .graph);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    private Put constructInsertion(HugeEdge edge) {
         final String label = edge.label() != null ? edge.label() : Edge.DEFAULT_LABEL;
         Put put = new Put(ValueUtils.serializeWithSalt(edge.id()));
         put.addColumn(Constants.DEFAULT_FAMILY_BYTES, Constants.TO_BYTES,
@@ -84,10 +104,10 @@ public class EdgeService extends BaseService {
                 ValueUtils.serialize((edge.getCreatedAt())));
         put.addColumn(Constants.DEFAULT_FAMILY_BYTES, Constants.UPDATED_AT_BYTES,
                 ValueUtils.serialize((edge.getUpdatedAt())));
-        for(String key:edge.getProperties().keySet()){
+        for (String key : edge.getProperties().keySet()) {
             byte[] keyBytes = Bytes.toBytes(key);
             byte[] valueBytes = ValueUtils.serialize(edge.getProperties().get(key));
-            put.addColumn(Constants.DEFAULT_FAMILY_BYTES,keyBytes,valueBytes);
+            put.addColumn(Constants.DEFAULT_FAMILY_BYTES, keyBytes, valueBytes);
         }
 
         return put;

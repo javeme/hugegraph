@@ -4,20 +4,11 @@
 package com.baidu.hugegraph.hbase;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.CellUtil;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -49,32 +40,32 @@ public class VertexService extends BaseService {
     public void initTable(Connection connection) {
         try {
             this.table = connection.getTable(TableName.valueOf(Constants.VERTICES));
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
         }
 
     }
 
-    public void addVertex(HugeVertex vertex){
+    public void addVertex(HugeVertex vertex) {
         Put put = constructInsertion(vertex);
         try {
             this.table.put(put);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
         }
 
     }
 
-    public Vertex findVertex(Object id){
+    public Vertex findVertex(Object id) {
         Get get = new Get(ValueUtils.serializeWithSalt(id));
         Vertex vertex = null;
         try {
             Result result = table.get(get);
-            vertex = (HugeVertex)HugeGraphUtils.parseResult(HugeElement.ElementType.VERTEX, result, this.graph);
-            if (vertex == null){
-                logger.info("Vertex does not exist:{}",id);
+            vertex = (HugeVertex) HugeGraphUtils.parseResult(HugeElement.ElementType.VERTEX, result, this.graph);
+            if (vertex == null) {
+                logger.info("Vertex does not exist:{}", id);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,13 +76,15 @@ public class VertexService extends BaseService {
 
     /**
      * Return all vertices
+     *
      * @return
      */
-    public Iterator<Vertex> vertices(){
-        ResultScanner scanner ;
+    public Iterator<Vertex> vertices() {
+        ResultScanner scanner;
         try {
             scanner = table.getScanner(new Scan());
-            return HugeGraphUtils.parseScanner(scanner, this.graph);
+            return HugeGraphUtils.parseVertexScanner(scanner, this
+                    .graph);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -99,16 +92,15 @@ public class VertexService extends BaseService {
         return null;
     }
 
-
-    public Iterator<Vertex> vertices(Object fromId, int limit){
+    public Iterator<Vertex> vertices(Object fromId, int limit) {
         return null;
     }
 
     public Iterator<Vertex> vertices(String label) {
-        ResultScanner scanner ;
+        ResultScanner scanner;
         try {
             scanner = table.getScanner(this.getPropertyScan(label));
-            return HugeGraphUtils.parseScanner(scanner, this.graph);
+            return HugeGraphUtils.parseVertexScanner(scanner, this.graph);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -116,7 +108,7 @@ public class VertexService extends BaseService {
         return null;
     }
 
-    private Put constructInsertion(HugeVertex vertex){
+    private Put constructInsertion(HugeVertex vertex) {
         final String label = vertex.label() != null ? vertex.label() : Vertex.DEFAULT_LABEL;
         Put put = new Put(ValueUtils.serializeWithSalt(vertex.id()));
         put.addColumn(Constants.DEFAULT_FAMILY_BYTES, Constants.LABEL_BYTES,
@@ -125,10 +117,10 @@ public class VertexService extends BaseService {
                 ValueUtils.serialize(vertex.getCreatedAt()));
         put.addColumn(Constants.DEFAULT_FAMILY_BYTES, Constants.UPDATED_AT_BYTES,
                 ValueUtils.serialize(vertex.getUpdatedAt()));
-        for(String key:vertex.getProperties().keySet()){
+        for (String key : vertex.getProperties().keySet()) {
             byte[] keyBytes = Bytes.toBytes(key);
             byte[] valueBytes = ValueUtils.serialize(vertex.getProperties().get(key));
-            put.addColumn(Constants.DEFAULT_FAMILY_BYTES,keyBytes,valueBytes);
+            put.addColumn(Constants.DEFAULT_FAMILY_BYTES, keyBytes, valueBytes);
         }
 
         return put;
@@ -136,14 +128,15 @@ public class VertexService extends BaseService {
 
     /**
      * md5(label_vertexid)_label_vertexid
+     *
      * @param vertex
+     *
      * @return
      */
-    private String createRowkey(HugeVertex vertex){
-        String labelVertexid = vertex.label()+"_"+vertex.id().toString();
+    private String createRowkey(HugeVertex vertex) {
+        String labelVertexid = vertex.label() + "_" + vertex.id().toString();
         String hash = DigestUtils.md5Hex(labelVertexid);
-        return hash+"_"+labelVertexid;
+        return hash + "_" + labelVertexid;
     }
-
 
 }

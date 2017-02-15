@@ -4,54 +4,45 @@
 package com.baidu.hugegraph.structure;
 
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.apache.tinkerpop.gremlin.structure.Element;
+import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Property;
 
 /**
  * Created by zhangsuochao on 17/2/6.
  */
 public class HugeProperty<V> implements Property<V> {
-    @Override
-    public void ifPresent(Consumer<? super V> consumer) {
+    protected final Graph graph;
+    protected final HugeElement element;
+    protected final String key;
+    protected final V value;
 
-    }
-
-    @Override
-    public V orElse(V otherValue) {
-        return null;
-    }
-
-    @Override
-    public V orElseGet(Supplier<? extends V> valueSupplier) {
-        return null;
-    }
-
-    @Override
-    public <E extends Throwable> V orElseThrow(Supplier<? extends E> exceptionSupplier) throws E {
-        return null;
+    public HugeProperty(final Graph graph, final HugeElement element, final String key, final V value) {
+        this.graph = graph;
+        this.element = element;
+        this.key = key;
+        this.value = value;
     }
 
     @Override
     public String key() {
-        return null;
+        return this.key;
     }
 
     @Override
     public V value() throws NoSuchElementException {
-        return null;
+        return this.value;
     }
 
     @Override
     public boolean isPresent() {
-        return false;
+        return null != this.value;
     }
 
     @Override
     public Element element() {
-        return null;
+        return this.element;
     }
 
     @Override
