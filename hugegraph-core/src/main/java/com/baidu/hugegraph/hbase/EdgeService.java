@@ -137,9 +137,10 @@ public class EdgeService extends BaseService {
         } else if (Direction.OUT.equals(direction)) {
             vertexFilter = new SingleColumnValueFilter(Constants.DEFAULT_FAMILY_BYTES,
                     Constants.FROM_BYTES, CompareFilter.CompareOp.EQUAL, ValueUtils.serialize(vertex.id()));
-        } else if (Direction.BOTH.equals(direction)) {
-            // TODO
         }
+//        else if (Direction.BOTH.equals(direction)) {
+//            // TODO
+//        }
 
         filterList.addFilter(vertexFilter);
 

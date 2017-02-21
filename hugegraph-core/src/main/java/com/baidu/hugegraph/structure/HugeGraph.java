@@ -25,7 +25,7 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * Created by zhangsuochao on 17/1/16.
  */
-//@Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
+// @Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
 @Graph.OptIn("com.baidu.hugegraph.HugeStructureBasicSuite")
 public final class HugeGraph implements Graph {
 
