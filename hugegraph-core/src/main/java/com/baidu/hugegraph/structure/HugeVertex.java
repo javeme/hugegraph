@@ -59,17 +59,25 @@ public class HugeVertex extends HugeElement implements Vertex {
 
     @Override
     public Iterator<Edge> edges(Direction direction, String... edgeLabels) {
-        return null;
+
+        return ((HugeGraph) this.graph()).edgeService.findVertexEdges(this, direction, edgeLabels);
     }
 
     @Override
     public Iterator<Vertex> vertices(Direction direction, String... edgeLabels) {
-        return null;
+        Iterator<Edge> edges = ((HugeGraph) this.graph()).edgeService.findVertexEdges(this, direction, edgeLabels);
+        List<Vertex> vertices = new ArrayList<>();
+        HugeEdge edge;
+        while (edges.hasNext()) {
+            edge = (HugeEdge) edges.next();
+            vertices.add(edge.getVertex(direction));
+        }
+        return vertices.iterator();
     }
 
     @Override
     public void remove() {
-
+        throw new UnsupportedOperationException("HugeVertex.remove() Unimplements yet ");
     }
 
     @Override

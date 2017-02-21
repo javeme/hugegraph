@@ -46,4 +46,10 @@ public class Constants {
     public static final byte[] EDGE_ID_BYTES = Bytes.toBytes(EDGE_ID);
     public static final byte[] VERTEX_ID_BYTES = Bytes.toBytes(VERTEX_ID);
     public static final byte[] INDEX_STATE_BYTES = Bytes.toBytes(INDEX_STATE);
+
+    /**
+     * Unlimited time-to-live.
+     */
+    //  public static final int FOREVER = -1;
+    public static final int FOREVER = Integer.MAX_VALUE;
 }

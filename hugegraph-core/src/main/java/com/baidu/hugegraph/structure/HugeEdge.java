@@ -35,7 +35,7 @@ public class HugeEdge extends HugeElement implements Edge {
     }
 
     public HugeEdge(final Graph graph, final Object id, final String label, final Vertex inVertex, final
-        Vertex outVertex) {
+    Vertex outVertex) {
         super(graph, id, label);
         this.inVertex = inVertex;
         this.outVertex = outVertex;
@@ -62,7 +62,7 @@ public class HugeEdge extends HugeElement implements Edge {
 
     @Override
     public void remove() {
-
+        throw new UnsupportedOperationException("HugeEdge.remove() Unimplements yet ");
     }
 
     @Override
@@ -88,8 +88,11 @@ public class HugeEdge extends HugeElement implements Edge {
         return Direction.IN.equals(direction) ? inVertex : outVertex;
     }
 
-    //    @Override
-    //    public  <V> V value(final String key) throws NoSuchElementException {
-    //        return this.property(key).orElseThrow(() -> Property.Exceptions.propertyDoesNotExist(this,key));
-    //    }
+    public void setInVertex(Vertex inVertex) {
+        this.inVertex = inVertex;
+    }
+
+    public void setOutVertex(Vertex outVertex) {
+        this.outVertex = outVertex;
+    }
 }

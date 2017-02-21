@@ -5,10 +5,8 @@ package com.baidu.hugegraph.hbase;
 
 import java.io.IOException;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -27,41 +25,40 @@ import com.baidu.hugegraph.structure.HugeElement;
 import com.baidu.hugegraph.structure.HugeGraph;
 import com.baidu.hugegraph.structure.HugeGraphConfiguration;
 import com.baidu.hugegraph.utils.Constants;
+import com.baidu.hugegraph.utils.HugeGraphUtils;
 import com.baidu.hugegraph.utils.ValueUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Created by zhangsuochao on 17/2/7.
  */
-public abstract class BaseService {
+public class BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
     protected final HugeGraph graph;
     protected Table table;
     protected Connection connection;
 
-    public BaseService(HugeGraph graph) {
+    public BaseService(HugeGraph graph, String tableName) {
         this.graph = graph;
-        init();
-        initTable(this.connection);
+        init(tableName);
     }
-
-    public abstract void initTable(Connection connection);
 
     /**
      * Init hbase connection
      */
-    protected void init() {
-        Configuration hbaseConf = HBaseConfiguration.create();
-        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,
-                graph.configuration().getString(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM));
-        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, graph.configuration().getString
-                (HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT));
+    protected void init(String tableName) {
+        HugeGraphConfiguration conf = (HugeGraphConfiguration) graph.configuration();
+        this.connection = HugeGraphUtils.getConnection(conf);
         try {
-            this.connection = ConnectionFactory.createConnection(hbaseConf);
+            String ns = conf.getGraphNamespace();
+            TableName tn = TableName.valueOf(ns, tableName);
+            this.table = connection.getTable(tn);
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
+
     }
 
     protected Scan getPropertyScan(String label) {
@@ -137,7 +134,7 @@ public abstract class BaseService {
                 }
             });
 
-            logger.info("###Table clear done !");
+            logger.info("###Clear table {}", table.getName().getNameWithNamespaceInclAsString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

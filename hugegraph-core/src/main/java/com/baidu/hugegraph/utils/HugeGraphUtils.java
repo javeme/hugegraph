@@ -3,6 +3,8 @@
  */
 package com.baidu.hugegraph.utils;
 
+import static com.baidu.hugegraph.utils.Constants.DEFAULT_FAMILY;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +12,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.NamespaceDescriptor;
+import org.apache.hadoop.hbase.NamespaceNotFoundException;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding;
+import org.apache.hadoop.hbase.regionserver.BloomType;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -25,12 +40,16 @@ import org.apache.tinkerpop.gremlin.structure.util.ElementHelper;
 import com.baidu.hugegraph.structure.HugeEdge;
 import com.baidu.hugegraph.structure.HugeElement;
 import com.baidu.hugegraph.structure.HugeGraph;
+import com.baidu.hugegraph.structure.HugeGraphConfiguration;
 import com.baidu.hugegraph.structure.HugeVertex;
 
 /**
  * Created by zhangsuochao on 17/2/8.
  */
 public class HugeGraphUtils {
+
+    private static final Map<String, Connection> connections = new ConcurrentHashMap<>();
+
     public static Object generateIdIfNeeded(Object id) {
         if (id == null) {
             id = UUID.randomUUID().toString();
@@ -150,4 +169,80 @@ public class HugeGraphUtils {
         }
         return props;
     }
+
+    public static void createTables(HugeGraphConfiguration configuration) {
+        Admin admin = null;
+
+        try {
+            Connection connection = getConnection(configuration);
+            admin = connection.getAdmin();
+            createNamespace(configuration, admin);
+            createTable(configuration, admin, Constants.EDGES, Constants.FOREVER);
+            createTable(configuration, admin, Constants.VERTICES, Constants.FOREVER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (admin != null) {
+                    admin.close();
+                }
+            } catch (IOException ignored) {
+            }
+        }
+
+    }
+
+    private static void createNamespace(HugeGraphConfiguration config, Admin admin) throws IOException {
+        String name = config.getGraphNamespace();
+        try {
+            NamespaceDescriptor ns = admin.getNamespaceDescriptor(name);
+        } catch (NamespaceNotFoundException e) {
+            admin.createNamespace(NamespaceDescriptor.create(name).build());
+        }
+    }
+
+    private static void createTable(HugeGraphConfiguration config, Admin admin, String name, int ttl)
+            throws IOException {
+        String ns = config.getGraphNamespace();
+        TableName tableName = TableName.valueOf(ns, name);
+        if (admin.tableExists(tableName)) {
+            return;
+        }
+        HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
+        HColumnDescriptor columnDescriptor = new HColumnDescriptor(DEFAULT_FAMILY)
+                .setBloomFilterType(BloomType.ROW)
+                .setDataBlockEncoding(DataBlockEncoding.FAST_DIFF)
+                .setMaxVersions(1)
+                .setMinVersions(0)
+                .setBlocksize(32768)
+                .setBlockCacheEnabled(true)
+                .setTimeToLive(ttl);
+        tableDescriptor.addFamily(columnDescriptor);
+        admin.createTable(tableDescriptor);
+    }
+
+    public static Connection getConnection(HugeGraphConfiguration config) {
+        Connection conn = connections.get(config.getGraphNamespace());
+        if (conn != null) {
+            return conn;
+        }
+
+        Configuration hbaseConf = HBaseConfiguration.create();
+        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM,
+                config.getString(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM));
+        hbaseConf.set(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, config.getString
+                (HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT));
+        try {
+            conn = ConnectionFactory.createConnection(hbaseConf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (conn != null) {
+            connections.put(config.getGraphNamespace(), conn);
+        }
+
+        return conn;
+    }
+
 }

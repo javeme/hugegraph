@@ -45,6 +45,7 @@ public class HugeGraphTest {
     //    @Test
     public void testQueryVerteice() {
         HugeGraph graph = HugeGraph.open(null);
+
         Iterator<Vertex> vertices = graph.vertices();
         while (vertices.hasNext()) {
             Vertex v = vertices.next();
@@ -68,14 +69,12 @@ public class HugeGraphTest {
         HugeGraph graph = HugeGraph.open(null);
         Iterator<Edge> edges = graph.edges();
         while (edges.hasNext()) {
-            Edge e = edges.next();
-            //            Iterator d= e.values("data");
-            //            while (d.hasNext()){
-            //                Object d1= d.next();
-            //                System.out.println(d1.toString());
-            //            }
-            Object o = e.value("data");
-            System.out.println(null == e.value("data") ? " NULL" : "not");
+            HugeEdge hugeEdge = (HugeEdge) edges.next();
+            HugeVertex outVertex = (HugeVertex) hugeEdge.outVertex();
+            HugeVertex inVertex = (HugeVertex) hugeEdge.inVertex();
+            System.out.println(outVertex.property("name").value() + "-->" + hugeEdge.label() + "-->" + inVertex.property
+                    ("name").value());
         }
     }
+
 }
