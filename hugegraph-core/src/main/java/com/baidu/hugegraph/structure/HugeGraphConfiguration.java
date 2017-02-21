@@ -45,8 +45,13 @@ public class HugeGraphConfiguration extends AbstractConfiguration {
         return conf.getKeys();
     }
 
+    public String getGraphNamespace() {
+        return conf.getString(Keys.GRAPH_NAMESPACE, "default");
+    }
+
     public static class Keys {
         public static final String ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
         public static final String ZOOKEEPER_CLIENTPORT = "hbase.zookeeper.property.clientPort";
+        public static final String GRAPH_NAMESPACE = "gremlin.hbase.namespace";
     }
 }

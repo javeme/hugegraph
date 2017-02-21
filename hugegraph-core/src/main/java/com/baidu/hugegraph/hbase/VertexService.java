@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -33,18 +31,7 @@ public class VertexService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(VertexService.class);
 
     public VertexService(HugeGraph graph) {
-        super(graph);
-    }
-
-    @Override
-    public void initTable(Connection connection) {
-        try {
-            this.table = connection.getTable(TableName.valueOf(Constants.VERTICES));
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-        }
-
+        super(graph, Constants.VERTICES);
     }
 
     public void addVertex(HugeVertex vertex) {

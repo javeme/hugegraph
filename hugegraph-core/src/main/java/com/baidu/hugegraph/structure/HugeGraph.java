@@ -25,7 +25,8 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * Created by zhangsuochao on 17/1/16.
  */
-@Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
+// @Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
+@Graph.OptIn("com.baidu.hugegraph.HugeStructureBasicSuite")
 public final class HugeGraph implements Graph {
 
     private static final Logger logger = LoggerFactory.getLogger(HugeGraph.class);
@@ -49,6 +50,7 @@ public final class HugeGraph implements Graph {
         conf.copy(configuration);
         conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_QUORUM, "sh01-sjws-tjdata20.sh01.baidu.com");
         conf.addProperty(HugeGraphConfiguration.Keys.ZOOKEEPER_CLIENTPORT, "8218");
+        HugeGraphUtils.createTables(conf);
         logger.info("Open HugeGraph");
         return new HugeGraph(conf);
     }

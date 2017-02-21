@@ -3,6 +3,8 @@
  */
 package com.baidu.hugegraph.structure;
 
+import java.io.Serializable;
+
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.util.StringFactory;
@@ -64,7 +66,15 @@ public class HugeGraphFeatures implements Graph.Features {
 
     }
 
-    public class HugeGraphVertexFeatures implements VertexFeatures {
+    public class HugeGraphVertexFeatures extends HugeElementFeatures implements VertexFeatures {
+
+        private final VertexPropertyFeatures vertexPropertyFeatures = new HugeVertexPropertyFeatures();
+
+        @Override
+        public VertexPropertyFeatures properties() {
+            return vertexPropertyFeatures;
+        }
+
         @Override
         public boolean supportsMetaProperties() {
             return false;
@@ -81,8 +91,85 @@ public class HugeGraphFeatures implements Graph.Features {
         }
     }
 
-    public class HugeGraphEdgeFeatures implements EdgeFeatures {
+    public class HugeGraphEdgeFeatures extends HugeElementFeatures implements EdgeFeatures {
 
     }
 
+    public class HugeElementFeatures implements ElementFeatures {
+        @Override
+        public boolean supportsUserSuppliedIds() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsNumericIds() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsStringIds() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsUuidIds() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsAnyIds() {
+            return false;
+        }
+
+        @Override
+        public boolean supportsCustomIds() {
+            return false;
+        }
+
+        @Override
+        public boolean willAllowId(final Object id) {
+            return id instanceof Serializable;
+        }
+    }
+
+    public class HugeVertexPropertyFeatures implements VertexPropertyFeatures {
+
+        HugeVertexPropertyFeatures() {
+        }
+
+        @Override
+        public boolean supportsMapValues() {
+            return false;
+        }
+
+        @Override
+        public boolean supportsMixedListValues() {
+            return false;
+        }
+
+        @Override
+        public boolean supportsSerializableValues() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsUniformListValues() {
+            return true;
+        }
+
+        @Override
+        public boolean supportsUserSuppliedIds() {
+            return false;
+        }
+
+        @Override
+        public boolean supportsAnyIds() {
+            return false;
+        }
+
+        @Override
+        public boolean supportsCustomIds() {
+            return false;
+        }
+    }
 }
