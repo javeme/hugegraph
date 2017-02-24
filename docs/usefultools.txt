@@ -1,0 +1,7 @@
+[[tools-and-utilities]]
+Useful Tools
+============
+
+include::advblueprints.txt[]
+
+include::generating.txt[]
