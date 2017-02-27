@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ public class HBaseLockStoreTest extends LockKeyColumnValueStoreTest {
     public static void startHBase() throws IOException {
         HBaseStorageSetup.startHBase();
     }
-
     @AfterClass
     public static void stopHBase() {
         // Workaround for https://issues.apache.org/jira/browse/HBASE-10312

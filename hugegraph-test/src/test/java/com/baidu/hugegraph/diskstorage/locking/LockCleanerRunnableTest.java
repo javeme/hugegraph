@@ -55,11 +55,12 @@ public class LockCleanerRunnableTest {
     private StoreTransaction tx;
 
     private final ConsistentKeyLockerSerializer codec = new ConsistentKeyLockerSerializer();
-    private final KeyColumn kc = new KeyColumn(new StaticArrayBuffer(new byte[] { (byte) 1 }),
-            new StaticArrayBuffer(new byte[] { (byte) 2 }));
+    private final KeyColumn kc = new KeyColumn(
+            new StaticArrayBuffer(new byte[]{(byte) 1}),
+            new StaticArrayBuffer(new byte[]{(byte) 2}));
     private final StaticBuffer key = codec.toLockKey(kc.getKey(), kc.getColumn());
     private final KeySliceQuery ksq = new KeySliceQuery(key, LOCK_COL_START, LOCK_COL_END);
-    private final StaticBuffer defaultLockRid = new StaticArrayBuffer(new byte[] { (byte) 32 });
+    private final StaticBuffer defaultLockRid = new StaticArrayBuffer(new byte[]{(byte) 32});
 
     @Before
     public void setupMocks() {
@@ -82,25 +83,30 @@ public class LockCleanerRunnableTest {
     public void testDeleteSingleLock() throws BackendException {
         Instant now = Instant.ofEpochMilli(1L);
 
-        Entry expiredLockCol = StaticArrayEntry.of(codec.toLockCol(now, defaultLockRid, TimestampProviders.MILLI),
-                BufferUtil.getIntBuffer(0));
+        Entry expiredLockCol = StaticArrayEntry.of(codec.toLockCol(now,
+                defaultLockRid, TimestampProviders.MILLI), BufferUtil.getIntBuffer(0));
         EntryList expiredSingleton = StaticArrayEntryList.of(expiredLockCol);
 
         now = now.plusMillis(1);
         del = new StandardLockCleanerRunnable(store, kc, tx, codec, now, TimestampProviders.MILLI);
 
-        expect(store.getSlice(eq(ksq), eq(tx))).andReturn(expiredSingleton);
+        expect(store.getSlice(eq(ksq), eq(tx)))
+                .andReturn(expiredSingleton);
 
-        store.mutate(eq(key), eq(ImmutableList.<Entry> of()),
-                eq(ImmutableList.<StaticBuffer> of(expiredLockCol.getColumn())), anyObject(StoreTransaction.class));
+        store.mutate(
+                eq(key),
+                eq(ImmutableList.<Entry> of()),
+                eq(ImmutableList.<StaticBuffer> of(expiredLockCol.getColumn())),
+                anyObject(StoreTransaction.class));
 
         ctrl.replay();
         del.run();
     }
 
     /**
-     * Test the cleaner against a set of locks where some locks have timestamps before the cutoff and others have
-     * timestamps after the cutoff. One lock has a timestamp equal to the cutoff.
+     * Test the cleaner against a set of locks where some locks have timestamps
+     * before the cutoff and others have timestamps after the cutoff. One lock
+     * has a timestamp equal to the cutoff.
      */
     @Test
     public void testDeletionWithExpiredAndValidLocks() throws BackendException {
@@ -113,11 +119,12 @@ public class LockCleanerRunnableTest {
         final Instant timeCutoff = timeStart.plusMillis(expiredCount * timeIncr);
 
         ImmutableList.Builder<Entry> locksBuilder = ImmutableList.builder();
-        ImmutableList.Builder<Entry> delsBuilder = ImmutableList.builder();
+        ImmutableList.Builder<Entry> delsBuilder  = ImmutableList.builder();
 
         for (int i = 0; i < lockCount; i++) {
             final Instant ts = timeStart.plusMillis(timeIncr * i);
-            Entry lock = StaticArrayEntry.of(codec.toLockCol(ts, defaultLockRid, TimestampProviders.MILLI),
+            Entry lock = StaticArrayEntry.of(
+                    codec.toLockCol(ts, defaultLockRid, TimestampProviders.MILLI),
                     BufferUtil.getIntBuffer(0));
 
             if (ts.isBefore(timeCutoff)) {
@@ -128,32 +135,36 @@ public class LockCleanerRunnableTest {
         }
 
         EntryList locks = StaticArrayEntryList.of(locksBuilder.build());
-        EntryList dels = StaticArrayEntryList.of(delsBuilder.build());
+        EntryList dels  = StaticArrayEntryList.of(delsBuilder.build());
         assertTrue(expiredCount == dels.size());
 
         del = new StandardLockCleanerRunnable(store, kc, tx, codec, timeCutoff, TimestampProviders.MILLI);
 
         expect(store.getSlice(eq(ksq), eq(tx))).andReturn(locks);
 
-        store.mutate(eq(key), eq(ImmutableList.<Entry> of()), eq(columnsOf(dels)), anyObject(StoreTransaction.class));
+        store.mutate(
+                eq(key),
+                eq(ImmutableList.<Entry> of()),
+                eq(columnsOf(dels)),
+                anyObject(StoreTransaction.class));
 
         ctrl.replay();
         del.run();
     }
 
     /**
-     * Locks with timestamps equal to or numerically greater than the cleaner cutoff timestamp must be preserved. Test
-     * that the cleaner reads locks by slicing the store and then does <b>not</b> attempt to write.
+     * Locks with timestamps equal to or numerically greater than the cleaner
+     * cutoff timestamp must be preserved. Test that the cleaner reads locks by
+     * slicing the store and then does <b>not</b> attempt to write.
      */
     @Test
     public void testPreservesLocksAtOrAfterCutoff() throws BackendException {
         final Instant cutoff = Instant.ofEpochMilli(10L);
 
-        Entry currentLock = StaticArrayEntry.of(codec.toLockCol(cutoff, defaultLockRid, TimestampProviders.MILLI),
-                BufferUtil.getIntBuffer(0));
-        Entry futureLock =
-                StaticArrayEntry.of(codec.toLockCol(cutoff.plusMillis(1), defaultLockRid, TimestampProviders.MILLI),
-                        BufferUtil.getIntBuffer(0));
+        Entry currentLock = StaticArrayEntry.of(codec.toLockCol(cutoff,
+                defaultLockRid, TimestampProviders.MILLI), BufferUtil.getIntBuffer(0));
+        Entry futureLock = StaticArrayEntry.of(codec.toLockCol(cutoff.plusMillis(1),
+                defaultLockRid, TimestampProviders.MILLI), BufferUtil.getIntBuffer(0));
         EntryList locks = StaticArrayEntryList.of(currentLock, futureLock);
 
         // Don't increment cutoff: lockCol is exactly at the cutoff timestamp
@@ -166,7 +177,8 @@ public class LockCleanerRunnableTest {
     }
 
     /**
-     * Return a new list of {@link Entry#getColumn()} for each element in the argument list.
+     * Return a new list of {@link Entry#getColumn()} for each element in the
+     * argument list.
      */
     private static List<StaticBuffer> columnsOf(List<Entry> l) {
         return Lists.transform(l, new Function<Entry, StaticBuffer>() {

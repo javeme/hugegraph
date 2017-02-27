@@ -29,18 +29,18 @@ import static org.junit.Assert.*;
 
 public class LongEncodingTest {
 
+
     @Test
     public void testEncoding() {
         final int number = 1000000;
         final Random r = new Random();
         long start = System.currentTimeMillis();
-        for (int i = 0; i < number; i++) {
+        for (int i=0;i<number;i++) {
             long l = Math.abs(r.nextLong());
-            if (l == Long.MIN_VALUE)
-                continue;
+            if (l==Long.MIN_VALUE) continue;
             assertEquals(l, LongEncoding.decode(LongEncoding.encode(l)));
         }
-        System.out.println("Time to de/encode " + number + " longs (in ms): " + (System.currentTimeMillis() - start));
+        System.out.println("Time to de/encode "+number+" longs (in ms): " + (System.currentTimeMillis()-start));
     }
 
     @Test
@@ -50,5 +50,7 @@ public class LongEncodingTest {
             assertTrue(codes.add(LongEncoding.encode(i).toLowerCase()));
         }
     }
+
+
 
 }

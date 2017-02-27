@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 
 /**
- * If an Input- or OutputFormat requires a dynamic configuration of the job at execution time, then a
- * JobConfigurationFormat can be implemented.
+ * If an Input- or OutputFormat requires a dynamic configuration of the job at execution time, then a JobConfigurationFormat can be implemented.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

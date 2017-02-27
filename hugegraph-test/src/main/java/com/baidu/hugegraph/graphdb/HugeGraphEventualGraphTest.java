@@ -20,6 +20,7 @@ import com.google.common.collect.Iterators;
 import com.baidu.hugegraph.core.*;
 import com.baidu.hugegraph.core.attribute.Cmp;
 
+
 import com.baidu.hugegraph.core.schema.ConsistencyModifier;
 import com.baidu.hugegraph.core.Multiplicity;
 import com.baidu.hugegraph.core.schema.HugeGraphIndex;
@@ -62,20 +63,20 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         makeVertexIndexedKey("value", Object.class);
         finishSchema();
 
+
         tx.addVertex("uid", "v");
 
         clopen();
 
-        // Concurrent index addition
+        //Concurrent index addition
         HugeGraphTransaction tx1 = graph.newTransaction();
         HugeGraphTransaction tx2 = graph.newTransaction();
-        getVertex(tx1, "uid", "v").property(VertexProperty.Cardinality.single, "value", 11);
-        getVertex(tx2, "uid", "v").property(VertexProperty.Cardinality.single, "value", 11);
+        getVertex(tx1, "uid", "v").property(VertexProperty.Cardinality.single, "value",  11);
+        getVertex(tx2, "uid", "v").property(VertexProperty.Cardinality.single, "value",  11);
         tx1.commit();
         tx2.commit();
 
-        assertEquals("v", Iterators.<String> getOnlyElement(
-                Iterables.<HugeGraphVertex> getOnlyElement(tx.query().has("value", 11).vertices()).values("uid")));
+        assertEquals("v", Iterators.<String>getOnlyElement(Iterables.<HugeGraphVertex>getOnlyElement(tx.query().has("value", 11).vertices()).values("uid")));
     }
 
     /**
@@ -83,8 +84,9 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
      */
     @Test
     public void testTimestampSetting() {
-        clopen(option(GraphDatabaseConfiguration.STORE_META_TIMESTAMPS, "edgestore"), true,
-                option(GraphDatabaseConfiguration.STORE_META_TTL, "edgestore"), true);
+        clopen(option(GraphDatabaseConfiguration.STORE_META_TIMESTAMPS,"edgestore"),true,
+                option(GraphDatabaseConfiguration.STORE_META_TTL,"edgestore"),true);
+
 
         // Transaction 1: Init graph with two vertices, having set "name" and "age" properties
         HugeGraphTransaction tx1 = graph.buildTransaction().commitTime(Instant.ofEpochSecond(100)).start();
@@ -103,14 +105,14 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         // Transaction 2: Remove "name" property from v1, set "address" property; create
         // an edge v2 -> v1
         HugeGraphTransaction tx2 = graph.buildTransaction().commitTime(Instant.ofEpochSecond(1000)).start();
-        v1 = getV(tx2, id1);
-        v2 = getV(tx2, id2);
-        for (Iterator<VertexProperty<Object>> propiter = v1.properties(name); propiter.hasNext();) {
+        v1 = getV(tx2,id1);
+        v2 = getV(tx2,id2);
+        for (Iterator<VertexProperty<Object>> propiter = v1.properties(name); propiter.hasNext(); ) {
             VertexProperty prop = propiter.next();
             if (features.hasTimestamps()) {
                 Instant t = prop.value("~timestamp");
-                assertEquals(100, t.getEpochSecond());
-                assertEquals(Instant.ofEpochSecond(0, 1000).getNano(), t.getNano());
+                assertEquals(100,t.getEpochSecond());
+                assertEquals(Instant.ofEpochSecond(0, 1000).getNano(),t.getNano());
             }
             if (features.hasCellTTL()) {
                 Duration d = prop.value("~ttl");
@@ -122,12 +124,12 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         assertEquals(1, v1.query().has("~timestamp", Cmp.GREATER_THAN, Instant.ofEpochSecond(10)).propertyCount());
         assertEquals(1, v1.query().has("~timestamp", Instant.ofEpochSecond(100, 1000)).propertyCount());
         v1.property(name).remove();
-        v1.property(VertexProperty.Cardinality.single, address, "xyz");
-        Edge edge = v2.addEdge("parent", v1);
+        v1.property(VertexProperty.Cardinality.single, address,  "xyz");
+        Edge edge = v2.addEdge("parent",v1);
         tx2.commit();
         Object edgeId = edge.id();
 
-        HugeGraphVertex afterTx2 = getV(graph, id1);
+        HugeGraphVertex afterTx2 = getV(graph,id1);
 
         // Verify that "name" property is gone
         assertFalse(afterTx2.keys().contains(name));
@@ -136,42 +138,42 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         // Verify that the edge is properly registered with the endpoint vertex
         assertCount(1, afterTx2.query().direction(IN).labels("parent").edges());
         // Verify that edge is registered under the id
-        assertNotNull(getE(graph, edgeId));
+        assertNotNull(getE(graph,edgeId));
         graph.tx().commit();
 
         // Transaction 3: Remove "address" property from v1 with earlier timestamp than
         // when the value was set
         HugeGraphTransaction tx3 = graph.buildTransaction().commitTime(Instant.ofEpochSecond(200)).start();
-        v1 = getV(tx3, id1);
+        v1 = getV(tx3,id1);
         v1.property(address).remove();
         tx3.commit();
 
-        HugeGraphVertex afterTx3 = getV(graph, id1);
+        HugeGraphVertex afterTx3 = getV(graph,id1);
         graph.tx().commit();
         // Verify that "address" is still set
         assertEquals("xyz", afterTx3.value(address));
 
         // Transaction 4: Modify "age" property on v2, remove edge between v2 and v1
         HugeGraphTransaction tx4 = graph.buildTransaction().commitTime(Instant.ofEpochSecond(2000)).start();
-        v2 = getV(tx4, id2);
-        v2.property(VertexProperty.Cardinality.single, age, "15");
-        getE(tx4, edgeId).remove();
+        v2 = getV(tx4,id2);
+        v2.property(VertexProperty.Cardinality.single, age,  "15");
+        getE(tx4,edgeId).remove();
         tx4.commit();
 
-        HugeGraphVertex afterTx4 = getV(graph, id2);
+        HugeGraphVertex afterTx4 = getV(graph,id2);
         // Verify that "age" property is modified
         assertEquals("15", afterTx4.value(age));
         // Verify that edge is no longer registered with the endpoint vertex
         assertCount(0, afterTx4.query().direction(OUT).labels("parent").edges());
         // Verify that edge entry disappeared from id registry
-        assertNull(getE(graph, edgeId));
+        assertNull(getE(graph,edgeId));
 
         // Transaction 5: Modify "age" property on v2 with earlier timestamp
         HugeGraphTransaction tx5 = graph.buildTransaction().commitTime(Instant.ofEpochSecond(1500)).start();
-        v2 = getV(tx5, id2);
-        v2.property(VertexProperty.Cardinality.single, age, "16");
+        v2 = getV(tx5,id2);
+        v2.property(VertexProperty.Cardinality.single, age,  "16");
         tx5.commit();
-        HugeGraphVertex afterTx5 = getV(graph, id2);
+        HugeGraphVertex afterTx5 = getV(graph,id2);
 
         // Verify that the property value is unchanged
         assertEquals("15", afterTx5.value(age));
@@ -188,7 +190,7 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         HugeGraphTransaction tx = graph.buildTransaction().commitTime(Instant.ofEpochSecond(100)).start();
         HugeGraphVertex v1 = tx.addVertex();
         HugeGraphVertex v2 = tx.addVertex();
-        Edge e = v1.addEdge("related", v2);
+        Edge e = v1.addEdge("related",v2);
         e.property("time", 25);
         tx.commit();
 
@@ -228,35 +230,35 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
             fail();
         } catch (HugeGraphException e) {
             Throwable cause = e;
-            while (cause.getCause() != null)
-                cause = cause.getCause();
-            assertEquals(UnsupportedOperationException.class, cause.getClass());
+            while (cause.getCause()!=null) cause=cause.getCause();
+            assertEquals(UnsupportedOperationException.class,cause.getClass());
         }
     }
 
     public void testBatchLoadingLocking(boolean batchloading) {
-        PropertyKey uid = makeKey("uid", Long.class);
-        HugeGraphIndex uidIndex = mgmt.buildIndex("uid", Vertex.class).unique().addKey(uid).buildCompositeIndex();
+        PropertyKey uid = makeKey("uid",Long.class);
+        HugeGraphIndex uidIndex = mgmt.buildIndex("uid",Vertex.class).unique().addKey(uid).buildCompositeIndex();
         mgmt.setConsistency(uid, ConsistencyModifier.LOCK);
-        mgmt.setConsistency(uidIndex, ConsistencyModifier.LOCK);
+        mgmt.setConsistency(uidIndex,ConsistencyModifier.LOCK);
         EdgeLabel knows = mgmt.makeEdgeLabel("knows").multiplicity(Multiplicity.ONE2ONE).make();
-        mgmt.setConsistency(knows, ConsistencyModifier.LOCK);
+        mgmt.setConsistency(knows,ConsistencyModifier.LOCK);
         finishSchema();
 
-        TestLockerManager.ERROR_ON_LOCKING = true;
-        clopen(option(GraphDatabaseConfiguration.STORAGE_BATCH), batchloading,
-                option(GraphDatabaseConfiguration.LOCK_BACKEND), "test");
+        TestLockerManager.ERROR_ON_LOCKING=true;
+        clopen(option(GraphDatabaseConfiguration.STORAGE_BATCH),batchloading,
+                option(GraphDatabaseConfiguration.LOCK_BACKEND),"test");
+
 
         int numV = 10000;
-        for (int i = 0; i < numV; i++) {
-            HugeGraphVertex v = tx.addVertex("uid", i + 1);
-            v.addEdge("knows", v);
+        for (int i=0;i<numV;i++) {
+            HugeGraphVertex v = tx.addVertex("uid",i+1);
+            v.addEdge("knows",v);
         }
         clopen();
 
-        for (int i = 0; i < Math.min(numV, 300); i++) {
+        for (int i=0;i<Math.min(numV,300);i++) {
             assertEquals(1, Iterables.size(graph.query().has("uid", i + 1).vertices()));
-            HugeGraphVertex v = Iterables.<HugeGraphVertex> getOnlyElement(graph.query().has("uid", i + 1).vertices());
+            HugeGraphVertex v = Iterables.<HugeGraphVertex>getOnlyElement(graph.query().has("uid", i + 1).vertices());
             assertEquals(1, Iterables.size(v.query().direction(OUT).labels("knows").edges()));
         }
     }
@@ -266,17 +268,16 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
      */
     @Test
     public void testConsistencyModifier() throws InterruptedException {
-        makeKey("sig", Integer.class);
-        makeKey("weight", Double.class);
+        makeKey("sig",Integer.class);
+        makeKey("weight",Double.class);
         mgmt.makePropertyKey("name").dataType(String.class).cardinality(Cardinality.SET).make();
         mgmt.makePropertyKey("value").dataType(Integer.class).cardinality(Cardinality.LIST).make();
-        PropertyKey valuef =
-                mgmt.makePropertyKey("valuef").dataType(Integer.class).cardinality(Cardinality.LIST).make();
-        mgmt.setConsistency(valuef, ConsistencyModifier.FORK);
+        PropertyKey valuef = mgmt.makePropertyKey("valuef").dataType(Integer.class).cardinality(Cardinality.LIST).make();
+        mgmt.setConsistency(valuef,ConsistencyModifier.FORK);
 
         mgmt.makeEdgeLabel("em").multiplicity(Multiplicity.MULTI).make();
         EdgeLabel emf = mgmt.makeEdgeLabel("emf").multiplicity(Multiplicity.MULTI).make();
-        mgmt.setConsistency(emf, ConsistencyModifier.FORK);
+        mgmt.setConsistency(emf,ConsistencyModifier.FORK);
         mgmt.makeEdgeLabel("es").multiplicity(Multiplicity.SIMPLE).make();
         mgmt.makeEdgeLabel("o2o").multiplicity(Multiplicity.ONE2ONE).make();
         mgmt.makeEdgeLabel("o2m").multiplicity(Multiplicity.ONE2MANY).make();
@@ -286,16 +287,16 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         HugeGraphVertex u = tx.addVertex(), v = tx.addVertex();
         HugeGraphRelation[] rs = new HugeGraphRelation[9];
         final int txid = 1;
-        rs[0] = sign(v.property("weight", 5.0), txid);
-        rs[1] = sign(v.property("name", "John"), txid);
-        rs[2] = sign(v.property("value", 2), txid);
-        rs[3] = sign(v.property("valuef", 2), txid);
+        rs[0]=sign(v.property("weight",5.0),txid);
+        rs[1]=sign(v.property("name","John"),txid);
+        rs[2]=sign(v.property("value",2),txid);
+        rs[3]=sign(v.property("valuef",2),txid);
 
-        rs[6] = sign(v.addEdge("es", u), txid);
-        rs[7] = sign(v.addEdge("o2o", u), txid);
-        rs[8] = sign(v.addEdge("o2m", u), txid);
-        rs[4] = sign(v.addEdge("em", u), txid);
-        rs[5] = sign(v.addEdge("emf", u), txid);
+        rs[6]=sign(v.addEdge("es",u),txid);
+        rs[7]=sign(v.addEdge("o2o",u),txid);
+        rs[8]=sign(v.addEdge("o2m",u),txid);
+        rs[4]=sign(v.addEdge("em",u),txid);
+        rs[5]=sign(v.addEdge("emf",u),txid);
 
         newTx();
         long vid = getId(v), uid = getId(u);
@@ -303,90 +304,96 @@ public abstract class HugeGraphEventualGraphTest extends HugeGraphBaseTest {
         HugeGraphTransaction tx1 = graph.newTransaction();
         HugeGraphTransaction tx2 = graph.newTransaction();
         final int wintx = 20;
-        processTx(tx1, wintx - 10, vid, uid);
-        processTx(tx2, wintx, vid, uid);
+        processTx(tx1,wintx-10,vid,uid);
+        processTx(tx2,wintx,vid,uid);
         tx1.commit();
         Thread.sleep(5);
-        tx2.commit(); // tx2 should win using time-based eventual consistency
+        tx2.commit(); //tx2 should win using time-based eventual consistency
 
         newTx();
-        v = getV(tx, vid);
-        assertEquals(6.0, v.<Double> value("weight").doubleValue(), 0.00001);
+        v = getV(tx,vid);
+        assertEquals(6.0,v.<Double>value("weight").doubleValue(),0.00001);
         VertexProperty p = getOnlyElement(v.properties("weight"));
-        assertEquals(wintx, p.<Integer> value("sig").intValue());
+        assertEquals(wintx,p.<Integer>value("sig").intValue());
         p = getOnlyElement(v.properties("name"));
-        assertEquals("Bob", p.value());
-        assertEquals(wintx, p.<Integer> value("sig").intValue());
+        assertEquals("Bob",p.value());
+        assertEquals(wintx,p.<Integer>value("sig").intValue());
         p = getOnlyElement(v.properties("value"));
-        assertEquals(rs[2].longId(), getId(p));
-        assertEquals(wintx, p.<Integer> value("sig").intValue());
-        assertCount(2, v.properties("valuef"));
-        for (Iterator<VertexProperty<Object>> ppiter = v.properties("valuef"); ppiter.hasNext();) {
+        assertEquals(rs[2].longId(),getId(p));
+        assertEquals(wintx,p.<Integer>value("sig").intValue());
+        assertCount(2,v.properties("valuef"));
+        for (Iterator<VertexProperty<Object>> ppiter = v.properties("valuef"); ppiter.hasNext(); ) {
             VertexProperty pp = ppiter.next();
-            assertNotEquals(rs[3].longId(), getId(pp));
-            assertEquals(2, pp.value());
+            assertNotEquals(rs[3].longId(),getId(pp));
+            assertEquals(2,pp.value());
         }
 
-        Edge e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("es").edges());
-        assertEquals(wintx, e.<Integer> value("sig").intValue());
-        assertNotEquals(rs[6].longId(), getId(e));
+        Edge e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("es").edges());
+        assertEquals(wintx,e.<Integer>value("sig").intValue());
+        assertNotEquals(rs[6].longId(),getId(e));
 
-        e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
-        assertEquals(wintx, e.<Integer> value("sig").intValue());
+        e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
+        assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertEquals(rs[7].longId(), getId(e));
-        e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
-        assertEquals(wintx, e.<Integer> value("sig").intValue());
-        assertNotEquals(rs[8].longId(), getId(e));
-        e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("em").edges());
-        assertEquals(wintx, e.<Integer> value("sig").intValue());
+        e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
+        assertEquals(wintx,e.<Integer>value("sig").intValue());
+        assertNotEquals(rs[8].longId(),getId(e));
+        e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("em").edges());
+        assertEquals(wintx,e.<Integer>value("sig").intValue());
         assertEquals(rs[4].longId(), getId(e));
         for (Object o : v.query().direction(OUT).labels("emf").edges()) {
             Edge ee = (Edge) o;
-            assertNotEquals(rs[5].longId(), getId(ee));
-            assertEquals(uid, ee.inVertex().id());
+            assertNotEquals(rs[5].longId(),getId(ee));
+            assertEquals(uid,ee.inVertex().id());
         }
     }
+
 
     private void processTx(HugeGraphTransaction tx, int txid, long vid, long uid) {
-        HugeGraphVertex v = getV(tx, vid);
-        HugeGraphVertex u = getV(tx, uid);
-        assertEquals(5.0, v.<Double> value("weight").doubleValue(), 0.00001);
+        HugeGraphVertex v = getV(tx,vid);
+        HugeGraphVertex u = getV(tx,uid);
+        assertEquals(5.0,v.<Double>value("weight").doubleValue(),0.00001);
         VertexProperty p = getOnlyElement(v.properties("weight"));
-        assertEquals(1, p.<Integer> value("sig").intValue());
-        sign(v.property("weight", 6.0), txid);
+        assertEquals(1,p.<Integer>value("sig").intValue());
+        sign(v.property("weight",6.0),txid);
         p = getOnlyElement(v.properties("name"));
-        assertEquals(1, p.<Integer> value("sig").intValue());
-        assertEquals("John", p.value());
+        assertEquals(1,p.<Integer>value("sig").intValue());
+        assertEquals("John",p.value());
         p.remove();
-        sign(v.property("name", "Bob"), txid);
-        for (String pkey : new String[] { "value", "valuef" }) {
+        sign(v.property("name","Bob"),txid);
+        for (String pkey : new String[]{"value","valuef"}) {
             p = getOnlyElement(v.properties(pkey));
-            assertEquals(1, p.<Integer> value("sig").intValue());
-            assertEquals(2, p.value());
-            sign((HugeGraphVertexProperty) p, txid);
+            assertEquals(1,p.<Integer>value("sig").intValue());
+            assertEquals(2,p.value());
+            sign((HugeGraphVertexProperty)p,txid);
         }
 
-        Edge e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("es").edges());
-        assertEquals(1, e.<Integer> value("sig").intValue());
+        Edge e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("es").edges());
+        assertEquals(1,e.<Integer>value("sig").intValue());
         e.remove();
-        sign(v.addEdge("es", u), txid);
-        e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
-        assertEquals(1, e.<Integer> value("sig").intValue());
-        sign((HugeGraphEdge) e, txid);
-        e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
-        assertEquals(1, e.<Integer> value("sig").intValue());
+        sign(v.addEdge("es",u),txid);
+        e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("o2o").edges());
+        assertEquals(1,e.<Integer>value("sig").intValue());
+        sign((HugeGraphEdge)e,txid);
+        e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels("o2m").edges());
+        assertEquals(1,e.<Integer>value("sig").intValue());
         e.remove();
-        sign(v.addEdge("o2m", u), txid);
-        for (String label : new String[] { "em", "emf" }) {
-            e = Iterables.<HugeGraphEdge> getOnlyElement(v.query().direction(OUT).labels(label).edges());
-            assertEquals(1, e.<Integer> value("sig").intValue());
-            sign((HugeGraphEdge) e, txid);
+        sign(v.addEdge("o2m",u),txid);
+        for (String label : new String[]{"em","emf"}) {
+            e = Iterables.<HugeGraphEdge>getOnlyElement(v.query().direction(OUT).labels(label).edges());
+            assertEquals(1,e.<Integer>value("sig").intValue());
+            sign((HugeGraphEdge)e,txid);
         }
     }
+
 
     private HugeGraphRelation sign(HugeGraphRelation r, int id) {
-        r.property("sig", id);
+        r.property("sig",id);
         return r;
     }
+
+
+
+
 
 }

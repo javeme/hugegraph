@@ -18,8 +18,9 @@ import com.baidu.hugegraph.core.Cardinality;
 import com.baidu.hugegraph.core.PropertyKey;
 
 /**
- * Used to define new {@link com.baidu.hugegraph.core.PropertyKey}s. An property key is defined by its name,
- * {@link Cardinality}, its data type, and its signature - all of which can be specified in this builder.
+ * Used to define new {@link com.baidu.hugegraph.core.PropertyKey}s.
+ * An property key is defined by its name, {@link Cardinality}, its data type, and its signature - all of which
+ * can be specified in this builder.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -36,12 +37,12 @@ public interface PropertyKeyMaker extends RelationTypeMaker {
     /**
      * Configures the data type for this property key.
      * <p/>
-     * Property instances for this key will only accept values that are instances of this class. Every property key must
-     * have its data type configured. Setting the data type to Object.class allows any type of value but comes at the
-     * expense of longer serialization because class information is stored with the value.
+     * Property instances for this key will only accept values that are instances of this class.
+     * Every property key must have its data type configured. Setting the data type to Object.class allows
+     * any type of value but comes at the expense of longer serialization because class information
+     * is stored with the value.
      * <p/>
-     * It is strongly advised to pick an appropriate data type class so HugeGraph can enforce it throughout the
-     * database.
+     * It is strongly advised to pick an appropriate data type class so HugeGraph can enforce it throughout the database.
      *
      * @param clazz Data type to be configured.
      * @return this PropertyKeyMaker
@@ -50,11 +51,11 @@ public interface PropertyKeyMaker extends RelationTypeMaker {
     public PropertyKeyMaker dataType(Class<?> clazz);
 
     @Override
-    public PropertyKeyMaker signature(PropertyKey...types);
+    public PropertyKeyMaker signature(PropertyKey... types);
+
 
     /**
-     * Defines the {@link com.baidu.hugegraph.core.PropertyKey} specified by this PropertyKeyMaker and returns the
-     * resulting key.
+     * Defines the {@link com.baidu.hugegraph.core.PropertyKey} specified by this PropertyKeyMaker and returns the resulting key.
      *
      * @return the created {@link PropertyKey}
      */

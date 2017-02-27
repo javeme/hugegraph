@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>pom</packaging>
-    <artifactId>janusgraph-doc</artifactId>
-    <name>JanusGraph-Doc: AsciiDoc Manual for JanusGraph</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-doc</artifactId>
+    <name>hugegraph-Doc: AsciiDoc Manual for hugegraph</name>
+    <url>http://hugegraph.org</url>
 
     <properties>
         <top.level.basedir>${project.basedir}/..</top.level.basedir>
@@ -27,13 +27,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-all</artifactId>
+            <artifactId>hugegraph-all</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-solr</artifactId>
+            <artifactId>hugegraph-solr</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
@@ -125,16 +125,16 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>generate-janusgraph-config-table</id>
+                        <id>generate-hugegraph-config-table</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.janusgraph.util.system.ConfigurationPrinter</mainClass>
+                            <mainClass>com.baidu.hugegraph.util.system.ConfigurationPrinter</mainClass>
                             <arguments>
-                                <argument>org.janusgraph.graphdb.configuration.GraphDatabaseConfiguration.ROOT_NS</argument>
-                                <argument>${asciidoc.output.dir}/listings/janusgraph_cfg.txt</argument>
+                                <argument>com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.ROOT_NS</argument>
+                                <argument>${asciidoc.output.dir}/listings/hugegraph_cfg.txt</argument>
                                 <argument>true</argument>
                             </arguments>
                         </configuration>

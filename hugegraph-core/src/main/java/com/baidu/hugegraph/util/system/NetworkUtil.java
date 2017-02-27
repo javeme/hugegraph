@@ -25,7 +25,7 @@ public class NetworkUtil {
         // Aside from that, getLoopbackAddress() seems preferable to
         // InetAddress.getByName("localhost") since the former doesn't seem to
         // require the local resolver to be sane.
-        // return InetAddress.getLoopbackAddress().getHostAddress();
+        //return InetAddress.getLoopbackAddress().getHostAddress();
         try {
             return InetAddress.getByName("localhost").getHostAddress();
         } catch (UnknownHostException e) {
@@ -50,14 +50,14 @@ public class NetworkUtil {
     }
 
     public static boolean hasLocalAddress(Collection<String> endpoints) {
-        return endpoints.contains(getLoopbackAddress()) || endpoints.contains(getLocalAddress())
-                || endpoints.contains(getLocalHostName());
+        return endpoints.contains(getLoopbackAddress()) || endpoints.contains(getLocalAddress()) || endpoints.contains(getLocalHostName());
     }
 
     public static boolean isLocalConnection(String hostname) {
         InetAddress localhost = NetworkUtil.getLocalHost();
         return hostname.equalsIgnoreCase(NetworkUtil.getLoopbackAddress())
-                || hostname.equals(localhost.getHostAddress()) || hostname.equals(localhost.getHostName())
+                || hostname.equals(localhost.getHostAddress())
+                || hostname.equals(localhost.getHostName())
                 || hostname.equals(localhost.getCanonicalHostName());
     }
 }

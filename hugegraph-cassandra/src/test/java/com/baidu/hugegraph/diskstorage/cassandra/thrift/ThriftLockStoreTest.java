@@ -30,7 +30,6 @@ public class ThriftLockStoreTest extends LockKeyColumnValueStoreTest {
 
     @Override
     public KeyColumnValueStoreManager openStorageManager(int idx) throws BackendException {
-        return new CassandraThriftStoreManager(
-                CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
+        return new CassandraThriftStoreManager(CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
     }
 }

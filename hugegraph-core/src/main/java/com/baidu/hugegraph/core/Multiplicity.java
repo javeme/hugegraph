@@ -26,8 +26,8 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 public enum Multiplicity {
 
     /**
-     * The given edge label specifies a multi-graph, meaning that the multiplicity is not constrained and that there may
-     * be multiple edges of this label between any given pair of vertices.
+     * The given edge label specifies a multi-graph, meaning that the multiplicity is not constrained and that
+     * there may be multiple edges of this label between any given pair of vertices.
      *
      * @link http://en.wikipedia.org/wiki/Multigraph
      */
@@ -54,25 +54,23 @@ public enum Multiplicity {
      */
     ONE2ONE;
 
+
     /**
-     * Whether this multiplicity imposes any constraint on the number of edges that may exist between a pair of
-     * vertices.
+     * Whether this multiplicity imposes any constraint on the number of edges that may exist between a pair of vertices.
      *
      * @return
      */
     public boolean isConstrained() {
-        return this != MULTI;
+        return this!=MULTI;
     }
 
     public boolean isConstrained(Direction direction) {
-        if (direction == Direction.BOTH)
-            return isConstrained();
-        if (this == MULTI)
-            return false;
-        if (this == SIMPLE)
-            return true;
+        if (direction==Direction.BOTH) return isConstrained();
+        if (this==MULTI) return false;
+        if (this==SIMPLE) return true;
         return isUnique(direction);
     }
+
 
     /**
      * If this multiplicity implies edge uniqueness in the given direction for any given vertex.
@@ -83,42 +81,33 @@ public enum Multiplicity {
     public boolean isUnique(Direction direction) {
         switch (direction) {
             case IN:
-                return this == ONE2MANY || this == ONE2ONE;
+                return this==ONE2MANY || this==ONE2ONE;
             case OUT:
-                return this == MANY2ONE || this == ONE2ONE;
+                return this==MANY2ONE || this==ONE2ONE;
             case BOTH:
-                return this == ONE2ONE;
-            default:
-                throw new AssertionError("Unknown direction: " + direction);
+                return this==ONE2ONE;
+            default: throw new AssertionError("Unknown direction: " + direction);
         }
     }
 
-    // ######### CONVERTING MULTIPLICITY <-> CARDINALITY ########
+    //######### CONVERTING MULTIPLICITY <-> CARDINALITY ########
 
     public static Multiplicity convert(Cardinality cardinality) {
         Preconditions.checkNotNull(cardinality);
-        switch (cardinality) {
-            case LIST:
-                return MULTI;
-            case SET:
-                return SIMPLE;
-            case SINGLE:
-                return MANY2ONE;
-            default:
-                throw new AssertionError("Unknown cardinality: " + cardinality);
+        switch(cardinality) {
+            case LIST: return MULTI;
+            case SET: return SIMPLE;
+            case SINGLE: return MANY2ONE;
+            default: throw new AssertionError("Unknown cardinality: " + cardinality);
         }
     }
 
     public Cardinality getCardinality() {
         switch (this) {
-            case MULTI:
-                return Cardinality.LIST;
-            case SIMPLE:
-                return Cardinality.SET;
-            case MANY2ONE:
-                return Cardinality.SINGLE;
-            default:
-                throw new AssertionError("Invalid multiplicity: " + this);
+            case MULTI: return Cardinality.LIST;
+            case SIMPLE: return Cardinality.SET;
+            case MANY2ONE: return Cardinality.SINGLE;
+            default: throw new AssertionError("Invalid multiplicity: " + this);
         }
     }
 

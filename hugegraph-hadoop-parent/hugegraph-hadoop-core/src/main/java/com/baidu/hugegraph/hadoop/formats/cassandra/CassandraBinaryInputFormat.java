@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Wraps a ColumnFamilyInputFormat and converts CFIF's binary types to HugeGraph's binary types.
+ * Wraps a ColumnFamilyInputFormat and converts CFIF's binary types to hugegraph's binary types.
  */
 public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
 
@@ -63,11 +63,12 @@ public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
     }
 
     @Override
-    public RecordReader<StaticBuffer, Iterable<Entry>> createRecordReader(final InputSplit inputSplit,
-            final TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
+    public RecordReader<StaticBuffer, Iterable<Entry>> createRecordReader(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext)
+            throws IOException, InterruptedException {
         columnFamilyRecordReader =
-                (ColumnFamilyRecordReader) columnFamilyInputFormat.createRecordReader(inputSplit, taskAttemptContext);
-        hugegraphRecordReader = new CassandraBinaryRecordReader(columnFamilyRecordReader);
+                (ColumnFamilyRecordReader)columnFamilyInputFormat.createRecordReader(inputSplit, taskAttemptContext);
+        hugegraphRecordReader =
+                new CassandraBinaryRecordReader(columnFamilyRecordReader);
         return hugegraphRecordReader;
     }
 
@@ -75,12 +76,10 @@ public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
     public void setConf(final Configuration config) {
         super.setConf(config);
 
-        // Copy some HugeGraph configuration keys to the Hadoop Configuration keys used by Cassandra's
-        // ColumnFamilyInputFormat
+        // Copy some hugegraph configuration keys to the Hadoop Configuration keys used by Cassandra's ColumnFamilyInputFormat
         ConfigHelper.setInputInitialAddress(config, hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_HOSTS)[0]);
         if (hugegraphConf.has(GraphDatabaseConfiguration.STORAGE_PORT))
-            ConfigHelper.setInputRpcPort(config,
-                    String.valueOf(hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_PORT)));
+            ConfigHelper.setInputRpcPort(config, String.valueOf(hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_PORT)));
         if (hugegraphConf.has(GraphDatabaseConfiguration.AUTH_USERNAME))
             ConfigHelper.setInputKeyspaceUserName(config, hugegraphConf.get(GraphDatabaseConfiguration.AUTH_USERNAME));
         if (hugegraphConf.has(GraphDatabaseConfiguration.AUTH_PASSWORD))
@@ -88,8 +87,7 @@ public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
 
         // Copy keyspace, force the CF setting to edgestore, honor widerows when set
         final boolean wideRows = config.getBoolean(INPUT_WIDEROWS_CONFIG, false);
-        // Use the setInputColumnFamily overload that includes a widerows argument; using the overload without this
-        // argument forces it false
+        // Use the setInputColumnFamily overload that includes a widerows argument; using the overload without this argument forces it false
         ConfigHelper.setInputColumnFamily(config, hugegraphConf.get(AbstractCassandraStoreManager.CASSANDRA_KEYSPACE),
                 mrConf.get(HugeGraphHadoopConfiguration.COLUMN_FAMILY_NAME), wideRows);
         log.debug("Set keyspace: {}", hugegraphConf.get(AbstractCassandraStoreManager.CASSANDRA_KEYSPACE));
@@ -97,12 +95,7 @@ public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
         // Set the column slice bounds via Faunus's vertex query filter
         final SlicePredicate predicate = new SlicePredicate();
         final int rangeBatchSize = config.getInt(RANGE_BATCH_SIZE_CONFIG, Integer.MAX_VALUE);
-        predicate.setSlice_range(getSliceRange(HugeGraphHadoopSetupCommon.DEFAULT_SLICE_QUERY, rangeBatchSize)); // TODO
-                                                                                                                  // stop
-                                                                                                                  // slicing
-                                                                                                                  // the
-                                                                                                                  // whole
-                                                                                                                  // row
+        predicate.setSlice_range(getSliceRange(HugeGraphHadoopSetupCommon.DEFAULT_SLICE_QUERY, rangeBatchSize)); // TODO stop slicing the whole row
         ConfigHelper.setInputSlicePredicate(config, predicate);
     }
 
@@ -114,3 +107,4 @@ public class CassandraBinaryInputFormat extends AbstractBinaryInputFormat {
         return sliceRange;
     }
 }
+

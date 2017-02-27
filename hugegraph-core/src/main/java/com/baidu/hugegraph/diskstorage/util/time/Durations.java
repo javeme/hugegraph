@@ -16,6 +16,7 @@ package com.baidu.hugegraph.diskstorage.util.time;
 
 import com.google.common.base.Preconditions;
 
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -34,8 +35,8 @@ public class Durations {
     }
 
     /*
-     * This method is based on the method of the same name in Stopwatch.java in Google Guava 14.0.1, where it was
-     * defined with private visibility.
+     * This method is based on the method of the same name in Stopwatch.java in
+     * Google Guava 14.0.1, where it was defined with private visibility.
      */
     public static String abbreviate(ChronoUnit unit) {
         switch (unit) {
@@ -59,23 +60,20 @@ public class Durations {
 
     }
 
-    private static final Map<String, TemporalUnit> unitNames = new HashMap<String, TemporalUnit>() {
-        {
-            for (ChronoUnit unit : Arrays.asList(ChronoUnit.NANOS, ChronoUnit.MICROS, ChronoUnit.MILLIS,
-                    ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)) {
-                put(abbreviate(unit), unit); // abbreviated name
-                String name = unit.toString().toLowerCase();
-                put(name, unit); // abbreviated name in singular
-                assert name.endsWith("s");
-                put(name.substring(0, name.length() - 1), unit);
-            }
-            put("us", ChronoUnit.MICROS);
+    private static final Map<String,TemporalUnit> unitNames = new HashMap<String,TemporalUnit>() {{
+        for (ChronoUnit unit : Arrays.asList(ChronoUnit.NANOS, ChronoUnit.MICROS, ChronoUnit.MILLIS, ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)) {
+            put(abbreviate(unit),unit); //abbreviated name
+            String name = unit.toString().toLowerCase();
+            put(name,unit); //abbreviated name in singular
+            assert name.endsWith("s");
+            put(name.substring(0,name.length()-1),unit);
         }
-    };
+        put("us",ChronoUnit.MICROS);
+    }};
 
     public static TemporalUnit parse(String unitName) {
         TemporalUnit unit = unitNames.get(unitName.toLowerCase());
-        Preconditions.checkArgument(unit != null, "Unknown unit time: %s", unitName);
+        Preconditions.checkArgument(unit!=null,"Unknown unit time: %s",unitName);
         return unit;
     }
 
@@ -85,15 +83,18 @@ public class Durations {
          *
          * return (int)(o.getLength(unit) - getLength(unit));
          *
-         * 2^31 ns = 2.14 seconds and 2^31 us = 36 minutes. The narrowing cast from long to integer is practically
-         * guaranteed to cause failures at either nanosecond resolution (where almost everything will fail) or
-         * microsecond resolution (where the failures would be more insidious; perhaps lock expiration malfunctioning).
+         * 2^31 ns = 2.14 seconds and 2^31 us = 36 minutes. The narrowing cast
+         * from long to integer is practically guaranteed to cause failures at
+         * either nanosecond resolution (where almost everything will fail) or
+         * microsecond resolution (where the failures would be more insidious;
+         * perhaps lock expiration malfunctioning).
          *
-         * The following implementation is ugly, but unlike subtraction-based implementations, it is affected by neither
-         * arithmetic overflow (because it does no arithmetic) nor loss of precision from long-to-integer casts (because
-         * it does not cast).
+         * The following implementation is ugly, but unlike subtraction-based
+         * implementations, it is affected by neither arithmetic overflow
+         * (because it does no arithmetic) nor loss of precision from
+         * long-to-integer casts (because it does not cast).
          */
-        final long length2Adj = unit1.convert(length2, unit2);
+        final long length2Adj = unit1.convert(length2,unit2);
         if (length1 < length2Adj) {
             return -1;
         } else if (length2Adj < length1) {

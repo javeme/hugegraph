@@ -15,8 +15,8 @@
 package com.baidu.hugegraph.graphdb.database.idassigner.placement;
 
 /**
- * Utility interface used in {@link IDPlacementStrategy} to hold the partition assignment of a vertex (if it is already
- * assigned a partition) or to be assigned a partition id.
+ * Utility interface used in {@link IDPlacementStrategy} to hold the partition assignment of
+ * a vertex (if it is already assigned a partition) or to be assigned a partition id.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -34,7 +34,6 @@ public interface PartitionAssignment {
 
     /**
      * Returns the assigned partition id
-     * 
      * @return
      */
     public int getPartitionID();

@@ -41,34 +41,25 @@ public class HugeGraphVariables implements Graph.Variables {
 
     @Override
     public <R> Optional<R> get(String s) {
-        if (s == null)
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
-        if (StringUtils.isEmpty(s))
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
-        Object value = config.get(s, Object.class);
-        if (value == null)
-            return Optional.empty();
-        else
-            return Optional.of((R) value);
+        if (s==null) throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
+        if (StringUtils.isEmpty(s)) throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
+        Object value = config.get(s,Object.class);
+        if (value==null) return Optional.empty();
+        else return Optional.of((R)value);
     }
 
     @Override
     public void set(String s, Object o) {
-        if (s == null)
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
-        if (StringUtils.isEmpty(s))
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
-        if (o == null)
-            throw Graph.Variables.Exceptions.variableValueCanNotBeNull();
-        config.set(s, o);
+        if (s==null) throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
+        if (StringUtils.isEmpty(s)) throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
+        if (o==null) throw Graph.Variables.Exceptions.variableValueCanNotBeNull();
+        config.set(s,o);
     }
 
     @Override
     public void remove(String s) {
-        if (s == null)
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
-        if (StringUtils.isEmpty(s))
-            throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
+        if (s==null) throw Graph.Variables.Exceptions.variableKeyCanNotBeNull();
+        if (StringUtils.isEmpty(s)) throw Graph.Variables.Exceptions.variableKeyCanNotBeEmpty();
         config.remove(s);
     }
 

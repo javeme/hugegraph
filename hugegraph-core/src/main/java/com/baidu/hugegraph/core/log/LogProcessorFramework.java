@@ -18,19 +18,18 @@ import com.baidu.hugegraph.core.HugeGraphException;
 
 /**
  * Framework for processing transaction logs. Using the {@link LogProcessorBuilder} returned by
- * {@link #addLogProcessor(String)} one can process the change events for a particular transaction log identified by
- * name.
+ * {@link #addLogProcessor(String)} one can process the change events for a particular transaction log identified by name.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface LogProcessorFramework {
 
     /**
-     * Returns a processor builder for the transaction log with the given log identifier. Only one processor may be
-     * registered per transaction log.
+     * Returns a processor builder for the transaction log with the given log identifier.
+     * Only one processor may be registered per transaction log.
      *
-     * @param logIdentifier Name that identifies the transaction log to be processed, i.e. the one used in
-     *            {@link com.baidu.hugegraph.core.TransactionBuilder#logIdentifier(String)}
+     * @param logIdentifier Name that identifies the transaction log to be processed,
+     *                      i.e. the one used in {@link com.baidu.hugegraph.core.TransactionBuilder#logIdentifier(String)}
      * @return
      */
     public LogProcessorBuilder addLogProcessor(String logIdentifier);
@@ -49,5 +48,6 @@ public interface LogProcessorFramework {
      * @throws HugeGraphException
      */
     public void shutdown() throws HugeGraphException;
+
 
 }

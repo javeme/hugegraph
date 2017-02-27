@@ -29,8 +29,8 @@ import java.util.Map;
  */
 public class SchemaContainer implements SchemaProvider {
 
-    private final Map<String, VertexLabelDefinition> vertexLabels;
-    private final Map<String, RelationTypeDefinition> relationTypes;
+    private final Map<String,VertexLabelDefinition> vertexLabels;
+    private final Map<String,RelationTypeDefinition> relationTypes;
 
     public SchemaContainer(HugeGraph graph) {
         vertexLabels = Maps.newHashMap();
@@ -40,12 +40,12 @@ public class SchemaContainer implements SchemaProvider {
         try {
             for (VertexLabel vl : mgmt.getVertexLabels()) {
                 VertexLabelDefinition vld = new VertexLabelDefinition(vl);
-                vertexLabels.put(vld.getName(), vld);
+                vertexLabels.put(vld.getName(),vld);
             }
 
             for (EdgeLabel el : mgmt.getRelationTypes(EdgeLabel.class)) {
                 EdgeLabelDefinition eld = new EdgeLabelDefinition(el);
-                relationTypes.put(eld.getName(), eld);
+                relationTypes.put(eld.getName(),eld);
             }
             for (PropertyKey pk : mgmt.getRelationTypes(PropertyKey.class)) {
                 PropertyKeyDefinition pkd = new PropertyKeyDefinition(pk);
@@ -67,15 +67,15 @@ public class SchemaContainer implements SchemaProvider {
     }
 
     public boolean containsVertexLabel(String name) {
-        return getVertexLabel(name) != null;
+        return getVertexLabel(name)!=null;
     }
 
     public Iterable<PropertyKeyDefinition> getPropertyKeys() {
-        return Iterables.filter(relationTypes.values(), PropertyKeyDefinition.class);
+        return Iterables.filter(relationTypes.values(),PropertyKeyDefinition.class);
     }
 
     public Iterable<EdgeLabelDefinition> getEdgeLabels() {
-        return Iterables.filter(relationTypes.values(), EdgeLabelDefinition.class);
+        return Iterables.filter(relationTypes.values(),EdgeLabelDefinition.class);
     }
 
     @Override
@@ -84,23 +84,23 @@ public class SchemaContainer implements SchemaProvider {
     }
 
     public boolean containsRelationType(String name) {
-        return getRelationType(name) != null;
+        return getRelationType(name)!=null;
     }
 
     @Override
     public EdgeLabelDefinition getEdgeLabel(String name) {
         RelationTypeDefinition def = getRelationType(name);
-        if (def != null && !(def instanceof EdgeLabelDefinition))
+        if (def!=null && !(def instanceof EdgeLabelDefinition))
             throw new IllegalArgumentException("Not an edge label but property key: " + name);
-        return (EdgeLabelDefinition) def;
+        return (EdgeLabelDefinition)def;
     }
 
     @Override
     public PropertyKeyDefinition getPropertyKey(String name) {
         RelationTypeDefinition def = getRelationType(name);
-        if (def != null && !(def instanceof PropertyKeyDefinition))
+        if (def!=null && !(def instanceof PropertyKeyDefinition))
             throw new IllegalArgumentException("Not a property key but edge label: " + name);
-        return (PropertyKeyDefinition) def;
+        return (PropertyKeyDefinition)def;
     }
 
 }

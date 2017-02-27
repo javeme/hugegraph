@@ -55,8 +55,9 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProviders;
 import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 
 /**
- * Test transaction handling in {@link ExpectedValueCheckingStore} and related classes, particularly with respect to
- * consistency levels offered by the underlying store.
+ * Test transaction handling in {@link ExpectedValueCheckingStore} and related
+ * classes, particularly with respect to consistency levels offered by the
+ * underlying store.
  */
 public class ExpectedValueCheckingTest {
 
@@ -106,11 +107,12 @@ public class ExpectedValueCheckingTest {
         globalConfig.set(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID, "global");
         localConfig.set(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID, "local");
         defaultConfig.set(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID, "default");
-        defaultTxConfig = new StandardBaseTransactionConfig.Builder().customOptions(defaultConfig)
-                .timestampProvider(TimestampProviders.MICRO).build();
+        defaultTxConfig = new StandardBaseTransactionConfig.Builder().customOptions(defaultConfig).timestampProvider(TimestampProviders.MICRO).build();
         backingFeatures = new StandardStoreFeatures.Builder().keyConsistent(globalConfig, localConfig).build();
 
+
         // Setup behavior specification starts below this line
+
 
         // 1. Construct manager
         // The EVCSManager ctor retrieves the backing store's features and stores it in an instance field
@@ -135,8 +137,7 @@ public class ExpectedValueCheckingTest {
         // Carry out setup behavior against mocks
         ctrl.replay();
         // 1. Construct manager
-        expectManager = new ExpectedValueCheckingStoreManager(backingManager, LOCK_SUFFIX, lockerProvider,
-                Duration.ofSeconds(1L));
+        expectManager = new ExpectedValueCheckingStoreManager(backingManager, LOCK_SUFFIX, lockerProvider, Duration.ofSeconds(1L));
         // 2. Begin transaction
         expectTx = expectManager.beginTransaction(defaultTxConfig);
         // 3. Open a database
@@ -159,7 +160,7 @@ public class ExpectedValueCheckingTest {
         // First backing store transaction should use default tx config
         assertEquals("default", txCfgs.get(0).getCustomOption(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID));
         // Second backing store transaction should use global strong consistency config
-        assertEquals("global", txCfgs.get(1).getCustomOption(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID));
+        assertEquals("global",  txCfgs.get(1).getCustomOption(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID));
         // The order in which these transactions are opened isn't really significant;
         // testing them in order is kind of overspecifying the impl's behavior.
         // Could probably relax the ordering selectively here with some thought, but
@@ -169,7 +170,7 @@ public class ExpectedValueCheckingTest {
     @Test
     public void testMutateWithLockUsesConsistentTx() throws BackendException {
         final ImmutableList<Entry> adds = ImmutableList.of(StaticArrayEntry.of(DATA_COL, DATA_VAL));
-        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer> of();
+        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer>of();
         final KeyColumn kc = new KeyColumn(LOCK_KEY, LOCK_COL);
 
         // 1. Acquire a lock
@@ -181,9 +182,8 @@ public class ExpectedValueCheckingTest {
         backingLocker.checkLocks(consistentTx);
         StaticBuffer nextBuf = BufferUtil.nextBiggerBuffer(kc.getColumn());
         KeySliceQuery expectedValueQuery = new KeySliceQuery(kc.getKey(), kc.getColumn(), nextBuf);
-        expect(backingStore.getSlice(expectedValueQuery, consistentTx)) // expected value read must use strong
-                                                                        // consistency
-                .andReturn(StaticArrayEntryList.of(StaticArrayEntry.of(LOCK_COL, LOCK_VAL)));
+        expect(backingStore.getSlice(expectedValueQuery, consistentTx)) // expected value read must use strong consistency
+            .andReturn(StaticArrayEntryList.of(StaticArrayEntry.of(LOCK_COL, LOCK_VAL)));
         // 2.2. Mutate data
         backingStore.mutate(DATA_KEY, adds, dels, consistentTx); // writes by txs with locks must use strong consistency
 
@@ -198,7 +198,7 @@ public class ExpectedValueCheckingTest {
     public void testMutateWithoutLockUsesInconsistentTx() throws BackendException {
         // Run a mutation
         final ImmutableList<Entry> adds = ImmutableList.of(StaticArrayEntry.of(DATA_COL, DATA_VAL));
-        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer> of();
+        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer>of();
         backingStore.mutate(DATA_KEY, adds, dels, inconsistentTx); // consistency level is unconstrained w/o locks
 
         ctrl.replay();
@@ -208,11 +208,11 @@ public class ExpectedValueCheckingTest {
     @Test
     public void testMutateManyWithLockUsesConsistentTx() throws BackendException {
         final ImmutableList<Entry> adds = ImmutableList.of(StaticArrayEntry.of(DATA_COL, DATA_VAL));
-        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer> of();
+        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer>of();
 
         Map<String, Map<StaticBuffer, KCVMutation>> mutations =
-                ImmutableMap.<String, Map<StaticBuffer, KCVMutation>> of(STORE_NAME,
-                        ImmutableMap.<StaticBuffer, KCVMutation> of(DATA_KEY, new KCVMutation(adds, dels)));
+                ImmutableMap.<String, Map<StaticBuffer, KCVMutation>>of(STORE_NAME,
+                        ImmutableMap.<StaticBuffer, KCVMutation>of(DATA_KEY, new KCVMutation(adds, dels)));
         final KeyColumn kc = new KeyColumn(LOCK_KEY, LOCK_COL);
 
         // Acquire a lock
@@ -223,9 +223,8 @@ public class ExpectedValueCheckingTest {
         backingLocker.checkLocks(consistentTx);
         StaticBuffer nextBuf = BufferUtil.nextBiggerBuffer(kc.getColumn());
         KeySliceQuery expectedValueQuery = new KeySliceQuery(kc.getKey(), kc.getColumn(), nextBuf);
-        expect(backingStore.getSlice(expectedValueQuery, consistentTx)) // expected value read must use strong
-                                                                        // consistency
-                .andReturn(StaticArrayEntryList.of(StaticArrayEntry.of(LOCK_COL, LOCK_VAL)));
+        expect(backingStore.getSlice(expectedValueQuery, consistentTx)) // expected value read must use strong consistency
+            .andReturn(StaticArrayEntryList.of(StaticArrayEntry.of(LOCK_COL, LOCK_VAL)));
         // 2.2. Run mutateMany on backing manager to modify data
         backingManager.mutateMany(mutations, consistentTx); // writes by txs with locks must use strong consistency
 
@@ -239,11 +238,11 @@ public class ExpectedValueCheckingTest {
     @Test
     public void testMutateManyWithoutLockUsesInconsistentTx() throws BackendException {
         final ImmutableList<Entry> adds = ImmutableList.of(StaticArrayEntry.of(DATA_COL, DATA_VAL));
-        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer> of();
+        final ImmutableList<StaticBuffer> dels = ImmutableList.<StaticBuffer>of();
 
         Map<String, Map<StaticBuffer, KCVMutation>> mutations =
-                ImmutableMap.<String, Map<StaticBuffer, KCVMutation>> of(STORE_NAME,
-                        ImmutableMap.<StaticBuffer, KCVMutation> of(DATA_KEY, new KCVMutation(adds, dels)));
+                ImmutableMap.<String, Map<StaticBuffer, KCVMutation>>of(STORE_NAME,
+                        ImmutableMap.<StaticBuffer, KCVMutation>of(DATA_KEY, new KCVMutation(adds, dels)));
 
         // Run mutateMany
         backingManager.mutateMany(mutations, inconsistentTx); // consistency level is unconstrained w/o locks

@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-test</artifactId>
-    <name>JanusGraph-Test: Test Suite for JanusGraph</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-test</artifactId>
+    <name>hugegraph-Test: Test Suite for hugegraph</name>
+    <url>http://hugegraph.org</url>
     
     <properties>
         <top.level.basedir>${basedir}/..</top.level.basedir>
@@ -31,8 +31,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-core</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- TinkerPop -->

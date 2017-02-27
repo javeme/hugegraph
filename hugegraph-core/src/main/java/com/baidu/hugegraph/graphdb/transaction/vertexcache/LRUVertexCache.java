@@ -23,6 +23,7 @@ import com.baidu.hugegraph.graphdb.util.ConcurrentLRUCache;
 import com.baidu.hugegraph.util.datastructures.Retriever;
 import org.cliffc.high_scale_lib.NonBlockingHashMapLong;
 
+
 public class LRUVertexCache implements VertexCache {
 
     private final NonBlockingHashMapLong<InternalVertex> volatileVertices;
@@ -46,7 +47,7 @@ public class LRUVertexCache implements VertexCache {
                     }
                 });
 
-        cache.setAlive(true); // need counters to its actually LRU
+        cache.setAlive(true); //need counters to its actually LRU
     }
 
     @Override
@@ -91,11 +92,11 @@ public class LRUVertexCache implements VertexCache {
     public List<InternalVertex> getAllNew() {
         List<InternalVertex> vertices = new ArrayList<InternalVertex>(10);
         for (InternalVertex v : volatileVertices.values()) {
-            if (v.isNew())
-                vertices.add(v);
+            if (v.isNew()) vertices.add(v);
         }
         return vertices;
     }
+
 
     @Override
     public synchronized void close() {

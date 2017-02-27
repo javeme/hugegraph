@@ -45,7 +45,8 @@ import static org.junit.Assert.assertTrue;
 
 public class LuceneIndexTest extends IndexProviderTest {
 
-    private static final Logger log = LoggerFactory.getLogger(LuceneIndexTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(LuceneIndexTest.class);
 
     @Rule
     public TestName methodName = new TestName();
@@ -63,7 +64,7 @@ public class LuceneIndexTest extends IndexProviderTest {
     public static final Configuration getLocalLuceneTestConfig() {
         final String index = "lucene";
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.INDEX_DIRECTORY, StorageSetup.getHomeDir("lucene"), index);
+        config.set(GraphDatabaseConfiguration.INDEX_DIRECTORY, StorageSetup.getHomeDir("lucene"),index);
         return config.restrictTo(index);
     }
 
@@ -72,42 +73,28 @@ public class LuceneIndexTest extends IndexProviderTest {
         // DEFAULT(=TEXT) support
         assertTrue(index.supports(of(String.class, Cardinality.SINGLE), Text.CONTAINS));
         assertTrue(index.supports(of(String.class, Cardinality.SINGLE), Text.CONTAINS_PREFIX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Text.CONTAINS_REGEX)); // TODO Not supported
-                                                                                                // yet
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Text.CONTAINS_REGEX)); // TODO Not supported yet
         assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Text.REGEX));
         assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Text.PREFIX));
         assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Cmp.EQUAL));
         assertFalse(index.supports(of(String.class, Cardinality.SINGLE), Cmp.NOT_EQUAL));
 
         // Same tests as above, except explicitly specifying TEXT instead of relying on DEFAULT
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.CONTAINS));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.CONTAINS_PREFIX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.CONTAINS_REGEX)); // TODO Not supported yet
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.REGEX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.PREFIX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Cmp.EQUAL));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Cmp.NOT_EQUAL));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.CONTAINS));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.CONTAINS_PREFIX));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.CONTAINS_REGEX)); // TODO Not supported yet
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.REGEX));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.PREFIX));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Cmp.EQUAL));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Cmp.NOT_EQUAL));
 
         // STRING support
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.CONTAINS));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.CONTAINS_PREFIX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.REGEX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.PREFIX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Cmp.EQUAL));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Cmp.NOT_EQUAL));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.CONTAINS));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.CONTAINS_PREFIX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.REGEX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.PREFIX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Cmp.EQUAL));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Cmp.NOT_EQUAL));
 
         assertTrue(index.supports(of(Date.class, Cardinality.SINGLE), Cmp.EQUAL));
         assertTrue(index.supports(of(Date.class, Cardinality.SINGLE), Cmp.LESS_THAN_EQUAL));
@@ -123,9 +110,9 @@ public class LuceneIndexTest extends IndexProviderTest {
         assertTrue(index.supports(of(UUID.class, Cardinality.SINGLE), Cmp.NOT_EQUAL));
     }
 
-    // @Override
-    // public void testDeleteDocumentThenModifyField() {
-    // // This fails under Lucene but works in ES
-    // log.info("Skipping " + getClass().getSimpleName() + "." + methodName.getMethodName());
-    // }
+//    @Override
+//    public void testDeleteDocumentThenModifyField() {
+//        // This fails under Lucene but works in ES
+//        log.info("Skipping " + getClass().getSimpleName() + "." + methodName.getMethodName());
+//    }
 }

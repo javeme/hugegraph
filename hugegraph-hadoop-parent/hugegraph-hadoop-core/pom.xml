@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
-        <artifactId>janusgraph-hadoop-parent</artifactId>
+        <groupId>com.baidu.hugegraph</groupId>
+        <artifactId>hugegraph-hadoop-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-hadoop-core</artifactId>
-    <name>JanusGraph-Hadoop: Version-independent Core</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-hadoop-core</artifactId>
+    <name>hugegraph-Hadoop: Version-independent Core</name>
+    <url>http://hugegraph.org</url>
 
     <properties>
         <top.level.basedir>${basedir}/../..</top.level.basedir>
@@ -31,20 +31,20 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-cassandra</artifactId>
+            <artifactId>hugegraph-cassandra</artifactId>
             <version>${project.version}</version>
             <!-- TODO this should be scoped test -->
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-cassandra</artifactId>
+            <artifactId>hugegraph-cassandra</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <!-- TODO this should be scoped test -->
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-es</artifactId>
+            <artifactId>hugegraph-es</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -120,7 +120,7 @@
                         </configuration>
                     </execution>
                     <!-- Inherited the Hadoop job jar assembly from the parent, but this is
-                         only useful in the janusgraph-hadoop-1 and -2 modules.  Disable it. -->
+                         only useful in the hugegraph-hadoop-1 and -2 modules.  Disable it. -->
                     <execution>
                         <id>build-job-jar</id>
                         <phase>none</phase>
@@ -130,7 +130,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions>
-                    <!-- Tests are executed in the janusgraph-hadoop-1 and -2 modules -->
+                    <!-- Tests are executed in the hugegraph-hadoop-1 and -2 modules -->
                     <execution>
                         <id>default-test</id>
                         <phase>none</phase>
@@ -140,7 +140,7 @@
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
-                    <!-- The janusgraph-hadoop-1 and -2 modules use our test classes -->
+                    <!-- The hugegraph-hadoop-1 and -2 modules use our test classes -->
                     <execution>
                         <id>pack-test-jar</id>
                         <phase>package</phase>
@@ -156,7 +156,7 @@
     <!-- Redeclare gpg-plugin at the bottom to ensure it runs after all the other packaging goals -->
     <profiles>
         <profile>
-            <id>janusgraph-release</id>
+            <id>hugegraph-release</id>
 
             <build>
                 <plugins>

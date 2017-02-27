@@ -32,29 +32,26 @@ public class KeySelector {
 
     public KeySelector(Predicate<StaticBuffer> keyFilter, int limit) {
         Preconditions.checkArgument(limit > 0, "The count limit needs to be positive. Given: " + limit);
-        Preconditions.checkArgument(keyFilter != null);
+        Preconditions.checkArgument(keyFilter!=null);
         this.keyFilter = keyFilter;
         this.limit = limit;
         count = 0;
     }
 
     public static final KeySelector of(int limit) {
-        return new KeySelector(Predicates.<StaticBuffer> alwaysTrue(), limit);
+        return new KeySelector(Predicates.<StaticBuffer>alwaysTrue(), limit);
     }
 
     public boolean include(StaticBuffer key) {
         if (keyFilter.apply(key)) {
             count++;
             return true;
-        } else
-            return false;
+        } else return false;
     }
 
     public boolean reachedLimit() {
-        if (count >= limit)
-            return true;
-        else
-            return false;
+        if (count >= limit) return true;
+        else return false;
     }
 
 }

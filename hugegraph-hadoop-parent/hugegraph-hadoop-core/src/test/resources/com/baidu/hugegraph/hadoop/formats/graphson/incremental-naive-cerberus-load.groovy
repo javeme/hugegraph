@@ -1,4 +1,6 @@
-def HugeGraphVertex getOrCreateVertex(faunusVertex, graph, context, log) {
+package com.baidu.hugegraph.hadoop.formats.graphson
+
+def hugegraphVertex getOrCreateVertex(faunusVertex, graph, context, log) {
     String uniqueKey = "name";
     Object uniqueValue = faunusVertex.value(uniqueKey);
     Vertex hugegraphVertex;

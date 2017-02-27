@@ -36,7 +36,7 @@ public class SpecialIntSerializer implements AttributeSerializer<SpecialInt> {
 
     @Override
     public void verifyAttribute(SpecialInt value) {
-        // All value are valid;
+        //All value are valid;
     }
 
     @Override

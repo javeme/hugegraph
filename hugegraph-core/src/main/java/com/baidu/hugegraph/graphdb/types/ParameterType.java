@@ -29,7 +29,7 @@ public enum ParameterType {
 
     private ParameterType(String name) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name));
-        this.name = name;
+        this.name=name;
     }
 
     @Override
@@ -41,27 +41,29 @@ public enum ParameterType {
         return name;
     }
 
-    public <V> V findParameter(Parameter[] parameters, V defaultValue) {
+    public<V> V findParameter(Parameter[] parameters, V defaultValue) {
         V result = null;
         for (Parameter p : parameters) {
             if (p.key().equalsIgnoreCase(name)) {
                 Object value = p.value();
-                Preconditions.checkArgument(value != null, "Invalid mapping specified: %s", value);
-                Preconditions.checkArgument(result == null, "Multiple mappings specified");
-                result = (V) value;
+                Preconditions.checkArgument(value!=null,"Invalid mapping specified: %s",value);
+                Preconditions.checkArgument(result==null,"Multiple mappings specified");
+                result = (V)value;
             }
         }
-        if (result == null)
-            return defaultValue;
+        if (result==null) return defaultValue;
         return result;
     }
 
     public boolean hasParameter(Parameter[] parameters) {
-        return findParameter(parameters, null) != null;
+        return findParameter(parameters,null)!=null;
     }
 
-    public <V> Parameter<V> getParameter(V value) {
-        return new Parameter<V>(name, value);
+    public<V> Parameter<V> getParameter(V value) {
+        return new Parameter<V>(name,value);
     }
+
+
 
 }
+

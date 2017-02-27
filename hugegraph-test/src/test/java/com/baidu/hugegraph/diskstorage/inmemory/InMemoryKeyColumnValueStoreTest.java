@@ -32,7 +32,7 @@ public class InMemoryKeyColumnValueStoreTest extends KeyColumnValueStoreTest {
 
     @Override
     public void clopen() {
-        // Do nothing
+        //Do nothing
     }
 
 }

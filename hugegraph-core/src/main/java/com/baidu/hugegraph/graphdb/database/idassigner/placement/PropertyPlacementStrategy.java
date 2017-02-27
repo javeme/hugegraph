@@ -37,8 +37,8 @@ import java.util.Map;
 public class PropertyPlacementStrategy extends SimpleBulkPlacementStrategy {
 
     public static final ConfigOption<String> PARTITION_KEY = new ConfigOption<String>(GraphDatabaseConfiguration.IDS_NS,
-            "partition-key", "Partitions the graph by properties of this key", ConfigOption.Type.MASKABLE, String.class,
-            key -> StringUtils.isNotBlank(key));
+            "partition-key","Partitions the graph by properties of this key", ConfigOption.Type.MASKABLE, String.class, key -> StringUtils.isNotBlank(key));
+
 
     private String key;
     private IDManager idManager;
@@ -54,22 +54,22 @@ public class PropertyPlacementStrategy extends SimpleBulkPlacementStrategy {
     }
 
     public void setPartitionKey(String key) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(key), "Invalid key configured: %s", key);
-        this.key = key;
+        Preconditions.checkArgument(StringUtils.isNotBlank(key),"Invalid key configured: %s",key);
+        this.key=key;
     }
 
     @Override
     public void injectIDManager(IDManager idManager) {
         Preconditions.checkNotNull(idManager);
-        this.idManager = idManager;
+        this.idManager=idManager;
     }
+
 
     @Override
     public int getPartition(InternalElement element) {
         if (element instanceof HugeGraphVertex) {
-            int pid = getPartitionIDbyKey((HugeGraphVertex) element);
-            if (pid >= 0)
-                return pid;
+            int pid = getPartitionIDbyKey((HugeGraphVertex)element);
+            if (pid>=0) return pid;
         }
         return super.getPartition(element);
     }
@@ -79,32 +79,27 @@ public class PropertyPlacementStrategy extends SimpleBulkPlacementStrategy {
         super.getPartitions(vertices);
         for (Map.Entry<InternalVertex, PartitionAssignment> entry : vertices.entrySet()) {
             int pid = getPartitionIDbyKey(entry.getKey());
-            if (pid >= 0)
-                ((SimplePartitionAssignment) entry.getValue()).setPartitionID(pid);
+            if (pid>=0) ((SimplePartitionAssignment)entry.getValue()).setPartitionID(pid);
         }
     }
 
     private int getPartitionIDbyKey(HugeGraphVertex vertex) {
-        Preconditions.checkState(idManager != null && key != null,
-                "PropertyPlacementStrategy has not been initialized correctly");
-        assert idManager.getPartitionBound() <= Integer.MAX_VALUE;
-        int partitionBound = (int) idManager.getPartitionBound();
-        HugeGraphVertexProperty p =
-                (HugeGraphVertexProperty) Iterables.getFirst(vertex.query().keys(key).properties(), null);
-        if (p == null)
-            return -1;
-        int hashPid = Math.abs(p.value().hashCode()) % partitionBound;
-        assert hashPid >= 0 && hashPid < partitionBound;
+        Preconditions.checkState(idManager!=null && key!=null,"PropertyPlacementStrategy has not been initialized correctly");
+        assert idManager.getPartitionBound()<=Integer.MAX_VALUE;
+        int partitionBound = (int)idManager.getPartitionBound();
+        HugeGraphVertexProperty p = (HugeGraphVertexProperty)Iterables.getFirst(vertex.query().keys(key).properties(),null);
+        if (p==null) return -1;
+        int hashPid = Math.abs(p.value().hashCode())%partitionBound;
+        assert hashPid>=0 && hashPid<partitionBound;
         if (isExhaustedPartition(hashPid)) {
-            // We keep trying consecutive partition ids until we find a non-exhausted one
-            int newPid = hashPid;
+            //We keep trying consecutive partition ids until we find a non-exhausted one
+            int newPid=hashPid;
             do {
-                newPid = (newPid + 1) % partitionBound;
-                if (newPid == hashPid) // We have gone full circle - no more ids to try
+                newPid = (newPid+1)%partitionBound;
+                if (newPid==hashPid) //We have gone full circle - no more ids to try
                     throw new IDPoolExhaustedException("Could not find non-exhausted partition");
             } while (isExhaustedPartition(newPid));
             return newPid;
-        } else
-            return hashPid;
+        } else return hashPid;
     }
 }

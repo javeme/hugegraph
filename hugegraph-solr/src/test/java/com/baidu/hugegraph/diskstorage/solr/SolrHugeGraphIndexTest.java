@@ -34,6 +34,7 @@ public abstract class SolrHugeGraphIndexTest extends HugeGraphIndexTest {
         SolrRunner.stop();
     }
 
+
     protected SolrHugeGraphIndexTest() {
         super(true, true, true);
     }
@@ -50,7 +51,7 @@ public abstract class SolrHugeGraphIndexTest extends HugeGraphIndexTest {
 
     @Test
     public void testRawQueries() {
-        clopen(option(SolrIndex.DYNAMIC_FIELDS, HugeGraphIndexTest.INDEX), false);
+        clopen(option(SolrIndex.DYNAMIC_FIELDS,HugeGraphIndexTest.INDEX),false);
         super.testRawQueries();
     }
 

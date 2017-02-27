@@ -28,12 +28,12 @@ public class TClass2Serializer implements AttributeSerializer<TClass2> {
 
     @Override
     public TClass2 read(ScanBuffer buffer) {
-        return new TClass2(strings.read(buffer), buffer.getInt());
+        return new TClass2(strings.read(buffer),buffer.getInt());
     }
 
     @Override
     public void write(WriteBuffer buffer, TClass2 attribute) {
-        strings.write(buffer, attribute.getS());
+        strings.write(buffer,attribute.getS());
         buffer.putInt(attribute.getI());
     }
 

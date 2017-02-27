@@ -34,8 +34,8 @@ public interface SchemaSource {
     public Iterable<Entry> getRelated(TypeDefinitionCategory def, Direction dir);
 
     /**
-     * Resets the internal caches used to speed up lookups on this schema source. This is needed when the source gets
-     * modified.
+     * Resets the internal caches used to speed up lookups on this schema source.
+     * This is needed when the source gets modified.
      */
     public void resetCache();
 

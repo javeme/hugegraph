@@ -16,6 +16,7 @@ package com.baidu.hugegraph.graphdb.transaction.lock;
 
 import com.baidu.hugegraph.core.HugeGraphException;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,8 @@ public class ReentrantTransactionLock extends ReentrantLock implements Transacti
 
     private static final long serialVersionUID = -1533050153710486569L;
 
+
+
     private static final Logger log = LoggerFactory.getLogger(ReentrantTransactionLock.class);
 
     @Override
@@ -38,15 +41,15 @@ public class ReentrantTransactionLock extends ReentrantLock implements Transacti
         try {
             success = super.tryLock(timeout.toNanos(), TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            log.warn("Interrupted waiting for lock: {}", e);
+            log.warn("Interrupted waiting for lock: {}",e);
         }
-        if (!success)
-            throw new HugeGraphException("Possible dead lock detected. Waited for transaction lock without success");
+        if (!success) throw new HugeGraphException("Possible dead lock detected. Waited for transaction lock without success");
     }
 
     @Override
     public boolean inUse() {
         return super.isLocked() || super.hasQueuedThreads();
     }
+
 
 }

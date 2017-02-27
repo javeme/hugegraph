@@ -26,15 +26,15 @@ import static org.junit.Assert.assertEquals;
 public class GeoToWktConverterTest {
 
     /**
-     * HugeGraph Geoshapes are converted to a string that gets sent to its respective index. Unfortunately, the string
-     * format is not compatible with Solr 4. The GeoToWktConverter transforms the Geoshape's string value into a
-     * Well-Known Text format understood by Solr.
+     * HugeGraph Geoshapes are converted to a string that gets sent to its respective index. Unfortunately, the string format
+     * is not compatible with Solr 4. The GeoToWktConverter transforms the Geoshape's string value into a Well-Known Text
+     * format understood by Solr.
      */
     @Test
     public void testConvertGeoshapePointToWktString() throws BackendException {
-        Geoshape p1 = Geoshape.point(35.4, 48.9); // no spaces, no negative values
-        Geoshape p2 = Geoshape.point(-35.4, 48.9); // negative longitude value
-        Geoshape p3 = Geoshape.point(35.4, -48.9); // negative latitude value
+        Geoshape p1 = Geoshape.point(35.4, 48.9); //no spaces, no negative values
+        Geoshape p2 = Geoshape.point(-35.4,48.9); //negative longitude value
+        Geoshape p3 = Geoshape.point(35.4, -48.9); //negative latitude value
 
         String wkt1 = "POINT(48.9 35.4)";
         String actualWkt1 = GeoToWktConverter.convertToWktString(p1);

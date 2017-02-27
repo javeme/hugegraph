@@ -23,7 +23,7 @@ public interface ReadConfiguration {
 
     public static final ReadConfiguration EMPTY = new ReadConfiguration() {
         @Override
-        public <O> O get(String key, Class<O> datatype) {
+        public<O> O get(String key, Class<O> datatype) {
             return null;
         }
 
@@ -34,11 +34,11 @@ public interface ReadConfiguration {
 
         @Override
         public void close() {
-            // Nothing
+            //Nothing
         }
     };
 
-    public <O> O get(String key, Class<O> datatype);
+    public<O> O get(String key, Class<O> datatype);
 
     public Iterable<String> getKeys(String prefix);
 

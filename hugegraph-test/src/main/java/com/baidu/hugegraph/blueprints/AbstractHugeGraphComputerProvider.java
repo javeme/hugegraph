@@ -32,24 +32,23 @@ public abstract class AbstractHugeGraphComputerProvider extends AbstractHugeGrap
 
     @Override
     public GraphTraversalSource traversal(final Graph graph) {
-        return GraphTraversalSource.build().engine(ComputerTraversalEngine.build().computer(FulgoraGraphComputer.class))
-                .create(graph);
+        return GraphTraversalSource.build().engine(ComputerTraversalEngine.build().computer(FulgoraGraphComputer.class)).create(graph);
     }
 
     @Override
-    public GraphTraversalSource traversal(final Graph graph, final TraversalStrategy...strategies) {
-        final GraphTraversalSource.Builder builder = GraphTraversalSource.build()
-                .engine(ComputerTraversalEngine.build().computer(FulgoraGraphComputer.class));
+    public GraphTraversalSource traversal(final Graph graph, final TraversalStrategy... strategies) {
+        final GraphTraversalSource.Builder builder = GraphTraversalSource.build().engine(ComputerTraversalEngine.build().computer(FulgoraGraphComputer.class));
         Stream.of(strategies).forEach(builder::with);
         return builder.create(graph);
     }
 
     @Override
     public ModifiableConfiguration getHugeGraphConfiguration(String graphName, Class<?> test, String testMethodName) {
-        return GraphDatabaseConfiguration.buildGraphConfiguration().set(GraphDatabaseConfiguration.IDS_BLOCK_SIZE, 1)
-                .set(SimpleBulkPlacementStrategy.CONCURRENT_PARTITIONS, 1)
+        return GraphDatabaseConfiguration.buildGraphConfiguration()
+                .set(GraphDatabaseConfiguration.IDS_BLOCK_SIZE,1)
+                .set(SimpleBulkPlacementStrategy.CONCURRENT_PARTITIONS,1)
                 .set(GraphDatabaseConfiguration.CLUSTER_MAX_PARTITIONS, 2)
-                .set(GraphDatabaseConfiguration.IDAUTHORITY_CAV_BITS, 0);
+                .set(GraphDatabaseConfiguration.IDAUTHORITY_CAV_BITS,0);
     }
 
 }

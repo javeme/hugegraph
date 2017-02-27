@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,10 +31,9 @@ public class HadoopVertexScanMapper extends HadoopScanMapper {
     protected void setup(Context context) throws IOException, InterruptedException {
         /* Don't call super implementation super.setup(context); */
         org.apache.hadoop.conf.Configuration hadoopConf = DEFAULT_COMPAT.getContextConfiguration(context);
-        ModifiableHadoopConfiguration scanConf =
-                ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf);
+        ModifiableHadoopConfiguration scanConf = ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf);
         VertexScanJob vertexScan = getVertexScanJob(scanConf);
-        ModifiableConfiguration graphConf = getHugeGraphConfiguration(context);
+        ModifiableConfiguration graphConf = gethugegraphConfiguration(context);
         HugeGraph graph = HugeGraphFactory.open(graphConf);
         job = VertexJobConverter.convert(graph, vertexScan);
         metrics = new HadoopContextScanMetrics(context);
@@ -45,7 +44,7 @@ public class HadoopVertexScanMapper extends HadoopScanMapper {
         String jobClass = conf.get(HugeGraphHadoopConfiguration.SCAN_JOB_CLASS);
 
         try {
-            return (VertexScanJob) Class.forName(jobClass).newInstance();
+            return (VertexScanJob)Class.forName(jobClass).newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

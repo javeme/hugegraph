@@ -21,10 +21,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import java.util.Set;
 
 /**
- * Container interface for a set of changes against the graph caused by a particular transaction. This is passed as an
- * argument to
- * {@link ChangeProcessor#process(com.baidu.hugegraph.core.HugeGraphTransaction, TransactionId, ChangeState)} for the
- * user to retrieve changed elements and act upon it.
+ * Container interface for a set of changes against the graph caused by a particular transaction. This is passed as an argument to
+ * {@link ChangeProcessor#process(com.baidu.hugegraph.core.HugeGraphTransaction, TransactionId, ChangeState)}
+ * for the user to retrieve changed elements and act upon it.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -47,11 +46,10 @@ public interface ChangeState {
      * @param types
      * @return
      */
-    public Iterable<HugeGraphRelation> getRelations(Change change, RelationType...types);
+    public Iterable<HugeGraphRelation> getRelations(Change change, RelationType... types);
 
     /**
-     * Returns all edges incident on the given vertex in the given direction that match the provided change state and
-     * edge labels.
+     * Returns all edges incident on the given vertex in the given direction that match the provided change state and edge labels.
      *
      * @param vertex
      * @param change
@@ -59,7 +57,8 @@ public interface ChangeState {
      * @param labels
      * @return
      */
-    public Iterable<HugeGraphEdge> getEdges(Vertex vertex, Change change, Direction dir, String...labels);
+    public Iterable<HugeGraphEdge> getEdges(Vertex vertex, Change change, Direction dir, String... labels);
+
 
     /**
      * Returns all properties incident for the given vertex that match the provided change state and property keys.
@@ -69,6 +68,8 @@ public interface ChangeState {
      * @param keys
      * @return
      */
-    public Iterable<HugeGraphVertexProperty> getProperties(Vertex vertex, Change change, String...keys);
+    public Iterable<HugeGraphVertexProperty> getProperties(Vertex vertex, Change change, String... keys);
+
+
 
 }

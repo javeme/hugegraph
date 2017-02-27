@@ -23,16 +23,14 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * A MultiVertexQuery is identical to a {@link HugeGraphVertexQuery} but executed against a set of vertices
- * simultaneously. In other words, {@link HugeGraphMultiVertexQuery} allows identical {@link HugeGraphVertexQuery}
- * executed against a non-trivial set of vertices to be executed in one batch which can significantly reduce the query
- * latency.
+ * A MultiVertexQuery is identical to a {@link HugeGraphVertexQuery} but executed against a set of vertices simultaneously.
+ * In other words, {@link HugeGraphMultiVertexQuery} allows identical {@link HugeGraphVertexQuery} executed against a non-trivial set
+ * of vertices to be executed in one batch which can significantly reduce the query latency.
  * <p/>
- * The query specification methods are identical to {@link HugeGraphVertexQuery}. The result set method return Maps from
- * the specified set of anchor vertices to their respective individual result sets.
+ * The query specification methods are identical to {@link HugeGraphVertexQuery}. The result set method return Maps from the specified
+ * set of anchor vertices to their respective individual result sets.
  * <p/>
- * Call {@link HugeGraphTransaction#multiQuery(java.util.Collection)} to construct a multi query in the enclosing
- * transaction.
+ * Call {@link HugeGraphTransaction#multiQuery(java.util.Collection)} to construct a multi query in the enclosing transaction.
  * <p/>
  * Note, that the {@link #limit(int)} constraint applies to each individual result set.
  *
@@ -41,10 +39,10 @@ import java.util.Map;
  */
 public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q>> extends BaseVertexQuery<Q> {
 
-    /*
-     * --------------------------------------------------------------- Query Specification
-     * ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Query Specification
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Adds the given vertex to the set of vertices against which to execute this query.
@@ -62,20 +60,21 @@ public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q
      */
     public HugeGraphMultiVertexQuery addAllVertices(Collection<? extends Vertex> vertices);
 
+
     @Override
     public Q adjacent(Vertex vertex);
 
     @Override
-    public Q types(String...type);
+    public Q types(String... type);
 
     @Override
-    public Q types(RelationType...type);
+    public Q types(RelationType... type);
 
     @Override
-    public Q labels(String...labels);
+    public Q labels(String... labels);
 
     @Override
-    public Q keys(String...keys);
+    public Q keys(String... keys);
 
     @Override
     public Q direction(Direction d);
@@ -104,10 +103,10 @@ public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q
     @Override
     public Q orderBy(String key, Order order);
 
-    /*
-     * --------------------------------------------------------------- Query execution
-     * ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Query execution
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Returns an iterable over all incident edges that match this query for each vertex
@@ -123,6 +122,7 @@ public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q
      */
     public Map<HugeGraphVertex, Iterable<HugeGraphVertexProperty>> properties();
 
+
     /**
      * Returns an iterable over all incident relations that match this query for each vertex
      *
@@ -131,8 +131,8 @@ public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q
     public Map<HugeGraphVertex, Iterable<HugeGraphRelation>> relations();
 
     /**
-     * Retrieves all vertices connected to each of the query's base vertices by edges matching the conditions defined in
-     * this query.
+     * Retrieves all vertices connected to each of the query's base vertices by edges
+     * matching the conditions defined in this query.
      * <p/>
      *
      * @return An iterable of all vertices connected to each of the query's central vertices by matching edges
@@ -140,8 +140,8 @@ public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q
     public Map<HugeGraphVertex, Iterable<HugeGraphVertex>> vertices();
 
     /**
-     * Retrieves all vertices connected to each of the query's central vertices by edges matching the conditions defined
-     * in this query.
+     * Retrieves all vertices connected to each of the query's central vertices by edges
+     * matching the conditions defined in this query.
      * <p/>
      * The query engine will determine the most efficient way to retrieve the vertices that match this query.
      *

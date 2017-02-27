@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>pom</packaging>
     <artifactId>hugegraph-dist</artifactId>
-    <name>JanusGraph-Dist: Tar and Zip Archives</name>
-    <url>http://janusgraph.org</url>
+    <name>hugegraph-Dist: Tar and Zip Archives</name>
+    <url>http://hugegraph.org</url>
 
     <properties>
         <top.level.basedir>${project.basedir}/..</top.level.basedir>
@@ -22,7 +22,7 @@
 
         <!-- Variables for integration testing on release-candidate archive files -->
         <test.expect.dir>${project.build.directory}/test-classes</test.expect.dir>
-        <test.zipfile.path>${project.build.directory}/janusgraph-${project.version}-${hadoop.version.tag}.zip</test.zipfile.path>
+        <test.zipfile.path>${project.build.directory}/hugegraph-${project.version}-${hadoop.version.tag}.zip</test.zipfile.path>
 
         <!-- AsciiDoc -->
         <asciidoc.input.dir>${project.parent.basedir}/docs</asciidoc.input.dir>
@@ -41,13 +41,13 @@
     </properties>
 
     <modules>
-        <module>janusgraph-dist-hadoop-2</module>
+        <module>hugegraph-dist-hadoop-2</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-all</artifactId>
+            <artifactId>hugegraph-all</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -56,7 +56,7 @@
             <version>${jna.version}</version>
         </dependency>
         <!-- C*2.1 uses airline for command line parsing (incl. nodetool).
-             This dep is not provided through cassandra-all/janusgraph-cassandra. -->
+             This dep is not provided through cassandra-all/hugegraph-cassandra. -->
         <dependency>
             <groupId>io.airlift</groupId>
             <artifactId>airline</artifactId>
@@ -102,27 +102,27 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-test</artifactId>
+            <artifactId>hugegraph-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-hbase-core</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-es</artifactId>
+            <artifactId>hugegraph-hbase-core</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-solr</artifactId>
+            <artifactId>hugegraph-es</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>hugegraph-solr</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
@@ -133,7 +133,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-cassandra</artifactId>
+            <artifactId>hugegraph-cassandra</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -232,16 +232,16 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>generate-janusgraph-config-table</id>
+                        <id>generate-hugegraph-config-table</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.janusgraph.util.system.ConfigurationPrinter</mainClass>
+                            <mainClass>com.baidu.hugegraph.util.system.ConfigurationPrinter</mainClass>
                             <arguments>
-                                <argument>org.janusgraph.graphdb.configuration.GraphDatabaseConfiguration.ROOT_NS</argument>
-                                <argument>${asciidoc.output.dir}/listings/janusgraph_cfg.txt</argument>
+                                <argument>com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.ROOT_NS</argument>
+                                <argument>${asciidoc.output.dir}/listings/hugegraph_cfg.txt</argument>
                                 <argument>true</argument>
                             </arguments>
                         </configuration>
@@ -259,7 +259,7 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <!-- Main Classname -->
-                                <mainClass>org.janusgraph.util.system.ConfigurationFileFilter</mainClass>
+                                <mainClass>com.baidu.hugegraph.util.system.ConfigurationFileFilter</mainClass>
                                 <!-- Input directory (processed recursively) -->
                                 <argument>${assembly.cfilter.in.dir}</argument>
                                 <!-- Output directory prefix -->
@@ -268,7 +268,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>generate-janusgraph-gremlin-imports</id>
+                        <id>generate-hugegraph-gremlin-imports</id>
                         <phase>none</phase>
                     </execution>
                 </executions>
@@ -484,14 +484,14 @@
                             <configuration>
                                 <attach>false</attach>
                                 <outputDirectory>${top.level.basedir}</outputDirectory>
-                                <finalName>/</finalName>
+                                <finalName>hugegraph</finalName>
                                 <appendAssemblyId>false</appendAssemblyId>
                                 <descriptors>
                                     <descriptor>../src/assembly/descriptor/filesystem.xml</descriptor>
                                 </descriptors>
-                                <formats combine.self="override">
-                                    <format>dir</format>
-                                </formats>
+                                <!--<formats combine.self="override">-->
+                                    <!--<format>zip</format>-->
+                                <!--</formats>-->
                             </configuration>
                         </execution>
                     </executions>
@@ -579,12 +579,12 @@
         </profile>
 
         <profile>
-            <id>janusgraph-release</id>
+            <id>hugegraph-release</id>
 
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>janusgraph-core</artifactId>
+                    <artifactId>hugegraph-core</artifactId>
                     <version>${project.version}</version>
                     <classifier>javadoc</classifier>
                 </dependency>
@@ -621,7 +621,7 @@
                                             ${finalName}-${<id /> from assembly descriptor}.${archive
                                             format extension}
                                         -->
-                                        <finalName>janusgraph-${project.version}-${hadoop.version.tag}</finalName>
+                                        <finalName>hugegraph-${project.version}-${hadoop.version.tag}</finalName>
                                         <appendAssemblyId>false</appendAssemblyId>
                                         <tarLongFileMode>gnu</tarLongFileMode>
                                         <descriptors>
@@ -682,11 +682,11 @@
                                     <configuration>
                                         <outputDirectory>${project.build.directory}/cassandra/conf/localhost-murmur</outputDirectory>
                                         <filters>
-                                            <filter>${top.level.basedir}/janusgraph-cassandra/config/cassandra-filters/localhost-murmur.properties</filter>
+                                            <filter>${top.level.basedir}/hugegraph-cassandra/config/cassandra-filters/localhost-murmur.properties</filter>
                                         </filters>
                                         <resources>
                                             <resource>
-                                                <directory>${top.level.basedir}/janusgraph-cassandra/config/cassandra</directory>
+                                                <directory>${top.level.basedir}/hugegraph-cassandra/config/cassandra</directory>
                                                 <filtering>true</filtering>
                                             </resource>
                                         </resources>
@@ -701,11 +701,11 @@
                                     <configuration>
                                         <outputDirectory>${project.build.directory}/cassandra/conf/localhost-bop</outputDirectory>
                                         <filters>
-                                            <filter>${top.level.basedir}/janusgraph-cassandra/config/cassandra-filters/localhost-bop.properties</filter>
+                                            <filter>${top.level.basedir}/hugegraph-cassandra/config/cassandra-filters/localhost-bop.properties</filter>
                                         </filters>
                                         <resources>
                                             <resource>
-                                                <directory>${top.level.basedir}/janusgraph-cassandra/config/cassandra</directory>
+                                                <directory>${top.level.basedir}/hugegraph-cassandra/config/cassandra</directory>
                                                 <filtering>true</filtering>
                                             </resource>
                                         </resources>
@@ -720,7 +720,7 @@
                                     <configuration>
                                         <resources>
                                             <resource>
-                                                <directory>${top.level.basedir}/janusgraph-dist/src/test/expect</directory>
+                                                <directory>${top.level.basedir}/hugegraph-dist/src/test/expect</directory>
                                                 <filtering>true</filtering>
                                             </resource>
                                         </resources>
@@ -736,7 +736,7 @@
                                     <configuration>
                                         <resources>
                                             <resource>
-                                                <directory>${top.level.basedir}/janusgraph-dist/src/test/resources</directory>
+                                                <directory>${top.level.basedir}/hugegraph-dist/src/test/resources</directory>
                                                 <filtering>true</filtering>
                                             </resource>
                                         </resources>
@@ -767,7 +767,7 @@
                             <configuration>
                                 <forkCount>1</forkCount>
                                 <reuseForks>false</reuseForks>
-                                <testClassesDirectory>${top.level.basedir}/janusgraph-dist/target/test-classes</testClassesDirectory>
+                                <testClassesDirectory>${top.level.basedir}/hugegraph-dist/target/test-classes</testClassesDirectory>
                             </configuration>
                             <executions>
                                 <execution>
@@ -777,7 +777,7 @@
                                         <goal>integration-test</goal>
                                     </goals>
                                     <configuration>
-                                        <excludedGroups>org.janusgraph.testcategory.OrderedKeyStoreTests,org.janusgraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
+                                        <excludedGroups>com.baidu.hugegraph.testcategory.OrderedKeyStoreTests,com.baidu.hugegraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
                                         <skip>${skipDefaultDistroIT}</skip>
                                         <failIfNoTests>false</failIfNoTests>
                                         <excludes>
@@ -795,7 +795,7 @@
                                     </goals>
                                     <configuration>
                                         <argLine>-Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-murmur -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-murmur</argLine>
-                                        <excludedGroups>org.janusgraph.testcategory.OrderedKeyStoreTests</excludedGroups>
+                                        <excludedGroups>com.baidu.hugegraph.testcategory.OrderedKeyStoreTests</excludedGroups>
                                         <reportNameSuffix>murmur</reportNameSuffix>
                                         <failIfNoTests>false</failIfNoTests>
                                         <includes>
@@ -811,7 +811,7 @@
                                     </goals>
                                     <configuration>
                                         <argLine>-Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-bop -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-bop</argLine>
-                                        <excludedGroups>org.janusgraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
+                                        <excludedGroups>com.baidu.hugegraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
                                         <reportNameSuffix>bop</reportNameSuffix>
                                         <failIfNoTests>false</failIfNoTests>
                                         <includes>
@@ -826,7 +826,7 @@
                                         <goal>integration-test</goal>
                                     </goals>
                                     <configuration>
-                                        <argLine>-Dtest.hbase.parentdir=${top.level.basedir}/janusgraph-hbase-parent/</argLine>
+                                        <argLine>-Dtest.hbase.parentdir=${top.level.basedir}/hugegraph-hbase-parent/</argLine>
                                         <reportNameSuffix>hbase</reportNameSuffix>
                                         <failIfNoTests>false</failIfNoTests>
                                         <includes>
@@ -931,7 +931,7 @@
                         <inherited>false</inherited>
                         <executions>
                             <execution>
-                                <id>unpack-janusgraph-core-javadocs</id>
+                                <id>unpack-hugegraph-core-javadocs</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>

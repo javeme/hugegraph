@@ -34,7 +34,6 @@ public class BaseQuery implements Query {
 
     /**
      * Sets the limit of the query if it wasn't specified in the constructor
-     * 
      * @param limit
      * @return
      */

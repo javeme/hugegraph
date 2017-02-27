@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage.es;
 
+
 import com.baidu.hugegraph.CassandraStorageSetup;
 import com.baidu.hugegraph.StorageSetup;
 import com.baidu.hugegraph.diskstorage.configuration.ModifiableConfiguration;
@@ -35,12 +36,13 @@ public class ThriftElasticsearchTest extends HugeGraphIndexTest {
 
     @Override
     public WriteConfiguration getConfiguration() {
-        ModifiableConfiguration config = getCassandraThriftConfiguration(ThriftElasticsearchTest.class.getName());
-        // Add index
-        config.set(INDEX_BACKEND, "elasticsearch", INDEX);
-        config.set(LOCAL_MODE, true, INDEX);
-        config.set(CLIENT_ONLY, false, INDEX);
-        config.set(INDEX_DIRECTORY, StorageSetup.getHomeDir("es"), INDEX);
+        ModifiableConfiguration config =
+                getCassandraThriftConfiguration(ThriftElasticsearchTest.class.getName());
+        //Add index
+        config.set(INDEX_BACKEND,"elasticsearch",INDEX);
+        config.set(LOCAL_MODE,true,INDEX);
+        config.set(CLIENT_ONLY,false,INDEX);
+        config.set(INDEX_DIRECTORY, StorageSetup.getHomeDir("es"),INDEX);
         return config.getConfiguration();
     }
 
@@ -53,7 +55,6 @@ public class ThriftElasticsearchTest extends HugeGraphIndexTest {
     public boolean supportsWildcardQuery() {
         return true;
     }
-
     @Override
     protected boolean supportsCollections() {
         return true;

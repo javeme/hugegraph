@@ -1,4 +1,4 @@
-Releasing JanusGraph
+Releasing hugegraph
 ====================
 
 Prerequisites
@@ -49,7 +49,7 @@ Files in the main repo:
 * CHANGELOG.asc
 * NOTICE.txt
 * UPGRADE.asc
-* janusgraph-site/src/site-resources/index.html
+* hugegraph-site/src/site-resources/index.html
   (this template generates a new root index page)
 
 Some of these updates could potentially be automated, but tweaking
@@ -70,7 +70,7 @@ Recommended but not required:
 ```bash
 # This script does several things.
 #
-# * Prompts for a ${janusgraph.compatible.versions} update
+# * Prompts for a ${hugegraph.compatible.versions} update
 # * Locally commits the release using the release plugin
 # * Deploys Maven artifacts to Sonatype OSS (staging, not released yet)
 # * Uploads zipfiles to S3
@@ -82,7 +82,7 @@ Recommended but not required:
 # This step is still essentially reversible: just destroy the
 # local commit history, drop the Sonatype OSS Staging repo, and
 # delete the files uploaded to S3.
-janusgraph-dist/src/release/release.sh
+hugegraph-dist/src/release/release.sh
 ```
 
 ### Checking Artifacts & Archives
@@ -106,7 +106,7 @@ earlier.  It will appear on Maven Central in an hour or two.
 Finally, push your local changes to Github:
 
 ```bash 
-# cd to the janusgraph repository root if not already there
+# cd to the hugegraph repository root if not already there
 git push origin $BRANCH_NAME
 git push origin refs/tags/$RELEASE_VERSION
 git push origin gh-pages

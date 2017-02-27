@@ -46,8 +46,9 @@ public class LockCleanerServiceTest {
     private LockCleanerService svc;
 
     private final ConsistentKeyLockerSerializer codec = new ConsistentKeyLockerSerializer();
-    private final KeyColumn kc = new KeyColumn(new StaticArrayBuffer(new byte[] { (byte) 1 }),
-            new StaticArrayBuffer(new byte[] { (byte) 2 }));
+    private final KeyColumn kc = new KeyColumn(
+            new StaticArrayBuffer(new byte[]{(byte) 1}),
+            new StaticArrayBuffer(new byte[]{(byte) 2}));
 
     @Before
     public void setupMocks() {
@@ -70,8 +71,7 @@ public class LockCleanerServiceTest {
 
         svc = new StandardLockCleanerService(store, codec, exec, Duration.ofSeconds(60L), TimestampProviders.MILLI);
 
-        expect(exec.submit(eq(new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff, TimestampProviders.MILLI))))
-                .andReturn(null);
+        expect(exec.submit(eq(new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff, TimestampProviders.MILLI)))).andReturn(null);
 
         ctrl.replay();
 
@@ -87,12 +87,9 @@ public class LockCleanerServiceTest {
         Duration wait = Duration.ofMillis(500L);
         svc = new StandardLockCleanerService(store, codec, exec, wait, TimestampProviders.MILLI);
 
-        expect(exec.submit(eq(new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff, TimestampProviders.MILLI))))
-                .andReturn(null);
+        expect(exec.submit(eq(new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff, TimestampProviders.MILLI)))).andReturn(null);
 
-        expect(exec.submit(eq(
-                new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff.plusMillis(1), TimestampProviders.MILLI))))
-                        .andReturn(null);
+        expect(exec.submit(eq(new StandardLockCleanerRunnable(store, kc, tx, codec, cutoff.plusMillis(1), TimestampProviders.MILLI)))).andReturn(null);
 
         ctrl.replay();
 

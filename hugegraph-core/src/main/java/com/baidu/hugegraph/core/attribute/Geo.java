@@ -33,8 +33,7 @@ public enum Geo implements HugeGraphPredicate {
         @Override
         public boolean test(Object value, Object condition) {
             Preconditions.checkArgument(condition instanceof Geoshape);
-            if (value == null)
-                return false;
+            if (value == null) return false;
             Preconditions.checkArgument(value instanceof Geoshape);
             return ((Geoshape) value).intersect((Geoshape) condition);
         }
@@ -62,8 +61,7 @@ public enum Geo implements HugeGraphPredicate {
         @Override
         public boolean test(Object value, Object condition) {
             Preconditions.checkArgument(condition instanceof Geoshape);
-            if (value == null)
-                return false;
+            if (value == null) return false;
             Preconditions.checkArgument(value instanceof Geoshape);
             return ((Geoshape) value).disjoint((Geoshape) condition);
         }
@@ -91,8 +89,7 @@ public enum Geo implements HugeGraphPredicate {
         @Override
         public boolean test(Object value, Object condition) {
             Preconditions.checkArgument(condition instanceof Geoshape);
-            if (value == null)
-                return false;
+            if (value == null) return false;
             Preconditions.checkArgument(value instanceof Geoshape);
             return ((Geoshape) value).within((Geoshape) condition);
         }
@@ -134,11 +131,9 @@ public enum Geo implements HugeGraphPredicate {
     public static <V> P<V> geoIntersect(final V value) {
         return new P(Geo.INTERSECT, value);
     }
-
     public static <V> P<V> geoDisjoint(final V value) {
         return new P(Geo.DISJOINT, value);
     }
-
     public static <V> P<V> geoWithin(final V value) {
         return new P(Geo.WITHIN, value);
     }

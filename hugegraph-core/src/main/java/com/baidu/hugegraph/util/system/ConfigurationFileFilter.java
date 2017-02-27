@@ -31,9 +31,10 @@ import java.util.regex.Pattern;
 
 public class ConfigurationFileFilter {
 
-    private static final Pattern REPLACEMENT_PATTERN = Pattern.compile("^#JANUSGRAPHCFG\\{((.+)=(.*))\\}$");
+    private static final Pattern REPLACEMENT_PATTERN = Pattern.compile("^#hugegraphCFG\\{((.+)=(.*))\\}$");
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationFileFilter.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ConfigurationFileFilter.class);
 
     private static final int WRAP_COLUMNS = 72;
 
@@ -50,9 +51,10 @@ public class ConfigurationFileFilter {
 
         log.info("Input context dir:  {}", inputContextDir);
         log.info("Output context dir: {}", outputContextDir);
-        Preconditions.checkArgument(inputContextDir.isDirectory(), "Input context dir %s is not a directory",
-                inputContextDir);
-        Preconditions.checkArgument(inputContextDir.canRead(), "Input context dir %s is not readable", inputContextDir);
+        Preconditions.checkArgument(inputContextDir.isDirectory(),
+                "Input context dir %s is not a directory", inputContextDir);
+        Preconditions.checkArgument(inputContextDir.canRead(),
+                "Input context dir %s is not readable", inputContextDir);
 
         if (!outputContextDir.exists()) {
             outputContextDir.mkdirs(); // may fail if path exists as a file
@@ -151,17 +153,16 @@ public class ConfigurationFileFilter {
                     String cfgKey = m.group(2).trim();
                     m.group(3);
                     try {
-                        ConfigElement.PathIdentifier pid =
-                                ConfigElement.parse(GraphDatabaseConfiguration.ROOT_NS, cfgKey);
+                        ConfigElement.PathIdentifier pid = ConfigElement.parse(GraphDatabaseConfiguration.ROOT_NS, cfgKey);
                         ConfigOption<?> opt = (ConfigOption<?>) pid.element;
-                        // opt.verify(cfgVal);
+                        //opt.verify(cfgVal);
                         String kvPair = m.group(1);
                         String descr = "# " + WordUtils.wrap(opt.getDescription(), WRAP_COLUMNS, "\n# ", false);
                         String dt = "# Data Type:  ";
                         if (opt.getDatatype().isArray()) {
                             dt += opt.getDatatype().getComponentType().toString() + "[]";
                         } else if (opt.getDatatype().isEnum()) {
-                            Enum[] enums = (Enum[]) opt.getDatatype().getEnumConstants();
+                            Enum[] enums = (Enum[])opt.getDatatype().getEnumConstants();
                             String[] names = new String[enums.length];
                             for (int i = 0; i < names.length; i++)
                                 names[i] = enums[i].name();
@@ -177,7 +178,7 @@ public class ConfigurationFileFilter {
                         } else if (opt.getDatatype().isArray()) {
                             defval += Joiner.on(", ").join((Object[]) opt.getDefaultValue());
                         } else if (opt.getDatatype().isEnum()) {
-                            defval += ((Enum) opt.getDefaultValue()).name();
+                            defval += ((Enum)opt.getDefaultValue()).name();
                         } else {
                             defval += opt.getDefaultValue();
                         }
@@ -185,14 +186,14 @@ public class ConfigurationFileFilter {
                         if (opt.isManaged()) {
                             mut += "\n#\n# ";
                             if (opt.getType().equals(ConfigOption.Type.FIXED)) {
-                                mut += "This setting is " + opt.getType()
-                                        + " and cannot be changed after bootstrapping HugeGraph.";
+                                mut += "This setting is " + opt.getType() +
+                                        " and cannot be changed after bootstrapping HugeGraph.";
                             } else {
                                 final String warning =
-                                        "Settings with mutability " + opt.getType() + " are centrally managed in "
-                                                + "HugeGraph's storage backend.  After starting the database for the first time, "
-                                                + "this file's copy of this setting is ignored.  Use HugeGraph's Management "
-                                                + "System to read or modify this value after bootstrapping.";
+                                    "Settings with mutability " + opt.getType() + " are centrally managed in " +
+                                    "HugeGraph's storage backend.  After starting the database for the first time, " +
+                                    "this file's copy of this setting is ignored.  Use HugeGraph's Management " +
+                                    "System to read or modify this value after bootstrapping.";
                                 mut += WordUtils.wrap(warning, WRAP_COLUMNS, "\n# ", false);
                             }
                         }
@@ -221,7 +222,7 @@ public class ConfigurationFileFilter {
             IOUtils.closeQuietly(in);
         }
 
-        // Read what we just wrote. Make sure it validates as a HugeGraph config.
+        // Read what we just wrote.  Make sure it validates as a HugeGraph config.
         ConfigurationLint.Status stat = ConfigurationLint.validate(outputFile.getAbsolutePath());
         if (0 != stat.getErrorSettingCount())
             log.error("Output file {} failed to validate", outputFile);

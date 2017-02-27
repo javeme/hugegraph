@@ -52,17 +52,18 @@ import java.util.Map;
  */
 public class StandardLogProcessorFramework implements LogProcessorFramework {
 
-    private static final Logger logger = LoggerFactory.getLogger(StandardLogProcessorFramework.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(StandardLogProcessorFramework.class);
 
     private final StandardHugeGraph graph;
     private final Serializer serializer;
     private final TimestampProvider times;
-    private final Map<String, Log> processorLogs;
+    private final Map<String,Log> processorLogs;
 
     private boolean isOpen = true;
 
     public StandardLogProcessorFramework(StandardHugeGraph graph) {
-        Preconditions.checkArgument(graph != null && graph.isOpen());
+        Preconditions.checkArgument(graph!=null && graph.isOpen());
         this.graph = graph;
         this.serializer = graph.getDataSerializer();
         this.times = graph.getConfiguration().getTimestampProvider();
@@ -80,18 +81,16 @@ public class StandardLogProcessorFramework implements LogProcessorFramework {
             try {
                 processorLogs.get(logIdentifier).close();
             } catch (BackendException e) {
-                throw new HugeGraphException("Could not close transaction log: " + logIdentifier, e);
+                throw new HugeGraphException("Could not close transaction log: "+ logIdentifier,e);
             }
             processorLogs.remove(logIdentifier);
             return true;
-        } else
-            return false;
+        } else return false;
     }
 
     @Override
     public synchronized void shutdown() throws HugeGraphException {
-        if (!isOpen)
-            return;
+        if (!isOpen) return;
         isOpen = false;
         try {
             try {
@@ -106,6 +105,7 @@ public class StandardLogProcessorFramework implements LogProcessorFramework {
         }
     }
 
+
     @Override
     public LogProcessorBuilder addLogProcessor(String logIdentifier) {
         return new Builder(logIdentifier);
@@ -119,6 +119,7 @@ public class StandardLogProcessorFramework implements LogProcessorFramework {
         private String readMarkerName = null;
         private Instant startTime = null;
         private int retryAttempts = 1;
+
 
         private Builder(String userLogName) {
             Preconditions.checkArgument(StringUtils.isNotBlank(userLogName));
@@ -152,46 +153,45 @@ public class StandardLogProcessorFramework implements LogProcessorFramework {
 
         @Override
         public LogProcessorBuilder addProcessor(ChangeProcessor processor) {
-            Preconditions.checkArgument(processor != null);
+            Preconditions.checkArgument(processor!=null);
             this.processors.add(processor);
             return this;
         }
 
         @Override
         public LogProcessorBuilder setRetryAttempts(int attempts) {
-            Preconditions.checkArgument(attempts > 0, "Invalid number: %s", attempts);
+            Preconditions.checkArgument(attempts>0,"Invalid number: %s",attempts);
             this.retryAttempts = attempts;
             return this;
         }
 
         @Override
         public void build() {
-            Preconditions.checkArgument(!processors.isEmpty(), "Must add at least one processor");
+            Preconditions.checkArgument(!processors.isEmpty(),"Must add at least one processor");
             ReadMarker readMarker;
-            if (startTime == null && readMarkerName == null) {
+            if (startTime==null && readMarkerName==null) {
                 readMarker = ReadMarker.fromNow();
-            } else if (readMarkerName == null) {
+            } else if (readMarkerName==null) {
                 readMarker = ReadMarker.fromTime(startTime);
-            } else if (startTime == null) {
+            } else if (startTime==null) {
                 readMarker = ReadMarker.fromIdentifierOrNow(readMarkerName);
             } else {
                 readMarker = ReadMarker.fromIdentifierOrTime(readMarkerName, startTime);
             }
             synchronized (StandardLogProcessorFramework.this) {
                 Preconditions.checkArgument(!processorLogs.containsKey(userLogName),
-                        "Processors have already been registered for user log: %s", userLogName);
+                        "Processors have already been registered for user log: %s",userLogName);
                 try {
                     Log log = graph.getBackend().getUserLog(userLogName);
-                    log.registerReaders(readMarker,
-                            Iterables.transform(processors, new Function<ChangeProcessor, MessageReader>() {
-                                @Nullable
-                                @Override
-                                public MessageReader apply(@Nullable ChangeProcessor changeProcessor) {
-                                    return new MsgReaderConverter(userLogName, changeProcessor, retryAttempts);
-                                }
-                            }));
+                    log.registerReaders(readMarker,Iterables.transform(processors, new Function<ChangeProcessor, MessageReader>() {
+                        @Nullable
+                        @Override
+                        public MessageReader apply(@Nullable ChangeProcessor changeProcessor) {
+                            return new MsgReaderConverter(userLogName, changeProcessor, retryAttempts);
+                        }
+                    }));
                 } catch (BackendException e) {
-                    throw new HugeGraphException("Could not open user transaction log for name: " + userLogName, e);
+                    throw new HugeGraphException("Could not open user transaction log for name: "+ userLogName,e);
                 }
             }
         }
@@ -209,64 +209,59 @@ public class StandardLogProcessorFramework implements LogProcessorFramework {
             this.retryAttempts = retryAttempts;
         }
 
-        private void readRelations(TransactionLogHeader.Entry txentry, StandardHugeGraphTx tx,
-                StandardChangeState changes) {
+        private void readRelations(TransactionLogHeader.Entry txentry,
+                                   StandardHugeGraphTx tx, StandardChangeState changes) {
             for (TransactionLogHeader.Modification modification : txentry.getContentAsModifications(serializer)) {
-                InternalRelation rel = ModificationDeserializer.parseRelation(modification, tx);
+                InternalRelation rel = ModificationDeserializer.parseRelation(modification,tx);
 
-                // Special case for vertex addition/removal
+                //Special case for vertex addition/removal
                 Change state = modification.state;
-                if (rel.getType().equals(BaseKey.VertexExists)
-                        && !(rel.getVertex(0) instanceof HugeGraphSchemaElement)) {
-                    if (state == Change.REMOVED) { // Mark as removed
-                        ((StandardVertex) rel.getVertex(0)).updateLifeCycle(ElementLifeCycle.Event.REMOVED);
+                if (rel.getType().equals(BaseKey.VertexExists) && !(rel.getVertex(0) instanceof HugeGraphSchemaElement)) {
+                    if (state==Change.REMOVED) { //Mark as removed
+                        ((StandardVertex)rel.getVertex(0)).updateLifeCycle(ElementLifeCycle.Event.REMOVED);
                     }
                     changes.addVertex(rel.getVertex(0), state);
                 } else if (!rel.isInvisible()) {
-                    changes.addRelation(rel, state);
+                    changes.addRelation(rel,state);
                 }
             }
         }
 
         @Override
         public void read(Message message) {
-            for (int i = 1; i <= retryAttempts; i++) {
-                StandardHugeGraphTx tx = (StandardHugeGraphTx) graph.newTransaction();
+            for (int i=1;i<=retryAttempts;i++) {
+                StandardHugeGraphTx tx = (StandardHugeGraphTx)graph.newTransaction();
                 StandardChangeState changes = new StandardChangeState();
                 StandardTransactionId transactionId = null;
                 try {
                     ReadBuffer content = message.getContent().asReadBuffer();
-                    String senderId = message.getSenderId();
+                    String senderId =  message.getSenderId();
                     TransactionLogHeader.Entry txentry = TransactionLogHeader.parse(content, serializer, times);
                     if (txentry.getMetadata().containsKey(LogTxMeta.SOURCE_TRANSACTION)) {
-                        transactionId = (StandardTransactionId) txentry.getMetadata().get(LogTxMeta.SOURCE_TRANSACTION);
+                        transactionId = (StandardTransactionId)txentry.getMetadata().get(LogTxMeta.SOURCE_TRANSACTION);
                     } else {
-                        transactionId = new StandardTransactionId(senderId, txentry.getHeader().getId(),
-                                txentry.getHeader().getTimestamp());
+                        transactionId = new StandardTransactionId(senderId,txentry.getHeader().getId(), txentry.getHeader().getTimestamp());
                     }
-                    readRelations(txentry, tx, changes);
+                    readRelations(txentry,tx,changes);
                 } catch (Throwable e) {
                     tx.rollback();
-                    logger.error(
-                            "Encountered exception [{}] when preparing processor [{}] for user log [{}] on attempt {} of {}",
-                            e.getMessage(), processor, userlogName, i, retryAttempts);
-                    logger.error("Full exception: ", e);
+                    logger.error("Encountered exception [{}] when preparing processor [{}] for user log [{}] on attempt {} of {}",
+                            e.getMessage(),processor, userlogName,i,retryAttempts);
+                    logger.error("Full exception: ",e);
                     continue;
                 }
-                assert transactionId != null;
+                assert transactionId!=null;
                 try {
-                    processor.process(tx, transactionId, changes);
+                    processor.process(tx,transactionId,changes);
                     return;
                 } catch (Throwable e) {
                     tx.rollback();
                     tx = null;
-                    logger.error(
-                            "Encountered exception [{}] when running processor [{}] for user log [{}] on attempt {} of {}",
-                            e.getMessage(), processor, userlogName, i, retryAttempts);
-                    logger.error("Full exception: ", e);
+                    logger.error("Encountered exception [{}] when running processor [{}] for user log [{}] on attempt {} of {}",
+                            e.getMessage(),processor, userlogName,i,retryAttempts);
+                    logger.error("Full exception: ",e);
                 } finally {
-                    if (tx != null)
-                        tx.commit();
+                    if (tx!=null) tx.commit();
                 }
             }
         }

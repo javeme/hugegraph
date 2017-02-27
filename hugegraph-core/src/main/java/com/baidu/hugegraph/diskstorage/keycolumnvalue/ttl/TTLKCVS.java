@@ -36,8 +36,7 @@ public class TTLKCVS extends KCVSProxy {
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         TTLKCVSManager.applyTTL(additions, ttl);
         store.mutate(key, additions, deletions, unwrapTx(txh));
     }

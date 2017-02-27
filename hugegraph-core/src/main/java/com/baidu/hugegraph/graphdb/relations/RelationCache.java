@@ -21,7 +21,8 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import java.util.*;
 
 /**
- * Immutable map from long key ids to objects. Implemented for memory and time efficiency.
+ * Immutable map from long key ids to objects.
+ * Implemented for memory and time efficiency.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -35,8 +36,8 @@ public class RelationCache implements Iterable<LongObjectCursor<Object>> {
     private final Object other;
     private final LongObjectHashMap<Object> properties;
 
-    public RelationCache(final Direction direction, final long typeId, final long relationId, final Object other,
-            final LongObjectHashMap<Object> properties) {
+    public RelationCache(final Direction direction, final long typeId, final long relationId,
+                         final Object other, final LongObjectHashMap<Object> properties) {
         this.direction = direction;
         this.typeId = typeId;
         this.relationId = relationId;
@@ -44,8 +45,9 @@ public class RelationCache implements Iterable<LongObjectCursor<Object>> {
         this.properties = (properties == null || properties.size() > 0) ? properties : EMPTY;
     }
 
-    public RelationCache(final Direction direction, final long typeId, final long relationId, final Object other) {
-        this(direction, typeId, relationId, other, null);
+    public RelationCache(final Direction direction, final long typeId, final long relationId,
+                         final Object other) {
+        this(direction,typeId,relationId,other,null);
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +82,7 @@ public class RelationCache implements Iterable<LongObjectCursor<Object>> {
 
     @Override
     public String toString() {
-        return typeId + "-" + direction + "->" + other + ":" + relationId;
+         return typeId + "-" + direction + "->" + other + ":" + relationId;
     }
 
 }

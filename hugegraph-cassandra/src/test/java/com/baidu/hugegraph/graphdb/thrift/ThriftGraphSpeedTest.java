@@ -28,13 +28,14 @@ import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 import com.baidu.hugegraph.graphdb.database.StandardHugeGraph;
 import com.baidu.hugegraph.testcategory.PerformanceTests;
 
-@Category({ PerformanceTests.class })
+@Category({PerformanceTests.class})
 public class ThriftGraphSpeedTest extends HugeGraphSpeedTest {
 
     private static StandardHugeGraph graph;
     private static SpeedTestSchema schema;
 
-    private static final Logger log = LoggerFactory.getLogger(ThriftGraphSpeedTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ThriftGraphSpeedTest.class);
 
     public ThriftGraphSpeedTest() throws BackendException {
         super(CassandraStorageSetup.getCassandraThriftGraphConfiguration(ThriftGraphSpeedTest.class.getSimpleName()));
@@ -48,11 +49,12 @@ public class ThriftGraphSpeedTest extends HugeGraphSpeedTest {
     @Override
     protected StandardHugeGraph getGraph() throws BackendException {
 
+
         if (null == graph) {
             GraphDatabaseConfiguration graphconfig = new GraphDatabaseConfiguration(conf);
             graphconfig.getBackend().clearStorage();
             log.debug("Cleared backend storage");
-            graph = (StandardHugeGraph) HugeGraphFactory.open(conf);
+            graph = (StandardHugeGraph)HugeGraphFactory.open(conf);
             initializeGraph(graph);
         }
         return graph;

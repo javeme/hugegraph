@@ -37,7 +37,7 @@ public class StandardVertexProperty extends AbstractVertexProperty implements St
         this.lifecycle = lifecycle;
     }
 
-    // ############## SAME CODE AS StandardEdge #############################
+    //############## SAME CODE AS StandardEdge #############################
 
     private static final Map<PropertyKey, Object> EMPTY_PROPERTIES = ImmutableMap.of();
 
@@ -64,8 +64,7 @@ public class StandardVertexProperty extends AbstractVertexProperty implements St
 
     @Override
     public void setPropertyDirect(PropertyKey key, Object value) {
-        Preconditions.checkArgument(!(key instanceof ImplicitKey),
-                "Cannot use implicit type [%s] when setting property", key.name());
+        Preconditions.checkArgument(!(key instanceof ImplicitKey), "Cannot use implicit type [%s] when setting property", key.name());
         if (properties == EMPTY_PROPERTIES) {
             if (tx().getConfiguration().isSingleThreaded()) {
                 properties = new HashMap<PropertyKey, Object>(5);
@@ -89,8 +88,7 @@ public class StandardVertexProperty extends AbstractVertexProperty implements St
     public <O> O removePropertyDirect(PropertyKey key) {
         if (!properties.isEmpty())
             return (O) properties.remove(key);
-        else
-            return null;
+        else return null;
     }
 
     @Override
@@ -103,7 +101,7 @@ public class StandardVertexProperty extends AbstractVertexProperty implements St
         if (!ElementLifeCycle.isRemoved(lifecycle)) {
             tx().removeRelation(this);
             lifecycle = ElementLifeCycle.update(lifecycle, ElementLifeCycle.Event.REMOVED);
-        } // else throw InvalidElementException.removedException(this);
+        } //else throw InvalidElementException.removedException(this);
     }
 
 }

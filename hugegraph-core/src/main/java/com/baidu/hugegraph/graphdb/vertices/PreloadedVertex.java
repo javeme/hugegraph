@@ -63,8 +63,8 @@ public class PreloadedVertex extends CacheVertex {
     }
 
     public void setAccessCheck(final AccessCheck accessCheck) {
-        Preconditions.checkArgument(accessCheck != null);
-        this.accessCheck = accessCheck;
+        Preconditions.checkArgument(accessCheck!=null);
+        this.accessCheck=accessCheck;
     }
 
     @Override
@@ -83,10 +83,8 @@ public class PreloadedVertex extends CacheVertex {
 
     @Override
     public VertexCentricQueryBuilder query() {
-        if (super.getQueryCacheSize() > 0)
-            return super.query().queryOnlyGivenVertex();
-        else
-            throw GraphComputer.Exceptions.adjacentVertexEdgesAndVerticesCanNotBeReadOrUpdated();
+        if (super.getQueryCacheSize() > 0) return super.query().queryOnlyGivenVertex();
+        else throw GraphComputer.Exceptions.adjacentVertexEdgesAndVerticesCanNotBeReadOrUpdated();
     }
 
     @Override
@@ -110,45 +108,39 @@ public class PreloadedVertex extends CacheVertex {
     }
 
     @Override
-    public <V> HugeGraphVertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value,
-            Object...keyValues) {
+    public <V> HugeGraphVertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value, Object... keyValues) {
         accessCheck.accessSetProperty();
         HugeGraphVertexProperty<V> p = mixin.property(cardinality, key, value);
         ElementHelper.attachProperties(p, keyValues);
         return p;
     }
 
-    public <V> HugeGraphVertexProperty<V> property(final String key, final V value, final Object...keyValues) {
+    public <V> HugeGraphVertexProperty<V> property(final String key, final V value, final Object... keyValues) {
         return property(VertexProperty.Cardinality.single, key, value, keyValues);
     }
 
     @Override
-    public <V> Iterator<VertexProperty<V>> properties(String...keys) {
+    public <V> Iterator<VertexProperty<V>> properties(String... keys) {
         accessCheck.accessProperties();
-        if (mixin == NO_MIXIN)
-            return super.properties(keys);
+        if (mixin == NO_MIXIN) return super.properties(keys);
         if (keys != null && keys.length > 0) {
             int count = 0;
-            for (int i = 0; i < keys.length; i++)
-                if (mixin.supports(keys[i]))
-                    count++;
-            if (count == 0 || !mixin.properties(keys).hasNext())
-                return super.properties(keys);
-            else if (count == keys.length)
-                return mixin.properties(keys);
+            for (int i = 0; i < keys.length; i++) if (mixin.supports(keys[i])) count++;
+            if (count == 0 || !mixin.properties(keys).hasNext()) return super.properties(keys);
+            else if (count == keys.length) return mixin.properties(keys);
         }
         return (Iterator) com.google.common.collect.Iterators.concat(super.properties(keys), mixin.properties(keys));
     }
 
     @Override
-    public HugeGraphEdge addEdge(String s, Vertex vertex, Object...keyValues) {
+    public HugeGraphEdge addEdge(String s, Vertex vertex, Object... keyValues) {
         throw GraphComputer.Exceptions.adjacentVertexEdgesAndVerticesCanNotBeReadOrUpdated();
     }
 
     @Override
-    public Iterator<Edge> edges(final Direction direction, final String...edgeLabels) {
+    public Iterator<Edge> edges(final Direction direction, final String... edgeLabels) {
         accessCheck.accessEdges();
-        return super.edges(direction, edgeLabels);
+        return super.edges(direction,edgeLabels);
     }
 
     @Override
@@ -203,17 +195,17 @@ public class PreloadedVertex extends CacheVertex {
     public static final AccessCheck CLOSEDSTAR_CHECK = new AccessCheck() {
         @Override
         public final void accessEdges() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
         public final void accessProperties() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
         public void accessSetProperty() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
@@ -221,7 +213,7 @@ public class PreloadedVertex extends CacheVertex {
             return EXCEPTION_RETRIEVER;
         }
 
-        private final Retriever<SliceQuery, EntryList> EXCEPTION_RETRIEVER = new Retriever<SliceQuery, EntryList>() {
+        private final Retriever<SliceQuery,EntryList> EXCEPTION_RETRIEVER = new Retriever<SliceQuery, EntryList>() {
             @Override
             public EntryList get(SliceQuery input) {
                 throw new UnsupportedOperationException("Cannot access data that hasn't been preloaded.");
@@ -232,17 +224,17 @@ public class PreloadedVertex extends CacheVertex {
     public static final AccessCheck OPENSTAR_CHECK = new AccessCheck() {
         @Override
         public final void accessEdges() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
         public final void accessProperties() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
         public void accessSetProperty() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
@@ -251,9 +243,10 @@ public class PreloadedVertex extends CacheVertex {
         }
     };
 
+
     public interface PropertyMixing {
 
-        public <V> Iterator<VertexProperty<V>> properties(String...keys);
+        public <V> Iterator<VertexProperty<V>> properties(String... keys);
 
         public boolean supports(String key);
 
@@ -263,7 +256,7 @@ public class PreloadedVertex extends CacheVertex {
 
     private static PropertyMixing NO_MIXIN = new PropertyMixing() {
         @Override
-        public <V> Iterator<VertexProperty<V>> properties(String...keys) {
+        public <V> Iterator<VertexProperty<V>> properties(String... keys) {
             return Collections.emptyIterator();
         }
 

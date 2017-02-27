@@ -30,7 +30,7 @@ public class InMemoryGraphComputerProvider extends AbstractHugeGraphComputerProv
     public ModifiableConfiguration getHugeGraphConfiguration(String graphName, Class<?> test, String testMethodName) {
         ModifiableConfiguration config = super.getHugeGraphConfiguration(graphName, test, testMethodName);
         config.setAll(StorageSetup.getInMemoryConfiguration().getAll());
-        config.set(GraphDatabaseConfiguration.STORAGE_TRANSACTIONAL, false);
+        config.set(GraphDatabaseConfiguration.STORAGE_TRANSACTIONAL,false);
         return config;
     }
 }

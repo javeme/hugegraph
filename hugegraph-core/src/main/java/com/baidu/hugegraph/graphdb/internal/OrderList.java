@@ -29,11 +29,9 @@ import java.util.List;
 
 public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderList.OrderEntry> {
 
-    public static final OrderList NO_ORDER = new OrderList() {
-        {
-            makeImmutable();
-        }
-    };
+    public static final OrderList NO_ORDER = new OrderList() {{
+        makeImmutable();
+    }};
 
     private List<OrderEntry> list = new ArrayList<OrderList.OrderEntry>(3);
     private boolean immutable = false;
@@ -60,9 +58,7 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
     }
 
     public boolean containsKey(PropertyKey key) {
-        for (int i = 0; i < list.size(); i++)
-            if (getKey(i).equals(key))
-                return true;
+        for (int i = 0; i < list.size(); i++) if (getKey(i).equals(key)) return true;
         return false;
     }
 
@@ -82,17 +78,15 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
     public boolean hasCommonOrder() {
         Order lastOrder = null;
         for (OrderEntry oe : list) {
-            if (lastOrder == null)
-                lastOrder = oe.order;
-            else if (lastOrder != oe.order)
-                return false;
+            if (lastOrder==null) lastOrder=oe.order;
+            else if (lastOrder!=oe.order) return false;
         }
         return true;
     }
 
     public Order getCommonOrder() {
-        Preconditions.checkArgument(hasCommonOrder(), "This OrderList does not have a common order");
-        return isEmpty() ? Order.DEFAULT : getOrder(0);
+        Preconditions.checkArgument(hasCommonOrder(),"This OrderList does not have a common order");
+        return isEmpty()?Order.DEFAULT:getOrder(0);
     }
 
     @Override
@@ -112,12 +106,9 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
 
     @Override
     public boolean equals(Object oth) {
-        if (this == oth)
-            return true;
-        else if (oth == null)
-            return false;
-        else if (!getClass().isInstance(oth))
-            return false;
+        if (this == oth) return true;
+        else if (oth == null) return false;
+        else if (!getClass().isInstance(oth)) return false;
         return list.equals(((OrderList) oth).list);
     }
 
@@ -125,10 +116,9 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
     public int compare(HugeGraphElement o1, HugeGraphElement o2) {
         for (int i = 0; i < list.size(); i++) {
             int cmp = list.get(i).compare(o1, o2);
-            if (cmp != 0)
-                return cmp;
+            if (cmp != 0) return cmp;
         }
-        // return o1.compareTo(o2);
+//        return o1.compareTo(o2);
         return 0;
     }
 
@@ -166,12 +156,9 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
             Object v1 = o1.valueOrNull(key);
             Object v2 = o2.valueOrNull(key);
             if (v1 == null || v2 == null) {
-                if (v1 == null && v2 == null)
-                    return 0;
-                else if (v1 == null)
-                    return 1;
-                else
-                    return -1; // v2==null
+                if (v1 == null && v2 == null) return 0;
+                else if (v1 == null) return 1;
+                else return -1; //v2==null
             } else {
                 return order.modulateNaturalOrder(((Comparable) v1).compareTo(v2));
             }
@@ -179,12 +166,9 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
 
         @Override
         public boolean equals(Object oth) {
-            if (this == oth)
-                return true;
-            else if (oth == null)
-                return false;
-            else if (!getClass().isInstance(oth))
-                return false;
+            if (this == oth) return true;
+            else if (oth == null) return false;
+            else if (!getClass().isInstance(oth)) return false;
             OrderEntry o = (OrderEntry) oth;
             return key.equals(o.key) && order == o.order;
         }

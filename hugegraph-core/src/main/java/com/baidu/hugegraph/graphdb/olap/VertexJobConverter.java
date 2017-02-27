@@ -45,8 +45,7 @@ import java.util.function.Predicate;
  */
 public class VertexJobConverter implements ScanJob {
 
-    protected static final SliceQuery VERTEX_EXISTS_QUERY =
-            new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(4)).setLimit(1);
+    protected static final SliceQuery VERTEX_EXISTS_QUERY = new SliceQuery(BufferUtil.zeroBuffer(1),BufferUtil.oneBuffer(4)).setLimit(1);
 
     public static final String GHOST_VERTEX_COUNT = "ghost-vertices";
     /**
@@ -61,10 +60,9 @@ public class VertexJobConverter implements ScanJob {
     private IDManager idManager;
 
     protected VertexJobConverter(HugeGraph graph, VertexScanJob job) {
-        Preconditions.checkArgument(job != null);
+        Preconditions.checkArgument(job!=null);
         this.graph = new GraphProvider();
-        if (graph != null)
-            this.graph.setGraph(graph);
+        if (graph!=null) this.graph.setGraph(graph);
         this.job = job;
     }
 
@@ -76,11 +74,11 @@ public class VertexJobConverter implements ScanJob {
     }
 
     public static ScanJob convert(HugeGraph graph, VertexScanJob vertexJob) {
-        return new VertexJobConverter(graph, vertexJob);
+        return new VertexJobConverter(graph,vertexJob);
     }
 
     public static ScanJob convert(VertexScanJob vertexJob) {
-        return new VertexJobConverter(null, vertexJob);
+        return new VertexJobConverter(null,vertexJob);
     }
 
     public static StandardHugeGraphTx startTransaction(StandardHugeGraph graph) {
@@ -89,7 +87,7 @@ public class VertexJobConverter implements ScanJob {
         txb.checkInternalVertexExistence(false);
         txb.dirtyVertexSize(0);
         txb.vertexCacheSize(0);
-        return (StandardHugeGraphTx) txb.start();
+        return (StandardHugeGraphTx)txb.start();
     }
 
     @Override
@@ -124,7 +122,7 @@ public class VertexJobConverter implements ScanJob {
     @Override
     public void process(StaticBuffer key, Map<SliceQuery, EntryList> entries, ScanMetrics metrics) {
         long vertexId = getVertexId(key);
-        assert entries.get(VERTEX_EXISTS_QUERY) != null;
+        assert entries.get(VERTEX_EXISTS_QUERY)!=null;
         if (isGhostVertex(vertexId, entries.get(VERTEX_EXISTS_QUERY))) {
             metrics.incrementCustom(GHOST_VERTEX_COUNT);
             return;
@@ -132,25 +130,23 @@ public class VertexJobConverter implements ScanJob {
         HugeGraphVertex vertex = tx.getInternalVertex(vertexId);
         Preconditions.checkArgument(vertex instanceof PreloadedVertex,
                 "The bounding transaction is not configured correctly");
-        PreloadedVertex v = (PreloadedVertex) vertex;
+        PreloadedVertex v = (PreloadedVertex)vertex;
         v.setAccessCheck(PreloadedVertex.OPENSTAR_CHECK);
-        for (Map.Entry<SliceQuery, EntryList> entry : entries.entrySet()) {
+        for (Map.Entry<SliceQuery,EntryList> entry : entries.entrySet()) {
             SliceQuery sq = entry.getKey();
-            if (sq.equals(VERTEX_EXISTS_QUERY))
-                continue;
+            if (sq.equals(VERTEX_EXISTS_QUERY)) continue;
             EntryList entryList = entry.getValue();
-            if (entryList.size() >= sq.getLimit())
-                metrics.incrementCustom(TRUNCATED_ENTRY_LISTS);
-            v.addToQueryCache(sq.updateLimit(Query.NO_LIMIT), entryList);
+            if (entryList.size()>=sq.getLimit()) metrics.incrementCustom(TRUNCATED_ENTRY_LISTS);
+            v.addToQueryCache(sq.updateLimit(Query.NO_LIMIT),entryList);
         }
         job.process(v, metrics);
     }
 
     protected boolean isGhostVertex(long vertexId, EntryList firstEntries) {
-        if (idManager.isPartitionedVertex(vertexId) && !idManager.isCanonicalVertexId(vertexId))
-            return false;
+        if (idManager.isPartitionedVertex(vertexId) && !idManager.isCanonicalVertexId(vertexId)) return false;
 
-        RelationCache relCache = tx.getEdgeSerializer().parseRelation(firstEntries.get(0), true, tx);
+        RelationCache relCache = tx.getEdgeSerializer().parseRelation(
+                firstEntries.get(0),true,tx);
         return relCache.typeId != BaseKey.VertexExists.longId();
     }
 
@@ -174,10 +170,8 @@ public class VertexJobConverter implements ScanJob {
     public Predicate<StaticBuffer> getKeyFilter() {
         return buffer -> {
             long vertexId = getVertexId(buffer);
-            if (IDManager.VertexIDType.Invisible.is(vertexId))
-                return false;
-            else
-                return true;
+            if (IDManager.VertexIDType.Invisible.is(vertexId)) return false;
+            else return true;
         };
     }
 
@@ -192,12 +186,12 @@ public class VertexJobConverter implements ScanJob {
 
     public static class GraphProvider {
 
-        private StandardHugeGraph graph = null;
-        private boolean provided = false;
+        private StandardHugeGraph graph=null;
+        private boolean provided=false;
 
         public void setGraph(HugeGraph graph) {
-            Preconditions.checkArgument(graph != null && graph.isOpen(), "Need to provide open graph");
-            this.graph = (StandardHugeGraph) graph;
+            Preconditions.checkArgument(graph!=null && graph.isOpen(),"Need to provide open graph");
+            this.graph = (StandardHugeGraph)graph;
             provided = true;
         }
 
@@ -210,7 +204,7 @@ public class VertexJobConverter implements ScanJob {
         public void close() {
             if (!provided && null != graph && graph.isOpen()) {
                 graph.close();
-                graph = null;
+                graph=null;
             }
         }
 
@@ -219,9 +213,10 @@ public class VertexJobConverter implements ScanJob {
         }
 
         public final StandardHugeGraph get() {
-            Preconditions.checkState(graph != null);
+            Preconditions.checkState(graph!=null);
             return graph;
         }
+
 
     }
 

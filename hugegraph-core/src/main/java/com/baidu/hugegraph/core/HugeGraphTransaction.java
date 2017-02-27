@@ -17,14 +17,14 @@ package com.baidu.hugegraph.core;
 import com.baidu.hugegraph.graphdb.relations.RelationIdentifier;
 
 /**
- * HugeGraphTransaction defines a transactional context for a {@link HugeGraph}. Since HugeGraph is a transactional
- * graph database, all interactions with the graph are mitigated by a HugeGraphTransaction.
+ * HugeGraphTransaction defines a transactional context for a {@link HugeGraph}. Since HugeGraph is a transactional graph
+ * database, all interactions with the graph are mitigated by a HugeGraphTransaction.
  * <p/>
  * All vertex and edge retrievals are channeled by a graph transaction which bundles all such retrievals, creations and
  * deletions into one transaction. A graph transaction is analogous to a
- * <a href="http://en.wikipedia.org/wiki/Database_transaction">database transaction</a>. The isolation level and
- * <a href="http://en.wikipedia.org/wiki/ACID">ACID support</a> are configured through the storage backend, meaning
- * whatever level of isolation is supported by the storage backend is mirrored by a graph transaction.
+ * <a href="http://en.wikipedia.org/wiki/Database_transaction">database transaction</a>.
+ * The isolation level and <a href="http://en.wikipedia.org/wiki/ACID">ACID support</a> are configured through the storage
+ * backend, meaning whatever level of isolation is supported by the storage backend is mirrored by a graph transaction.
  * <p/>
  * A graph transaction supports:
  * <ul>
@@ -39,20 +39,19 @@ import com.baidu.hugegraph.graphdb.relations.RelationIdentifier;
  */
 public interface HugeGraphTransaction extends Transaction {
 
-    /*
-     * --------------------------------------------------------------- Modifications
-     * ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Modifications
+    * ---------------------------------------------------------------
+    */
 
     /**
-     * Creates a new vertex in the graph with the given vertex id and the given vertex label. Note, that an exception is
-     * thrown if the vertex id is not a valid HugeGraph vertex id or if a vertex with the given id already exists.
+     * Creates a new vertex in the graph with the given vertex id and the given vertex label.
+     * Note, that an exception is thrown if the vertex id is not a valid HugeGraph vertex id or if a vertex with the given
+     * id already exists.
      * <p/>
-     * Custom id setting must be enabled via the configuration option
-     * {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#ALLOW_SETTING_VERTEX_ID}.
+     * Custom id setting must be enabled via the configuration option {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#ALLOW_SETTING_VERTEX_ID}.
      * <p/>
-     * Use {@link com.baidu.hugegraph.core.util.HugeGraphId#toVertexId(long)} to construct a valid HugeGraph vertex id
-     * from a user id.
+     * Use {@link com.baidu.hugegraph.core.util.HugeGraphId#toVertexId(long)} to construct a valid HugeGraph vertex id from a user id.
      *
      * @param id vertex id of the vertex to be created
      * @param vertexLabel vertex label for this vertex - can be null if no vertex label should be set.
@@ -63,42 +62,45 @@ public interface HugeGraphTransaction extends Transaction {
     /**
      * Retrieves the vertex for the specified id.
      *
-     * This method is intended for internal use only. Use
-     * {@link org.apache.tinkerpop.gremlin.structure.Graph#vertices(Object...)} instead.
+     * This method is intended for internal use only. Use {@link org.apache.tinkerpop.gremlin.structure.Graph#vertices(Object...)} instead.
      *
      * @param id id of the vertex to retrieve
      * @return vertex with the given id if it exists, else null
      */
     public HugeGraphVertex getVertex(long id);
 
-    public Iterable<HugeGraphVertex> getVertices(long...ids);
 
-    public Iterable<HugeGraphEdge> getEdges(RelationIdentifier...ids);
+    public Iterable<HugeGraphVertex> getVertices(long... ids);
 
-    /*
-     * --------------------------------------------------------------- Closing and admin
-     * ---------------------------------------------------------------
-     */
+    public Iterable<HugeGraphEdge> getEdges(RelationIdentifier... ids);
+
+   /* ---------------------------------------------------------------
+    * Closing and admin
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Commits and closes the transaction.
      * <p/>
-     * Will attempt to persist all modifications which may result in exceptions in case of persistence failures or lock
-     * contention. <br />
-     * The call releases data structures if possible. All element references (e.g. vertex objects) retrieved through
-     * this transaction are stale after the transaction closes and should no longer be used.
+     * Will attempt to persist all modifications which may result in exceptions in case of persistence failures or
+     * lock contention.
+     * <br />
+     * The call releases data structures if possible. All element references (e.g. vertex objects) retrieved
+     * through this transaction are stale after the transaction closes and should no longer be used.
      *
-     * @throws com.baidu.hugegraph.diskstorage.BackendException if an error arises during persistence
+     * @throws com.baidu.hugegraph.diskstorage.BackendException
+     *          if an error arises during persistence
      */
     public void commit();
 
     /**
      * Aborts and closes the transaction. Will discard all modifications.
      * <p/>
-     * The call releases data structures if possible. All element references (e.g. vertex objects) retrieved through
-     * this transaction are stale after the transaction closes and should no longer be used.
+     * The call releases data structures if possible. All element references (e.g. vertex objects) retrieved
+     * through this transaction are stale after the transaction closes and should no longer be used.
      *
-     * @throws com.baidu.hugegraph.diskstorage.BackendException if an error arises when releasing the transaction handle
+     * @throws com.baidu.hugegraph.diskstorage.BackendException
+     *          if an error arises when releasing the transaction handle
      */
     public void rollback();
 

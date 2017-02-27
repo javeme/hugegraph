@@ -15,8 +15,9 @@
 package com.baidu.hugegraph.core;
 
 /**
- * HugeGraph represents element identifiers as longs, but not all numbers in the representable space of longs are valid.
- * This exception can be thrown when an invalid long ID is encountered.
+ * HugeGraph represents element identifiers as longs, but not all numbers
+ * in the representable space of longs are valid.  This exception can
+ * be thrown when an invalid long ID is encountered.
  */
 public class SchemaViolationException extends IllegalArgumentException {
 
@@ -24,8 +25,8 @@ public class SchemaViolationException extends IllegalArgumentException {
         super(msg);
     }
 
-    public SchemaViolationException(String msg, Object...args) {
-        super(String.format(msg, args));
+    public SchemaViolationException(String msg, Object... args) {
+        super(String.format(msg,args));
     }
 
 }

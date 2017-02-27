@@ -39,9 +39,9 @@ public class SerializerSpeedTest extends SerializerTestCommon {
 
     @Test
     public void performanceTestObjectSerialization() {
-        serialize.registerClass(2, TClass1.class, new TClass1Serializer());
-        serialize.registerClass(80342, TClass2.class, new TClass2Serializer());
-        serialize.registerClass(999, TEnum.class, new TEnumSerializer());
+        serialize.registerClass(2,TClass1.class, new TClass1Serializer());
+        serialize.registerClass(80342,TClass2.class, new TClass2Serializer());
+        serialize.registerClass(999,TEnum.class, new TEnumSerializer());
         int runs = 1000000;
         for (int i = 0; i < runs; i++) {
             objectWriteRead();

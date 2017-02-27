@@ -33,17 +33,17 @@
                 <include>*:*:jar:*</include>
             </includes>
             <excludes>
-                <exclude>${project.groupId}:janusgraph-core:jar:javadoc:${project.version}</exclude>
+                <exclude>${project.groupId}:hugegraph-core:jar:javadoc:${project.version}</exclude>
             </excludes>
         </dependencySet>
 
-        <!-- Example data (from janusgraph-hadoop/faunus) -->
+        <!-- Example data (from hugegraph-hadoop/faunus) -->
         <dependencySet>
             <unpack>true</unpack>
             <outputDirectory>/examples</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>${project.groupId}:janusgraph-hadoop-core:zip:example-data:${project.version}</include>
+                <include>${project.groupId}:hugegraph-hadoop-core:zip:example-data:${project.version}</include>
             </includes>
         </dependencySet>
     </dependencySets>

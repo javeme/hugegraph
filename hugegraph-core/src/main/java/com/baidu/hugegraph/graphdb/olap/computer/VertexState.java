@@ -33,85 +33,68 @@ public class VertexState<M> {
     private Object currentMessages;
 
     private VertexState() {
-        properties = null;
-        previousMessages = null;
-        currentMessages = null;
+        properties=null;
+        previousMessages=null;
+        currentMessages=null;
     }
 
-    public VertexState(Map<String, Integer> keyMap) {
+    public VertexState(Map<String,Integer> keyMap) {
         assert isValidIdMap(keyMap);
         previousMessages = null;
         currentMessages = null;
 
-        if (keyMap.isEmpty() || keyMap.size() == 1)
-            properties = null;
-        else
-            properties = new Object[keyMap.size()];
+        if (keyMap.isEmpty() || keyMap.size()==1) properties = null;
+        else properties = new Object[keyMap.size()];
     }
 
-    public <V> void setProperty(String key, V value, Map<String, Integer> keyMap) {
+    public<V> void setProperty(String key, V value, Map<String,Integer> keyMap) {
         assert !keyMap.isEmpty() && keyMap.containsKey(key);
-        if (keyMap.size() == 1)
-            properties = value;
-        else
-            ((Object[]) properties)[keyMap.get(key)] = value;
+        if (keyMap.size()==1) properties = value;
+        else ((Object[])properties)[keyMap.get(key)]=value;
     }
 
-    public <V> V getProperty(String key, Map<String, Integer> keyMap) {
+    public<V> V getProperty(String key, Map<String,Integer> keyMap) {
         assert !keyMap.isEmpty() && keyMap.containsKey(key);
-        if (keyMap.size() == 1)
-            return (V) properties;
-        else
-            return (V) ((Object[]) properties)[keyMap.get(key)];
+        if (keyMap.size()==1) return (V)properties;
+        else return (V)((Object[])properties)[keyMap.get(key)];
     }
 
-    private void initializeCurrentMessages(Map<MessageScope, Integer> scopeMap) {
+    private void initializeCurrentMessages(Map<MessageScope,Integer> scopeMap) {
         assert !scopeMap.isEmpty() && isValidIdMap(scopeMap);
-        if (currentMessages == null) {
-            if (scopeMap.size() > 1)
-                currentMessages = new Object[scopeMap.size()];
+        if (currentMessages==null) {
+            if (scopeMap.size()>1) currentMessages = new Object[scopeMap.size()];
         }
     }
 
-    public synchronized void setMessage(M message, MessageScope scope, Map<MessageScope, Integer> scopeMap) {
-        assert message != null && scope != null;
-        Preconditions.checkArgument(scopeMap.containsKey(scope),
-                "Provided scope was not declared in the VertexProgram: %s", scope);
+    public synchronized void setMessage(M message, MessageScope scope, Map<MessageScope,Integer> scopeMap) {
+        assert message!=null && scope!=null;
+        Preconditions.checkArgument(scopeMap.containsKey(scope),"Provided scope was not declared in the VertexProgram: %s",scope);
         initializeCurrentMessages(scopeMap);
-        if (scopeMap.size() == 1)
-            currentMessages = message;
-        else
-            ((Object[]) currentMessages)[scopeMap.get(scope)] = message;
+        if (scopeMap.size()==1) currentMessages = message;
+        else ((Object[])currentMessages)[scopeMap.get(scope)]=message;
     }
 
-    public synchronized void addMessage(M message, MessageScope scope, Map<MessageScope, Integer> scopeMap,
-            MessageCombiner<M> combiner) {
-        assert message != null && scope != null && combiner != null;
-        Preconditions.checkArgument(scopeMap.containsKey(scope),
-                "Provided scope was not declared in the VertexProgram: %s", scope);
+    public synchronized void addMessage(M message, MessageScope scope, Map<MessageScope,Integer> scopeMap,
+                                        MessageCombiner<M> combiner) {
+        assert message!=null && scope!=null && combiner!=null;
+        Preconditions.checkArgument(scopeMap.containsKey(scope),"Provided scope was not declared in the VertexProgram: %s",scope);
         assert scopeMap.containsKey(scope);
         initializeCurrentMessages(scopeMap);
-        if (scopeMap.size() == 1) {
-            if (currentMessages == null)
-                currentMessages = message;
-            else
-                currentMessages = combiner.combine(message, (M) currentMessages);
+        if (scopeMap.size()==1) {
+            if (currentMessages==null) currentMessages = message;
+            else currentMessages = combiner.combine(message,(M)currentMessages);
         } else {
             int pos = scopeMap.get(scope);
-            Object[] msgs = (Object[]) currentMessages;
-            if (msgs[pos] == null)
-                msgs[pos] = message;
-            else
-                msgs[pos] = combiner.combine(message, (M) msgs[pos]);
+            Object[] msgs =  (Object[])currentMessages;
+            if (msgs[pos]==null) msgs[pos]=message;
+            else msgs[pos] = combiner.combine(message,(M)msgs[pos]);
         }
     }
 
-    public M getMessage(MessageScope scope, Map<MessageScope, Integer> scopeMap) {
-        assert scope != null && isValidIdMap(scopeMap) && scopeMap.containsKey(scope);
-        if (scopeMap.size() == 1)
-            return (M) previousMessages;
-        else
-            return (M) ((Object[]) previousMessages)[scopeMap.get(scope)];
+    public M getMessage(MessageScope scope, Map<MessageScope,Integer> scopeMap) {
+        assert scope!=null && isValidIdMap(scopeMap) && scopeMap.containsKey(scope);
+        if (scopeMap.size()==1) return (M)previousMessages;
+        else return (M)((Object[])previousMessages)[scopeMap.get(scope)];
     }
 
     public synchronized void completeIteration() {
@@ -119,18 +102,14 @@ public class VertexState<M> {
         currentMessages = null;
     }
 
-    public static boolean isValidIdMap(Map<?, Integer> map) {
-        if (map == null)
-            return false;
-        if (map.isEmpty())
-            return true;
+    public static boolean isValidIdMap(Map<?,Integer> map) {
+        if (map==null) return false;
+        if (map.isEmpty()) return true;
         int size = map.size();
         Set<Integer> ids = new HashSet<>(size);
         for (Integer id : map.values()) {
-            if (id >= size || id < 0)
-                return false;
-            if (!ids.add(id))
-                return false;
+            if (id>=size || id<0) return false;
+            if (!ids.add(id)) return false;
         }
         return true;
     }
@@ -140,28 +119,28 @@ public class VertexState<M> {
     private static class EmptyState<M> extends VertexState<M> {
 
         @Override
-        public <V> void setProperty(String key, V value, Map<String, Integer> keyMap) {
+        public<V> void setProperty(String key, V value, Map<String,Integer> keyMap) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public <V> V getProperty(String key, Map<String, Integer> keyMap) {
+        public<V> V getProperty(String key, Map<String,Integer> keyMap) {
             return null;
         }
 
         @Override
-        public M getMessage(MessageScope scope, Map<MessageScope, Integer> scopeMap) {
+        public M getMessage(MessageScope scope, Map<MessageScope,Integer> scopeMap) {
             return null;
         }
 
         @Override
-        public synchronized void setMessage(M message, MessageScope scope, Map<MessageScope, Integer> scopeMap) {
+        public synchronized void setMessage(M message, MessageScope scope, Map<MessageScope,Integer> scopeMap) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public synchronized void addMessage(M message, MessageScope scope, Map<MessageScope, Integer> scopeMap,
-                MessageCombiner<M> combiner) {
+        public synchronized void addMessage(M message, MessageScope scope, Map<MessageScope,Integer> scopeMap,
+                                            MessageCombiner<M> combiner) {
             throw new UnsupportedOperationException();
         }
 
@@ -169,6 +148,7 @@ public class VertexState<M> {
         public synchronized void completeIteration() {
             throw new UnsupportedOperationException();
         }
+
 
     }
 

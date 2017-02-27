@@ -35,9 +35,11 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
     private final String groupName;
     private final Configuration customOptions;
 
-    private StandardBaseTransactionConfig(String groupName, TimestampProvider times, Instant commitTime,
-            Configuration customOptions) {
-        Preconditions.checkArgument(customOptions != null);
+    private StandardBaseTransactionConfig(String groupName,
+                                          TimestampProvider times,
+                                          Instant commitTime,
+                                          Configuration customOptions) {
+        Preconditions.checkArgument(customOptions!=null);
         Preconditions.checkArgument(null != times || null != commitTime);
         this.groupName = groupName;
         this.times = times;
@@ -47,8 +49,8 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
 
     @Override
     public synchronized Instant getCommitTime() {
-        if (commitTime == null) {
-            // set commit time to current time
+        if (commitTime==null) {
+            //set commit time to current time
             commitTime = times.getTime();
         }
         return commitTime;
@@ -56,13 +58,13 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
 
     @Override
     public synchronized void setCommitTime(Instant time) {
-        Preconditions.checkArgument(commitTime == null, "A commit time has already been set");
-        this.commitTime = time;
+        Preconditions.checkArgument(commitTime==null,"A commit time has already been set");
+        this.commitTime=time;
     }
 
     @Override
     public boolean hasCommitTime() {
-        return commitTime != null;
+        return commitTime!=null;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
 
     @Override
     public boolean hasGroupName() {
-        return groupName != null;
+        return groupName !=null;
     }
 
     @Override
@@ -97,13 +99,15 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
         private String groupName = GraphDatabaseConfiguration.getSystemMetricsPrefix();
         private Configuration customOptions = Configuration.EMPTY;
 
-        public Builder() {
-        }
+        public Builder() { }
 
         /**
-         * Copies everything from {@code template} to this builder except for the {@code commitTime}.
+         * Copies everything from {@code template} to this builder except for
+         * the {@code commitTime}.
          *
-         * @param template an existing transaction from which this builder will take its values
+         * @param template
+         *            an existing transaction from which this builder will take
+         *            its values
          */
         public Builder(BaseTransactionConfig template) {
             customOptions(template.getCustomOptions());
@@ -128,8 +132,7 @@ public class StandardBaseTransactionConfig implements BaseTransactionConfig {
 
         public Builder customOptions(Configuration c) {
             customOptions = c;
-            Preconditions.checkNotNull(customOptions,
-                    "Null custom options disallowed; use an empty Configuration object instead");
+            Preconditions.checkNotNull(customOptions, "Null custom options disallowed; use an empty Configuration object instead");
             return this;
         }
 

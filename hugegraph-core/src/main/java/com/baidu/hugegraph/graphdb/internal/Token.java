@@ -26,12 +26,11 @@ public class Token {
     public static final char SEPARATOR_CHAR = 0x1e;
 
     public static final String systemETprefix = Graph.Hidden.hide("T$");
-    public static final String NON_EXISTANT_TYPE = systemETprefix + "doesNotExist";
+    public static final String NON_EXISTANT_TYPE = systemETprefix+"doesNotExist";
 
-    public static final String getSeparatedName(String...components) {
-        for (String component : components)
-            verifyName(component);
-        return StringUtils.join(components, SEPARATOR_CHAR);
+    public static final String getSeparatedName(String... components) {
+        for (String component : components) verifyName(component);
+        return StringUtils.join(components,SEPARATOR_CHAR);
     }
 
     public static final void verifyName(String name) {
@@ -40,7 +39,7 @@ public class Token {
     }
 
     public static final String[] splitSeparatedName(String name) {
-        return name.split(SEPARATOR_CHAR + "");
+        return name.split(SEPARATOR_CHAR+"");
     }
 
     public static final String INTERNAL_INDEX_NAME = "internalindex";
@@ -52,5 +51,7 @@ public class Token {
     public static String makeSystemName(String name) {
         return Graph.Hidden.hide(name);
     }
+
+
 
 }

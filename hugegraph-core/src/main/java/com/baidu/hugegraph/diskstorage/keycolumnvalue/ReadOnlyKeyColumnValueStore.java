@@ -32,14 +32,13 @@ public class ReadOnlyKeyColumnValueStore extends KCVSProxy {
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
+    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue,
+                            StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException("Cannot lock on a read-only store");
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException("Cannot mutate a read-only store");
     }
 

@@ -43,8 +43,7 @@ public class HugeGraphTraversalUtil {
         }
         if (v instanceof HugeGraphVertex) {
             return (HugeGraphVertex) v;
-        } else
-            throw new IllegalArgumentException("Expected traverser of HugeGraph vertex but found: " + v);
+        } else throw new IllegalArgumentException("Expected traverser of HugeGraph vertex but found: " + v);
     }
 
     public static HugeGraphVertex getHugeGraphVertex(Traverser<? extends Element> traverser) {
@@ -61,9 +60,8 @@ public class HugeGraphTraversalUtil {
 
     public static Step getNextNonIdentityStep(final Step start) {
         Step currentStep = start.getNextStep();
-        // Skip over identity steps
-        while (currentStep instanceof IdentityStep)
-            currentStep = currentStep.getNextStep();
+        //Skip over identity steps
+        while (currentStep instanceof IdentityStep) currentStep = currentStep.getNextStep();
         return currentStep;
     }
 
@@ -77,19 +75,14 @@ public class HugeGraphTraversalUtil {
             if (!optGraph.isPresent())
                 throw new IllegalArgumentException("Traversal is not bound to a graph: " + traversal);
             Graph graph = optGraph.get();
-            if (graph instanceof HugeGraphTransaction)
-                tx = (HugeGraphTransaction) graph;
-            else if (graph instanceof HugeGraphBlueprintsGraph)
-                tx = ((HugeGraphBlueprintsGraph) graph).getCurrentThreadTx();
-            else
-                throw new IllegalArgumentException("Traversal is not bound to a HugeGraph Graph, but: " + graph);
+            if (graph instanceof HugeGraphTransaction) tx = (HugeGraphTransaction) graph;
+            else if (graph instanceof HugeGraphBlueprintsGraph) tx = ((HugeGraphBlueprintsGraph) graph).getCurrentThreadTx();
+            else throw new IllegalArgumentException("Traversal is not bound to a HugeGraph Graph, but: " + graph);
         }
         if (tx == null)
             throw new IllegalArgumentException("Not a valid start step for a HugeGraph traversal: " + traversal);
-        if (tx.isOpen())
-            return tx;
-        else
-            return ((StandardHugeGraphTx) tx).getNextTx();
+        if (tx.isOpen()) return tx;
+        else return ((StandardHugeGraphTx) tx).getNextTx();
     }
 
 }

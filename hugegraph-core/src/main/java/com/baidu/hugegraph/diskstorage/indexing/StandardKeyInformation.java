@@ -28,7 +28,8 @@ public class StandardKeyInformation implements KeyInformation {
     private final Parameter[] parameters;
     private final Cardinality cardinality;
 
-    public StandardKeyInformation(Class<?> dataType, Cardinality cardinality, Parameter...parameters) {
+
+    public StandardKeyInformation(Class<?> dataType, Cardinality cardinality, Parameter... parameters) {
         Preconditions.checkNotNull(dataType);
         Preconditions.checkNotNull(parameters);
         this.dataType = dataType;
@@ -36,7 +37,7 @@ public class StandardKeyInformation implements KeyInformation {
         this.cardinality = cardinality;
     }
 
-    public StandardKeyInformation(PropertyKey key, Parameter...parameters) {
+    public StandardKeyInformation(PropertyKey key, Parameter... parameters) {
         Preconditions.checkNotNull(key);
         Preconditions.checkNotNull(parameters);
         this.dataType = key.dataType();
@@ -44,13 +45,14 @@ public class StandardKeyInformation implements KeyInformation {
         this.cardinality = key.cardinality();
     }
 
+
     @Override
     public Class<?> getDataType() {
         return dataType;
     }
 
     public boolean hasParameters() {
-        return parameters.length > 0;
+        return parameters.length>0;
     }
 
     @Override

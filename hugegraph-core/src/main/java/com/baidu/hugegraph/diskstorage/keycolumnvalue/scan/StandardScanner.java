@@ -36,17 +36,16 @@ import java.util.function.Consumer;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class StandardScanner {
+public class StandardScanner  {
 
     private final KeyColumnValueStoreManager manager;
     private final Set<KeyColumnValueStore> openStores;
-    private final ConcurrentMap<Object, StandardScannerExecutor> runningJobs;
+    private final ConcurrentMap<Object,StandardScannerExecutor> runningJobs;
     private final AtomicLong jobCounter;
 
     public StandardScanner(final KeyColumnValueStoreManager manager) {
-        Preconditions.checkArgument(manager != null);
-        Preconditions.checkArgument(manager.getFeatures().hasScan(), "Provided data store does not support scans: %s",
-                manager);
+        Preconditions.checkArgument(manager!=null);
+        Preconditions.checkArgument(manager.getFeatures().hasScan(),"Provided data store does not support scans: %s",manager);
 
         this.manager = manager;
         this.openStores = new HashSet<>(4);
@@ -59,26 +58,23 @@ public class StandardScanner {
     }
 
     public void close() throws BackendException {
-        // Interrupt running jobs
+        //Interrupt running jobs
         for (StandardScannerExecutor exe : runningJobs.values()) {
-            if (exe.isCancelled() || exe.isDone())
-                continue;
+            if (exe.isCancelled() || exe.isDone()) continue;
             exe.cancel(true);
         }
-        for (KeyColumnValueStore kcvs : openStores)
-            kcvs.close();
+        for (KeyColumnValueStore kcvs : openStores) kcvs.close();
     }
 
     private void addJob(Object jobId, StandardScannerExecutor executor) {
-        for (Map.Entry<Object, StandardScannerExecutor> jobs : runningJobs.entrySet()) {
+        for (Map.Entry<Object,StandardScannerExecutor> jobs : runningJobs.entrySet()) {
             StandardScannerExecutor exe = jobs.getValue();
             if (exe.isDone() || exe.isCancelled()) {
-                runningJobs.remove(jobs.getKey(), exe);
+                runningJobs.remove(jobs.getKey(),exe);
             }
         }
-        runningJobs.putIfAbsent(jobId, executor);
-        Preconditions.checkArgument(runningJobs.get(jobId) == executor,
-                "Another job with the same id is already running: %s", jobId);
+        runningJobs.putIfAbsent(jobId,executor);
+        Preconditions.checkArgument(runningJobs.get(jobId)==executor,"Another job with the same id is already running: %s",jobId);
     }
 
     public HugeGraphManagement.IndexJobFuture getRunningJob(Object jobId) {
@@ -108,31 +104,30 @@ public class StandardScanner {
             jobConfiguration = Configuration.EMPTY;
             dbName = null;
             jobId = Long.valueOf(jobCounter.incrementAndGet());
-            finishJob = m -> {
-            };
+            finishJob = m -> {} ;
         }
 
         public Builder setNumProcessingThreads(int numThreads) {
-            Preconditions.checkArgument(numThreads > 0, "Need to specify a positive number of processing threads: %s",
-                    numThreads);
+            Preconditions.checkArgument(numThreads>0,
+                    "Need to specify a positive number of processing threads: %s",numThreads);
             this.numProcessingThreads = numThreads;
             return this;
         }
 
         public Builder setWorkBlockSize(int size) {
-            Preconditions.checkArgument(size > 0, "Need to specify a positive work block size: %s", size);
+            Preconditions.checkArgument(size>0, "Need to specify a positive work block size: %s",size);
             this.workBlockSize = size;
             return this;
         }
 
         public Builder setTimestampProvider(TimestampProvider times) {
-            Preconditions.checkArgument(times != null);
-            this.times = times;
+            Preconditions.checkArgument(times!=null);
+            this.times=times;
             return this;
         }
 
         public Builder setStoreName(String name) {
-            Preconditions.checkArgument(StringUtils.isNotBlank(name), "Invalid name: %s", name);
+            Preconditions.checkArgument(StringUtils.isNotBlank(name),"Invalid name: %s",name);
             this.dbName = name;
             return this;
         }
@@ -142,25 +137,25 @@ public class StandardScanner {
         }
 
         public Builder setJobId(Object id) {
-            Preconditions.checkArgument(id != null, "Need to provide a valid id: %s", id);
+            Preconditions.checkArgument(id!=null,"Need to provide a valid id: %s",id);
             this.jobId = id;
             return this;
         }
 
         public Builder setJob(ScanJob job) {
-            Preconditions.checkArgument(job != null);
+            Preconditions.checkArgument(job!=null);
             this.job = job;
             return this;
         }
 
         public Builder setGraphConfiguration(Configuration config) {
-            Preconditions.checkArgument(config != null);
+            Preconditions.checkArgument(config!=null);
             this.graphConfiguration = config;
             return this;
         }
 
         public Builder setJobConfiguration(Configuration config) {
-            Preconditions.checkArgument(config != null);
+            Preconditions.checkArgument(config!=null);
             this.jobConfiguration = config;
             return this;
         }
@@ -176,46 +171,45 @@ public class StandardScanner {
         }
 
         public HugeGraphManagement.IndexJobFuture execute() throws BackendException {
-            Preconditions.checkArgument(job != null, "Need to specify a job to execute");
-            Preconditions.checkArgument(StringUtils.isNotBlank(dbName),
-                    "Need to specify a database to execute against");
-            Preconditions.checkArgument(times != null, "Need to configure the timestamp provider for this job");
+            Preconditions.checkArgument(job!=null,"Need to specify a job to execute");
+            Preconditions.checkArgument(StringUtils.isNotBlank(dbName),"Need to specify a database to execute against");
+            Preconditions.checkArgument(times!=null,"Need to configure the timestamp provider for this job");
             StandardBaseTransactionConfig.Builder txBuilder = new StandardBaseTransactionConfig.Builder();
             txBuilder.timestampProvider(times);
 
             Configuration scanConfig = manager.getFeatures().getScanTxConfig();
             if (Configuration.EMPTY != graphConfiguration) {
-                scanConfig = null == scanConfig ? graphConfiguration
-                        : new MergedConfiguration(graphConfiguration, scanConfig);
+                scanConfig = null == scanConfig ?
+                        graphConfiguration :
+                        new MergedConfiguration(graphConfiguration, scanConfig);
             }
             if (null != scanConfig) {
                 txBuilder.customOptions(scanConfig);
             }
 
-            // if (!txOptions.isEmpty()) {
-            // ModifiableConfiguration writeConf = GraphDatabaseConfiguration.buildConfiguration();
-            // for (Map.Entry<String,Object> confEntry : txOptions.entrySet()) {
-            // writeConf.set(
-            // (ConfigOption<Object>) ConfigElement.parse(ROOT_NS, confEntry.getKey()).element,
-            // confEntry.getValue());
-            // }
-            // Configuration customConf = writeConf;
-            // if (configuration!=Configuration.EMPTY) {
-            // customConf = new MergedConfiguration(writeConf, configuration);
-            //
-            // }
-            // txBuilder.customOptions(customConf);
-            // }
+//            if (!txOptions.isEmpty()) {
+//                ModifiableConfiguration writeConf = GraphDatabaseConfiguration.buildConfiguration();
+//                for (Map.Entry<String,Object> confEntry : txOptions.entrySet()) {
+//                    writeConf.set(
+//                            (ConfigOption<Object>) ConfigElement.parse(ROOT_NS, confEntry.getKey()).element,
+//                            confEntry.getValue());
+//                }
+//                Configuration customConf = writeConf;
+//                if (configuration!=Configuration.EMPTY) {
+//                    customConf = new MergedConfiguration(writeConf, configuration);
+//
+//                }
+//                txBuilder.customOptions(customConf);
+//            }
 
             StoreTransaction storeTx = manager.beginTransaction(txBuilder.build());
             KeyColumnValueStore kcvs = manager.openDatabase(dbName);
 
             openStores.add(kcvs);
             try {
-                StandardScannerExecutor executor =
-                        new StandardScannerExecutor(job, finishJob, kcvs, storeTx, manager.getFeatures(),
-                                numProcessingThreads, workBlockSize, jobConfiguration, graphConfiguration);
-                addJob(jobId, executor);
+                StandardScannerExecutor executor = new StandardScannerExecutor(job, finishJob, kcvs, storeTx,
+                        manager.getFeatures(), numProcessingThreads, workBlockSize, jobConfiguration, graphConfiguration);
+                addJob(jobId,executor);
                 new Thread(executor).start();
                 return executor;
             } catch (Throwable e) {

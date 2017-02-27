@@ -42,10 +42,11 @@ import java.util.concurrent.Future;
  */
 public class TestMockLog implements LogManager {
 
-    public static final ConfigOption<Boolean> LOG_MOCK_FAILADD = new ConfigOption<Boolean>(LOG_NS, "fail-adds",
-            "Sets the log to reject adding messages. FOR TESTING ONLY", ConfigOption.Type.LOCAL, false).hide();
+    public static final ConfigOption<Boolean> LOG_MOCK_FAILADD = new ConfigOption<Boolean>(LOG_NS,"fail-adds",
+            "Sets the log to reject adding messages. FOR TESTING ONLY",
+            ConfigOption.Type.LOCAL, false).hide();
 
-    private final Map<String, TestLog> openLogs = Maps.newHashMap();
+    private final Map<String,TestLog> openLogs = Maps.newHashMap();
     private final boolean failAdds;
     private final String senderId;
     private final TimestampProvider times;
@@ -59,9 +60,9 @@ public class TestMockLog implements LogManager {
     @Override
     public synchronized Log openLog(String name) throws BackendException {
         TestLog log = openLogs.get(name);
-        if (log == null) {
+        if (log==null) {
             log = new TestLog(name);
-            openLogs.put(name, log);
+            openLogs.put(name,log);
         }
         return log;
     }
@@ -71,10 +72,11 @@ public class TestMockLog implements LogManager {
         openLogs.clear();
     }
 
+
     private class TestLog implements Log {
 
         private final String name;
-        private final Set<MessageReader> readers = Sets.newHashSet();
+        private final Set<MessageReader> readers =Sets.newHashSet();
         private List<FutureMessage<TestMessage>> messageBacklog = Lists.newArrayList();
 
         private TestLog(String name) {
@@ -112,7 +114,7 @@ public class TestMockLog implements LogManager {
         }
 
         @Override
-        public synchronized void registerReader(ReadMarker readMarker, MessageReader...reader) {
+        public synchronized void registerReader(ReadMarker readMarker, MessageReader... reader) {
             registerReaders(readMarker, Arrays.asList(reader));
         }
 
@@ -121,8 +123,8 @@ public class TestMockLog implements LogManager {
             for (FutureMessage<TestMessage> fmsg : messageBacklog) {
                 process(fmsg);
             }
-            messageBacklog = null;
-            Iterables.addAll(this.readers, readers);
+            messageBacklog=null;
+            Iterables.addAll(this.readers,readers);
         }
 
         @Override
@@ -166,5 +168,6 @@ public class TestMockLog implements LogManager {
             return content;
         }
     }
+
 
 }

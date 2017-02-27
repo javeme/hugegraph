@@ -30,15 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A component/sub-query of a {@link GraphCentricQuery} that gets executed against an indexing backend or the index
- * store by the query processor of the enclosing transaction.
+ * A component/sub-query of a {@link GraphCentricQuery} that gets executed against an indexing backend or the index store
+ * by the query processor of the enclosing transaction.
  * </p>
- * This query itself can contain multiple sub-queries which are individually executed by the
- * {@link com.baidu.hugegraph.graphdb.database.IndexSerializer} and the result sets merged.
+ * This query itself can contain multiple sub-queries which are individually executed by the {@link com.baidu.hugegraph.graphdb.database.IndexSerializer}
+ * and the result sets merged.
  * </p>
- * Those sub-queries are either targeting an external indexing backend or the internal index store which is a
- * distinction this query keeps track of through the sub-class {@link Subquery}, since their definition and execution
- * differs starkly.
+ * Those sub-queries are either targeting an external indexing backend or the internal index store which is a distinction this
+ * query keeps track of through the sub-class {@link Subquery}, since their definition and execution differs starkly.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -47,7 +46,7 @@ public class JointIndexQuery extends BaseQuery implements BackendQuery<JointInde
     private final List<Subquery> queries;
 
     private JointIndexQuery(List<Subquery> queries) {
-        Preconditions.checkArgument(queries != null);
+        Preconditions.checkArgument(queries!=null);
         this.queries = queries;
     }
 
@@ -87,12 +86,9 @@ public class JointIndexQuery extends BaseQuery implements BackendQuery<JointInde
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (other == null)
-            return false;
-        else if (!getClass().isInstance(other))
-            return false;
+        if (this == other) return true;
+        else if (other == null) return false;
+        else if (!getClass().isInstance(other)) return false;
         JointIndexQuery oth = (JointIndexQuery) other;
         return oth.queries.equals(queries);
     }
@@ -116,18 +112,16 @@ public class JointIndexQuery extends BaseQuery implements BackendQuery<JointInde
         private QueryProfiler profiler = QueryProfiler.NO_OP;
 
         private Subquery(IndexType index, BackendQuery query) {
-            assert index != null && query != null
-                    && (query instanceof MultiKeySliceQuery || query instanceof IndexQuery);
+            assert index!=null && query!=null && (query instanceof MultiKeySliceQuery || query instanceof IndexQuery);
             this.index = index;
             this.query = query;
         }
 
         public void observeWith(QueryProfiler prof) {
             this.profiler = prof.addNested(QueryProfiler.AND_QUERY);
-            profiler.setAnnotation(QueryProfiler.QUERY_ANNOTATION, query);
-            profiler.setAnnotation(QueryProfiler.INDEX_ANNOTATION, index.getName());
-            if (index.isMixedIndex())
-                profiler.setAnnotation(QueryProfiler.INDEX_ANNOTATION + "_impl", index.getBackingIndexName());
+            profiler.setAnnotation(QueryProfiler.QUERY_ANNOTATION,query);
+            profiler.setAnnotation(QueryProfiler.INDEX_ANNOTATION,index.getName());
+            if (index.isMixedIndex()) profiler.setAnnotation(QueryProfiler.INDEX_ANNOTATION+"_impl",index.getBackingIndexName());
         }
 
         public QueryProfiler getProfiler() {
@@ -140,12 +134,12 @@ public class JointIndexQuery extends BaseQuery implements BackendQuery<JointInde
 
         public IndexQuery getMixedQuery() {
             Preconditions.checkArgument(index.isMixedIndex() && query instanceof IndexQuery);
-            return (IndexQuery) query;
+            return (IndexQuery)query;
         }
 
         public MultiKeySliceQuery getCompositeQuery() {
             Preconditions.checkArgument(index.isCompositeIndex() && query instanceof MultiKeySliceQuery);
-            return (MultiKeySliceQuery) query;
+            return (MultiKeySliceQuery)query;
         }
 
         @Override
@@ -155,24 +149,21 @@ public class JointIndexQuery extends BaseQuery implements BackendQuery<JointInde
 
         @Override
         public boolean equals(Object other) {
-            if (this == other)
-                return true;
-            else if (other == null)
-                return false;
-            else if (!getClass().isInstance(other))
-                return false;
+            if (this == other) return true;
+            else if (other == null) return false;
+            else if (!getClass().isInstance(other)) return false;
             Subquery oth = (Subquery) other;
             return index.equals(oth.index) && query.equals(oth.query);
         }
 
         @Override
         public String toString() {
-            return index.toString() + ":" + query.toString();
+            return index.toString()+":"+query.toString();
         }
 
         @Override
         public Subquery updateLimit(int newLimit) {
-            return new Subquery(index, query.updateLimit(newLimit));
+            return new Subquery(index,query.updateLimit(newLimit));
         }
 
         @Override

@@ -85,6 +85,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.incr;
 import static org.junit.Assert.*;
 
+
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -95,13 +96,15 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     public static final String EINDEX = "e" + INDEX;
     public static final String PINDEX = "p" + INDEX;
 
+
     public final boolean supportsGeoPoint;
     public final boolean supportsNumeric;
     public final boolean supportsText;
 
     public IndexFeatures indexFeatures;
 
-    private static final Logger log = LoggerFactory.getLogger(HugeGraphIndexTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HugeGraphIndexTest.class);
 
     protected HugeGraphIndexTest(boolean supportsGeoPoint, boolean supportsNumeric, boolean supportsText) {
         this.supportsGeoPoint = supportsGeoPoint;
@@ -110,18 +113,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     }
 
     private Parameter getStringMapping() {
-        if (indexFeatures.supportsStringMapping(Mapping.STRING))
-            return Mapping.STRING.asParameter();
-        else if (indexFeatures.supportsStringMapping(Mapping.TEXTSTRING))
-            return Mapping.TEXTSTRING.asParameter();
+        if (indexFeatures.supportsStringMapping(Mapping.STRING)) return Mapping.STRING.asParameter();
+        else if (indexFeatures.supportsStringMapping(Mapping.TEXTSTRING)) return Mapping.TEXTSTRING.asParameter();
         throw new AssertionError("String mapping not supported");
     }
 
     private Parameter getTextMapping() {
-        if (indexFeatures.supportsStringMapping(Mapping.TEXT))
-            return Mapping.TEXT.asParameter();
-        else if (indexFeatures.supportsStringMapping(Mapping.TEXTSTRING))
-            return Mapping.TEXTSTRING.asParameter();
+        if (indexFeatures.supportsStringMapping(Mapping.TEXT)) return Mapping.TEXT.asParameter();
+        else if (indexFeatures.supportsStringMapping(Mapping.TEXTSTRING)) return Mapping.TEXTSTRING.asParameter();
         throw new AssertionError("Text mapping not supported");
     }
 
@@ -130,6 +129,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     }
 
     public abstract boolean supportsLuceneStyleQueries();
+
 
     public abstract boolean supportsWildcardQuery();
 
@@ -140,7 +140,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     }
 
     @Override
-    public void clopen(Object...settings) {
+    public void clopen(Object... settings) {
         graph.tx().commit();
         super.clopen(settings);
     }
@@ -158,11 +158,12 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertGraphOfTheGods(graph);
     }
 
+
     public static void assertGraphOfTheGods(HugeGraph gotg) {
         assertCount(12, gotg.query().vertices());
         assertCount(3, gotg.query().has(LABEL_NAME, "god").vertices());
         HugeGraphVertex h = getOnlyVertex(gotg.query().has("name", "hercules"));
-        assertEquals(30, h.<Integer> value("age").intValue());
+        assertEquals(30, h.<Integer>value("age").intValue());
         assertEquals("demigod", h.label());
         assertCount(5, h.query().direction(Direction.BOTH).edges());
         gotg.tx().commit();
@@ -180,13 +181,11 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         Edge e = v.addEdge("knows", v, "name", "Hulu Bubab");
         assertCount(1, tx.query().has("name", Text.CONTAINS, "marko").vertices());
         assertCount(1, tx.query().has("name", Text.CONTAINS, "Hulu").edges());
-        for (Vertex u : tx.getVertices())
-            assertEquals("Marko Rodriguez", u.value("name"));
+        for (Vertex u : tx.getVertices()) assertEquals("Marko Rodriguez", u.value("name"));
         clopen();
         assertCount(1, tx.query().has("name", Text.CONTAINS, "marko").vertices());
         assertCount(1, tx.query().has("name", Text.CONTAINS, "Hulu").edges());
-        for (Vertex u : tx.getVertices())
-            assertEquals("Marko Rodriguez", u.value("name"));
+        for (Vertex u : tx.getVertices()) assertEquals("Marko Rodriguez", u.value("name"));
         v = getOnlyVertex(tx.query().has("name", Text.CONTAINS, "marko"));
         v.property(VertexProperty.Cardinality.single, "name", "Marko");
         e = getOnlyEdge(v.query().direction(Direction.OUT));
@@ -194,15 +193,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertCount(1, tx.query().has("name", Text.CONTAINS, "marko").vertices());
         assertCount(1, tx.query().has("name", Text.CONTAINS, "Rubu").edges());
         assertCount(0, tx.query().has("name", Text.CONTAINS, "Hulu").edges());
-        for (Vertex u : tx.getVertices())
-            assertEquals("Marko", u.value("name"));
+        for (Vertex u : tx.getVertices()) assertEquals("Marko", u.value("name"));
         clopen();
         assertCount(1, tx.query().has("name", Text.CONTAINS, "marko").vertices());
         assertCount(1, tx.query().has("name", Text.CONTAINS, "Rubu").edges());
         assertCount(0, tx.query().has("name", Text.CONTAINS, "Hulu").edges());
-        for (Vertex u : tx.getVertices())
-            assertEquals("Marko", u.value("name"));
+        for (Vertex u : tx.getVertices()) assertEquals("Marko", u.value("name"));
     }
+
 
     @Test
     public void testIndexing() {
@@ -232,7 +230,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         finishSchema();
 
         clopen();
-        String[] words = { "world", "aurelius", "hugegraph", "graph" };
+        String[] words = {"world", "aurelius", "hugegraph", "graph"};
         int numCategories = 5;
         int numGroups = 10;
         double distance, offset;
@@ -261,12 +259,13 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             assertCount(expectedSize, tx.query().has("text", Text.CONTAINS, words[i]).vertices());
             assertCount(expectedSize, tx.query().has("text", Text.CONTAINS, words[i]).edges());
 
-            // Test ordering
-            for (String orderKey : new String[] { "time", "category" }) {
+            //Test ordering
+            for (String orderKey : new String[]{"time", "category"}) {
                 for (Order order : Order.values()) {
                     for (HugeGraphQuery traversal : ImmutableList.of(
                             tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP()),
-                            tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP()))) {
+                            tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP())
+                    )) {
                         verifyElementOrder(traversal.vertices(), orderKey, order, expectedSize);
                     }
                 }
@@ -277,8 +276,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertCount(3, tx.query().has("group", 3).orderBy("time", decr).limit(3).edges());
 
         for (int i = 0; i < numV / 2; i += numV / 10) {
-            assertCount(i,
-                    tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
+            assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
             assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).edges());
         }
 
@@ -289,39 +287,38 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             assertCount(i + 1, tx.query().has("location", Geo.WITHIN, Geoshape.circle(0.0, 0.0, distance)).edges());
         }
 
-        // Queries combining mixed and composite indexes
+        //Queries combining mixed and composite indexes
         assertCount(4, tx.query().has("category", 1).interval("time", 10, 28).vertices());
         assertCount(4, tx.query().has("category", 1).interval("time", 10, 28).edges());
 
-        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30)
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30).has("text", Text.CONTAINS, words[0]).vertices());
         offset = (19 * 50.0 / originalNumV);
         distance = Geoshape.point(0.0, 0.0).getPoint().distance(Geoshape.point(offset, offset).getPoint()) + 20;
-        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance))
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance)).has("text", Text.CONTAINS, words[0]).vertices());
 
         assertCount(numV, tx.query().vertices());
         assertCount(numV, tx.query().edges());
 
-        // --------------
+        //--------------
 
         clopen();
 
-        // ##########################
-        // Copied from above
-        // ##########################
+        //##########################
+        //Copied from above
+        //##########################
 
         for (int i = 0; i < words.length; i++) {
             int expectedSize = numV / words.length;
             assertCount(expectedSize, tx.query().has("text", Text.CONTAINS, words[i]).vertices());
             assertCount(expectedSize, tx.query().has("text", Text.CONTAINS, words[i]).edges());
 
-            // Test ordering
-            for (String orderKey : new String[] { "time", "category" }) {
+            //Test ordering
+            for (String orderKey : new String[]{"time", "category"}) {
                 for (Order order : Order.values()) {
                     for (HugeGraphQuery traversal : ImmutableList.of(
                             tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP()),
-                            tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP()))) {
+                            tx.query().has("text", Text.CONTAINS, words[i]).orderBy(orderKey, order.getTP())
+                    )) {
                         verifyElementOrder(traversal.vertices(), orderKey, order, expectedSize);
                     }
                 }
@@ -332,8 +329,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertCount(3, tx.query().has("group", 3).orderBy("time", decr).limit(3).edges());
 
         for (int i = 0; i < numV / 2; i += numV / 10) {
-            assertCount(i,
-                    tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
+            assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
             assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).edges());
         }
 
@@ -344,16 +340,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             assertCount(i + 1, tx.query().has("location", Geo.WITHIN, Geoshape.circle(0.0, 0.0, distance)).edges());
         }
 
-        // Queries combining mixed and composite indexes
+        //Queries combining mixed and composite indexes
         assertCount(4, tx.query().has("category", 1).interval("time", 10, 28).vertices());
         assertCount(4, tx.query().has("category", 1).interval("time", 10, 28).edges());
 
-        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30)
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30).has("text", Text.CONTAINS, words[0]).vertices());
         offset = (19 * 50.0 / originalNumV);
         distance = Geoshape.point(0.0, 0.0).getPoint().distance(Geoshape.point(offset, offset).getPoint()) + 20;
-        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance))
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance)).has("text", Text.CONTAINS, words[0]).vertices());
 
         assertCount(numV, tx.query().vertices());
         assertCount(numV, tx.query().edges());
@@ -367,15 +361,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         numV = numV - numDelete;
 
-        // Copied from above
+        //Copied from above
         for (int i = 0; i < words.length; i++) {
             assertCount(numV / words.length, tx.query().has("text", Text.CONTAINS, words[i]).vertices());
             assertCount(numV / words.length, tx.query().has("text", Text.CONTAINS, words[i]).edges());
         }
 
         for (int i = 0; i < numV / 2; i += numV / 10) {
-            assertCount(i,
-                    tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
+            assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).vertices());
             assertCount(i, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, i).has("time", Cmp.LESS_THAN, i + i).edges());
         }
 
@@ -386,17 +379,17 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             assertCount(i + 1, tx.query().has("location", Geo.WITHIN, Geoshape.circle(0.0, 0.0, distance)).edges());
         }
 
-        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30)
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("time", Cmp.GREATER_THAN_EQUAL, 10).has("time", Cmp.LESS_THAN, 30).has("text", Text.CONTAINS, words[0]).vertices());
         offset = (19 * 50.0 / originalNumV);
         distance = Geoshape.point(0.0, 0.0).getPoint().distance(Geoshape.point(offset, offset).getPoint()) + 20;
-        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance))
-                .has("text", Text.CONTAINS, words[0]).vertices());
+        assertCount(5, tx.query().has("location", Geo.INTERSECT, Geoshape.circle(0.0, 0.0, distance)).has("text", Text.CONTAINS, words[0]).vertices());
 
         assertCount(numV, tx.query().vertices());
         assertCount(numV, tx.query().edges());
 
+
     }
+
 
     /**
      * Tests indexing boolean
@@ -404,7 +397,8 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     @Test
     public void testBooleanIndexing() {
         PropertyKey name = makeKey("visible", Boolean.class);
-        mgmt.buildIndex("booleanIndex", Vertex.class).addKey(name).buildMixedIndex(INDEX);
+        mgmt.buildIndex("booleanIndex", Vertex.class).
+                addKey(name).buildMixedIndex(INDEX);
         finishSchema();
         clopen();
 
@@ -420,7 +414,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(v2, getOnlyVertex(graph.query().has("visible", Cmp.NOT_EQUAL, true)));
         assertEquals(v1, getOnlyVertex(graph.query().has("visible", Cmp.NOT_EQUAL, false)));
 
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertCount(2, graph.vertices());
         assertEquals(v1, getOnlyVertex(graph.query().has("visible", true)));
         assertEquals(v2, getOnlyVertex(graph.query().has("visible", false)));
@@ -428,13 +422,15 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(v1, getOnlyVertex(graph.query().has("visible", Cmp.NOT_EQUAL, false)));
     }
 
+
     /**
      * Tests indexing dates
      */
     @Test
     public void testDateIndexing() {
         PropertyKey name = makeKey("date", Date.class);
-        mgmt.buildIndex("dateIndex", Vertex.class).addKey(name).buildMixedIndex(INDEX);
+        mgmt.buildIndex("dateIndex", Vertex.class).
+                addKey(name).buildMixedIndex(INDEX);
         finishSchema();
         clopen();
 
@@ -444,26 +440,25 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         HugeGraphVertex v2 = graph.addVertex();
         v2.property("date", new Date(2000));
 
+
         assertEquals(v1, getOnlyVertex(graph.query().has("date", Cmp.EQUAL, new Date(1))));
         assertEquals(v2, getOnlyVertex(graph.query().has("date", Cmp.GREATER_THAN, new Date(1))));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("date", Cmp.GREATER_THAN_EQUAL, new Date(1)).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("date", Cmp.GREATER_THAN_EQUAL, new Date(1)).vertices()));
         assertEquals(v1, getOnlyVertex(graph.query().has("date", Cmp.LESS_THAN, new Date(2000))));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("date", Cmp.LESS_THAN_EQUAL, new Date(2000)).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("date", Cmp.LESS_THAN_EQUAL, new Date(2000)).vertices()));
         assertEquals(v2, getOnlyVertex(graph.query().has("date", Cmp.NOT_EQUAL, new Date(1))));
 
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyVertex(graph.query().has("date", Cmp.EQUAL, new Date(1))));
         assertEquals(v2, getOnlyVertex(graph.query().has("date", Cmp.GREATER_THAN, new Date(1))));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("date", Cmp.GREATER_THAN_EQUAL, new Date(1)).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("date", Cmp.GREATER_THAN_EQUAL, new Date(1)).vertices()));
         assertEquals(v1, getOnlyVertex(graph.query().has("date", Cmp.LESS_THAN, new Date(2000))));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("date", Cmp.LESS_THAN_EQUAL, new Date(2000)).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("date", Cmp.LESS_THAN_EQUAL, new Date(2000)).vertices()));
         assertEquals(v2, getOnlyVertex(graph.query().has("date", Cmp.NOT_EQUAL, new Date(1))));
+
 
     }
+
 
     /**
      * Tests indexing instants
@@ -471,7 +466,8 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     @Test
     public void testInstantIndexing() {
         PropertyKey name = makeKey("instant", Instant.class);
-        mgmt.buildIndex("instantIndex", Vertex.class).addKey(name).buildMixedIndex(INDEX);
+        mgmt.buildIndex("instantIndex", Vertex.class).
+                addKey(name).buildMixedIndex(INDEX);
         finishSchema();
         clopen();
         Instant firstTimestamp = Instant.ofEpochMilli(1);
@@ -491,7 +487,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         if (indexFeatures.supportsNanoseconds()) {
             testInstant(firstTimestamp, secondTimestamp, v1, v2);
         } else {
-            clopen();// Flush the index
+            clopen();//Flush the index
             try {
                 assertEquals(v1, getOnlyVertex(graph.query().has("instant", Cmp.EQUAL, firstTimestamp)));
                 Assert.fail("Should have failed to update the index");
@@ -505,21 +501,18 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     private void testInstant(Instant firstTimestamp, Instant secondTimestamp, HugeGraphVertex v1, HugeGraphVertex v2) {
         assertEquals(v1, getOnlyVertex(graph.query().has("instant", Cmp.EQUAL, firstTimestamp)));
         assertEquals(v2, getOnlyVertex(graph.query().has("instant", Cmp.GREATER_THAN, firstTimestamp)));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("instant", Cmp.GREATER_THAN_EQUAL, firstTimestamp).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("instant", Cmp.GREATER_THAN_EQUAL, firstTimestamp).vertices()));
         assertEquals(v1, getOnlyVertex(graph.query().has("instant", Cmp.LESS_THAN, secondTimestamp)));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("instant", Cmp.LESS_THAN_EQUAL, secondTimestamp).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("instant", Cmp.LESS_THAN_EQUAL, secondTimestamp).vertices()));
         assertEquals(v2, getOnlyVertex(graph.query().has("instant", Cmp.NOT_EQUAL, firstTimestamp)));
 
-        clopen();// Flush the index
+
+        clopen();//Flush the index
         assertEquals(v1, getOnlyVertex(graph.query().has("instant", Cmp.EQUAL, firstTimestamp)));
         assertEquals(v2, getOnlyVertex(graph.query().has("instant", Cmp.GREATER_THAN, firstTimestamp)));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("instant", Cmp.GREATER_THAN_EQUAL, firstTimestamp).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("instant", Cmp.GREATER_THAN_EQUAL, firstTimestamp).vertices()));
         assertEquals(v1, getOnlyVertex(graph.query().has("instant", Cmp.LESS_THAN, secondTimestamp)));
-        assertEquals(Sets.newHashSet(v1, v2),
-                Sets.newHashSet(graph.query().has("instant", Cmp.LESS_THAN_EQUAL, secondTimestamp).vertices()));
+        assertEquals(Sets.newHashSet(v1, v2), Sets.newHashSet(graph.query().has("instant", Cmp.LESS_THAN_EQUAL, secondTimestamp).vertices()));
         assertEquals(v2, getOnlyVertex(graph.query().has("instant", Cmp.NOT_EQUAL, firstTimestamp)));
     }
 
@@ -529,7 +522,8 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     @Test
     public void testUUIDIndexing() {
         PropertyKey name = makeKey("uid", UUID.class);
-        mgmt.buildIndex("uuidIndex", Vertex.class).addKey(name).buildMixedIndex(INDEX);
+        mgmt.buildIndex("uuidIndex", Vertex.class).
+                addKey(name).buildMixedIndex(INDEX);
         finishSchema();
         clopen();
 
@@ -549,7 +543,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(v2, getOnlyVertex(graph.query().has("uid", Cmp.NOT_EQUAL, uid1)));
         assertEquals(v1, getOnlyVertex(graph.query().has("uid", Cmp.NOT_EQUAL, uid2)));
 
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertCount(2, graph.query().vertices());
         assertEquals(v1, getOnlyVertex(graph.query().has("uid", uid1)));
         assertEquals(v2, getOnlyVertex(graph.query().has("uid", uid2)));
@@ -558,6 +552,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(v1, getOnlyVertex(graph.query().has("uid", Cmp.NOT_EQUAL, uid2)));
 
     }
+
 
     /**
      * Tests conditional indexing and the different management features
@@ -571,12 +566,12 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         VertexLabel person = mgmt.makeVertexLabel("person").make();
         VertexLabel org = mgmt.makeVertexLabel("org").make();
 
-        HugeGraphIndex index1 =
-                mgmt.buildIndex("index1", Vertex.class).addKey(name, getStringMapping()).buildMixedIndex(INDEX);
-        HugeGraphIndex index2 = mgmt.buildIndex("index2", Vertex.class).indexOnly(person).addKey(text, getTextMapping())
-                .addKey(weight).buildMixedIndex(INDEX);
-        HugeGraphIndex index3 = mgmt.buildIndex("index3", Vertex.class).indexOnly(org).addKey(text, getTextMapping())
-                .addKey(weight).buildMixedIndex(INDEX);
+        HugeGraphIndex index1 = mgmt.buildIndex("index1", Vertex.class).
+                addKey(name, getStringMapping()).buildMixedIndex(INDEX);
+        HugeGraphIndex index2 = mgmt.buildIndex("index2", Vertex.class).indexOnly(person).
+                addKey(text, getTextMapping()).addKey(weight).buildMixedIndex(INDEX);
+        HugeGraphIndex index3 = mgmt.buildIndex("index3", Vertex.class).indexOnly(org).
+                addKey(text, getTextMapping()).addKey(weight).buildMixedIndex(INDEX);
 
         // ########### INSPECTION & FAILURE ##############
         assertTrue(mgmt.containsGraphIndex("index1"));
@@ -603,19 +598,19 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(2, index3.getParametersFor(weight).length);
 
         try {
-            // Already exists
+            //Already exists
             mgmt.buildIndex("index2", Vertex.class).addKey(weight).buildMixedIndex(INDEX);
             fail();
         } catch (IllegalArgumentException e) {
         }
         try {
-            // Already exists
+            //Already exists
             mgmt.buildIndex("index2", Vertex.class).addKey(weight).buildCompositeIndex();
             fail();
         } catch (IllegalArgumentException e) {
         }
         try {
-            // Key is already added
+            //Key is already added
             mgmt.addIndexKey(index2, weight);
             fail();
         } catch (IllegalArgumentException e) {
@@ -649,32 +644,33 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEquals(2, index3.getParametersFor(weight).length);
 
         try {
-            // Already exists
+            //Already exists
             mgmt.buildIndex("index2", Vertex.class).addKey(weight).buildMixedIndex(INDEX);
             fail();
         } catch (IllegalArgumentException e) {
         }
         try {
-            // Already exists
+            //Already exists
             mgmt.buildIndex("index2", Vertex.class).addKey(weight).buildCompositeIndex();
             fail();
         } catch (IllegalArgumentException e) {
         }
         try {
-            // Key is already added
+            //Key is already added
             mgmt.addIndexKey(index2, weight);
             fail();
         } catch (IllegalArgumentException e) {
         }
 
+
         // ########### TRANSACTIONAL ##############
         weight = tx.getPropertyKey("weight");
 
+
         final int numV = 200;
-        String[] strs = { "houseboat", "humanoid", "differential", "extraordinary" };
+        String[] strs = {"houseboat", "humanoid", "differential", "extraordinary"};
         String[] strs2 = new String[strs.length];
-        for (int i = 0; i < strs.length; i++)
-            strs2[i] = strs[i] + " " + strs[i];
+        for (int i = 0; i < strs.length; i++) strs2[i] = strs[i] + " " + strs[i];
         final int modulo = 5;
         assert numV % (modulo * strs.length * 2) == 0;
 
@@ -685,88 +681,62 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             v.property("weight", (i % modulo) + 0.5);
         }
 
-        // ########## QUERIES ################
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index2.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight",
-                        decr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.DESC,
-                index2.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "org"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index3.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[1]).has(LABEL_NAME, Cmp.EQUAL, "org").orderBy("weight",
-                        decr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.DESC,
-                index3.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[0]).has("weight", Cmp.EQUAL, 2.5).has(LABEL_NAME, Cmp.EQUAL,
-                        "person"),
-                ElementCategory.VERTEX, numV / (modulo * strs.length), new boolean[] { true, true }, index2.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { false, true }, index1.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, 0, new boolean[] { false, true }, index1.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { true, true }, index1.name());
-        evaluateQuery(
-                tx.query().has("name", Cmp.EQUAL, strs[2]).has("text", Text.CONTAINS, strs[2]).has(LABEL_NAME,
-                        Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index1.name(), index2.name());
-        evaluateQuery(
-                tx.query().has("name", Cmp.EQUAL, strs[0]).has("text", Text.CONTAINS, strs[0])
-                        .has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", incr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.ASC,
-                index1.name(), index2.name());
+        //########## QUERIES ################
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index2.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", decr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.DESC, index2.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "org"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index3.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[1]).has(LABEL_NAME, Cmp.EQUAL, "org").orderBy("weight", decr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.DESC, index3.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has("weight", Cmp.EQUAL, 2.5).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / (modulo * strs.length), new boolean[]{true, true}, index2.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                0, new boolean[]{false, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has("text", Text.CONTAINS, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index1.name(), index2.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", incr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.ASC, index1.name(), index2.name());
 
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { false, true });
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true});
         evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).orderBy("weight", incr), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { false, false }, weight, Order.ASC);
+                numV / strs.length, new boolean[]{false, false}, weight, Order.ASC);
 
         clopen();
         weight = tx.getPropertyKey("weight");
 
-        // ########## QUERIES (copied from above) ################
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index2.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight",
-                        decr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.DESC,
-                index2.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "org"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index3.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[1]).has(LABEL_NAME, Cmp.EQUAL, "org").orderBy("weight",
-                        decr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.DESC,
-                index3.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[0]).has("weight", Cmp.EQUAL, 2.5).has(LABEL_NAME, Cmp.EQUAL,
-                        "person"),
-                ElementCategory.VERTEX, numV / (modulo * strs.length), new boolean[] { true, true }, index2.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { false, true }, index1.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, 0, new boolean[] { false, true }, index1.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { true, true }, index1.name());
-        evaluateQuery(
-                tx.query().has("name", Cmp.EQUAL, strs[2]).has("text", Text.CONTAINS, strs[2]).has(LABEL_NAME,
-                        Cmp.EQUAL, "person"),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, index1.name(), index2.name());
-        evaluateQuery(
-                tx.query().has("name", Cmp.EQUAL, strs[0]).has("text", Text.CONTAINS, strs[0])
-                        .has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", incr),
-                ElementCategory.VERTEX, numV / strs.length, new boolean[] { true, true }, weight, Order.ASC,
-                index1.name(), index2.name());
+        //########## QUERIES (copied from above) ################
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index2.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", decr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.DESC, index2.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "org"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index3.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[1]).has(LABEL_NAME, Cmp.EQUAL, "org").orderBy("weight", decr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.DESC, index3.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has("weight", Cmp.EQUAL, 2.5).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / (modulo * strs.length), new boolean[]{true, true}, index2.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[3]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                0, new boolean[]{false, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index1.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[2]).has("text", Text.CONTAINS, strs[2]).has(LABEL_NAME, Cmp.EQUAL, "person"), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, index1.name(), index2.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("text", Text.CONTAINS, strs[0]).has(LABEL_NAME, Cmp.EQUAL, "person").orderBy("weight", incr), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, weight, Order.ASC, index1.name(), index2.name());
 
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { false, true });
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true});
         evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).orderBy("weight", incr), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { false, false }, weight, Order.ASC);
+                numV / strs.length, new boolean[]{false, false}, weight, Order.ASC);
     }
 
     @Test
@@ -776,19 +746,17 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         PropertyKey text = makeKey("text", String.class);
         makeKey("flag", Boolean.class);
 
-        HugeGraphIndex composite =
-                mgmt.buildIndex("composite", Vertex.class).addKey(name).addKey(weight).buildCompositeIndex();
-        HugeGraphIndex mixed = mgmt.buildIndex("mixed", Vertex.class).addKey(weight).addKey(text, getTextMapping())
-                .buildMixedIndex(INDEX);
+        HugeGraphIndex composite = mgmt.buildIndex("composite", Vertex.class).addKey(name).addKey(weight).buildCompositeIndex();
+        HugeGraphIndex mixed = mgmt.buildIndex("mixed", Vertex.class).addKey(weight)
+                .addKey(text, getTextMapping()).buildMixedIndex(INDEX);
         mixed.name();
         composite.name();
         finishSchema();
 
         final int numV = 100;
-        String[] strs = { "houseboat", "humanoid", "differential", "extraordinary" };
+        String[] strs = {"houseboat", "humanoid", "differential", "extraordinary"};
         String[] strs2 = new String[strs.length];
-        for (int i = 0; i < strs.length; i++)
-            strs2[i] = strs[i] + " " + strs[i];
+        for (int i = 0; i < strs.length; i++) strs2[i] = strs[i] + " " + strs[i];
         final int modulo = 5;
         final int divisor = modulo * strs.length;
 
@@ -800,56 +768,49 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             v.property("flag", true);
         }
 
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { false, true });
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { true, true }, mixed.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true});
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, mixed.name());
         evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has("flag"), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { false, true }, mixed.name());
+                numV / strs.length, new boolean[]{false, true}, mixed.name());
         evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5), ElementCategory.VERTEX,
-                numV / divisor, new boolean[] { true, true }, composite.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, composite.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { true, true }, mixed.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, mixed.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL,
-                        3.5),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { true, true }, mixed.name(), composite.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3])
-                        .has("weight", Cmp.EQUAL, 3.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, mixed.name(), composite.name());
+                numV / divisor, new boolean[]{true, true}, composite.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, composite.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{true, true}, mixed.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, mixed.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL, 3.5), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{true, true}, mixed.name(), composite.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL, 3.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, mixed.name(), composite.name());
 
         clopen();
 
-        // Same queries as above
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { false, true });
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX, numV / strs.length,
-                new boolean[] { true, true }, mixed.name());
+        //Same queries as above
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{false, true});
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]), ElementCategory.VERTEX,
+                numV / strs.length, new boolean[]{true, true}, mixed.name());
         evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[0]).has("flag"), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { false, true }, mixed.name());
+                numV / strs.length, new boolean[]{false, true}, mixed.name());
         evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5), ElementCategory.VERTEX,
-                numV / divisor, new boolean[] { true, true }, composite.name());
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, composite.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { true, true }, mixed.name());
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, mixed.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL,
-                        3.5),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { true, true }, mixed.name(), composite.name());
-        evaluateQuery(
-                tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3])
-                        .has("weight", Cmp.EQUAL, 3.5).has("flag"),
-                ElementCategory.VERTEX, numV / divisor, new boolean[] { false, true }, mixed.name(), composite.name());
+                numV / divisor, new boolean[]{true, true}, composite.name());
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, strs[0]).has("weight", Cmp.EQUAL, 1.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, composite.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{true, true}, mixed.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[2]).has("weight", Cmp.EQUAL, 2.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, mixed.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL, 3.5), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{true, true}, mixed.name(), composite.name());
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, strs[3]).has("name", Cmp.EQUAL, strs[3]).has("weight", Cmp.EQUAL, 3.5).has("flag"), ElementCategory.VERTEX,
+                numV / divisor, new boolean[]{false, true}, mixed.name(), composite.name());
 
     }
+
 
     private void setupChainGraph(int numV, String[] strs, boolean sameNameMapping) {
         clopen(option(INDEX_NAME_MAPPING, INDEX), sameNameMapping);
@@ -871,9 +832,10 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         HugeGraphVertex previous = null;
         for (int i = 0; i < numV; i++) {
             HugeGraphVertex v = graph.addVertex("name", strs[i % strs.length], "text", strs[i % strs.length]);
-            v.addEdge("knows", previous == null ? v : previous, "name", strs[i % strs.length], "text",
-                    strs[i % strs.length]);
-            v.property("uid", "v" + i, "name", strs[i % strs.length], "text", strs[i % strs.length]);
+            v.addEdge("knows", previous == null ? v : previous,
+                    "name", strs[i % strs.length], "text", strs[i % strs.length]);
+            v.property("uid", "v" + i,
+                    "name", strs[i % strs.length], "text", strs[i % strs.length]);
             previous = v;
         }
     }
@@ -884,35 +846,33 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     @Test
     public void testIndexParameters() {
         int numV = 1000;
-        String[] strs = { "Uncle Berry has a farm", "and on his farm he has five ducks", "ducks are beautiful animals",
-                "the sky is very blue today" };
+        String[] strs = {"Uncle Berry has a farm", "and on his farm he has five ducks", "ducks are beautiful animals", "the sky is very blue today"};
         setupChainGraph(numV, strs, false);
 
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.VERTEX, numV / strs.length * 2,
-                new boolean[] { true, true }, VINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.VERTEX, numV / strs.length * 2, new boolean[]{true, true}, VINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").vertices());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").vertices());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").vertices());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { true, true }, VINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.VERTEX, numV / strs.length, new boolean[]{true, true}, VINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").vertices());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").vertices());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).vertices());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).vertices());
-        assertCount(numV / strs.length * (strs.length - 1),
-                graph.query().has("name", Cmp.NOT_EQUAL, strs[2]).vertices());
+        assertCount(numV / strs.length * (strs.length - 1), graph.query().has("name", Cmp.NOT_EQUAL, strs[2]).vertices());
         assertCount(0, graph.query().has("name", Cmp.EQUAL, "farm").vertices());
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").vertices());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").vertices());
 
-        // Same queries for edges
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.EDGE, numV / strs.length * 2,
-                new boolean[] { true, true }, EINDEX);
+        //Same queries for edges
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.EDGE, numV / strs.length * 2, new boolean[]{true, true}, EINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").edges());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").edges());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").edges());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.EDGE,
-                numV / strs.length, new boolean[] { true, true }, EINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.EDGE, numV / strs.length, new boolean[]{true, true}, EINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").edges());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").edges());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).edges());
@@ -922,54 +882,52 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").edges());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").edges());
 
-        // Same queries for properties
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.PROPERTY,
-                numV / strs.length * 2, new boolean[] { true, true }, PINDEX);
+        //Same queries for properties
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.PROPERTY, numV / strs.length * 2, new boolean[]{true, true}, PINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").properties());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").properties());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").properties());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.PROPERTY,
-                numV / strs.length, new boolean[] { true, true }, PINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.PROPERTY, numV / strs.length, new boolean[]{true, true}, PINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").properties());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").properties());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).properties());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).properties());
-        assertCount(numV / strs.length * (strs.length - 1),
-                graph.query().has(LABEL_NAME, "uid").has("name", Cmp.NOT_EQUAL, strs[2]).properties());
+        assertCount(numV / strs.length * (strs.length - 1), graph.query().has(LABEL_NAME, "uid").has("name", Cmp.NOT_EQUAL, strs[2]).properties());
         assertCount(0, graph.query().has("name", Cmp.EQUAL, "farm").properties());
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").properties());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").properties());
+
 
         clopen();
-        /*
-         * ======================================= Same queries as above but against backend
-         */
+        /* =======================================
+        Same queries as above but against backend */
 
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.VERTEX, numV / strs.length * 2,
-                new boolean[] { true, true }, VINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.VERTEX, numV / strs.length * 2, new boolean[]{true, true}, VINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").vertices());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").vertices());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").vertices());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.VERTEX,
-                numV / strs.length, new boolean[] { true, true }, VINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.VERTEX, numV / strs.length, new boolean[]{true, true}, VINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").vertices());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").vertices());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).vertices());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).vertices());
-        assertCount(numV / strs.length * (strs.length - 1),
-                graph.query().has("name", Cmp.NOT_EQUAL, strs[2]).vertices());
+        assertCount(numV / strs.length * (strs.length - 1), graph.query().has("name", Cmp.NOT_EQUAL, strs[2]).vertices());
         assertCount(0, graph.query().has("name", Cmp.EQUAL, "farm").vertices());
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").vertices());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").vertices());
 
-        // Same queries for edges
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.EDGE, numV / strs.length * 2,
-                new boolean[] { true, true }, EINDEX);
+        //Same queries for edges
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.EDGE, numV / strs.length * 2, new boolean[]{true, true}, EINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").edges());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").edges());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").edges());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.EDGE,
-                numV / strs.length, new boolean[] { true, true }, EINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.EDGE, numV / strs.length, new boolean[]{true, true}, EINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").edges());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").edges());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).edges());
@@ -979,25 +937,24 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").edges());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").edges());
 
-        // Same queries for properties
-        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"), ElementCategory.PROPERTY,
-                numV / strs.length * 2, new boolean[] { true, true }, PINDEX);
+        //Same queries for properties
+        evaluateQuery(graph.query().has("text", Text.CONTAINS, "ducks"),
+                ElementCategory.PROPERTY, numV / strs.length * 2, new boolean[]{true, true}, PINDEX);
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "ducks").properties());
         assertCount(numV / strs.length * 2, graph.query().has("text", Text.CONTAINS, "farm").properties());
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS, "beautiful").properties());
-        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"), ElementCategory.PROPERTY,
-                numV / strs.length, new boolean[] { true, true }, PINDEX);
+        evaluateQuery(graph.query().has("text", Text.CONTAINS_PREFIX, "beauti"),
+                ElementCategory.PROPERTY, numV / strs.length, new boolean[]{true, true}, PINDEX);
         assertCount(numV / strs.length, graph.query().has("text", Text.CONTAINS_REGEX, "be[r]+y").properties());
         assertCount(0, graph.query().has("text", Text.CONTAINS, "lolipop").properties());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).properties());
         assertCount(numV / strs.length, graph.query().has("name", Cmp.EQUAL, strs[1]).properties());
-        assertCount(numV / strs.length * (strs.length - 1),
-                graph.query().has(LABEL_NAME, "uid").has("name", Cmp.NOT_EQUAL, strs[2]).properties());
+        assertCount(numV / strs.length * (strs.length - 1), graph.query().has(LABEL_NAME, "uid").has("name", Cmp.NOT_EQUAL, strs[2]).properties());
         assertCount(0, graph.query().has("name", Cmp.EQUAL, "farm").properties());
         assertCount(numV / strs.length, graph.query().has("name", Text.PREFIX, "ducks").properties());
         assertCount(numV / strs.length * 2, graph.query().has("name", Text.REGEX, "(.*)ducks(.*)").properties());
 
-        // Test name mapping
+        //Test name mapping
         if (supportsLuceneStyleQueries()) {
             assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "xtext:ducks").vertices());
             assertCount(0, graph.indexQuery(EINDEX, "xtext:ducks").edges());
@@ -1009,96 +966,85 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
      */
     @Test
     public void testRawQueries() {
-        if (!supportsLuceneStyleQueries())
-            return;
+        if (!supportsLuceneStyleQueries()) return;
 
         int numV = 1000;
-        String[] strs = { "Uncle Berry has a farm", "and on his farm he has five ducks", "ducks are beautiful animals",
-                "the sky is very blue today" };
+        String[] strs = {"Uncle Berry has a farm", "and on his farm he has five ducks", "ducks are beautiful animals", "the sky is very blue today"};
         setupChainGraph(numV, strs, true);
         clopen();
 
         assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "v.text:ducks").vertices());
         assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "v.text:(farm uncle berry)").vertices());
-        assertCount(numV / strs.length,
-                graph.indexQuery(VINDEX, "v.text:(farm uncle berry) AND v.name:\"Uncle Berry has a farm\"").vertices());
+        assertCount(numV / strs.length, graph.indexQuery(VINDEX, "v.text:(farm uncle berry) AND v.name:\"Uncle Berry has a farm\"").vertices());
         assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "v.text:(beautiful are ducks)").vertices());
-        assertCount(numV / strs.length * 2 - 10,
-                graph.indexQuery(VINDEX, "v.text:(beautiful are ducks)").offset(10).vertices());
+        assertCount(numV / strs.length * 2 - 10, graph.indexQuery(VINDEX, "v.text:(beautiful are ducks)").offset(10).vertices());
         assertCount(10, graph.indexQuery(VINDEX, "v.\"text\":(beautiful are ducks)").limit(10).vertices());
         assertCount(10, graph.indexQuery(VINDEX, "v.\"text\":(beautiful are ducks)").limit(10).offset(10).vertices());
         assertCount(0, graph.indexQuery(VINDEX, "v.\"text\":(beautiful are ducks)").limit(10).offset(numV).vertices());
-        // Test name mapping
+        //Test name mapping
         assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "xtext:ducks").vertices());
         assertCount(0, graph.indexQuery(VINDEX, "text:ducks").vertices());
-        // Test custom element identifier
-        assertCount(numV / strs.length * 2,
-                graph.indexQuery(VINDEX, "$v$text:ducks").setElementIdentifier("$v$").vertices());
-        // assertCount(0, graph.indexQuery(VINDEX, "v.\"text\":ducks").setElementIdentifier("$v$").vertices()));
+        //Test custom element identifier
+        assertCount(numV / strs.length * 2, graph.indexQuery(VINDEX, "$v$text:ducks").setElementIdentifier("$v$").vertices());
+        //assertCount(0, graph.indexQuery(VINDEX, "v.\"text\":ducks").setElementIdentifier("$v$").vertices()));
 
-        // Same queries for edges
+        //Same queries for edges
         assertCount(numV / strs.length * 2, graph.indexQuery(EINDEX, "e.text:ducks").edges());
         assertCount(numV / strs.length * 2, graph.indexQuery(EINDEX, "e.text:(farm uncle berry)").edges());
-        assertCount(numV / strs.length,
-                graph.indexQuery(EINDEX, "e.text:(farm uncle berry) AND e.name:\"Uncle Berry has a farm\"").edges());
+        assertCount(numV / strs.length, graph.indexQuery(EINDEX, "e.text:(farm uncle berry) AND e.name:\"Uncle Berry has a farm\"").edges());
         assertCount(numV / strs.length * 2, graph.indexQuery(EINDEX, "e.text:(beautiful are ducks)").edges());
-        assertCount(numV / strs.length * 2 - 10,
-                graph.indexQuery(EINDEX, "e.text:(beautiful are ducks)").offset(10).edges());
+        assertCount(numV / strs.length * 2 - 10, graph.indexQuery(EINDEX, "e.text:(beautiful are ducks)").offset(10).edges());
         assertCount(10, graph.indexQuery(EINDEX, "e.\"text\":(beautiful are ducks)").limit(10).edges());
         assertCount(10, graph.indexQuery(EINDEX, "e.\"text\":(beautiful are ducks)").limit(10).offset(10).edges());
         assertCount(0, graph.indexQuery(EINDEX, "e.\"text\":(beautiful are ducks)").limit(10).offset(numV).edges());
-        // Test name mapping
+        //Test name mapping
         assertCount(numV / strs.length * 2, graph.indexQuery(EINDEX, "text:ducks").edges());
 
-        // Same queries for edges
+        //Same queries for edges
         assertCount(numV / strs.length * 2, graph.indexQuery(PINDEX, "p.text:ducks").properties());
         assertCount(numV / strs.length * 2, graph.indexQuery(PINDEX, "p.text:(farm uncle berry)").properties());
-        assertCount(numV / strs.length, graph
-                .indexQuery(PINDEX, "p.text:(farm uncle berry) AND p.name:\"Uncle Berry has a farm\"").properties());
+        assertCount(numV / strs.length, graph.indexQuery(PINDEX, "p.text:(farm uncle berry) AND p.name:\"Uncle Berry has a farm\"").properties());
         assertCount(numV / strs.length * 2, graph.indexQuery(PINDEX, "p.text:(beautiful are ducks)").properties());
-        assertCount(numV / strs.length * 2 - 10,
-                graph.indexQuery(PINDEX, "p.text:(beautiful are ducks)").offset(10).properties());
+        assertCount(numV / strs.length * 2 - 10, graph.indexQuery(PINDEX, "p.text:(beautiful are ducks)").offset(10).properties());
         assertCount(10, graph.indexQuery(PINDEX, "p.\"text\":(beautiful are ducks)").limit(10).properties());
         assertCount(10, graph.indexQuery(PINDEX, "p.\"text\":(beautiful are ducks)").limit(10).offset(10).properties());
-        assertCount(0,
-                graph.indexQuery(PINDEX, "p.\"text\":(beautiful are ducks)").limit(10).offset(numV).properties());
-        // Test name mapping
+        assertCount(0, graph.indexQuery(PINDEX, "p.\"text\":(beautiful are ducks)").limit(10).offset(numV).properties());
+        //Test name mapping
         assertCount(numV / strs.length * 2, graph.indexQuery(PINDEX, "text:ducks").properties());
     }
 
     @Test
     public void testDualMapping() {
-        if (!indexFeatures.supportsStringMapping(Mapping.TEXTSTRING))
-            return;
+        if (!indexFeatures.supportsStringMapping(Mapping.TEXTSTRING)) return;
 
         PropertyKey name = makeKey("name", String.class);
-        HugeGraphIndex mixed = mgmt.buildIndex("mixed", Vertex.class).addKey(name, Mapping.TEXTSTRING.asParameter())
-                .buildMixedIndex(INDEX);
+        HugeGraphIndex mixed = mgmt.buildIndex("mixed", Vertex.class).addKey(name, Mapping.TEXTSTRING.asParameter()).buildMixedIndex(INDEX);
         mixed.name();
         finishSchema();
+
 
         tx.addVertex("name", "Long John Don");
         tx.addVertex("name", "Long Little Lewis");
         tx.addVertex("name", "Middle Sister Mabel");
 
         clopen();
-        evaluateQuery(tx.query().has("name", Cmp.EQUAL, "Long John Don"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long"), ElementCategory.VERTEX, 2,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long Don"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS_PREFIX, "Lon"), ElementCategory.VERTEX, 2,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS_REGEX, "Lit*le"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.REGEX, "Long.*"), ElementCategory.VERTEX, 2,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.PREFIX, "Middle"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
+        evaluateQuery(tx.query().has("name", Cmp.EQUAL, "Long John Don"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long"), ElementCategory.VERTEX,
+                2, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long Don"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS_PREFIX, "Lon"), ElementCategory.VERTEX,
+                2, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS_REGEX, "Lit*le"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.REGEX, "Long.*"), ElementCategory.VERTEX,
+                2, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.PREFIX, "Middle"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
 
         for (Vertex u : tx.getVertices()) {
-            String n = u.<String> value("name");
+            String n = u.<String>value("name");
             if (n.endsWith("Don")) {
                 u.remove();
             } else if (n.endsWith("Lewis")) {
@@ -1110,28 +1056,31 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         clopen();
 
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long"), ElementCategory.VERTEX, 0,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Big"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.PREFIX, "Big"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mixed");
-        evaluateQuery(tx.query().has("name", Text.PREFIX, "Middle"), ElementCategory.VERTEX, 0,
-                new boolean[] { true, true }, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Long"), ElementCategory.VERTEX,
+                0, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "Big"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.PREFIX, "Big"), ElementCategory.VERTEX,
+                1, new boolean[]{true, true}, "mixed");
+        evaluateQuery(tx.query().has("name", Text.PREFIX, "Middle"), ElementCategory.VERTEX,
+                0, new boolean[]{true, true}, "mixed");
 
     }
 
-    @Category({ BrittleTests.class })
+    @Category({BrittleTests.class})
     @Test
     public void testIndexReplay() throws Exception {
         final TimestampProvider times = graph.getConfiguration().getTimestampProvider();
         final Instant startTime = times.getTime();
-        clopen(option(SYSTEM_LOG_TRANSACTIONS), true, option(KCVSLog.LOG_READ_LAG_TIME, TRANSACTION_LOG),
-                Duration.ofMillis(50), option(LOG_READ_INTERVAL, TRANSACTION_LOG), Duration.ofMillis(250),
-                option(MAX_COMMIT_TIME), Duration.ofSeconds(1), option(STORAGE_WRITE_WAITTIME), Duration.ofMillis(300),
-                option(TestMockIndexProvider.INDEX_BACKEND_PROXY, INDEX), readConfig.get(INDEX_BACKEND, INDEX),
-                option(INDEX_BACKEND, INDEX), TestMockIndexProvider.class.getName(),
-                option(TestMockIndexProvider.INDEX_MOCK_FAILADD, INDEX), true);
+        clopen(option(SYSTEM_LOG_TRANSACTIONS), true
+                , option(KCVSLog.LOG_READ_LAG_TIME, TRANSACTION_LOG), Duration.ofMillis(50)
+                , option(LOG_READ_INTERVAL, TRANSACTION_LOG), Duration.ofMillis(250)
+                , option(MAX_COMMIT_TIME), Duration.ofSeconds(1)
+                , option(STORAGE_WRITE_WAITTIME), Duration.ofMillis(300)
+                , option(TestMockIndexProvider.INDEX_BACKEND_PROXY, INDEX), readConfig.get(INDEX_BACKEND, INDEX)
+                , option(INDEX_BACKEND, INDEX), TestMockIndexProvider.class.getName()
+                , option(TestMockIndexProvider.INDEX_MOCK_FAILADD, INDEX), true
+        );
 
         PropertyKey name = mgmt.makePropertyKey("name").dataType(String.class).make();
         PropertyKey age = mgmt.makePropertyKey("age").dataType(Integer.class).make();
@@ -1156,14 +1105,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         newTx();
 
         clopen();
-        // Just to make sure nothing has been persisted to index
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy"), ElementCategory.VERTEX, 0,
-                new boolean[] { true, true }, "mi");
+        //Just to make sure nothing has been persisted to index
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy"),
+                ElementCategory.VERTEX, 0, new boolean[]{true, true}, "mi");
         /*
-         * Transaction Recovery
+        Transaction Recovery
          */
         TransactionRecovery recovery = HugeGraphFactory.startTransactionRecovery(graph, startTime);
-        // wait
+        //wait
         Thread.sleep(12000L);
 
         recovery.shutdown();
@@ -1171,37 +1120,40 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         clopen();
 
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy"), ElementCategory.VERTEX, 2,
-                new boolean[] { true, true }, "mi");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "long"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mi");
-        // HugeGraphVertex v = Iterables.getOnlyElement(tx.query().has("name",Text.CONTAINS,"long").vertices());
-        // System.out.println(v.getProperty("age"));
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "long").interval("age", 30, 40), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mi");
-        evaluateQuery(tx.query().has("age", 75), ElementCategory.VERTEX, 0, new boolean[] { true, true }, "mi");
-        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy").interval("age", 60, 70), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "mi");
-        evaluateQuery(tx.query().interval("age", 0, 100), ElementCategory.VERTEX, 2, new boolean[] { true, true },
-                "mi");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy"),
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "mi");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "long"),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "mi");
+//        HugeGraphVertex v = Iterables.getOnlyElement(tx.query().has("name",Text.CONTAINS,"long").vertices());
+//        System.out.println(v.getProperty("age"));
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "long").interval("age", 30, 40),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "mi");
+        evaluateQuery(tx.query().has("age", 75),
+                ElementCategory.VERTEX, 0, new boolean[]{true, true}, "mi");
+        evaluateQuery(tx.query().has("name", Text.CONTAINS, "boy").interval("age", 60, 70),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "mi");
+        evaluateQuery(tx.query().interval("age", 0, 100),
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "mi");
 
-        assertEquals(1, recoveryStats[0]); // schema transaction was successful
-        assertEquals(4, recoveryStats[1]); // all 4 index transaction had provoked errors in the indexing backend
+
+        assertEquals(1, recoveryStats[0]); //schema transaction was successful
+        assertEquals(4, recoveryStats[1]); //all 4 index transaction had provoked errors in the indexing backend
     }
 
     @Test
     public void testIndexUpdatesWithoutReindex() throws InterruptedException, ExecutionException {
-        Object[] settings = new Object[] { option(LOG_SEND_DELAY, MANAGEMENT_LOG), Duration.ofMillis(0),
+        Object[] settings = new Object[]{option(LOG_SEND_DELAY, MANAGEMENT_LOG), Duration.ofMillis(0),
                 option(KCVSLog.LOG_READ_LAG_TIME, MANAGEMENT_LOG), Duration.ofMillis(50),
-                option(LOG_READ_INTERVAL, MANAGEMENT_LOG), Duration.ofMillis(250) };
+                option(LOG_READ_INTERVAL, MANAGEMENT_LOG), Duration.ofMillis(250)
+        };
 
         clopen(settings);
         final String defText = "Mountain rocks are great friends";
         final int defTime = 5;
         final double defHeight = 101.1;
-        final String[] defPhones = new String[] { "1234", "5678" };
+        final String[] defPhones = new String[]{"1234", "5678"};
 
-        // Creates types and index only two keys key
+        //Creates types and index only two keys key
         mgmt.makePropertyKey("time").dataType(Integer.class).make();
         PropertyKey text = mgmt.makePropertyKey("text").dataType(String.class).make();
 
@@ -1209,45 +1161,45 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         if (indexFeatures.supportsCardinality(Cardinality.LIST)) {
             mgmt.makePropertyKey("phone").dataType(String.class).cardinality(Cardinality.LIST).make();
         }
-        mgmt.buildIndex("theIndex", Vertex.class).addKey(text, getTextMapping(), getFieldMap(text))
-                .buildMixedIndex(INDEX);
+        mgmt.buildIndex("theIndex", Vertex.class).addKey(text, getTextMapping(), getFieldMap(text)).buildMixedIndex(INDEX);
         finishSchema();
 
-        // Add initial data
+        //Add initial data
         addVertex(defTime, defText, defHeight, defPhones);
 
-        // Indexes should not yet be in use
+        //Indexes should not yet be in use
         clopen(settings);
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().has("time", 5), ElementCategory.VERTEX, 1, new boolean[] { false, true });
-        evaluateQuery(tx.query().interval("height", 100, 200), ElementCategory.VERTEX, 1,
-                new boolean[] { false, true });
-        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5), ElementCategory.VERTEX, 1,
-                new boolean[] { false, true });
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().has("time", 5),
+                ElementCategory.VERTEX, 1, new boolean[]{false, true});
+        evaluateQuery(tx.query().interval("height", 100, 200),
+                ElementCategory.VERTEX, 1, new boolean[]{false, true});
+        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5),
+                ElementCategory.VERTEX, 1, new boolean[]{false, true});
         evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks").has("time", 5).interval("height", 100, 200),
-                ElementCategory.VERTEX, 1, new boolean[] { false, true }, "theIndex");
+                ElementCategory.VERTEX, 1, new boolean[]{false, true}, "theIndex");
         if (indexFeatures.supportsCardinality(Cardinality.LIST)) {
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"), ElementCategory.VERTEX, 1,
-                    new boolean[] { false, true });
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"), ElementCategory.VERTEX, 1,
-                    new boolean[] { false, true });
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"),
+                    ElementCategory.VERTEX, 1, new boolean[]{false, true});
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"),
+                    ElementCategory.VERTEX, 1, new boolean[]{false, true});
         }
         newTx();
 
-        // Add another key to index ------------------------------------------------------
+        //Add another key to index ------------------------------------------------------
         finishSchema();
         PropertyKey time = mgmt.getPropertyKey("time");
         mgmt.addIndexKey(mgmt.getGraphIndex("theIndex"), time, getFieldMap(time));
         finishSchema();
         newTx();
 
-        // Add more data
+        //Add more data
         addVertex(defTime, defText, defHeight, defPhones);
         tx.commit();
-        // Should not yet be able to enable since not yet registered
+        //Should not yet be able to enable since not yet registered
         assertNull(mgmt.updateIndex(mgmt.getGraphIndex("theIndex"), SchemaAction.ENABLE_INDEX));
-        // This call is redundant and just here to make sure it doesn't mess anything up
+        //This call is redundant and just here to make sure it doesn't mess anything up
         mgmt.updateIndex(mgmt.getGraphIndex("theIndex"), SchemaAction.REGISTER_INDEX).get();
         mgmt.commit();
 
@@ -1257,29 +1209,30 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         mgmt.updateIndex(mgmt.getGraphIndex("theIndex"), SchemaAction.ENABLE_INDEX).get();
         finishSchema();
 
-        // Add more data
+        //Add more data
         addVertex(defTime, defText, defHeight, defPhones);
 
-        // One more key should be indexed but only sees partial data
+        //One more key should be indexed but only sees partial data
         clopen(settings);
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"), ElementCategory.VERTEX, 3,
-                new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().has("time", 5), ElementCategory.VERTEX, 2, new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().interval("height", 100, 200), ElementCategory.VERTEX, 3,
-                new boolean[] { false, true });
-        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5), ElementCategory.VERTEX, 2,
-                new boolean[] { false, true }, "theIndex");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"),
+                ElementCategory.VERTEX, 3, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().has("time", 5),
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().interval("height", 100, 200),
+                ElementCategory.VERTEX, 3, new boolean[]{false, true});
+        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5),
+                ElementCategory.VERTEX, 2, new boolean[]{false, true}, "theIndex");
         evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks").has("time", 5).interval("height", 100, 200),
-                ElementCategory.VERTEX, 2, new boolean[] { false, true }, "theIndex");
+                ElementCategory.VERTEX, 2, new boolean[]{false, true}, "theIndex");
         if (indexFeatures.supportsCardinality(Cardinality.LIST)) {
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"), ElementCategory.VERTEX, 3,
-                    new boolean[] { false, true });
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"), ElementCategory.VERTEX, 3,
-                    new boolean[] { false, true });
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"),
+                    ElementCategory.VERTEX, 3, new boolean[]{false, true});
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"),
+                    ElementCategory.VERTEX, 3, new boolean[]{false, true});
         }
         newTx();
 
-        // Add another key to index ------------------------------------------------------
+        //Add another key to index ------------------------------------------------------
         finishSchema();
         PropertyKey height = mgmt.getPropertyKey("height");
         mgmt.addIndexKey(mgmt.getGraphIndex("theIndex"), height);
@@ -1289,7 +1242,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         }
         finishSchema();
 
-        // Add more data
+        //Add more data
         addVertex(defTime, defText, defHeight, defPhones);
         tx.commit();
         mgmt.commit();
@@ -1305,25 +1258,26 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             assertEquals(SchemaStatus.ENABLED, index.getIndexStatus(key));
         }
 
-        // Add more data
+        //Add more data
         addVertex(defTime, defText, defHeight, defPhones);
 
-        // One more key should be indexed but only sees partial data
+        //One more key should be indexed but only sees partial data
         clopen(settings);
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"), ElementCategory.VERTEX, 5,
-                new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().has("time", 5), ElementCategory.VERTEX, 4, new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().interval("height", 100, 200), ElementCategory.VERTEX, 2, new boolean[] { true, true },
-                "theIndex");
-        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5), ElementCategory.VERTEX, 2,
-                new boolean[] { true, true }, "theIndex");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"),
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().has("time", 5),
+                ElementCategory.VERTEX, 4, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().interval("height", 100, 200),
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5),
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
         evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks").has("time", 5).interval("height", 100, 200),
-                ElementCategory.VERTEX, 2, new boolean[] { true, true }, "theIndex");
+                ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
         if (indexFeatures.supportsCardinality(Cardinality.LIST)) {
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"), ElementCategory.VERTEX, 2,
-                    new boolean[] { true, true }, "theIndex");
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"), ElementCategory.VERTEX, 2,
-                    new boolean[] { true, true }, "theIndex");
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"),
+                    ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"),
+                    ElementCategory.VERTEX, 2, new boolean[]{true, true}, "theIndex");
         }
         newTx();
         finishSchema();
@@ -1333,22 +1287,23 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         finishSchema();
 
-        // All the data should now be in the index
+        //All the data should now be in the index
         clopen(settings);
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"), ElementCategory.VERTEX, 5,
-                new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().has("time", 5), ElementCategory.VERTEX, 5, new boolean[] { true, true }, "theIndex");
-        evaluateQuery(tx.query().interval("height", 100, 200), ElementCategory.VERTEX, 5, new boolean[] { true, true },
-                "theIndex");
-        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5), ElementCategory.VERTEX, 5,
-                new boolean[] { true, true }, "theIndex");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks"),
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().has("time", 5),
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().interval("height", 100, 200),
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
+        evaluateQuery(tx.query().interval("height", 100, 200).has("time", 5),
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
         evaluateQuery(tx.query().has("text", Text.CONTAINS, "rocks").has("time", 5).interval("height", 100, 200),
-                ElementCategory.VERTEX, 5, new boolean[] { true, true }, "theIndex");
+                ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
         if (indexFeatures.supportsCardinality(Cardinality.LIST)) {
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"), ElementCategory.VERTEX, 5,
-                    new boolean[] { true, true }, "theIndex");
-            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"), ElementCategory.VERTEX, 5,
-                    new boolean[] { true, true }, "theIndex");
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "1234"),
+                    ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
+            evaluateQuery(tx.query().has("phone", Cmp.EQUAL, "5678"),
+                    ElementCategory.VERTEX, 5, new boolean[]{true, true}, "theIndex");
         }
 
         mgmt.updateIndex(mgmt.getGraphIndex("theIndex"), SchemaAction.DISABLE_INDEX).get();
@@ -1364,8 +1319,9 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         }
 
         newTx();
-        // This now requires a full graph scan
-        evaluateQuery(tx.query().has("time", 5), ElementCategory.VERTEX, 5, new boolean[] { false, true });
+        //This now requires a full graph scan
+        evaluateQuery(tx.query().has("time", 5),
+                ElementCategory.VERTEX, 5, new boolean[]{false, true});
 
     }
 
@@ -1379,10 +1335,11 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         newTx();
     }
 
-    /*
-     * ================================================================================== TIME-TO-LIVE
-     * ==================================================================================
-     */
+
+
+   /* ==================================================================================
+                                     TIME-TO-LIVE
+     ==================================================================================*/
 
     @Test
     public void testVertexTTLWithMixedIndices() throws Exception {
@@ -1398,8 +1355,10 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         final int eventTTLSeconds = (int) TestGraphConfigs.getTTL(TimeUnit.SECONDS);
         mgmt.setTTL(event, Duration.ofSeconds(eventTTLSeconds));
 
-        mgmt.buildIndex("index1", Vertex.class).addKey(name, getStringMapping()).addKey(time).buildMixedIndex(INDEX);
-        mgmt.buildIndex("index2", Vertex.class).indexOnly(event).addKey(text, getTextMapping()).buildMixedIndex(INDEX);
+        mgmt.buildIndex("index1", Vertex.class).
+                addKey(name, getStringMapping()).addKey(time).buildMixedIndex(INDEX);
+        mgmt.buildIndex("index2", Vertex.class).indexOnly(event).
+                addKey(text, getTextMapping()).buildMixedIndex(INDEX);
 
         assertEquals(Duration.ZERO, mgmt.getTTL(name));
         assertEquals(Duration.ZERO, mgmt.getTTL(time));
@@ -1417,20 +1376,20 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         long time2 = time1 + 1;
         v2.property(VertexProperty.Cardinality.single, "time", time2);
 
-        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, tx.getPropertyKey("time"), Order.DESC, "index1");
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "index2");
+        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, tx.getPropertyKey("time"), Order.DESC, "index1");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "index2");
 
         clopen();
 
         Object v1Id = v1.id();
         Object v2Id = v2.id();
 
-        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, tx.getPropertyKey("time"), Order.DESC, "index1");
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"), ElementCategory.VERTEX, 1,
-                new boolean[] { true, true }, "index2");
+        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, tx.getPropertyKey("time"), Order.DESC, "index1");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"),
+                ElementCategory.VERTEX, 1, new boolean[]{true, true}, "index2");
 
         v1 = getV(tx, v1Id);
         v2 = getV(tx, v1Id);
@@ -1443,10 +1402,11 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         Thread.sleep(TimeUnit.MILLISECONDS.convert((long) Math.ceil(eventTTLSeconds * 1.25), TimeUnit.SECONDS));
 
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"), ElementCategory.VERTEX, 0,
-                new boolean[] { true, true }, "index2");
-        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr), ElementCategory.VERTEX, 0,
-                new boolean[] { true, true }, tx.getPropertyKey("time"), Order.DESC, "index1");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "event"),
+                ElementCategory.VERTEX, 0, new boolean[]{true, true}, "index2");
+        evaluateQuery(tx.query().has("name", "first event").orderBy("time", decr),
+                ElementCategory.VERTEX, 0, new boolean[]{true, true}, tx.getPropertyKey("time"), Order.DESC, "index1");
+
 
         v1 = getV(tx, v1Id);
         v2 = getV(tx, v2Id);
@@ -1468,8 +1428,10 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         final int likesTTLSeconds = (int) TestGraphConfigs.getTTL(TimeUnit.SECONDS);
         mgmt.setTTL(label, Duration.ofSeconds(likesTTLSeconds));
 
-        mgmt.buildIndex("index1", Edge.class).addKey(name, getStringMapping()).addKey(time).buildMixedIndex(INDEX);
-        mgmt.buildIndex("index2", Edge.class).indexOnly(label).addKey(text, getTextMapping()).buildMixedIndex(INDEX);
+        mgmt.buildIndex("index1", Edge.class).
+                addKey(name, getStringMapping()).addKey(time).buildMixedIndex(INDEX);
+        mgmt.buildIndex("index2", Edge.class).indexOnly(label).
+                addKey(text, getTextMapping()).buildMixedIndex(INDEX);
 
         assertEquals(Duration.ZERO, mgmt.getTTL(name));
         assertEquals(Duration.ofSeconds(likesTTLSeconds), mgmt.getTTL(label));
@@ -1490,10 +1452,10 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         Object e1Id = e1.id();
         e2.id();
 
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "likes"), ElementCategory.EDGE, 1,
-                new boolean[] { true, true }, "index2");
-        evaluateQuery(tx.query().has("name", "v2 likes v3").orderBy("time", decr), ElementCategory.EDGE, 1,
-                new boolean[] { true, true }, tx.getPropertyKey("time"), Order.DESC, "index1");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "likes"),
+                ElementCategory.EDGE, 1, new boolean[]{true, true}, "index2");
+        evaluateQuery(tx.query().has("name", "v2 likes v3").orderBy("time", decr),
+                ElementCategory.EDGE, 1, new boolean[]{true, true}, tx.getPropertyKey("time"), Order.DESC, "index1");
         v1 = getV(tx, v1.id());
         v2 = getV(tx, v2.id());
         v3 = getV(tx, v3.id());
@@ -1507,14 +1469,15 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertNotEmpty(v1.query().direction(Direction.OUT).edges());
         assertNotEmpty(v2.query().direction(Direction.OUT).edges());
 
+
         Thread.sleep(TimeUnit.MILLISECONDS.convert((long) Math.ceil(likesTTLSeconds * 1.25), TimeUnit.SECONDS));
         clopen();
 
         // ...indexes have expired
-        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "likes"), ElementCategory.EDGE, 0,
-                new boolean[] { true, true }, "index2");
-        evaluateQuery(tx.query().has("name", "v2 likes v3").orderBy("time", decr), ElementCategory.EDGE, 0,
-                new boolean[] { true, true }, tx.getPropertyKey("time"), Order.DESC, "index1");
+        evaluateQuery(tx.query().has("text", Text.CONTAINS, "help").has(LABEL_NAME, "likes"),
+                ElementCategory.EDGE, 0, new boolean[]{true, true}, "index2");
+        evaluateQuery(tx.query().has("name", "v2 likes v3").orderBy("time", decr),
+                ElementCategory.EDGE, 0, new boolean[]{true, true}, tx.getPropertyKey("time"), Order.DESC, "index1");
 
         v1 = getV(tx, v1.id());
         v2 = getV(tx, v2.id());
@@ -1531,14 +1494,14 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         assertEmpty(v2.query().direction(Direction.OUT).edges());
     }
 
-    /*
-     * ================================================================================== SPECIAL CONCURRENT UPDATE
-     * CASES ==================================================================================
-     */
+   /* ==================================================================================
+                            SPECIAL CONCURRENT UPDATE CASES
+     ==================================================================================*/
 
     /**
-     * Create a vertex with an indexed property and commit. Open two new transactions; delete vertex in one and delete
-     * just the property in the other, then commit in the same order. Neither commit throws an exception.
+     * Create a vertex with an indexed property and commit. Open two new
+     * transactions; delete vertex in one and delete just the property in the
+     * other, then commit in the same order. Neither commit throws an exception.
      */
     @Test
     public void testDeleteVertexThenDeleteProperty() throws BackendException {
@@ -1546,8 +1509,9 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     }
 
     /**
-     * Create a vertex and commit. Open two new transactions; delete vertex in one and add an indexed property in the
-     * other, then commit in the same order. Neither commit throws an exception.
+     * Create a vertex and commit. Open two new transactions; delete vertex in
+     * one and add an indexed property in the other, then commit in the same
+     * order. Neither commit throws an exception.
      */
     @Test
     public void testDeleteVertexThenAddProperty() throws BackendException {
@@ -1555,8 +1519,9 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
     }
 
     /**
-     * Create a vertex with an indexed property and commit. Open two new transactions; delete vertex in one and modify
-     * the property in the other, then commit in the same order. Neither commit throws an exception.
+     * Create a vertex with an indexed property and commit. Open two new
+     * transactions; delete vertex in one and modify the property in the other,
+     * then commit in the same order. Neither commit throws an exception.
      */
     @Test
     public void testDeleteVertexThenModifyProperty() throws BackendException {
@@ -1606,8 +1571,7 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         Thread.sleep(2000);
 
-        HugeGraphVertex r = Iterables
-                .<HugeGraphVertex> get(graph.query().has("name", Text.CONTAINS, "hercules here").vertices(), 0);
+        HugeGraphVertex r = Iterables.<HugeGraphVertex>get(graph.query().has("name", Text.CONTAINS, "hercules here").vertices(), 0);
         Assert.assertEquals(r.property("name").value(), "hercules was here");
     }
 
@@ -1684,12 +1648,13 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             v1.property("p1", "test1");
             v1.property("p2", "test2");
 
-            clopen();// Flush the index
+            clopen();//Flush the index
             assertEquals(v1, graph.indexQuery("mixedIndex", "v.*:\"test1\"").vertices().iterator().next().getElement());
             assertEquals(v1, graph.indexQuery("mixedIndex", "v.*:\"test2\"").vertices().iterator().next().getElement());
         }
 
     }
+
 
     /**
      * Tests indexing lists
@@ -1709,21 +1674,15 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
         testIndexing(Cardinality.SET);
     }
 
+
     private void testIndexing(Cardinality cardinality) {
         if (supportsCollections()) {
-            PropertyKey stringProperty =
-                    mgmt.makePropertyKey("name").dataType(String.class).cardinality(cardinality).make();
-            PropertyKey intProperty =
-                    mgmt.makePropertyKey("age").dataType(Integer.class).cardinality(cardinality).make();
-            PropertyKey longProperty =
-                    mgmt.makePropertyKey("long").dataType(Long.class).cardinality(cardinality).make();
-            PropertyKey uuidProperty =
-                    mgmt.makePropertyKey("uuid").dataType(UUID.class).cardinality(cardinality).make();
-            PropertyKey geoProperty =
-                    mgmt.makePropertyKey("geo").dataType(Geoshape.class).cardinality(cardinality).make();
-            mgmt.buildIndex("collectionIndex", Vertex.class).addKey(stringProperty, getStringMapping())
-                    .addKey(intProperty).addKey(longProperty).addKey(uuidProperty).addKey(geoProperty)
-                    .buildMixedIndex(INDEX);
+            PropertyKey stringProperty = mgmt.makePropertyKey("name").dataType(String.class).cardinality(cardinality).make();
+            PropertyKey intProperty = mgmt.makePropertyKey("age").dataType(Integer.class).cardinality(cardinality).make();
+            PropertyKey longProperty = mgmt.makePropertyKey("long").dataType(Long.class).cardinality(cardinality).make();
+            PropertyKey uuidProperty = mgmt.makePropertyKey("uuid").dataType(UUID.class).cardinality(cardinality).make();
+            PropertyKey geoProperty = mgmt.makePropertyKey("geo").dataType(Geoshape.class).cardinality(cardinality).make();
+            mgmt.buildIndex("collectionIndex", Vertex.class).addKey(stringProperty, getStringMapping()).addKey(intProperty).addKey(longProperty).addKey(uuidProperty).addKey(geoProperty).buildMixedIndex(INDEX);
 
             finishSchema();
             testCollection(cardinality, "name", "Totoro", "Hiro");
@@ -1733,11 +1692,9 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
             testCollection(cardinality, "geo", Geoshape.point(1.0, 1.0), Geoshape.point(2.0, 2.0));
         } else {
             try {
-                PropertyKey stringProperty =
-                        mgmt.makePropertyKey("name").dataType(String.class).cardinality(cardinality).make();
-                // This should throw an exception
-                mgmt.buildIndex("collectionIndex", Vertex.class).addKey(stringProperty, getStringMapping())
-                        .buildMixedIndex(INDEX);
+                PropertyKey stringProperty = mgmt.makePropertyKey("name").dataType(String.class).cardinality(cardinality).make();
+                //This should throw an exception
+                mgmt.buildIndex("collectionIndex", Vertex.class).addKey(stringProperty, getStringMapping()).buildMixedIndex(INDEX);
                 Assert.fail("Should have thrown an exception");
             } catch (HugeGraphException e) {
 
@@ -1750,9 +1707,9 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         Vertex v1 = graph.addVertex();
 
-        // Adding properties one at a time
+        //Adding properties one at a time
         v1.property(property, value1);
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
 
         v1 = getV(graph, v1.id());
@@ -1760,11 +1717,11 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
 
-        // Remove the properties
+        //Remove the properties
         v1 = getV(graph, v1.id());
         v1.properties(property).forEachRemaining(p -> {
             if (p.value().equals(value1)) {
@@ -1774,30 +1731,30 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         assertFalse(graph.query().has(property, value1).vertices().iterator().hasNext());
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
         assertFalse(graph.query().has(property, value1).vertices().iterator().hasNext());
 
-        // Re add the properties
+        //Re add the properties
         v1 = getV(graph, v1.id());
         v1.property(property, value1);
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
 
-        // Add a duplicate property
+        //Add a duplicate property
         v1 = getV(graph, v1.id());
         v1.property(property, value1);
 
-        assertEquals(Cardinality.SET.equals(cardinality) ? 2 : 3,
-                Iterators.size(getOnlyVertex(graph.query().has(property, value1)).properties(property)));
-        clopen();// Flush the index
-        assertEquals(Cardinality.SET.equals(cardinality) ? 2 : 3,
-                Iterators.size(getOnlyVertex(graph.query().has(property, value1)).properties(property)));
 
-        // Add two properties at once to a fresh vertex
+        assertEquals(Cardinality.SET.equals(cardinality) ? 2 : 3, Iterators.size(getOnlyVertex(graph.query().has(property, value1)).properties(property)));
+        clopen();//Flush the index
+        assertEquals(Cardinality.SET.equals(cardinality) ? 2 : 3, Iterators.size(getOnlyVertex(graph.query().has(property, value1)).properties(property)));
+
+
+        //Add two properties at once to a fresh vertex
         graph.vertices().forEachRemaining(v -> v.remove());
         v1 = graph.addVertex();
         v1.property(property, value1);
@@ -1805,17 +1762,16 @@ public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
-        clopen();// Flush the index
+        clopen();//Flush the index
         assertEquals(v1, getOnlyElement(graph.query().has(property, value1).vertices()));
         assertEquals(v1, getOnlyElement(graph.query().has(property, value2).vertices()));
 
-        // If this is a geo test then try a within query
+        //If this is a geo test then try a within query
         if (value1 instanceof Geoshape) {
-            assertEquals(v1,
-                    getOnlyElement(graph.query().has(property, Geo.WITHIN, Geoshape.circle(1.0, 1.0, 0.1)).vertices()));
-            assertEquals(v1,
-                    getOnlyElement(graph.query().has(property, Geo.WITHIN, Geoshape.circle(2.0, 2.0, 0.1)).vertices()));
+            assertEquals(v1, getOnlyElement(graph.query().has(property, Geo.WITHIN, Geoshape.circle(1.0, 1.0, 0.1)).vertices()));
+            assertEquals(v1, getOnlyElement(graph.query().has(property, Geo.WITHIN, Geoshape.circle(2.0, 2.0, 0.1)).vertices()));
         }
+
 
     }
 

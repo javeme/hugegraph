@@ -44,12 +44,13 @@ public interface IndexType {
     public String getName();
 
     /**
-     * Resets the internal caches used to speed up lookups on this index. This is needed when the index gets modified in
-     * {@link com.baidu.hugegraph.graphdb.database.management.ManagementSystem}.
+     * Resets the internal caches used to speed up lookups on this index.
+     * This is needed when the index gets modified in {@link com.baidu.hugegraph.graphdb.database.management.ManagementSystem}.
      */
     public void resetCache();
 
-    // TODO: Add in the future
-    // public And getCondition();
+    //TODO: Add in the future
+    //public And getCondition();
+
 
 }

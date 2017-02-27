@@ -2,19 +2,19 @@
 InMemory Storage Backend
 ------------------------
 
-JanusGraph ships with an in-memory storage backend which can be used through the following configuration:
+hugegraph ships with an in-memory storage backend which can be used through the following configuration:
 
 [source, properties]
 ----
 storage.backend=inmemory
 ----
 
-Alternatively, an in-memory JanusGraph graph can be opened directly in the Gremlin shell:
+Alternatively, an in-memory hugegraph graph can be opened directly in the Gremlin shell:
 
 [source, gremlin]
-graph = JanusGraphFactory.build().set('storage.backend', 'inmemory').open()
+graph = HugeGraphFactory.build().set('storage.backend', 'inmemory').open()
 
-There are no additional configuration options for the in-memory storage backend. As the name suggests, this backend holds all data in memory. Shutting down the graph or terminating the process that hosts the JanusGraph graph will irrevocably delete all data from the graph. This backend is local to a particular JanusGraph graph instance and cannot be shared across multiple JanusGraph graphs.
+There are no additional configuration options for the in-memory storage backend. As the name suggests, this backend holds all data in memory. Shutting down the graph or terminating the process that hosts the hugegraph graph will irrevocably delete all data from the graph. This backend is local to a particular hugegraph graph instance and cannot be shared across multiple hugegraph graphs.
 
 Ideal Use Case
 ~~~~~~~~~~~~~~

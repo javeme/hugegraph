@@ -15,10 +15,9 @@
 package com.baidu.hugegraph.core;
 
 /**
- * Exception thrown due to invalid configuration options or when errors occur during the configuration and
- * initialization of HugeGraph.
+ * Exception thrown due to invalid configuration options or when errors
+ * occur during the configuration and initialization of HugeGraph.
  * <p/>
- * 
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
@@ -34,7 +33,7 @@ public class HugeGraphConfigurationException extends HugeGraphException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public HugeGraphConfigurationException(String msg, Throwable cause) {

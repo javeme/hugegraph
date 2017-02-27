@@ -96,23 +96,19 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     }
 
     public void close() throws BackendException {
-        if (tx != null)
-            tx.commit();
-        if (null != store)
-            store.close();
-        if (null != manager)
-            manager.close();
+        if (tx != null) tx.commit();
+        if (null != store) store.close();
+        if (null != manager) manager.close();
     }
 
     public void newTx() throws BackendException {
-        if (tx != null)
-            tx.commit();
+        if (tx!=null) tx.commit();
         tx = startTx();
     }
 
     @Test
     public void createDatabase() {
-        // Just setup and shutdown
+        //Just setup and shutdown
     }
 
     public String[][] generateValues() {
@@ -127,22 +123,26 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         KeyColumnValueStoreUtil.loadValues(store, tx, values, shiftEveryNthRow, shiftSliceLength);
     }
 
-    public void loadValues(KeyColumnValueStore store, String[][] values, int shiftEveryNthRow, int shiftSliceLength)
-            throws BackendException {
+    public void loadValues(KeyColumnValueStore store, String[][] values, int shiftEveryNthRow,
+                           int shiftSliceLength) throws BackendException {
         KeyColumnValueStoreUtil.loadValues(store, tx, values, shiftEveryNthRow, shiftSliceLength);
     }
 
     /**
-     * Load a bunch of key-column-values in a way that vaguely resembles a lower triangular matrix.
+     * Load a bunch of key-column-values in a way that vaguely resembles a lower
+     * triangular matrix.
      * <p/>
-     * Iterate over key values {@code k} in the half-open long interval {@code [offset, offset + dimension -1)}. For
-     * each {@code k}, iterate over the column values {@code c} in the half-open integer interval {@code [offset, k]}.
+     * Iterate over key values {@code k} in the half-open long interval
+     * {@code [offset, offset + dimension -1)}. For each {@code k}, iterate over
+     * the column values {@code c} in the half-open integer interval
+     * {@code [offset, k]}.
      * <p/>
-     * For each key-column coordinate specified by a {@code (k, c} pair in the iteration, write a value one byte long
-     * with all bits set (unsigned -1 or signed 255).
+     * For each key-column coordinate specified by a {@code (k, c} pair in the
+     *iteration, write a value one byte long with all bits set (unsigned -1 or
+     *signed 255).
      *
      * @param dimension size of loaded data (must be positive)
-     * @param offset offset (must be positive)
+     * @param offset    offset (must be positive)
      * @throws StorageException unexpected failure
      */
     public void loadLowerTriangularValues(int dimension, int offset) throws BackendException {
@@ -172,7 +172,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
                 rowAdditions.add(StaticArrayEntry.of(staticCol, staticVal));
             }
 
-            store.mutate(staticKey, rowAdditions, Collections.<StaticBuffer> emptyList(), tx);
+            store.mutate(staticKey, rowAdditions, Collections.<StaticBuffer>emptyList(), tx);
         }
     }
 
@@ -184,7 +184,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
             for (int j = 0; j < numColumns; j++) {
                 counter++;
                 if (counter % every == 0) {
-                    // remove
+                    //remove
                     removed.add(new KeyColumn(i, j));
                     deletions.add(KeyValueStoreUtil.getBuffer(j));
                 }
@@ -226,8 +226,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     public void checkValueExistence(String[][] values, Set<KeyColumn> removed) throws BackendException {
         for (int i = 0; i < numKeys; i++) {
             for (int j = 0; j < numColumns; j++) {
-                boolean result = KCVSUtil.containsKeyColumn(store, KeyValueStoreUtil.getBuffer(i),
-                        KeyValueStoreUtil.getBuffer(j), tx);
+                boolean result = KCVSUtil.containsKeyColumn(store, KeyValueStoreUtil.getBuffer(i), KeyValueStoreUtil.getBuffer(j), tx);
                 if (removed.contains(new KeyColumn(i, j))) {
                     Assert.assertFalse(result);
                 } else {
@@ -244,8 +243,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     public void checkValues(String[][] values, Set<KeyColumn> removed) throws BackendException {
         for (int i = 0; i < numKeys; i++) {
             for (int j = 0; j < numColumns; j++) {
-                StaticBuffer result =
-                        KCVSUtil.get(store, KeyValueStoreUtil.getBuffer(i), KeyValueStoreUtil.getBuffer(j), tx);
+                StaticBuffer result = KCVSUtil.get(store, KeyValueStoreUtil.getBuffer(i), KeyValueStoreUtil.getBuffer(j), tx);
                 if (removed.contains(new KeyColumn(i, j))) {
                     Assert.assertNull(result);
                 } else {
@@ -261,33 +259,32 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         String[][] values = generateValues();
         log.debug("Loading values...");
         loadValues(values);
-        // print(values);
+        //print(values);
         log.debug("Checking values...");
         checkValueExistence(values);
         checkValues(values);
     }
 
-    // @Test
+    //@Test
     public void compareStores() throws BackendException {
-        int keys = 1000, columns = 2000;
-        boolean normalMode = true;
-        String[][] values = new String[keys * 2][];
-        for (int i = 0; i < keys * 2; i++) {
-            if (i % 2 == 0) {
+        int keys = 1000, columns = 2000; boolean normalMode=true;
+        String[][] values = new String[keys*2][];
+        for (int i = 0; i < keys*2; i++) {
+            if(i%2==0) {
                 if (normalMode) {
-                    values[i] = new String[columns + 4];
+                    values[i]=new String[columns + 4];
                 } else {
-                    values[i] = new String[4];
+                    values[i]=new String[4];
                 }
             } else {
                 if (normalMode) {
-                    values[i] = new String[0];
+                    values[i]=new String[0];
                 } else {
-                    values[i] = new String[columns];
+                    values[i]=new String[columns];
                 }
             }
             for (int j = 0; j < values[i].length; j++) {
-                values[i][j] = RandomGenerator.randomString(30, 35);
+                values[i][j] = RandomGenerator.randomString(30,35);
             }
         }
         log.debug("Loading values: " + keys + "x" + columns);
@@ -295,21 +292,23 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         loadValues(values);
         clopen();
         System.out.println("Loading time (ms): " + (System.currentTimeMillis() - time));
-        // print(values);
+        //print(values);
         Random r = new Random();
         int trials = 500;
         log.debug("Reading values: " + trials + " trials");
-        for (int i = 0; i < 10; i++) {
+        for (int i=0; i<10;i++) {
             time = System.currentTimeMillis();
             for (int t = 0; t < trials; t++) {
-                int key = r.nextInt(keys) * 2;
-                assertEquals(2, store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key),
-                        KeyValueStoreUtil.getBuffer(2002), KeyValueStoreUtil.getBuffer(2004)), tx).size());
+                int key = r.nextInt(keys)*2;
+                assertEquals(2,store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key), KeyValueStoreUtil.getBuffer(2002), KeyValueStoreUtil.getBuffer(2004)), tx).size());
             }
 
             System.out.println("Reading time (ms): " + (System.currentTimeMillis() - time));
         }
     }
+
+
+
 
     @Test
     public void storeAndRetrievePerformance() throws BackendException {
@@ -321,25 +320,23 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         loadValues(values);
         clopen();
         System.out.println("Loading time (ms): " + (System.currentTimeMillis() - time));
-        // print(values);
+        //print(values);
         Random r = new Random();
         int trials = 500 * multiplier;
         int delta = 10;
         log.debug("Reading values: " + trials + " trials");
-        for (int i = 0; i < 1; i++) {
+        for (int i=0; i<1;i++) {
             time = System.currentTimeMillis();
             for (int t = 0; t < trials; t++) {
                 int key = r.nextInt(keys);
                 int start = r.nextInt(columns - delta);
-                store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key), KeyValueStoreUtil.getBuffer(start),
-                        KeyValueStoreUtil.getBuffer(start + delta)), tx);
+                store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key), KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(start + delta)), tx);
             }
-            // multiQuery version
-            // List<StaticBuffer> keylist = new ArrayList<StaticBuffer>();
-            // for (int t = 0; t < trials; t++) keylist.add(KeyValueStoreUtil.getBuffer(r.nextInt(keys)));
-            // int start = r.nextInt(columns - delta);
-            // store.getSlice(keylist, new SliceQuery(KeyValueStoreUtil.getBuffer(start),
-            // KeyValueStoreUtil.getBuffer(start + delta)), tx);
+            //multiQuery version
+//            List<StaticBuffer> keylist = new ArrayList<StaticBuffer>();
+//            for (int t = 0; t < trials; t++) keylist.add(KeyValueStoreUtil.getBuffer(r.nextInt(keys)));
+//            int start = r.nextInt(columns - delta);
+//            store.getSlice(keylist, new SliceQuery(KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(start + delta)), tx);
             System.out.println("Reading time (ms): " + (System.currentTimeMillis() - time));
         }
     }
@@ -392,16 +389,20 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     }
 
     /**
-     * Loads a block of data where keys are longs on [idOffset, idOffset + numKeys) and the columns are longs on
-     * [idOffset, idOffset + numColumns). {@code idOffset} is {@link KeyValueStoreUtil#idOffset}. Note that identical
-     * columns appear on every key. The loaded values are randomly generated strings converted to bytes.
+     * Loads a block of data where keys are longs on [idOffset, idOffset +
+     * numKeys) and the columns are longs on [idOffset, idOffset + numColumns).
+     * {@code idOffset} is {@link KeyValueStoreUtil#idOffset}. Note that
+     * identical columns appear on every key. The loaded values are randomly
+     * generated strings converted to bytes.
      * <p/>
-     * Calls the store's supported {@code getKeys} method depending on whether it supports ordered or unordered scan.
-     * This logic is delegated to
-     * {@link KCVSUtil#getKeys(KeyColumnValueStore, StoreFeatures, int, int, StoreTransaction)} . That method uses
-     * all-zero and all-one buffers for the key and column limits and retrieves every key.
+     * Calls the store's supported {@code getKeys} method depending on whether
+     * it supports ordered or unordered scan. This logic is delegated to
+     * {@link KCVSUtil#getKeys(KeyColumnValueStore, StoreFeatures, int, int, StoreTransaction)}
+     * . That method uses all-zero and all-one buffers for the key and column
+     * limits and retrieves every key.
      * <p/>
-     * This method does nothing and returns immediately if the store supports no scans.
+     * This method does nothing and returns immediately if the store supports no
+     * scans.
      */
     @Test
     public void scanTest() throws BackendException {
@@ -409,7 +410,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
             String[][] values = generateValues();
             loadValues(values);
             KeyIterator iterator0 = KCVSUtil.getKeys(store, storeFeatures(), 8, 4, tx);
-            verifyIterator(iterator0, numKeys, 1);
+            verifyIterator(iterator0,numKeys,1);
             clopen();
             KeyIterator iterator1 = KCVSUtil.getKeys(store, storeFeatures(), 8, 4, tx);
             KeyIterator iterator2 = KCVSUtil.getKeys(store, storeFeatures(), 8, 4, tx);
@@ -418,8 +419,8 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
             // (important for BerkeleyJE where leaving cursors open causes exceptions)
             @SuppressWarnings("unused")
             KeyIterator iterator3 = KCVSUtil.getKeys(store, storeFeatures(), 8, 4, tx);
-            verifyIterator(iterator1, numKeys, 1);
-            verifyIterator(iterator2, numKeys, 1);
+            verifyIterator(iterator1,numKeys,1);
+            verifyIterator(iterator2,numKeys,1);
         }
     }
 
@@ -427,34 +428,37 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         int keys = 0;
         while (iter.hasNext()) {
             StaticBuffer b = iter.next();
-            assertTrue(b != null && b.length() > 0);
+            assertTrue(b!=null && b.length()>0);
             keys++;
             RecordIterator<Entry> entries = iter.getEntries();
             int cols = 0;
             while (entries.hasNext()) {
                 Entry e = entries.next();
-                assertTrue(e != null && e.length() > 0);
+                assertTrue(e!=null && e.length()>0);
                 cols++;
             }
-            assertEquals(exepctedCols, cols);
+            assertEquals(exepctedCols,cols);
         }
-        assertEquals(expectedKeys, keys);
+        assertEquals(expectedKeys,keys);
     }
 
     /**
-     * Verify that {@link KeyColumnValueStore#getKeys(KeyRangeQuery, StoreTransaction)} treats the lower key bound as
-     * inclusive and the upper key bound as exclusive. Verify that keys less than the start and greater than or equal to
-     * the end containing matching columns are not returned.
+     * Verify that
+     * {@link KeyColumnValueStore#getKeys(KeyRangeQuery, StoreTransaction)}
+     * treats the lower key bound as inclusive and the upper key bound as
+     * exclusive. Verify that keys less than the start and greater than or equal
+     * to the end containing matching columns are not returned.
      *
      * @throws BackendException
      */
     @Test
-    @Category({ OrderedKeyStoreTests.class })
+    @Category({OrderedKeyStoreTests.class})
     public void testOrderedGetKeysRespectsKeyLimit() throws BackendException {
         if (!manager.getFeatures().hasOrderedScan()) {
             log.warn("Can't test key-ordered features on incompatible store.  "
                     + "This warning could indicate reduced test coverage and "
-                    + "a broken JUnit configuration.  Skipping test {}.", name.getMethodName());
+                    + "a broken JUnit configuration.  Skipping test {}.",
+                    name.getMethodName());
             return;
         }
 
@@ -471,30 +475,31 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
         KeyIterator keys;
 
-        keys = store.getKeys(
-                new KeyRangeQuery(BufferUtil.getLongBuffer(minKey), BufferUtil.getLongBuffer(maxKey), columnSlice), tx);
+        keys = store.getKeys(new KeyRangeQuery(BufferUtil.getLongBuffer(minKey), BufferUtil.getLongBuffer(maxKey), columnSlice), tx);
         assertEquals(expectedKeyCount, KeyValueStoreUtil.count(keys));
 
         clopen();
 
-        keys = store.getKeys(
-                new KeyRangeQuery(BufferUtil.getLongBuffer(minKey), BufferUtil.getLongBuffer(maxKey), columnSlice), tx);
+        keys = store.getKeys(new KeyRangeQuery(BufferUtil.getLongBuffer(minKey), BufferUtil.getLongBuffer(maxKey), columnSlice), tx);
         assertEquals(expectedKeyCount, KeyValueStoreUtil.count(keys));
     }
 
     /**
-     * Check that {@code getKeys} methods respect column slice bounds. Uses nearly the same data as
-     * {@link #testOrderedGetKeysRespectsKeyLimit()}, except that all columns on every 10th row exceed the
-     * {@code getKeys} slice limit.
+     * Check that {@code getKeys} methods respect column slice bounds. Uses
+     * nearly the same data as {@link #testOrderedGetKeysRespectsKeyLimit()},
+     * except that all columns on every 10th row exceed the {@code getKeys}
+     * slice limit.
      * <p/>
-     * For each row in this test, either all columns match the slice bounds or all columns fall outside the slice
-     * bounds. For this reason, it could be described as a "coarse-grained" or "simple" test of {@code getKeys}'s column
-     * bounds checking.
+     * For each row in this test, either all columns match the slice bounds or
+     * all columns fall outside the slice bounds. For this reason, it could be
+     * described as a "coarse-grained" or "simple" test of {@code getKeys}'s
+     * column bounds checking.
      *
      * @throws BackendException
      */
     @Test
-    public void testGetKeysColumnSlicesSimple() throws BackendException {
+    public void testGetKeysColumnSlicesSimple()
+            throws BackendException {
         if (manager.getFeatures().hasScan()) {
 
             final int shiftEveryNthRows = 10;
@@ -517,17 +522,20 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         }
     }
 
+
     /**
-     * Test {@code getKeys} with columns slice values chosen to trigger potential fencepost bugs.
+     * Test {@code getKeys} with columns slice values chosen to trigger
+     * potential fencepost bugs.
      * <p/>
      * Description of data generated for and queried by this test:
      * <p/>
-     * Generate a sequence of keys as unsigned integers, starting at zero. Each row has as many columns as the key
-     * value. The columns are generated in the same way as the keys. This results in a sort of "lower triangular" data
-     * space, with no values above the diagonal.
+     * Generate a sequence of keys as unsigned integers, starting at zero. Each
+     * row has as many columns as the key value. The columns are generated in
+     * the same way as the keys. This results in a sort of "lower triangular"
+     * data space, with no values above the diagonal.
      *
      * @throws BackendException shouldn't happen
-     * @throws IOException shouldn't happen
+     * @throws IOException      shouldn't happen
      */
     @Test
     public void testGetKeysColumnSlicesOnLowerTriangular() throws BackendException, IOException {
@@ -569,7 +577,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
                         // Check
                         log.debug("Checking bounds [{}, {}) (expect {} keys)",
-                                new Object[] { startCol, endCol, expected.size() });
+                                new Object[]{startCol, endCol, expected.size()});
                         Assert.assertEquals(expected, actual);
                         i.close();
                         executed = true;
@@ -605,7 +613,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
                         Collection<StaticBuffer> actual = Lists.newArrayList(i);
 
                         log.debug("Checking bounds key:[{}, {}) & col:[{}, {}) (expect {} keys)",
-                                new Object[] { keyStart, keyEnd, startCol, endCol, expected.size() });
+                                new Object[]{keyStart, keyEnd, startCol, endCol, expected.size()});
                         Assert.assertEquals(expected, actual);
                         i.close();
                         executed = true;
@@ -621,17 +629,15 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         }
     }
 
-    public void checkSlice(String[][] values, Set<KeyColumn> removed, int key, int start, int end, int limit)
-            throws BackendException {
+    public void checkSlice(String[][] values, Set<KeyColumn> removed, int key,
+                           int start, int end, int limit) throws BackendException {
         tx.rollback();
         tx = startTx();
         List<Entry> entries;
         if (limit <= 0)
-            entries = store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key),
-                    KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end)), tx);
+            entries = store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key), KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end)), tx);
         else
-            entries = store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key),
-                    KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end)).setLimit(limit), tx);
+            entries = store.getSlice(new KeySliceQuery(KeyValueStoreUtil.getBuffer(key), KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end)).setLimit(limit), tx);
 
         int pos = 0;
         for (int i = start; i < end; i++) {
@@ -640,8 +646,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
                 continue;
             }
             if (limit <= 0 || pos < limit) {
-                log.debug("Checking k={}[c_start={},c_end={}](limit={}): column index={}/pos={}", key, start, end,
-                        limit, i, pos);
+                log.debug("Checking k={}[c_start={},c_end={}](limit={}): column index={}/pos={}", key, start, end, limit, i, pos);
                 Assert.assertTrue(entries.size() > pos);
                 Entry entry = entries.get(pos);
                 int col = KeyValueStoreUtil.getID(entry.getColumn());
@@ -652,10 +657,8 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
             pos++;
         }
         Assert.assertNotNull(entries);
-        if (limit > 0 && pos > limit)
-            Assert.assertEquals(limit, entries.size());
-        else
-            Assert.assertEquals(pos, entries.size());
+        if (limit > 0 && pos > limit) Assert.assertEquals(limit, entries.size());
+        else Assert.assertEquals(pos, entries.size());
     }
 
     @Test
@@ -695,6 +698,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         }
     }
 
+
     @Test
     public void testConcurrentGetSlice() throws ExecutionException, InterruptedException, BackendException {
         testConcurrentStoreOps(false);
@@ -705,8 +709,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         testConcurrentStoreOps(true);
     }
 
-    private void testConcurrentStoreOps(boolean deletionEnabled)
-            throws BackendException, ExecutionException, InterruptedException {
+    private void testConcurrentStoreOps(boolean deletionEnabled) throws BackendException, ExecutionException, InterruptedException {
         // Load data fixture
         String[][] values = generateValues();
         loadValues(values);
@@ -714,13 +717,15 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         /*
          * Must reopen transaction prior to deletes.
          *
-         * This is due to the tx timestamps semantics. The timestamp is set once during the lifetime of the transaction,
-         * and multiple calls to mutate will use the same timestamp on each call. This causes deletions and additions of
-         * the same k-v coordinates made in the same tx to conflict. On Cassandra, the addition will win and the delete
-         * will appear to be dropped.
+         * This is due to the tx timestamps semantics.  The timestamp is set once
+         * during the lifetime of the transaction, and multiple calls to mutate will
+         * use the same timestamp on each call.  This causes deletions and additions of the
+         * same k-v coordinates made in the same tx to conflict.  On Cassandra, the
+         * addition will win and the delete will appear to be dropped.
          *
-         * The transaction open right now has already loaded the test fixtures, so any attempt to delete some of the
-         * fixture will appear to fail if carried out in this transaction.
+         * The transaction open right now has already loaded the test fixtures, so any
+         * attempt to delete some of the fixture will appear to fail if carried out in this
+         * transaction.
          */
         tx.commit();
         tx = startTx();
@@ -800,7 +805,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
                         tx.commit();
                         tx = startTx();
                     }
-                    // clopen();
+                    //clopen();
                     checkSlice(values, d, key, start, end, limit);
                     checkSlice(values, d, key, start, end, -1);
                 } catch (BackendException e) {
@@ -850,11 +855,13 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
         tx = startTx();
         /*
-         * When limit is greater than or equal to the matching column count , all matching columns must be returned.
+         * When limit is greater than or equal to the matching column count ,
+         * all matching columns must be returned.
          */
         StaticBuffer columnStart = KeyColumnValueStoreUtil.longToByteBuffer(0);
         StaticBuffer columnEnd = KeyColumnValueStoreUtil.longToByteBuffer(cols);
-        List<Entry> result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(cols), tx);
+        List<Entry> result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(cols), tx);
         Assert.assertEquals(cols, result.size());
 
         for (int i = 0; i < result.size(); i++) {
@@ -871,8 +878,8 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         Assert.assertEquals(entries, result);
 
         /*
-         * When limit is less the matching column count, the columns up to the limit (ordered bytewise) must be
-         * returned.
+         * When limit is less the matching column count, the columns up to the
+         * limit (ordered bytewise) must be returned.
          */
         result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(cols - 1), tx);
         Assert.assertEquals(cols - 1, result.size());
@@ -894,8 +901,10 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         StaticBuffer columnAfterEnd = KeyColumnValueStoreUtil.longToByteBuffer(779);
 
         // First insert four test Entries
-        List<Entry> entries = Arrays.asList(StaticArrayEntry.of(columnBeforeStart, columnBeforeStart),
-                StaticArrayEntry.of(columnStart, columnStart), StaticArrayEntry.of(columnEnd, columnEnd),
+        List<Entry> entries = Arrays.asList(
+                StaticArrayEntry.of(columnBeforeStart, columnBeforeStart),
+                StaticArrayEntry.of(columnStart, columnStart),
+                StaticArrayEntry.of(columnEnd, columnEnd),
                 StaticArrayEntry.of(columnAfterEnd, columnAfterEnd));
         store.mutate(key, entries, KeyColumnValueStore.NO_DELETIONS, tx);
         tx.commit();
@@ -926,7 +935,8 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     }
 
     @Test
-    public void containsKeyColumnReturnsFalseOnNonexistentInput() throws Exception {
+    public void containsKeyColumnReturnsFalseOnNonexistentInput()
+            throws Exception {
         StaticBuffer key1 = KeyColumnValueStoreUtil.longToByteBuffer(1);
         StaticBuffer c = KeyColumnValueStoreUtil.stringToByteBuffer("c");
         Assert.assertFalse(KCVSUtil.containsKeyColumn(store, key1, c, tx));
@@ -944,8 +954,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
     @Test
     public void testGetSlices() throws Exception {
-        if (!manager.getFeatures().hasMultiQuery())
-            return;
+        if (!manager.getFeatures().hasMultiQuery()) return;
 
         populateDBWith100Keys();
 
@@ -961,7 +970,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         StaticBuffer start = KeyColumnValueStoreUtil.stringToByteBuffer("a");
         StaticBuffer end = KeyColumnValueStoreUtil.stringToByteBuffer("d");
 
-        Map<StaticBuffer, EntryList> results = store.getSlice(keys, new SliceQuery(start, end), tx);
+        Map<StaticBuffer,EntryList> results = store.getSlice(keys, new SliceQuery(start, end), tx);
 
         Assert.assertEquals(100, results.size());
 
@@ -971,34 +980,12 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     }
 
     @Test
-    @Category({ UnorderedKeyStoreTests.class })
+    @Category({UnorderedKeyStoreTests.class})
     public void testGetKeysWithSliceQuery() throws Exception {
         if (!manager.getFeatures().hasUnorderedScan()) {
             log.warn("Can't test key-unordered features on incompatible store.  "
                     + "This warning could indicate reduced test coverage and "
-                    + "a broken JUnit configuration.  Skipping test {}.", name.getMethodName());
-            return;
-        }
-
-        populateDBWith100Keys();
-
-        tx.commit();
-        tx = startTx();
-
-        KeyIterator keyIterator = store
-                .getKeys(new SliceQuery(new ReadArrayBuffer("b".getBytes()), new ReadArrayBuffer("c".getBytes())), tx);
-
-        examineGetKeysResults(keyIterator, 0, 100, 1);
-    }
-
-    @Test
-    @Category({ OrderedKeyStoreTests.class })
-    public void testGetKeysWithKeyRange() throws Exception {
-        if (!manager.getFeatures().hasOrderedScan()) {
-            log.warn(
-                    "Can't test ordered scans on incompatible store.  "
-                            + "This warning could indicate reduced test coverage and "
-                            + "shouldn't happen in an ideal JUnit configuration.  " + "Skipping test {}.",
+                    + "a broken JUnit configuration.  Skipping test {}.",
                     name.getMethodName());
             return;
         }
@@ -1008,8 +995,31 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         tx.commit();
         tx = startTx();
 
-        KeyIterator keyIterator = store.getKeys(new KeyRangeQuery(KeyColumnValueStoreUtil.longToByteBuffer(10), // key
-                                                                                                                // start
+        KeyIterator keyIterator = store.getKeys(
+                new SliceQuery(new ReadArrayBuffer("b".getBytes()),
+                        new ReadArrayBuffer("c".getBytes())), tx);
+
+        examineGetKeysResults(keyIterator, 0, 100, 1);
+    }
+
+    @Test
+    @Category({OrderedKeyStoreTests.class})
+    public void testGetKeysWithKeyRange() throws Exception {
+        if (!manager.getFeatures().hasOrderedScan()) {
+            log.warn("Can't test ordered scans on incompatible store.  "
+                    + "This warning could indicate reduced test coverage and "
+                    + "shouldn't happen in an ideal JUnit configuration.  "
+                    + "Skipping test {}.", name.getMethodName());
+            return;
+        }
+
+        populateDBWith100Keys();
+
+        tx.commit();
+        tx = startTx();
+
+        KeyIterator keyIterator = store.getKeys(new KeyRangeQuery(
+                KeyColumnValueStoreUtil.longToByteBuffer(10), // key start
                 KeyColumnValueStoreUtil.longToByteBuffer(40), // key end
                 new ReadArrayBuffer("b".getBytes()), // column start
                 new ReadArrayBuffer("c".getBytes())), tx);
@@ -1027,7 +1037,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
         StaticBuffer key = KeyColumnValueStoreUtil.longToByteBuffer(0);
 
-        int ttls[] = new int[] { 0, 1, 2 };
+        int ttls[] = new int[]{0, 1, 2};
         List<Entry> additions = new LinkedList<Entry>();
         for (int i = 0; i < ttls.length; i++) {
             StaticBuffer col = KeyColumnValueStoreUtil.longToByteBuffer(i);
@@ -1045,29 +1055,34 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
 
         StaticBuffer columnStart = KeyColumnValueStoreUtil.longToByteBuffer(0);
         StaticBuffer columnEnd = KeyColumnValueStoreUtil.longToByteBuffer(ttls.length);
-        List<Entry> result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
+        List<Entry> result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
         Assert.assertEquals(ttls.length, result.size());
 
         // wait for one cell to expire
         Thread.sleep(commitTime + 1001 - System.currentTimeMillis());
 
         // cells immediately expire upon TTL, even before rollback()
-        result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
+        result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
         Assert.assertEquals(ttls.length - 1, result.size());
 
         tx.rollback();
-        result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
+        result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
         Assert.assertEquals(ttls.length - 1, result.size());
 
         Thread.sleep(commitTime + 2001 - System.currentTimeMillis());
         tx.rollback();
-        result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
+        result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
         Assert.assertEquals(ttls.length - 2, result.size());
 
         // cell 0 doesn't expire due to TTL of 0 (infinite)
         Thread.sleep(commitTime + 4001 - System.currentTimeMillis());
         tx.rollback();
-        result = store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
+        result =
+                store.getSlice(new KeySliceQuery(key, columnStart, columnEnd).setLimit(ttls.length), tx);
         Assert.assertEquals(ttls.length - 2, result.size());
     }
 
@@ -1075,16 +1090,17 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     public void testStoreTTL() throws Exception {
         KeyColumnValueStoreManager storeManager = manager;
         if (storeManager.getFeatures().hasCellTTL()) {
-            // storeManager = new TTLKCVSManager(storeManager,101);
+            //storeManager = new TTLKCVSManager(storeManager,101);
             storeManager = new TTLKCVSManager(storeManager);
         } else if (!storeManager.getFeatures().hasStoreTTL()) {
             return;
         }
 
+
         assertTrue(storeManager.getFeatures().hasStoreTTL());
 
         final TimeUnit sec = TimeUnit.SECONDS;
-        final int storeTTLSeconds = (int) TestGraphConfigs.getTTL(sec);
+        final int storeTTLSeconds = (int)TestGraphConfigs.getTTL(sec);
         StoreMetaData.Container opts = new StoreMetaData.Container();
         opts.put(StoreMetaData.TTL, storeTTLSeconds);
         KeyColumnValueStore storeWithTTL = storeManager.openDatabase("testStore_with_TTL", opts);
@@ -1102,7 +1118,7 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         EntryList results = storeWithTTL.getSlice(new KeySliceQuery(key, new SliceQuery(start, end)), tx);
         Assert.assertEquals(3, results.size());
 
-        Thread.sleep(TimeUnit.MILLISECONDS.convert((long) Math.ceil(storeTTLSeconds * 1.25), sec));
+        Thread.sleep(TimeUnit.MILLISECONDS.convert((long)Math.ceil(storeTTLSeconds * 1.25), sec));
 
         tx.commit();
         tx = startTx();
@@ -1121,13 +1137,17 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
         Random random = new Random();
 
         for (int i = 1; i <= 100; i++) {
-            KeyColumnValueStoreUtil.insert(store, tx, i, "a", "v" + random.nextLong());
-            KeyColumnValueStoreUtil.insert(store, tx, i, "b", "v" + random.nextLong());
-            KeyColumnValueStoreUtil.insert(store, tx, i, "c", "v" + random.nextLong());
+            KeyColumnValueStoreUtil.insert(store, tx, i, "a",
+                    "v" + random.nextLong());
+            KeyColumnValueStoreUtil.insert(store, tx, i, "b",
+                    "v" + random.nextLong());
+            KeyColumnValueStoreUtil.insert(store, tx, i, "c",
+                    "v" + random.nextLong());
         }
     }
 
-    protected void examineGetKeysResults(KeyIterator keyIterator, long startKey, long endKey, int expectedColumns)
+    protected void examineGetKeysResults(KeyIterator keyIterator,
+                                         long startKey, long endKey, int expectedColumns)
             throws BackendException {
         Assert.assertNotNull(keyIterator);
 
@@ -1167,24 +1187,21 @@ public abstract class KeyColumnValueStoreTest extends AbstractKCVSTest {
     public void scanTestWithSimpleJob() throws Exception {
         int keys = 1000, columns = 40;
         String[][] values = KeyValueStoreUtil.generateData(keys, columns);
-        // Make it only half the number of columns for every 2nd key
+        //Make it only half the number of columns for every 2nd key
         for (int i = 0; i < values.length; i++) {
-            if (i % 2 == 0)
-                values[i] = Arrays.copyOf(values[i], columns / 2);
+            if (i%2==0) values[i]=Arrays.copyOf(values[i],columns/2);
         }
         log.debug("Loading values: " + keys + "x" + columns);
         loadValues(values);
         clopen();
 
         StandardScanner scanner = new StandardScanner(manager);
-        SimpleScanJobRunner runner =
-                (ScanJob job, Configuration jobConf, String rootNSName) -> runSimpleJob(scanner, job, jobConf);
+        SimpleScanJobRunner runner = (ScanJob job, Configuration jobConf, String rootNSName) -> runSimpleJob(scanner, job, jobConf);
 
         SimpleScanJob.runBasicTests(keys, columns, runner);
     }
 
-    private ScanMetrics runSimpleJob(StandardScanner scanner, ScanJob job, Configuration jobConf)
-            throws BackendException, ExecutionException, InterruptedException {
+    private ScanMetrics runSimpleJob(StandardScanner scanner, ScanJob job, Configuration jobConf) throws BackendException, ExecutionException, InterruptedException {
         StandardScanner.Builder jobBuilder = scanner.build();
         jobBuilder.setStoreName(store.getName());
         jobBuilder.setJobConfiguration(jobConf);

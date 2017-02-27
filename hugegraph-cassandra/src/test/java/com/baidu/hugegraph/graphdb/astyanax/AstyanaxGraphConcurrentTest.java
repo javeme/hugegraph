@@ -22,13 +22,14 @@ import com.baidu.hugegraph.testcategory.PerformanceTests;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
 
-@Category({ PerformanceTests.class })
+@Category({PerformanceTests.class})
 public class AstyanaxGraphConcurrentTest extends HugeGraphConcurrentTest {
 
     @BeforeClass
     public static void startCassandra() {
         CassandraStorageSetup.startCleanEmbedded();
     }
+
 
     @Override
     public WriteConfiguration getConfiguration() {

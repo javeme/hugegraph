@@ -35,17 +35,19 @@ import java.util.Set;
  */
 class StandardChangeState implements ChangeState {
 
-    private final EnumMap<Change, Set<HugeGraphVertex>> vertices;
-    private final EnumMap<Change, Set<HugeGraphRelation>> relations;
+    private final EnumMap<Change,Set<HugeGraphVertex>> vertices;
+    private final EnumMap<Change,Set<HugeGraphRelation>> relations;
+
 
     StandardChangeState() {
         vertices = new EnumMap<Change, Set<HugeGraphVertex>>(Change.class);
         relations = new EnumMap<Change, Set<HugeGraphRelation>>(Change.class);
-        for (Change state : new Change[] { Change.ADDED, Change.REMOVED }) {
-            vertices.put(state, new HashSet<HugeGraphVertex>());
-            relations.put(state, new HashSet<HugeGraphRelation>());
+        for (Change state : new Change[]{Change.ADDED,Change.REMOVED}) {
+            vertices.put(state,new HashSet<HugeGraphVertex>());
+            relations.put(state,new HashSet<HugeGraphRelation>());
         }
     }
+
 
     void addVertex(InternalVertex vertex, Change state) {
         vertices.get(state).add(vertex);
@@ -57,38 +59,33 @@ class StandardChangeState implements ChangeState {
 
     @Override
     public Set<HugeGraphVertex> getVertices(Change change) {
-        if (change.isProper())
-            return vertices.get(change);
-        assert change == Change.ANY;
+        if (change.isProper()) return vertices.get(change);
+        assert change==Change.ANY;
         Set<HugeGraphVertex> all = new HashSet<HugeGraphVertex>();
-        for (Change state : new Change[] { Change.ADDED, Change.REMOVED }) {
+        for (Change state : new Change[]{Change.ADDED,Change.REMOVED}) {
             all.addAll(vertices.get(state));
             for (HugeGraphRelation rel : relations.get(state)) {
-                InternalRelation irel = (InternalRelation) rel;
-                for (int p = 0; p < irel.getLen(); p++)
-                    all.add(irel.getVertex(p));
+                InternalRelation irel = (InternalRelation)rel;
+                for (int p=0;p<irel.getLen();p++) all.add(irel.getVertex(p));
             }
         }
         return all;
     }
 
-    private <T> Set<T> toSet(T...types) {
-        if (types == null || types.length == 0)
-            return Sets.newHashSet();
+    private<T> Set<T> toSet(T... types) {
+        if (types==null || types.length==0) return Sets.newHashSet();
         return Sets.newHashSet(types);
     }
 
     private Iterable<HugeGraphRelation> getRelations(final Change change, final Predicate<HugeGraphRelation> filter) {
         Iterable<HugeGraphRelation> base;
-        if (change.isProper())
-            base = relations.get(change);
-        else
-            base = Iterables.concat(relations.get(Change.ADDED), relations.get(Change.REMOVED));
-        return Iterables.filter(base, filter);
+        if(change.isProper()) base=relations.get(change);
+        else base=Iterables.concat(relations.get(Change.ADDED),relations.get(Change.REMOVED));
+        return Iterables.filter(base,filter);
     }
 
     @Override
-    public Iterable<HugeGraphRelation> getRelations(final Change change, final RelationType...types) {
+    public Iterable<HugeGraphRelation> getRelations(final Change change, final RelationType... types) {
         final Set<RelationType> stypes = toSet(types);
         return getRelations(change, new Predicate<HugeGraphRelation>() {
             @Override
@@ -99,28 +96,27 @@ class StandardChangeState implements ChangeState {
     }
 
     @Override
-    public Iterable<HugeGraphEdge> getEdges(final Vertex vertex, final Change change, final Direction dir,
-            final String...labels) {
+    public Iterable<HugeGraphEdge> getEdges(final Vertex vertex, final Change change, final Direction dir, final String... labels) {
         final Set<String> stypes = toSet(labels);
-        return (Iterable) getRelations(change, new Predicate<HugeGraphRelation>() {
+        return (Iterable)getRelations(change, new Predicate<HugeGraphRelation>() {
             @Override
             public boolean apply(@Nullable HugeGraphRelation hugegraphRelation) {
-                return hugegraphRelation.isEdge() && hugegraphRelation.isIncidentOn(vertex)
-                        && (dir == Direction.BOTH || ((HugeGraphEdge) hugegraphRelation).vertex(dir).equals(vertex))
-                        && (stypes.isEmpty() || stypes.contains(hugegraphRelation.getType().name()));
+                return hugegraphRelation.isEdge() && hugegraphRelation.isIncidentOn(vertex) &&
+                        (dir==Direction.BOTH || ((HugeGraphEdge)hugegraphRelation).vertex(dir).equals(vertex)) &&
+                        (stypes.isEmpty() || stypes.contains(hugegraphRelation.getType().name()));
             }
         });
     }
 
+
     @Override
-    public Iterable<HugeGraphVertexProperty> getProperties(final Vertex vertex, final Change change,
-            final String...keys) {
+    public Iterable<HugeGraphVertexProperty> getProperties(final Vertex vertex, final Change change, final String... keys) {
         final Set<String> stypes = toSet(keys);
-        return (Iterable) getRelations(change, new Predicate<HugeGraphRelation>() {
+        return (Iterable)getRelations(change, new Predicate<HugeGraphRelation>() {
             @Override
             public boolean apply(@Nullable HugeGraphRelation hugegraphRelation) {
-                return hugegraphRelation.isProperty() && hugegraphRelation.isIncidentOn(vertex)
-                        && (stypes.isEmpty() || stypes.contains(hugegraphRelation.getType().name()));
+                return hugegraphRelation.isProperty() && hugegraphRelation.isIncidentOn(vertex) &&
+                        (stypes.isEmpty() || stypes.contains(hugegraphRelation.getType().name()));
             }
         });
     }

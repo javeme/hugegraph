@@ -24,8 +24,8 @@ public enum TEnum {
         public String toString() {
             return "three";
         }
-    },
-    FOUR;
+    }, FOUR;
+
 
     @Override
     public String toString() {

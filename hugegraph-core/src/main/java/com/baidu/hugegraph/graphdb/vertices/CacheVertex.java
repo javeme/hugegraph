@@ -40,7 +40,7 @@ public class CacheVertex extends StandardVertex {
 
     protected void addToQueryCache(final SliceQuery query, final EntryList entries) {
         synchronized (queryCache) {
-            // TODO: become smarter about what to cache and when (e.g. memory pressure)
+            //TODO: become smarter about what to cache and when (e.g. memory pressure)
             queryCache.put(query, entries);
         }
     }
@@ -61,7 +61,7 @@ public class CacheVertex extends StandardVertex {
             result = queryCache.get(query);
         }
         if (result == null) {
-            // First check for super
+            //First check for super
             Map.Entry<SliceQuery, EntryList> superset = getSuperResultSet(query);
             if (superset == null) {
                 result = lookup.get(query);
@@ -86,8 +86,7 @@ public class CacheVertex extends StandardVertex {
         synchronized (queryCache) {
             if (queryCache.size() > 0) {
                 for (Map.Entry<SliceQuery, EntryList> entry : queryCache.entrySet()) {
-                    if (entry.getKey().subsumes(query))
-                        return entry;
+                    if (entry.getKey().subsumes(query)) return entry;
                 }
             }
         }

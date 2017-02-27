@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# The release integration tests download JanusGraph database files
+# The release integration tests download hugegraph database files
 # created by several past releases, then attempt to open and do
 # some simple read and write operations on those files.  This is
 # a simple compatibility test.  It's independent of the
-# property janusgraph.compatible.versions in the top-level pom.xml;
-# it uses a separate file in janusgraph-dist called compat.csv that
+# property hugegraph.compatible.versions in the top-level pom.xml;
+# it uses a separate file in hugegraph-dist called compat.csv that
 # lists versions and URLs from which tarballs containing DB files
 # will be downloaded for testing.
 #
@@ -28,7 +28,7 @@ set -u
 echo Reading settings from $1
 declare -r SCM_TAG=`sed -rn 's|\\\\||g; s|^scm\.tag=||p' $1`
 
-COMPAT_MANIFEST='janusgraph-dist/src/test/resources/compat.csv'
+COMPAT_MANIFEST='hugegraph-dist/src/test/resources/compat.csv'
 COMPAT_CONFIG='bdb-es'
 COMPAT_TGZ_URL="https://s3.amazonaws.com/titan-release-compat-test/${COMPAT_CONFIG}/${SCM_TAG}.zip"
 

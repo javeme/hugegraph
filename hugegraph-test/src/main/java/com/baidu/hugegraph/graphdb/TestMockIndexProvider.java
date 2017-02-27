@@ -30,13 +30,13 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
  */
 public class TestMockIndexProvider implements IndexProvider {
 
-    public static final ConfigOption<Boolean> INDEX_MOCK_FAILADD = new ConfigOption<Boolean>(INDEX_NS, "fail-adds",
-            "Sets the index provider to reject adding documents. FOR TESTING ONLY", ConfigOption.Type.LOCAL, false)
-                    .hide();
+    public static final ConfigOption<Boolean> INDEX_MOCK_FAILADD = new ConfigOption<Boolean>(INDEX_NS,"fail-adds",
+            "Sets the index provider to reject adding documents. FOR TESTING ONLY",
+            ConfigOption.Type.LOCAL, false).hide();
 
-    public static final ConfigOption<String> INDEX_BACKEND_PROXY = new ConfigOption<String>(INDEX_NS, "proxy-for",
-            "Define the indexing backed to use for index support behind the mock proxy", ConfigOption.Type.GLOBAL,
-            INDEX_BACKEND.getDefaultValue()).hide();
+    public static final ConfigOption<String> INDEX_BACKEND_PROXY = new ConfigOption<String>(INDEX_NS,"proxy-for",
+            "Define the indexing backed to use for index support behind the mock proxy",
+            ConfigOption.Type.GLOBAL, INDEX_BACKEND.getDefaultValue()).hide();
 
     private final IndexProvider index;
     private final boolean failAdds;
@@ -48,39 +48,30 @@ public class TestMockIndexProvider implements IndexProvider {
     }
 
     @Override
-    public void register(String store, String key, KeyInformation information, BaseTransaction tx)
-            throws BackendException {
-        index.register(store, key, information, tx);
+    public void register(String store, String key, KeyInformation information, BaseTransaction tx) throws BackendException {
+        index.register(store,key,information,tx);
     }
 
     @Override
-    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
-        if (!failAdds)
-            index.mutate(mutations, informations, tx);
-        else
-            throw new TemporaryBackendException("Blocked mutation");
+    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+        if (!failAdds) index.mutate(mutations,informations,tx);
+        else throw new TemporaryBackendException("Blocked mutation");
     }
 
     @Override
-    public void restore(Map<String, Map<String, List<IndexEntry>>> documents,
-            KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
-        if (!failAdds)
-            index.restore(documents, informations, tx);
-        else
-            throw new TemporaryBackendException("Blocked mutation");
+    public void restore(Map<String, Map<String, List<IndexEntry>>> documents, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+        if (!failAdds) index.restore(documents, informations, tx);
+        else throw new TemporaryBackendException("Blocked mutation");
     }
 
     @Override
-    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx)
-            throws BackendException {
-        return index.query(query, informations, tx);
+    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+        return index.query(query,informations,tx);
     }
 
     @Override
-    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
-        return index.query(query, informations, tx);
+    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+        return index.query(query,informations,tx);
     }
 
     @Override
@@ -100,7 +91,7 @@ public class TestMockIndexProvider implements IndexProvider {
 
     @Override
     public boolean supports(KeyInformation information, HugeGraphPredicate hugegraphPredicate) {
-        return index.supports(information, hugegraphPredicate);
+        return index.supports(information,hugegraphPredicate);
     }
 
     @Override
@@ -110,7 +101,7 @@ public class TestMockIndexProvider implements IndexProvider {
 
     @Override
     public String mapKey2Field(String key, KeyInformation information) {
-        return index.mapKey2Field(key, information);
+        return index.mapKey2Field(key,information);
     }
 
     @Override

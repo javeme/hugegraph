@@ -33,8 +33,8 @@ public class InMemoryConfigurationTest {
 
     public void initialize(ConfigOption option, Object value) {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
-        config.set(option, value);
+        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
+        config.set(option,value);
         graph = (StandardHugeGraph) HugeGraphFactory.open(config);
     }
 
@@ -43,15 +43,16 @@ public class InMemoryConfigurationTest {
         graph.close();
     }
 
+
     @Test
     public void testReadOnly() {
-        initialize(GraphDatabaseConfiguration.STORAGE_READONLY, true);
+        initialize(GraphDatabaseConfiguration.STORAGE_READONLY,true);
 
         HugeGraphTransaction tx = graph.newTransaction();
         try {
             tx.addVertex();
             fail();
-        } catch (Exception e) {
+        } catch (Exception e ) {
         } finally {
             tx.rollback();
         }
@@ -59,11 +60,12 @@ public class InMemoryConfigurationTest {
         try {
             graph.addVertex();
             fail();
-        } catch (Exception e) {
+        } catch (Exception e ) {
         } finally {
             graph.tx().rollback();
         }
 
     }
+
 
 }

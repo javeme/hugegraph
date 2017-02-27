@@ -19,6 +19,6 @@ package com.baidu.hugegraph.diskstorage.configuration;
  */
 public interface ConcurrentWriteConfiguration extends WriteConfiguration {
 
-    public <O> void set(String key, O value, O expectedValue);
+    public<O> void set(String key, O value, O expectedValue);
 
 }

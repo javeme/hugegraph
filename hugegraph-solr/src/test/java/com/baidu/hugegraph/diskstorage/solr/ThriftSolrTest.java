@@ -30,20 +30,19 @@ public class ThriftSolrTest extends SolrHugeGraphIndexTest {
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config =
                 CassandraStorageSetup.getCassandraThriftConfiguration(ThriftSolrTest.class.getName());
-        // Add index
+        //Add index
         config.set(SolrIndex.ZOOKEEPER_URL, SolrRunner.getMiniCluster().getZkServer().getZkAddress(), INDEX);
         config.set(SolrIndex.WAIT_SEARCHER, true, INDEX);
-        config.set(INDEX_BACKEND, "solr", INDEX);
-        // TODO: set SOLR specific config options
+        config.set(INDEX_BACKEND,"solr",INDEX);
+        //TODO: set SOLR specific config options
         return config.getConfiguration();
     }
 
     @BeforeClass
     public static void beforeClass() {
         String userDir = System.getProperty("user.dir");
-        String cassandraDirFormat = Joiner.on(File.separator).join(userDir,
-                userDir.contains("hugegraph-solr") ? "target" : "hugegraph-solr/target", "cassandra", "%s",
-                "localhost-murmur");
+        String cassandraDirFormat = Joiner.on(File.separator).join(userDir, userDir.contains("hugegraph-solr")
+                                        ? "target" : "hugegraph-solr/target", "cassandra", "%s", "localhost-murmur");
 
         System.setProperty("test.cassandra.confdir", String.format(cassandraDirFormat, "conf"));
         System.setProperty("test.cassandra.datadir", String.format(cassandraDirFormat, "data"));
@@ -51,15 +50,17 @@ public class ThriftSolrTest extends SolrHugeGraphIndexTest {
         CassandraStorageSetup.startCleanEmbedded();
     }
 
+
     /*
-     * The following two test cases do not pass for Solr since there is no (performant) way of checking whether the
-     * document has been deleted before doing an update which will re-create the document.
+    The following two test cases do not pass for Solr since there is no (performant) way of checking
+    whether the document has been deleted before doing an update which will re-create the document.
      */
 
     @Override
     public void testDeleteVertexThenAddProperty() throws BackendException {
 
     }
+
 
     @Override
     public void testDeleteVertexThenModifyProperty() throws BackendException {

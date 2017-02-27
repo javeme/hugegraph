@@ -30,14 +30,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
- * The HugeGraphManagement interface provides methods to define, update, and inspect the schema of a HugeGraph graph. It
- * wraps a {@link HugeGraphTransaction} and therefore copies many of its methods as they relate to schema inspection and
- * definition.
+ * The HugeGraphManagement interface provides methods to define, update, and inspect the schema of a HugeGraph graph.
+ * It wraps a {@link HugeGraphTransaction} and therefore copies many of its methods as they relate to schema inspection
+ * and definition.
  * <p/>
- * HugeGraphManagement behaves like a transaction in that it opens a transactional scope for reading the schema and
- * making changes to it. As such, it needs to be explicitly closed via its {@link #commit()} or {@link #rollback()}
- * methods. A HugeGraphManagement transaction is opened on a graph via
- * {@link com.baidu.hugegraph.core.HugeGraph#openManagement()}.
+ * HugeGraphManagement behaves like a transaction in that it opens a transactional scope for reading the schema and making
+ * changes to it. As such, it needs to be explicitly closed via its {@link #commit()} or {@link #rollback()} methods.
+ * A HugeGraphManagement transaction is opened on a graph via {@link com.baidu.hugegraph.core.HugeGraph#openManagement()}.
  * <p/>
  * HugeGraphManagement provides methods to:
  * <ul>
@@ -52,12 +51,11 @@ import java.util.concurrent.Future;
 public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManager {
 
     /*
-     * ##################### RELATION TYPE INDEX ##########################
+    ##################### RELATION TYPE INDEX ##########################
      */
 
     /**
-     * Identical to
-     * {@link #buildEdgeIndex(com.baidu.hugegraph.core.EdgeLabel, String, com.tinkerpop.gremlin.structure.Direction, com.tinkerpop.gremlin.structure.Order, com.baidu.hugegraph.core.PropertyKey...)}
+     * Identical to {@link #buildEdgeIndex(com.baidu.hugegraph.core.EdgeLabel, String, com.tinkerpop.gremlin.structure.Direction, com.tinkerpop.gremlin.structure.Order, com.baidu.hugegraph.core.PropertyKey...)}
      * with default sort order {@link org.apache.tinkerpop.gremlin.process.traversal.Order#incr}.
      *
      * @param label
@@ -66,7 +64,7 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
      * @param sortKeys
      * @return the created {@link RelationTypeIndex}
      */
-    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, PropertyKey...sortKeys);
+    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, PropertyKey... sortKeys);
 
     /**
      * Creates a {@link RelationTypeIndex} for the provided edge label. That means, that all edges of that label will be
@@ -82,12 +80,10 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
      * @param sortKeys
      * @return the created {@link RelationTypeIndex}
      */
-    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, Order sortOrder,
-            PropertyKey...sortKeys);
+    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, Order sortOrder, PropertyKey... sortKeys);
 
     /**
-     * Identical to
-     * {@link #buildPropertyIndex(com.baidu.hugegraph.core.PropertyKey, String, com.tinkerpop.gremlin.structure.Order, com.baidu.hugegraph.core.PropertyKey...)}
+     * Identical to {@link #buildPropertyIndex(com.baidu.hugegraph.core.PropertyKey, String, com.tinkerpop.gremlin.structure.Order, com.baidu.hugegraph.core.PropertyKey...)}
      * with default sort order {@link com.tinkerpop.gremlin.structure.Order#incr}.
      *
      * @param key
@@ -95,14 +91,13 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
      * @param sortKeys
      * @return the created {@link RelationTypeIndex}
      */
-    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, PropertyKey...sortKeys);
+    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, PropertyKey... sortKeys);
 
     /**
-     * Creates a {@link RelationTypeIndex} for the provided property key. That means, that all properties of that key
-     * will be indexed according to this index definition which will speed up certain vertex-centric queries.
+     * Creates a {@link RelationTypeIndex} for the provided property key. That means, that all properties of that key will be
+     * indexed according to this index definition which will speed up certain vertex-centric queries.
      * <p/>
-     * An indexed is defined by its name, the sort order and - most importantly - the sort keys which define the index
-     * key.
+     * An indexed is defined by its name, the sort order and - most importantly - the sort keys which define the index key.
      *
      * @param key
      * @param name
@@ -110,7 +105,7 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
      * @param sortKeys
      * @return the created {@link RelationTypeIndex}
      */
-    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, Order sortOrder, PropertyKey...sortKeys);
+    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, Order sortOrder, PropertyKey... sortKeys);
 
     /**
      * Whether a {@link RelationTypeIndex} with the given name has been defined for the provided {@link RelationType}
@@ -122,8 +117,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public boolean containsRelationIndex(RelationType type, String name);
 
     /**
-     * Returns the {@link RelationTypeIndex} with the given name for the provided {@link RelationType} or null if it
-     * does not exist
+     * Returns the {@link RelationTypeIndex} with the given name for the provided {@link RelationType} or null
+     * if it does not exist
      *
      * @param type
      * @param name
@@ -140,8 +135,9 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public Iterable<RelationTypeIndex> getRelationIndexes(RelationType type);
 
     /*
-     * ##################### GRAPH INDEX ##########################
+    ##################### GRAPH INDEX ##########################
      */
+
 
     /**
      * Whether the graph has a graph index defined with the given name.
@@ -168,8 +164,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public Iterable<HugeGraphIndex> getGraphIndexes(final Class<? extends Element> elementType);
 
     /**
-     * Returns an {@link IndexBuilder} to add a graph index to this HugeGraph graph. The index to-be-created has the
-     * provided name and indexes elements of the given type.
+     * Returns an {@link IndexBuilder} to add a graph index to this HugeGraph graph. The index to-be-created
+     * has the provided name and indexes elements of the given type.
      *
      * @param indexName
      * @param elementType
@@ -177,7 +173,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
      */
     public IndexBuilder buildIndex(String indexName, Class<? extends Element> elementType);
 
-    public void addIndexKey(final HugeGraphIndex index, final PropertyKey key, Parameter...parameters);
+
+    public void addIndexKey(final HugeGraphIndex index, final PropertyKey key, Parameter... parameters);
 
     /**
      * Builder for {@link HugeGraphIndex}. Allows for the configuration of a graph index prior to its construction.
@@ -199,12 +196,12 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
          * @param parameters
          * @return this IndexBuilder
          */
-        public IndexBuilder addKey(PropertyKey key, Parameter...parameters);
+        public IndexBuilder addKey(PropertyKey key, Parameter... parameters);
 
         /**
          * Restricts this index to only those elements that have the provided schemaType. If this graph index indexes
-         * vertices, then the argument is expected to be a vertex label and only vertices with that label will be
-         * indexed. Likewise, for edges and properties only those with the matching relation type will be indexed.
+         * vertices, then the argument is expected to be a vertex label and only vertices with that label will be indexed.
+         * Likewise, for edges and properties only those with the matching relation type will be indexed.
          *
          * @param schemaType
          * @return this IndexBuilder
@@ -212,8 +209,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
         public IndexBuilder indexOnly(HugeGraphSchemaType schemaType);
 
         /**
-         * Makes this a unique index for the configured element type, i.e. an index key can be associated with at most
-         * one element in the graph.
+         * Makes this a unique index for the configured element type,
+         * i.e. an index key can be associated with at most one element in the graph.
          *
          * @return this IndexBuilder
          */
@@ -227,8 +224,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
         public HugeGraphIndex buildCompositeIndex();
 
         /**
-         * Builds a mixed index according to the specification against the backend index with the given name (i.e. the
-         * name under which that index is configured in the graph configuration)
+         * Builds a mixed index according to the specification against the backend index with the given name (i.e.
+         * the name under which that index is configured in the graph configuration)
          *
          * @param backingIndex the name of the mixed index
          * @return the created mixed {@link HugeGraphIndex}
@@ -240,16 +237,21 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public interface IndexJobFuture extends Future<ScanMetrics> {
 
         /**
-         * Returns a set of potentially incomplete and still-changing metrics for this job. This is not guaranteed to be
-         * the same object as the one returned by {@link #get()}, nor will the metrics visible through the object
-         * returned by this method necessarily eventually converge on the same values in the object returned by
-         * {@link #get()}, though the implementation should attempt to provide both properties when practical.
+         * Returns a set of potentially incomplete and still-changing metrics
+         * for this job.  This is not guaranteed to be the same object as the
+         * one returned by {@link #get()}, nor will the metrics visible through
+         * the object returned by this method necessarily eventually converge
+         * on the same values in the object returned by {@link #get()}, though
+         * the implementation should attempt to provide both properties when
+         * practical.
          * <p/>
-         * The metrics visible through the object returned by this method may also change their values between reads. In
-         * other words, this is not necessarily an immutable snapshot.
+         * The metrics visible through the object returned by this method may
+         * also change their values between reads.  In other words, this is not
+         * necessarily an immutable snapshot.
          * <p/>
-         * If the index job has failed and the implementation is capable of quickly detecting that, then the
-         * implementation should throw an {@code ExecutionException}. Returning metrics in case of failure is
+         * If the index job has failed and the implementation is capable of
+         * quickly detecting that, then the implementation should throw an
+         * {@code ExecutionException}.  Returning metrics in case of failure is
          * acceptable, but throwing an exception is preferred.
          *
          * @return metrics for a potentially still-running job
@@ -259,7 +261,7 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     }
 
     /*
-     * ##################### CONSISTENCY SETTING ##########################
+    ##################### CONSISTENCY SETTING ##########################
      */
 
     /**
@@ -281,8 +283,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public void setConsistency(HugeGraphSchemaElement element, ConsistencyModifier consistency);
 
     /**
-     * Retrieves the time-to-live for the given {@link HugeGraphSchemaType} as a {@link Duration}. If no TTL has been
-     * defined, the returned Duration will be zero-length ("lives forever").
+     * Retrieves the time-to-live for the given {@link HugeGraphSchemaType} as a {@link Duration}.
+     * If no TTL has been defined, the returned Duration will be zero-length ("lives forever").
      *
      * @param type
      * @return
@@ -291,23 +293,23 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
 
     /**
      * Sets the time-to-live for the given {@link HugeGraphSchemaType}. The most granular time unit used for TTL values
-     * is seconds. Any argument will be rounded to seconds if it is more granular than that. The {@code ttl} must be
-     * nonnegative. When {@code ttl} is zero, any existing TTL on {@code type} is removed ("lives forever"). Positive
-     * {@code ttl} values are interpreted literally.
+     * is seconds. Any argument will be rounded to seconds if it is more granular than that.
+     * The {@code ttl} must be nonnegative.  When {@code ttl} is zero, any existing TTL on {@code type} is removed
+     * ("lives forever"). Positive {@code ttl} values are interpreted literally.
      *
      * @param type the affected type
-     * @param ttl time-to-live
+     * @param ttl  time-to-live
      * @param unit time unit of the specified ttl
      */
     public void setTTL(HugeGraphSchemaType type, Duration duration);
 
     /*
-     * ##################### SCHEMA UPDATE ##########################
+    ##################### SCHEMA UPDATE ##########################
      */
 
     /**
-     * Changes the name of a {@link HugeGraphSchemaElement} to the provided new name. The new name must be valid and not
-     * already in use, otherwise an {@link IllegalArgumentException} is thrown.
+     * Changes the name of a {@link HugeGraphSchemaElement} to the provided new name.
+     * The new name must be valid and not already in use, otherwise an {@link IllegalArgumentException} is thrown.
      *
      * @param element
      * @param newName
@@ -325,9 +327,8 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
 
     /**
      * If an index update job was triggered through {@link #updateIndex(Index, SchemaAction)} with schema actions
-     * {@link com.baidu.hugegraph.core.schema.SchemaAction#REINDEX} or
-     * {@link com.baidu.hugegraph.core.schema.SchemaAction#REMOVE_INDEX} then this method can be used to track the
-     * status of this asynchronous process.
+     * {@link com.baidu.hugegraph.core.schema.SchemaAction#REINDEX} or {@link com.baidu.hugegraph.core.schema.SchemaAction#REMOVE_INDEX}
+     * then this method can be used to track the status of this asynchronous process.
      *
      * @param index
      * @return A message that reflects the status of the index job
@@ -335,11 +336,12 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     public IndexJobFuture getIndexJobStatus(Index index);
 
     /*
-     * ##################### CLUSTER MANAGEMENT ##########################
+    ##################### CLUSTER MANAGEMENT ##########################
      */
 
     /**
-     * Returns a set of unique instance ids for all HugeGraph instances that are currently part of this graph cluster.
+     * Returns a set of unique instance ids for all HugeGraph instances that are currently
+     * part of this graph cluster.
      *
      * @return
      */
@@ -348,22 +350,23 @@ public interface HugeGraphManagement extends HugeGraphConfiguration, SchemaManag
     /**
      * Forcefully removes a HugeGraph instance from this graph cluster as identified by its name.
      * <p/>
-     * This method should be used with great care and only in cases where a HugeGraph instance has been abnormally
-     * terminated (i.e. killed instead of properly shut-down). If this happens, the instance will continue to be listed
-     * as an open instance which means that 1) a new instance with the same id cannot be started and 2) schema updates
-     * will fail because the killed instance cannot acknowledge the schema update.
+     * This method should be used with great care and only in cases where a HugeGraph instance
+     * has been abnormally terminated (i.e. killed instead of properly shut-down). If this happens, the instance
+     * will continue to be listed as an open instance which means that 1) a new instance with the same id cannot
+     * be started and 2) schema updates will fail because the killed instance cannot acknowledge the schema update.
      * <p/>
      * <p/>
-     * Throws an exception if the instance is not part of this cluster or if the instance has been started after the
-     * start of this management transaction which is indicative of the instance having been restarted successfully.
+     * Throws an exception if the instance is not part of this cluster or if the instance has
+     * been started after the start of this management transaction which is indicative of the instance
+     * having been restarted successfully.
      *
      * @param instanceId
      */
     public void forceCloseInstance(String instanceId);
 
     /**
-     * Returns an iterable over all defined types that have the given clazz (either {@link EdgeLabel} which returns all
-     * labels, {@link PropertyKey} which returns all keys, or {@link RelationType} which returns all types).
+     * Returns an iterable over all defined types that have the given clazz (either {@link EdgeLabel} which returns all labels,
+     * {@link PropertyKey} which returns all keys, or {@link RelationType} which returns all types).
      *
      * @param clazz {@link RelationType} or sub-interface
      * @param <T>

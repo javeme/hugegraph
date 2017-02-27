@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Wraps a {@link com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStore} as a proxy as a basis for other
- * wrappers
+ * Wraps a {@link com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStore} as a proxy as a basis for
+ * other wrappers
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
@@ -33,7 +33,7 @@ public class KCVSProxy implements KeyColumnValueStore {
     protected final KeyColumnValueStore store;
 
     public KCVSProxy(KeyColumnValueStore store) {
-        Preconditions.checkArgument(store != null);
+        Preconditions.checkArgument(store!=null);
         this.store = store;
     }
 
@@ -47,9 +47,9 @@ public class KCVSProxy implements KeyColumnValueStore {
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
-        store.acquireLock(key, column, expectedValue, unwrapTx(txh));
+    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue,
+                            StoreTransaction txh) throws BackendException {
+        store.acquireLock(key,column,expectedValue,unwrapTx(txh));
     }
 
     @Override
@@ -68,8 +68,7 @@ public class KCVSProxy implements KeyColumnValueStore {
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         store.mutate(key, additions, deletions, unwrapTx(txh));
     }
 
@@ -79,8 +78,7 @@ public class KCVSProxy implements KeyColumnValueStore {
     }
 
     @Override
-    public Map<StaticBuffer, EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
+    public Map<StaticBuffer,EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh) throws BackendException {
         return store.getSlice(keys, query, unwrapTx(txh));
     }
 }

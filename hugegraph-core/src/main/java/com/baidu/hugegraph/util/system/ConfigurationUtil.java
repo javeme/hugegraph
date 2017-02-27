@@ -46,12 +46,12 @@ public class ConfigurationUtil {
     }
 
     public final static <T> T instantiate(String clazzname) {
-        return instantiate(clazzname, new Object[0], new Class[0]);
+        return instantiate(clazzname,new Object[0],new Class[0]);
     }
 
     public final static <T> T instantiate(String clazzname, Object[] constructorArgs, Class[] classes) {
-        Preconditions.checkArgument(constructorArgs != null && classes != null);
-        Preconditions.checkArgument(constructorArgs.length == classes.length);
+        Preconditions.checkArgument(constructorArgs!=null && classes!=null);
+        Preconditions.checkArgument(constructorArgs.length==classes.length);
         try {
             Class clazz = Class.forName(clazzname);
             Constructor constructor = clazz.getConstructor(classes);
@@ -60,8 +60,7 @@ public class ConfigurationUtil {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Could not find implementation class: " + clazzname, e);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Implementation class does not have required constructor: " + clazzname,
-                    e);
+            throw new IllegalArgumentException("Implementation class does not have required constructor: " + clazzname, e);
         } catch (InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate implementation: " + clazzname, e);
         } catch (IllegalAccessException e) {

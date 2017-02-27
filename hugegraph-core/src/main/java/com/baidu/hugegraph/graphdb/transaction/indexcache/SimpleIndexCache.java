@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 public class SimpleIndexCache implements IndexCache {
 
-    private final HashMultimap<Object, HugeGraphVertexProperty> map;
+    private final HashMultimap<Object,HugeGraphVertexProperty> map;
 
     public SimpleIndexCache() {
         this.map = HashMultimap.create();
@@ -36,17 +36,17 @@ public class SimpleIndexCache implements IndexCache {
 
     @Override
     public void add(HugeGraphVertexProperty property) {
-        map.put(property.value(), property);
+        map.put(property.value(),property);
     }
 
     @Override
     public void remove(HugeGraphVertexProperty property) {
-        map.remove(property.value(), property);
+        map.remove(property.value(),property);
     }
 
     @Override
     public Iterable<HugeGraphVertexProperty> get(final Object value, final PropertyKey key) {
-        return Iterables.filter(map.get(value), new Predicate<HugeGraphVertexProperty>() {
+        return Iterables.filter(map.get(value),new Predicate<HugeGraphVertexProperty>() {
             @Override
             public boolean apply(@Nullable HugeGraphVertexProperty hugegraphProperty) {
                 return hugegraphProperty.propertyKey().equals(key);

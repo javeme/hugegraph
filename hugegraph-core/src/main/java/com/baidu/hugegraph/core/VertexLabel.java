@@ -34,13 +34,14 @@ public interface VertexLabel extends HugeGraphVertex, HugeGraphSchemaType {
     public boolean isPartitioned();
 
     /**
-     * Whether vertices with this label are static, that is, immutable beyond the transaction in which they were
-     * created.
+     * Whether vertices with this label are static, that is, immutable beyond the transaction
+     * in which they were created.
      *
      * @return
      */
     public boolean isStatic();
 
-    // TTL
+    //TTL
+
 
 }

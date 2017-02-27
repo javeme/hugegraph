@@ -1,4 +1,4 @@
-JanusGraph Documentation
+hugegraph Documentation
 ========================
 
 include::adoc_attributes.txt[]

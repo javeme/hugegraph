@@ -15,8 +15,8 @@
 package com.baidu.hugegraph.core;
 
 /**
- * Exception thrown when a user defined query (e.g. a {@link HugeGraphVertex} or {@link HugeGraphQuery}) is invalid or
- * could not be processed.
+ * Exception thrown when a user defined query (e.g. a {@link HugeGraphVertex} or {@link HugeGraphQuery})
+ * is invalid or could not be processed.
  *
  * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
@@ -32,7 +32,7 @@ public class QueryException extends HugeGraphException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public QueryException(String msg, Throwable cause) {

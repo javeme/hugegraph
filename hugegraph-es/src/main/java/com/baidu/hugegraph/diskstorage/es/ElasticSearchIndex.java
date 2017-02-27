@@ -100,73 +100,71 @@ public class ElasticSearchIndex implements IndexProvider {
     public static final ConfigNamespace ELASTICSEARCH_NS =
             new ConfigNamespace(INDEX_NS, "elasticsearch", "Elasticsearch index configuration");
 
-    public static final ConfigOption<Boolean> CLIENT_ONLY = new ConfigOption<Boolean>(ELASTICSEARCH_NS, "client-only",
-            "The Elasticsearch node.client option is set to this boolean value, and the Elasticsearch node.data "
-                    + "option is set to the negation of this value.  True creates a thin client which holds no data.  False "
-                    + "creates a regular Elasticsearch cluster node that may store data.",
+    public static final ConfigOption<Boolean> CLIENT_ONLY =
+            new ConfigOption<Boolean>(ELASTICSEARCH_NS, "client-only",
+            "The Elasticsearch node.client option is set to this boolean value, and the Elasticsearch node.data " +
+            "option is set to the negation of this value.  True creates a thin client which holds no data.  False " +
+            "creates a regular Elasticsearch cluster node that may store data.",
             ConfigOption.Type.GLOBAL_OFFLINE, true);
 
     public static final ConfigOption<String> CLUSTER_NAME =
             new ConfigOption<String>(ELASTICSEARCH_NS, "cluster-name",
-                    "The name of the Elasticsearch cluster.  This should match the \"cluster.name\" setting "
-                            + "in the Elasticsearch nodes' configuration.",
-                    ConfigOption.Type.GLOBAL_OFFLINE, "elasticsearch");
+            "The name of the Elasticsearch cluster.  This should match the \"cluster.name\" setting " +
+            "in the Elasticsearch nodes' configuration.", ConfigOption.Type.GLOBAL_OFFLINE, "elasticsearch");
 
-    public static final ConfigOption<Boolean> LOCAL_MODE = new ConfigOption<Boolean>(ELASTICSEARCH_NS, "local-mode",
-            "On the legacy config track, this option chooses between starting a TransportClient (false) or "
-                    + "a Node with JVM-local transport and local data (true).  On the interface config track, this option "
-                    + "is considered by (but optional for) the Node client and ignored by the TransportClient.  See the manual "
-                    + "for more information about ES config tracks.",
+    public static final ConfigOption<Boolean> LOCAL_MODE =
+            new ConfigOption<Boolean>(ELASTICSEARCH_NS, "local-mode",
+            "On the legacy config track, this option chooses between starting a TransportClient (false) or " +
+            "a Node with JVM-local transport and local data (true).  On the interface config track, this option " +
+            "is considered by (but optional for) the Node client and ignored by the TransportClient.  See the manual " +
+            "for more information about ES config tracks.",
             ConfigOption.Type.GLOBAL_OFFLINE, false);
 
-    public static final ConfigOption<Boolean> CLIENT_SNIFF = new ConfigOption<Boolean>(ELASTICSEARCH_NS, "sniff",
-            "Whether to enable cluster sniffing.  This option only applies to the TransportClient.  "
-                    + "Enabling this option makes the TransportClient attempt to discover other cluster nodes "
-                    + "besides those in the initial host list provided at startup.",
-            ConfigOption.Type.MASKABLE, true);
+    public static final ConfigOption<Boolean> CLIENT_SNIFF =
+            new ConfigOption<Boolean>(ELASTICSEARCH_NS, "sniff",
+            "Whether to enable cluster sniffing.  This option only applies to the TransportClient.  " +
+            "Enabling this option makes the TransportClient attempt to discover other cluster nodes " +
+            "besides those in the initial host list provided at startup.", ConfigOption.Type.MASKABLE, true);
 
-    public static final ConfigOption<String> INTERFACE = new ConfigOption<>(ELASTICSEARCH_NS, "interface",
-            "Whether to connect to ES using the Node or Transport client (see the \"Talking to Elasticsearch\" "
-                    + "section of the ES manual for discussion of the difference).  Setting this option enables the "
-                    + "interface config track (see manual for more information about ES config tracks).",
+    public static final ConfigOption<String> INTERFACE =
+            new ConfigOption<>(ELASTICSEARCH_NS, "interface",
+            "Whether to connect to ES using the Node or Transport client (see the \"Talking to Elasticsearch\" " +
+            "section of the ES manual for discussion of the difference).  Setting this option enables the " +
+            "interface config track (see manual for more information about ES config tracks).",
             ConfigOption.Type.MASKABLE, String.class, ElasticSearchSetup.TRANSPORT_CLIENT.toString(),
             disallowEmpty(String.class));
 
     public static final ConfigOption<Boolean> IGNORE_CLUSTER_NAME =
             new ConfigOption<Boolean>(ELASTICSEARCH_NS, "ignore-cluster-name",
-                    "Whether to bypass validation of the cluster name of connected nodes.  "
-                            + "This option is only used on the interface configuration track (see manual for "
-                            + "information about ES config tracks).",
-                    ConfigOption.Type.MASKABLE, true);
+            "Whether to bypass validation of the cluster name of connected nodes.  " +
+            "This option is only used on the interface configuration track (see manual for " +
+            "information about ES config tracks).", ConfigOption.Type.MASKABLE, true);
 
-    public static final ConfigOption<String> TTL_INTERVAL = new ConfigOption<String>(ELASTICSEARCH_NS, "ttl-interval",
-            "The period of time between runs of ES's bulit-in expired document deleter.  "
-                    + "This string will become the value of ES's indices.ttl.interval setting and should "
-                    + "be formatted accordingly, e.g. 5s or 60s.",
-            ConfigOption.Type.MASKABLE, "5s");
+    public static final ConfigOption<String> TTL_INTERVAL =
+            new ConfigOption<String>(ELASTICSEARCH_NS, "ttl-interval",
+            "The period of time between runs of ES's bulit-in expired document deleter.  " +
+            "This string will become the value of ES's indices.ttl.interval setting and should " +
+            "be formatted accordingly, e.g. 5s or 60s.", ConfigOption.Type.MASKABLE, "5s");
 
     public static final ConfigOption<String> HEALTH_REQUEST_TIMEOUT =
             new ConfigOption<String>(ELASTICSEARCH_NS, "health-request-timeout",
-                    "When HugeGraph initializes its ES backend, HugeGraph waits up to this duration for the "
-                            + "ES cluster health to reach at least yellow status.  "
-                            + "This string should be formatted as a natural number followed by the lowercase letter "
-                            + "\"s\", e.g. 3s or 60s.",
-                    ConfigOption.Type.MASKABLE, "30s");
+            "When HugeGraph initializes its ES backend, HugeGraph waits up to this duration for the " +
+            "ES cluster health to reach at least yellow status.  " +
+            "This string should be formatted as a natural number followed by the lowercase letter " +
+            "\"s\", e.g. 3s or 60s.", ConfigOption.Type.MASKABLE, "30s");
 
     public static final ConfigOption<Boolean> LOAD_DEFAULT_NODE_SETTINGS =
             new ConfigOption<Boolean>(ELASTICSEARCH_NS, "load-default-node-settings",
-                    "Whether ES's Node client will internally attempt to load default configuration settings "
-                            + "from system properties/process environment variables.  Only meaningful when using the Node "
-                            + "client (has no effect with TransportClient).",
-                    ConfigOption.Type.MASKABLE, true);
+            "Whether ES's Node client will internally attempt to load default configuration settings " +
+            "from system properties/process environment variables.  Only meaningful when using the Node " +
+            "client (has no effect with TransportClient).", ConfigOption.Type.MASKABLE, true);
 
     public static final ConfigOption<Boolean> USE_EDEPRECATED_IGNORE_UNMAPPED_OPTION =
             new ConfigOption<>(ELASTICSEARCH_NS, "use-deprecated-ignore-unmapped-option",
-                    "Elasticsearch versions before 1.4.0 supported the \"ignore_unmapped\" sort option. "
-                            + "In 1.4.0, it was deprecated by the new \"unmapped_type\" sort option.  This configuration"
-                            + "setting controls which ES option HugeGraph uses: false for the newer \"unmapped_type\","
-                            + "true for the older \"ignore_unmapped\".",
-                    ConfigOption.Type.MASKABLE, false);
+            "Elasticsearch versions before 1.4.0 supported the \"ignore_unmapped\" sort option. " +
+            "In 1.4.0, it was deprecated by the new \"unmapped_type\" sort option.  This configuration" +
+            "setting controls which ES option HugeGraph uses: false for the newer \"unmapped_type\"," +
+            "true for the older \"ignore_unmapped\".", ConfigOption.Type.MASKABLE, false);
 
     public static final ConfigNamespace ES_EXTRAS_NS =
             new ConfigNamespace(ELASTICSEARCH_NS, "ext", "Overrides for arbitrary elasticsearch.yaml settings", true);
@@ -174,21 +172,18 @@ public class ElasticSearchIndex implements IndexProvider {
     public static final ConfigNamespace ES_CREATE_NS =
             new ConfigNamespace(ELASTICSEARCH_NS, "create", "Settings related to index creation");
 
-    public static final ConfigOption<Long> CREATE_SLEEP = new ConfigOption<Long>(ES_CREATE_NS, "sleep",
-            "How long to sleep, in milliseconds, between the successful completion of a (blocking) index "
-                    + "creation request and the first use of that index.  This only applies when creating an index in ES, "
-                    + "which typically only happens the first time HugeGraph is started on top of ES. If the index HugeGraph is "
-                    + "configured to use already exists, then this setting has no effect.",
-            ConfigOption.Type.MASKABLE, 200L);
+    public static final ConfigOption<Long> CREATE_SLEEP =
+            new ConfigOption<Long>(ES_CREATE_NS, "sleep",
+            "How long to sleep, in milliseconds, between the successful completion of a (blocking) index " +
+            "creation request and the first use of that index.  This only applies when creating an index in ES, " +
+            "which typically only happens the first time HugeGraph is started on top of ES. If the index HugeGraph is " +
+            "configured to use already exists, then this setting has no effect.", ConfigOption.Type.MASKABLE, 200L);
 
-    public static final ConfigNamespace ES_CREATE_EXTRAS_NS = new ConfigNamespace(ES_CREATE_NS, "ext",
-            "Overrides for arbitrary settings applied at index creation", true);
+    public static final ConfigNamespace ES_CREATE_EXTRAS_NS =
+            new ConfigNamespace(ES_CREATE_NS, "ext", "Overrides for arbitrary settings applied at index creation", true);
 
-    private static final IndexFeatures ES_FEATURES =
-            new IndexFeatures.Builder().supportsDocumentTTL().setDefaultStringMapping(Mapping.TEXT)
-                    .supportedStringMappings(Mapping.TEXT, Mapping.TEXTSTRING, Mapping.STRING).setWildcardField("_all")
-                    .supportsCardinality(Cardinality.SINGLE).supportsCardinality(Cardinality.LIST)
-                    .supportsCardinality(Cardinality.SET).supportsNanoseconds().build();
+    private static final IndexFeatures ES_FEATURES = new IndexFeatures.Builder().supportsDocumentTTL()
+            .setDefaultStringMapping(Mapping.TEXT).supportedStringMappings(Mapping.TEXT, Mapping.TEXTSTRING, Mapping.STRING).setWildcardField("_all").supportsCardinality(Cardinality.SINGLE).supportsCardinality(Cardinality.LIST).supportsCardinality(Cardinality.SET).supportsNanoseconds().build();
 
     public static final int HOST_PORT_DEFAULT = 9300;
 
@@ -216,18 +211,19 @@ public class ElasticSearchIndex implements IndexProvider {
         maxResultsSize = config.get(INDEX_MAX_RESULT_SET_SIZE);
         log.debug("Configured ES query result set max size to {}", maxResultsSize);
 
-        client.admin().cluster().prepareHealth().setTimeout(config.get(HEALTH_REQUEST_TIMEOUT)).setWaitForYellowStatus()
-                .execute().actionGet();
+        client.admin().cluster().prepareHealth().setTimeout(config.get(HEALTH_REQUEST_TIMEOUT))
+                .setWaitForYellowStatus().execute().actionGet();
 
         checkForOrCreateIndex(config);
     }
 
     /**
-     * If ES already contains this instance's target index, then do nothing. Otherwise, create the index, then wait
-     * {@link #CREATE_SLEEP}.
+     * If ES already contains this instance's target index, then do nothing.
+     * Otherwise, create the index, then wait {@link #CREATE_SLEEP}.
      * <p>
-     * The {@code client} field must point to a live, connected client. The {@code indexName} field must be non-null and
-     * point to the name of the index to check for existence or create.
+     * The {@code client} field must point to a live, connected client.
+     * The {@code indexName} field must be non-null and point to the name
+     * of the index to check for existence or create.
      *
      * @param config the config for this ElasticSearchIndex
      * @throws java.lang.IllegalArgumentException if the index could not be created
@@ -235,17 +231,16 @@ public class ElasticSearchIndex implements IndexProvider {
     private void checkForOrCreateIndex(Configuration config) {
         Preconditions.checkState(null != client);
 
-        // Create index if it does not already exist
-        IndicesExistsResponse response =
-                client.admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet();
+        //Create index if it does not already exist
+        IndicesExistsResponse response = client.admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet();
         if (!response.isExists()) {
 
             ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
 
             ElasticSearchSetup.applySettingsFromHugeGraphConf(settings, config, ES_CREATE_EXTRAS_NS);
 
-            CreateIndexResponse create = client.admin().indices().prepareCreate(indexName).setSettings(settings.build())
-                    .execute().actionGet();
+            CreateIndexResponse create = client.admin().indices().prepareCreate(indexName)
+                    .setSettings(settings.build()).execute().actionGet();
             try {
                 final long sleep = config.get(CREATE_SLEEP);
                 log.debug("Sleeping {} ms after {} index creation returned from actionGet()", sleep, indexName);
@@ -253,17 +248,19 @@ public class ElasticSearchIndex implements IndexProvider {
             } catch (InterruptedException e) {
                 throw new HugeGraphException("Interrupted while waiting for index to settle in", e);
             }
-            if (!create.isAcknowledged())
-                throw new IllegalArgumentException("Could not create index: " + indexName);
+            if (!create.isAcknowledged()) throw new IllegalArgumentException("Could not create index: " + indexName);
         }
     }
 
+
     /**
-     * Configure ElasticSearchIndex's ES client according to semantics introduced in 0.5.1. Allows greater flexibility
-     * than the previous config semantics. See {@link com.baidu.hugegraph.diskstorage.es.ElasticSearchSetup} for more
+     * Configure ElasticSearchIndex's ES client according to semantics introduced in
+     * 0.5.1.  Allows greater flexibility than the previous config semantics.  See
+     * {@link com.baidu.hugegraph.diskstorage.es.ElasticSearchSetup} for more
      * information.
      * <p>
-     * This is activated by setting an explicit value for {@link #INTERFACE} in the HugeGraph configuration.
+     * This is activated by setting an explicit value for {@link #INTERFACE} in
+     * the HugeGraph configuration.
      *
      * @see #legacyConfiguration(com.baidu.hugegraph.diskstorage.configuration.Configuration)
      * @param config a config passed to ElasticSearchIndex's constructor
@@ -280,13 +277,16 @@ public class ElasticSearchIndex implements IndexProvider {
     }
 
     /**
-     * Configure ElasticSearchIndex's ES client according to 0.4.x - 0.5.0 semantics. This checks local-mode first. If
-     * local-mode is true, then it creates a Node that uses JVM local transport and can't talk over the network. If
-     * local-mode is false, then it creates a TransportClient that can talk over the network and uses
-     * {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#INDEX_HOSTS} as the server addresses.
-     * Note that this configuration method does not allow creating a Node that talks over the network.
+     * Configure ElasticSearchIndex's ES client according to 0.4.x - 0.5.0 semantics.
+     * This checks local-mode first.  If local-mode is true, then it creates a Node that
+     * uses JVM local transport and can't talk over the network.  If local-mode is
+     * false, then it creates a TransportClient that can talk over the network and
+     * uses {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#INDEX_HOSTS}
+     * as the server addresses.  Note that this configuration method
+     * does not allow creating a Node that talks over the network.
      * <p>
-     * This is activated by <b>not</b> setting an explicit value for {@link #INTERFACE} in the HugeGraph configuration.
+     * This is activated by <b>not</b> setting an explicit value for {@link #INTERFACE} in the
+     * HugeGraph configuration.
      *
      * @see #interfaceConfiguration(com.baidu.hugegraph.diskstorage.configuration.Configuration)
      * @param config a config passed to ElasticSearchIndex's constructor
@@ -324,14 +324,12 @@ public class ElasticSearchIndex implements IndexProvider {
                 String dataDirectory = config.get(INDEX_DIRECTORY);
                 log.debug("Configuring ES with data directory [{}]", dataDirectory);
                 File f = new File(dataDirectory);
-                if (!f.exists())
-                    f.mkdirs();
+                if (!f.exists()) f.mkdirs();
                 ImmutableSettings.Builder b = ImmutableSettings.settingsBuilder();
                 for (String sub : DATA_SUBDIRS) {
                     String subdir = dataDirectory + File.separator + sub;
                     f = new File(subdir);
-                    if (!f.exists())
-                        f.mkdirs();
+                    if (!f.exists()) f.mkdirs();
                     b.put("path." + sub, subdir);
                 }
                 b.put("script.disable_dynamic", false);
@@ -340,8 +338,7 @@ public class ElasticSearchIndex implements IndexProvider {
                 builder.settings(b.build());
 
                 String clustername = config.get(CLUSTER_NAME);
-                Preconditions.checkArgument(StringUtils.isNotBlank(clustername), "Invalid cluster name: %s",
-                        clustername);
+                Preconditions.checkArgument(StringUtils.isNotBlank(clustername), "Invalid cluster name: %s", clustername);
                 builder.clusterName(clustername);
             }
 
@@ -353,8 +350,7 @@ public class ElasticSearchIndex implements IndexProvider {
             ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
             if (config.has(CLUSTER_NAME)) {
                 String clustername = config.get(CLUSTER_NAME);
-                Preconditions.checkArgument(StringUtils.isNotBlank(clustername), "Invalid cluster name: %s",
-                        clustername);
+                Preconditions.checkArgument(StringUtils.isNotBlank(clustername), "Invalid cluster name: %s", clustername);
                 settings.put("cluster.name", clustername);
             } else {
                 settings.put("client.transport.ignore_cluster_name", true);
@@ -363,13 +359,12 @@ public class ElasticSearchIndex implements IndexProvider {
             settings.put("client.transport.sniff", config.get(CLIENT_SNIFF));
             settings.put("script.disable_dynamic", false);
             TransportClient tc = new TransportClient(settings.build());
-            int defaultPort = config.has(INDEX_PORT) ? config.get(INDEX_PORT) : HOST_PORT_DEFAULT;
+            int defaultPort = config.has(INDEX_PORT)?config.get(INDEX_PORT):HOST_PORT_DEFAULT;
             for (String host : config.get(INDEX_HOSTS)) {
                 String[] hostparts = host.split(":");
                 String hostname = hostparts[0];
                 int hostport = defaultPort;
-                if (hostparts.length == 2)
-                    hostport = Integer.parseInt(hostparts[1]);
+                if (hostparts.length == 2) hostport = Integer.parseInt(hostparts[1]);
                 log.info("Configured remote host: {} : {}", hostname, hostport);
                 tc.addTransportAddress(new InetSocketTransportAddress(hostname, hostport));
             }
@@ -393,43 +388,42 @@ public class ElasticSearchIndex implements IndexProvider {
     }
 
     @Override
-    public void register(String store, String key, KeyInformation information, BaseTransaction tx)
-            throws BackendException {
+    public void register(String store, String key, KeyInformation information, BaseTransaction tx) throws BackendException {
         XContentBuilder mapping;
         Class<?> dataType = information.getDataType();
         Mapping map = Mapping.getMapping(information);
-        Preconditions.checkArgument(map == Mapping.DEFAULT || AttributeUtil.isString(dataType),
-                "Specified illegal mapping [%s] for data type [%s]", map, dataType);
+        Preconditions.checkArgument(map==Mapping.DEFAULT || AttributeUtil.isString(dataType),
+                "Specified illegal mapping [%s] for data type [%s]",map,dataType);
 
         try {
-            mapping = XContentFactory.jsonBuilder().startObject().startObject(store)
-                    .field(TTL_FIELD, new HashMap<String, Object>() {
-                        {
-                            put("enabled", true);
-                        }
-                    }).startObject("properties").startObject(key);
+            mapping = XContentFactory.jsonBuilder().
+                    startObject().
+                    startObject(store).
+                    field(TTL_FIELD, new HashMap<String, Object>() {{
+                        put("enabled", true);
+                    }}).
+                    startObject("properties").
+                    startObject(key);
 
             if (AttributeUtil.isString(dataType)) {
-                if (map == Mapping.DEFAULT)
-                    map = Mapping.TEXT;
+                if (map==Mapping.DEFAULT) map=Mapping.TEXT;
                 log.debug("Registering string type for {} with mapping {}", key, map);
                 mapping.field("type", "string");
                 switch (map) {
                     case STRING:
-                        mapping.field("index", "not_analyzed");
+                        mapping.field("index","not_analyzed");
                         break;
                     case TEXT:
-                        // default, do nothing
-                        break;
+                        //default, do nothing
+                    	break;
                     case TEXTSTRING:
                         mapping.endObject();
-                        // add string mapping
+                        //add string mapping
                         mapping.startObject(getDualMappingName(key));
                         mapping.field("type", "string");
-                        mapping.field("index", "not_analyzed");
+                        mapping.field("index","not_analyzed");
                         break;
-                    default:
-                        throw new AssertionError("Unexpected mapping: " + map);
+                    default: throw new AssertionError("Unexpected mapping: "+map);
                 }
             } else if (dataType == Float.class) {
                 log.debug("Registering float type for {}", key);
@@ -464,7 +458,7 @@ public class ElasticSearchIndex implements IndexProvider {
             } else if (dataType == UUID.class) {
                 log.debug("Registering uuid type for {}", key);
                 mapping.field("type", "string");
-                mapping.field("index", "not_analyzed");
+                mapping.field("index","not_analyzed");
             }
 
             mapping.endObject().endObject().endObject().endObject();
@@ -474,8 +468,8 @@ public class ElasticSearchIndex implements IndexProvider {
         }
 
         try {
-            PutMappingResponse response = client.admin().indices().preparePutMapping(indexName)
-                    .setIgnoreConflicts(false).setType(store).setSource(mapping).execute().actionGet();
+            PutMappingResponse response = client.admin().indices().preparePutMapping(indexName).
+                    setIgnoreConflicts(false).setType(store).setSource(mapping).execute().actionGet();
         } catch (Exception e) {
             throw convert(e);
         }
@@ -484,17 +478,15 @@ public class ElasticSearchIndex implements IndexProvider {
     private static Mapping getStringMapping(KeyInformation information) {
         assert AttributeUtil.isString(information.getDataType());
         Mapping map = Mapping.getMapping(information);
-        if (map == Mapping.DEFAULT)
-            map = Mapping.TEXT;
+        if (map==Mapping.DEFAULT) map = Mapping.TEXT;
         return map;
     }
 
     private static boolean hasDualStringMapping(KeyInformation information) {
-        return AttributeUtil.isString(information.getDataType()) && getStringMapping(information) == Mapping.TEXTSTRING;
+        return AttributeUtil.isString(information.getDataType()) && getStringMapping(information)==Mapping.TEXTSTRING;
     }
 
-    public XContentBuilder getNewDocument(final List<IndexEntry> additions, KeyInformation.StoreRetriever informations,
-            int ttl) throws BackendException {
+    public XContentBuilder getNewDocument(final List<IndexEntry> additions, KeyInformation.StoreRetriever informations, int ttl) throws BackendException {
         Preconditions.checkArgument(ttl >= 0);
         try {
             XContentBuilder builder = XContentFactory.jsonBuilder().startObject();
@@ -517,20 +509,19 @@ public class ElasticSearchIndex implements IndexProvider {
                         break;
                     case SET:
                     case LIST:
-                        value = add.getValue().stream().map(v -> convertToEsType(v.value)).collect(Collectors.toList())
-                                .toArray();
+                        value = add.getValue().stream().map(v -> convertToEsType(v.value)).collect(Collectors.toList()).toArray();
                         break;
                 }
 
+
                 builder.field(add.getKey(), value);
-                if (hasDualStringMapping(informations.get(add.getKey()))
-                        && keyInformation.getDataType() == String.class) {
+                if (hasDualStringMapping(informations.get(add.getKey())) && keyInformation.getDataType() == String.class) {
                     builder.field(getDualMappingName(add.getKey()), value);
                 }
 
+
             }
-            if (ttl > 0)
-                builder.field(TTL_FIELD, TimeUnit.MILLISECONDS.convert(ttl, TimeUnit.SECONDS));
+            if (ttl>0) builder.field(TTL_FIELD, TimeUnit.MILLISECONDS.convert(ttl,TimeUnit.SECONDS));
 
             builder.endObject();
 
@@ -544,7 +535,7 @@ public class ElasticSearchIndex implements IndexProvider {
         if (value instanceof Number) {
             if (AttributeUtil.isWholeNumber((Number) value)) {
                 return ((Number) value).longValue();
-            } else { // double or float
+            } else { //double or float
                 return ((Number) value).doubleValue();
             }
         } else if (AttributeUtil.isString(value)) {
@@ -553,9 +544,8 @@ public class ElasticSearchIndex implements IndexProvider {
             Geoshape shape = (Geoshape) value;
             if (shape.getType() == Geoshape.Type.POINT) {
                 Geoshape.Point p = shape.getPoint();
-                return new double[] { p.getLongitude(), p.getLatitude() };
-            } else
-                throw new UnsupportedOperationException("Geo type is not supported: " + shape.getType());
+                return new double[]{p.getLongitude(), p.getLatitude()};
+            } else throw new UnsupportedOperationException("Geo type is not supported: " + shape.getType());
 
         } else if (value instanceof Date || value instanceof Instant) {
             return value;
@@ -563,13 +553,11 @@ public class ElasticSearchIndex implements IndexProvider {
             return value;
         } else if (value instanceof UUID) {
             return value.toString();
-        } else
-            throw new IllegalArgumentException("Unsupported type: " + value.getClass() + " (value: " + value + ")");
+        } else throw new IllegalArgumentException("Unsupported type: " + value.getClass() + " (value: " + value + ")");
     }
 
     @Override
-    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
+    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         BulkRequestBuilder brb = client.prepareBulk();
 
         int bulkrequests = 0;
@@ -584,15 +572,14 @@ public class ElasticSearchIndex implements IndexProvider {
                     Preconditions.checkArgument(!(mutation.isNew() && mutation.isDeleted()));
                     Preconditions.checkArgument(!mutation.isNew() || !mutation.hasDeletions());
                     Preconditions.checkArgument(!mutation.isDeleted() || !mutation.hasAdditions());
-                    // Deletions first
+                    //Deletions first
                     if (mutation.hasDeletions()) {
                         if (mutation.isDeleted()) {
                             log.trace("Deleting entire document {}", docid);
                             brb.add(new DeleteRequest(indexName, storename, docid));
                         } else {
                             String script = getDeletionScript(informations, storename, mutation);
-                            brb.add(client.prepareUpdate(indexName, storename, docid).setScript(script,
-                                    ScriptService.ScriptType.INLINE));
+                            brb.add(client.prepareUpdate(indexName, storename, docid).setScript(script, ScriptService.ScriptType.INLINE));
                             log.trace("Adding script {}", script);
                         }
 
@@ -601,22 +588,19 @@ public class ElasticSearchIndex implements IndexProvider {
                     if (mutation.hasAdditions()) {
                         int ttl = mutation.determineTTL();
 
-                        if (mutation.isNew()) { // Index
+                        if (mutation.isNew()) { //Index
                             log.trace("Adding entire document {}", docid);
                             brb.add(new IndexRequest(indexName, storename, docid)
                                     .source(getNewDocument(mutation.getAdditions(), informations.get(storename), ttl)));
 
                         } else {
-                            Preconditions.checkArgument(ttl == 0,
-                                    "Elasticsearch only supports TTL on new documents [%s]", docid);
+                            Preconditions.checkArgument(ttl == 0, "Elasticsearch only supports TTL on new documents [%s]", docid);
 
                             boolean needUpsert = !mutation.hasDeletions();
                             String script = getAdditionScript(informations, storename, mutation);
-                            UpdateRequestBuilder update = client.prepareUpdate(indexName, storename, docid)
-                                    .setScript(script, ScriptService.ScriptType.INLINE);
+                            UpdateRequestBuilder update = client.prepareUpdate(indexName, storename, docid).setScript(script, ScriptService.ScriptType.INLINE);
                             if (needUpsert) {
-                                XContentBuilder doc =
-                                        getNewDocument(mutation.getAdditions(), informations.get(storename), ttl);
+                                XContentBuilder doc = getNewDocument(mutation.getAdditions(), informations.get(storename), ttl);
                                 update.setUpsert(doc);
                             }
 
@@ -633,14 +617,14 @@ public class ElasticSearchIndex implements IndexProvider {
                 BulkResponse bulkItemResponses = brb.execute().actionGet();
                 if (bulkItemResponses.hasFailures()) {
                     boolean actualFailure = false;
-                    for (BulkItemResponse response : bulkItemResponses.getItems()) {
-                        // The document may have been deleted, which is OK
-                        if (response.isFailed() && response.getFailure().getStatus() != RestStatus.NOT_FOUND) {
+                    for(BulkItemResponse response : bulkItemResponses.getItems()) {
+                        //The document may have been deleted, which is OK
+                        if(response.isFailed() && response.getFailure().getStatus() != RestStatus.NOT_FOUND) {
                             log.error("Failed to execute ES query {}", response.getFailureMessage());
                             actualFailure = true;
                         }
                     }
-                    if (actualFailure) {
+                    if(actualFailure) {
                         throw new Exception(bulkItemResponses.buildFailureMessage());
                     }
                 }
@@ -651,8 +635,7 @@ public class ElasticSearchIndex implements IndexProvider {
         }
     }
 
-    private String getDeletionScript(KeyInformation.IndexRetriever informations, String storename,
-            IndexMutation mutation) throws PermanentBackendException {
+    private String getDeletionScript(KeyInformation.IndexRetriever informations, String storename, IndexMutation mutation) throws PermanentBackendException {
         StringBuilder script = new StringBuilder();
         for (IndexEntry deletion : mutation.getDeletions()) {
             KeyInformation keyInformation = informations.get(storename).get(deletion.field);
@@ -667,12 +650,9 @@ public class ElasticSearchIndex implements IndexProvider {
                 case SET:
                 case LIST:
                     String jsValue = convertToJsType(deletion.value);
-                    script.append("def index = ctx._source[\"" + deletion.field + "\"].indexOf(" + jsValue
-                            + "); ctx._source[\"" + deletion.field + "\"].remove(index);");
+                    script.append("def index = ctx._source[\"" + deletion.field + "\"].indexOf(" + jsValue + "); ctx._source[\"" + deletion.field + "\"].remove(index);");
                     if (hasDualStringMapping(informations.get(storename, deletion.field))) {
-                        script.append("def index = ctx._source[\"" + getDualMappingName(deletion.field) + "\"].indexOf("
-                                + jsValue + "); ctx._source[\"" + getDualMappingName(deletion.field)
-                                + "\"].remove(index);");
+                        script.append("def index = ctx._source[\"" + getDualMappingName(deletion.field) + "\"].indexOf(" + jsValue + "); ctx._source[\"" + getDualMappingName(deletion.field) + "\"].remove(index);");
                     }
                     break;
 
@@ -681,8 +661,7 @@ public class ElasticSearchIndex implements IndexProvider {
         return script.toString();
     }
 
-    private String getAdditionScript(KeyInformation.IndexRetriever informations, String storename,
-            IndexMutation mutation) throws PermanentBackendException {
+    private String getAdditionScript(KeyInformation.IndexRetriever informations, String storename, IndexMutation mutation) throws PermanentBackendException {
         StringBuilder script = new StringBuilder();
         for (IndexEntry e : mutation.getAdditions()) {
             KeyInformation keyInformation = informations.get(storename).get(e.field);
@@ -690,20 +669,16 @@ public class ElasticSearchIndex implements IndexProvider {
                 case SINGLE:
                     script.append("ctx._source[\"" + e.field + "\"] = " + convertToJsType(e.value) + ";");
                     if (hasDualStringMapping(keyInformation)) {
-                        script.append("ctx._source[\"" + getDualMappingName(e.field) + "\"] = "
-                                + convertToJsType(e.value) + ";");
+                        script.append("ctx._source[\"" + getDualMappingName(e.field) + "\"] = " + convertToJsType(e.value) + ";");
                     }
                     break;
                 case SET:
                 case LIST:
-                    script.append(
-                            "if(ctx._source[\"" + e.field + "\"] == null) {ctx._source[\"" + e.field + "\"] = []};");
+                    script.append("if(ctx._source[\"" + e.field + "\"] == null) {ctx._source[\"" + e.field + "\"] = []};");
                     script.append("ctx._source[\"" + e.field + "\"].add(" + convertToJsType(e.value) + ");");
                     if (hasDualStringMapping(keyInformation)) {
-                        script.append("if(ctx._source[\"" + getDualMappingName(e.field) + "\"] == null) {ctx._source[\""
-                                + e.field + "\"] = []};");
-                        script.append("ctx._source[\"" + getDualMappingName(e.field) + "\"].add("
-                                + convertToJsType(e.value) + ");");
+                        script.append("if(ctx._source[\"" + getDualMappingName(e.field) + "\"] == null) {ctx._source[\"" + e.field + "\"] = []};");
+                        script.append("ctx._source[\"" + getDualMappingName(e.field) + "\"].add(" + convertToJsType(e.value) + ");");
                     }
                     break;
 
@@ -729,10 +704,11 @@ public class ElasticSearchIndex implements IndexProvider {
             throw new PermanentBackendException("Could not write json");
         }
 
+
     }
 
-    public void restore(Map<String, Map<String, List<IndexEntry>>> documents,
-            KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+
+    public void restore(Map<String,Map<String, List<IndexEntry>>> documents, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         BulkRequestBuilder bulk = client.prepareBulk();
         int requests = 0;
         try {
@@ -754,8 +730,7 @@ public class ElasticSearchIndex implements IndexProvider {
                         // Add
                         if (log.isTraceEnabled())
                             log.trace("Adding entire document {}", docID);
-                        bulk.add(new IndexRequest(indexName, store, docID).source(
-                                getNewDocument(content, informations.get(store), IndexMutation.determineTTL(content))));
+                        bulk.add(new IndexRequest(indexName, store, docID).source(getNewDocument(content, informations.get(store), IndexMutation.determineTTL(content))));
                         requests++;
                     }
                 }
@@ -775,8 +750,7 @@ public class ElasticSearchIndex implements IndexProvider {
             String key = atom.getKey();
             HugeGraphPredicate hugegraphPredicate = atom.getPredicate();
             if (value instanceof Number) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on numeric types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on numeric types: " + hugegraphPredicate);
                 Cmp numRel = (Cmp) hugegraphPredicate;
                 Preconditions.checkArgument(value instanceof Number);
 
@@ -799,19 +773,17 @@ public class ElasticSearchIndex implements IndexProvider {
             } else if (value instanceof String) {
                 Mapping map = getStringMapping(informations.get(key));
                 String fieldName = key;
-                if (map == Mapping.TEXT && !hugegraphPredicate.toString().startsWith("CONTAINS"))
-                    throw new IllegalArgumentException(
-                            "Text mapped string values only support CONTAINS queries and not: " + hugegraphPredicate);
-                if (map == Mapping.STRING && hugegraphPredicate.toString().startsWith("CONTAINS"))
-                    throw new IllegalArgumentException(
-                            "String mapped string values do not support CONTAINS queries: " + hugegraphPredicate);
-                if (map == Mapping.TEXTSTRING && !hugegraphPredicate.toString().startsWith("CONTAINS"))
+                if (map==Mapping.TEXT && !hugegraphPredicate.toString().startsWith("CONTAINS"))
+                    throw new IllegalArgumentException("Text mapped string values only support CONTAINS queries and not: " + hugegraphPredicate);
+                if (map==Mapping.STRING && hugegraphPredicate.toString().startsWith("CONTAINS"))
+                    throw new IllegalArgumentException("String mapped string values do not support CONTAINS queries: " + hugegraphPredicate);
+                if (map==Mapping.TEXTSTRING && !hugegraphPredicate.toString().startsWith("CONTAINS"))
                     fieldName = getDualMappingName(key);
 
                 if (hugegraphPredicate == Text.CONTAINS) {
                     value = ((String) value).toLowerCase();
                     AndFilterBuilder b = FilterBuilders.andFilter();
-                    for (String term : Text.tokenize((String) value)) {
+                    for (String term : Text.tokenize((String)value)) {
                         b.add(FilterBuilders.termFilter(fieldName, term));
                     }
                     return b;
@@ -830,27 +802,21 @@ public class ElasticSearchIndex implements IndexProvider {
                 } else if (hugegraphPredicate == Cmp.NOT_EQUAL) {
                     return FilterBuilders.notFilter(FilterBuilders.termFilter(fieldName, (String) value));
                 } else
-                    throw new IllegalArgumentException(
-                            "Predicate is not supported for string value: " + hugegraphPredicate);
+                    throw new IllegalArgumentException("Predicate is not supported for string value: " + hugegraphPredicate);
             } else if (value instanceof Geoshape) {
-                Preconditions.checkArgument(hugegraphPredicate == Geo.WITHIN,
-                        "Relation is not supported for geo value: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate == Geo.WITHIN, "Relation is not supported for geo value: " + hugegraphPredicate);
                 Geoshape shape = (Geoshape) value;
                 if (shape.getType() == Geoshape.Type.CIRCLE) {
                     Geoshape.Point center = shape.getPoint();
-                    return FilterBuilders.geoDistanceFilter(key).lat(center.getLatitude()).lon(center.getLongitude())
-                            .distance(shape.getRadius(), DistanceUnit.KILOMETERS);
+                    return FilterBuilders.geoDistanceFilter(key).lat(center.getLatitude()).lon(center.getLongitude()).distance(shape.getRadius(), DistanceUnit.KILOMETERS);
                 } else if (shape.getType() == Geoshape.Type.BOX) {
                     Geoshape.Point southwest = shape.getPoint(0);
                     Geoshape.Point northeast = shape.getPoint(1);
-                    return FilterBuilders.geoBoundingBoxFilter(key)
-                            .bottomRight(southwest.getLatitude(), northeast.getLongitude())
-                            .topLeft(northeast.getLatitude(), southwest.getLongitude());
+                    return FilterBuilders.geoBoundingBoxFilter(key).bottomRight(southwest.getLatitude(), northeast.getLongitude()).topLeft(northeast.getLatitude(), southwest.getLongitude());
                 } else
                     throw new IllegalArgumentException("Unsupported or invalid search shape type: " + shape.getType());
             } else if (value instanceof Date || value instanceof Instant) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on date types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on date types: " + hugegraphPredicate);
                 Cmp numRel = (Cmp) hugegraphPredicate;
 
                 switch (numRel) {
@@ -886,36 +852,32 @@ public class ElasticSearchIndex implements IndexProvider {
                 } else if (hugegraphPredicate == Cmp.NOT_EQUAL) {
                     return FilterBuilders.notFilter(FilterBuilders.termFilter(key, value));
                 } else {
-                    throw new IllegalArgumentException(
-                            "Only equal or not equal is supported for UUIDs: " + hugegraphPredicate);
+                    throw new IllegalArgumentException("Only equal or not equal is supported for UUIDs: " + hugegraphPredicate);
                 }
-            } else
-                throw new IllegalArgumentException("Unsupported type: " + value);
+            } else throw new IllegalArgumentException("Unsupported type: " + value);
         } else if (condition instanceof Not) {
-            return FilterBuilders.notFilter(getFilter(((Not) condition).getChild(), informations));
+            return FilterBuilders.notFilter(getFilter(((Not) condition).getChild(),informations));
         } else if (condition instanceof And) {
             AndFilterBuilder b = FilterBuilders.andFilter();
             for (Condition c : condition.getChildren()) {
-                b.add(getFilter(c, informations));
+                b.add(getFilter(c,informations));
             }
             return b;
         } else if (condition instanceof Or) {
             OrFilterBuilder b = FilterBuilders.orFilter();
             for (Condition c : condition.getChildren()) {
-                b.add(getFilter(c, informations));
+                b.add(getFilter(c,informations));
             }
             return b;
-        } else
-            throw new IllegalArgumentException("Invalid condition: " + condition);
+        } else throw new IllegalArgumentException("Invalid condition: " + condition);
     }
 
     @Override
-    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx)
-            throws BackendException {
+    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         SearchRequestBuilder srb = client.prepareSearch(indexName);
         srb.setTypes(query.getStore());
         srb.setQuery(QueryBuilders.matchAllQuery());
-        srb.setPostFilter(getFilter(query.getCondition(), informations.get(query.getStore())));
+        srb.setPostFilter(getFilter(query.getCondition(),informations.get(query.getStore())));
         if (!query.getOrder().isEmpty()) {
             List<IndexQuery.OrderEntry> orders = query.getOrder();
             for (int i = 0; i < orders.size(); i++) {
@@ -932,12 +894,10 @@ public class ElasticSearchIndex implements IndexProvider {
             }
         }
         srb.setFrom(0);
-        if (query.hasLimit())
-            srb.setSize(query.getLimit());
-        else
-            srb.setSize(maxResultsSize);
+        if (query.hasLimit()) srb.setSize(query.getLimit());
+        else srb.setSize(maxResultsSize);
         srb.setNoFields();
-        // srb.setExplain(true);
+        //srb.setExplain(true);
 
         SearchResponse response = srb.execute().actionGet();
         log.debug("Executed query [{}] in {} ms", query.getCondition(), response.getTookInMillis());
@@ -952,23 +912,31 @@ public class ElasticSearchIndex implements IndexProvider {
     }
 
     private String convertToEsDataType(Class<?> datatype) {
-        if (String.class.isAssignableFrom(datatype)) {
+        if(String.class.isAssignableFrom(datatype)) {
             return "string";
-        } else if (Integer.class.isAssignableFrom(datatype)) {
+        }
+        else if (Integer.class.isAssignableFrom(datatype)) {
             return "integer";
-        } else if (Long.class.isAssignableFrom(datatype)) {
+        }
+        else if (Long.class.isAssignableFrom(datatype)) {
             return "long";
-        } else if (Float.class.isAssignableFrom(datatype)) {
+        }
+        else if (Float.class.isAssignableFrom(datatype)) {
             return "float";
-        } else if (Double.class.isAssignableFrom(datatype)) {
+        }
+        else if (Double.class.isAssignableFrom(datatype)) {
             return "double";
-        } else if (Boolean.class.isAssignableFrom(datatype)) {
+        }
+        else if (Boolean.class.isAssignableFrom(datatype)) {
             return "boolean";
-        } else if (Date.class.isAssignableFrom(datatype)) {
+        }
+        else if (Date.class.isAssignableFrom(datatype)) {
             return "date";
-        } else if (Instant.class.isAssignableFrom(datatype)) {
+        }
+        else if (Instant.class.isAssignableFrom(datatype)) {
             return "date";
-        } else if (Geoshape.class.isAssignableFrom(datatype)) {
+        }
+        else if (Geoshape.class.isAssignableFrom(datatype)) {
             return "geo_point";
         }
 
@@ -976,19 +944,16 @@ public class ElasticSearchIndex implements IndexProvider {
     }
 
     @Override
-    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
+    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         SearchRequestBuilder srb = client.prepareSearch(indexName);
         srb.setTypes(query.getStore());
         srb.setQuery(QueryBuilders.queryStringQuery(query.getQuery()));
 
         srb.setFrom(query.getOffset());
-        if (query.hasLimit())
-            srb.setSize(query.getLimit());
-        else
-            srb.setSize(maxResultsSize);
+        if (query.hasLimit()) srb.setSize(query.getLimit());
+        else srb.setSize(maxResultsSize);
         srb.setNoFields();
-        // srb.setExplain(true);
+        //srb.setExplain(true);
 
         SearchResponse response = srb.execute().actionGet();
         log.debug("Executed query [{}] in {} ms", query.getQuery(), response.getTookInMillis());
@@ -997,7 +962,7 @@ public class ElasticSearchIndex implements IndexProvider {
             log.warn("Query result set truncated to first [{}] elements for query: {}", maxResultsSize, query);
         List<RawQuery.Result<String>> result = new ArrayList<RawQuery.Result<String>>(hits.hits().length);
         for (SearchHit hit : hits) {
-            result.add(new RawQuery.Result<String>(hit.id(), hit.getScore()));
+            result.add(new RawQuery.Result<String>(hit.id(),hit.getScore()));
         }
         return result;
     }
@@ -1006,58 +971,49 @@ public class ElasticSearchIndex implements IndexProvider {
     public boolean supports(KeyInformation information, HugeGraphPredicate hugegraphPredicate) {
         Class<?> dataType = information.getDataType();
         Mapping mapping = Mapping.getMapping(information);
-        if (mapping != Mapping.DEFAULT && !AttributeUtil.isString(dataType))
-            return false;
+        if (mapping!=Mapping.DEFAULT && !AttributeUtil.isString(dataType)) return false;
 
         if (Number.class.isAssignableFrom(dataType)) {
-            if (hugegraphPredicate instanceof Cmp)
-                return true;
+            if (hugegraphPredicate instanceof Cmp) return true;
         } else if (dataType == Geoshape.class) {
             return hugegraphPredicate == Geo.WITHIN;
         } else if (AttributeUtil.isString(dataType)) {
-            switch (mapping) {
+            switch(mapping) {
                 case DEFAULT:
                 case TEXT:
-                    return hugegraphPredicate == Text.CONTAINS || hugegraphPredicate == Text.CONTAINS_PREFIX
-                            || hugegraphPredicate == Text.CONTAINS_REGEX;
+                    return hugegraphPredicate == Text.CONTAINS || hugegraphPredicate == Text.CONTAINS_PREFIX || hugegraphPredicate == Text.CONTAINS_REGEX;
                 case STRING:
-                    return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate == Cmp.NOT_EQUAL
-                            || hugegraphPredicate == Text.REGEX || hugegraphPredicate == Text.PREFIX;
+                    return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate==Cmp.NOT_EQUAL || hugegraphPredicate==Text.REGEX || hugegraphPredicate==Text.PREFIX;
                 case TEXTSTRING:
-                    return (hugegraphPredicate instanceof Text) || hugegraphPredicate == Cmp.EQUAL
-                            || hugegraphPredicate == Cmp.NOT_EQUAL;
+                    return (hugegraphPredicate instanceof Text) || hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate==Cmp.NOT_EQUAL;
             }
         } else if (dataType == Date.class || dataType == Instant.class) {
-            if (hugegraphPredicate instanceof Cmp)
-                return true;
+            if (hugegraphPredicate instanceof Cmp) return true;
         } else if (dataType == Boolean.class) {
             return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate == Cmp.NOT_EQUAL;
         } else if (dataType == UUID.class) {
-            return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate == Cmp.NOT_EQUAL;
+            return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate==Cmp.NOT_EQUAL;
         }
         return false;
     }
+
 
     @Override
     public boolean supports(KeyInformation information) {
         Class<?> dataType = information.getDataType();
         Mapping mapping = Mapping.getMapping(information);
-        if (Number.class.isAssignableFrom(dataType) || dataType == Geoshape.class || dataType == Date.class
-                || dataType == Instant.class || dataType == Boolean.class || dataType == UUID.class) {
-            if (mapping == Mapping.DEFAULT)
-                return true;
+        if (Number.class.isAssignableFrom(dataType) || dataType == Geoshape.class || dataType == Date.class || dataType== Instant.class || dataType == Boolean.class || dataType == UUID.class) {
+            if (mapping==Mapping.DEFAULT) return true;
         } else if (AttributeUtil.isString(dataType)) {
-            if (mapping == Mapping.DEFAULT || mapping == Mapping.STRING || mapping == Mapping.TEXT
-                    || mapping == Mapping.TEXTSTRING)
-                return true;
+            if (mapping==Mapping.DEFAULT || mapping==Mapping.STRING
+                    || mapping==Mapping.TEXT || mapping==Mapping.TEXTSTRING) return true;
         }
         return false;
     }
 
     @Override
     public String mapKey2Field(String key, KeyInformation information) {
-        Preconditions.checkArgument(!StringUtils.containsAny(key, new char[] { ' ' }), "Invalid key name provided: %s",
-                key);
+        Preconditions.checkArgument(!StringUtils.containsAny(key,new char[]{' '}),"Invalid key name provided: %s",key);
         return key;
     }
 
@@ -1085,7 +1041,8 @@ public class ElasticSearchIndex implements IndexProvider {
     public void clearStorage() throws BackendException {
         try {
             try {
-                client.admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
+                client.admin().indices()
+                        .delete(new DeleteIndexRequest(indexName)).actionGet();
                 // We wait for one second to let ES delete the river
                 Thread.sleep(1000);
             } catch (IndexMissingException e) {
@@ -1107,18 +1064,17 @@ public class ElasticSearchIndex implements IndexProvider {
 
     private void checkExpectedClientVersion() {
         /*
-         * This is enclosed in a catch block to prevent an unchecked exception from killing the startup thread. This
-         * check is just advisory -- the most it does is log a warning -- so there's no reason to allow it to emit a
-         * exception and potentially block graph startup.
+         * This is enclosed in a catch block to prevent an unchecked exception
+         * from killing the startup thread.  This check is just advisory -- the
+         * most it does is log a warning -- so there's no reason to allow it to
+         * emit a exception and potentially block graph startup.
          */
         try {
             if (!Version.CURRENT.toString().equals(ElasticSearchConstants.ES_VERSION_EXPECTED)) {
-                log.warn(
-                        "ES client version ({}) does not match the version with which HugeGraph was compiled ({}).  This might cause problems.",
+                log.warn("ES client version ({}) does not match the version with which HugeGraph was compiled ({}).  This might cause problems.",
                         Version.CURRENT, ElasticSearchConstants.ES_VERSION_EXPECTED);
             } else {
-                log.debug("Found ES client version matching HugeGraph's compile-time version: {} (OK)",
-                        Version.CURRENT);
+                log.debug("Found ES client version matching HugeGraph's compile-time version: {} (OK)", Version.CURRENT);
             }
         } catch (RuntimeException e) {
             log.warn("Unable to check expected ES client version", e);

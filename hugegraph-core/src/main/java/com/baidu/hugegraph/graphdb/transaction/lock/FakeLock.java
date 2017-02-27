@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.graphdb.transaction.lock;
 
+
 import java.time.Duration;
 
 /**
@@ -24,8 +25,7 @@ public class FakeLock implements TransactionLock {
 
     public static final FakeLock INSTANCE = new FakeLock();
 
-    private FakeLock() {
-    }
+    private FakeLock() {}
 
     @Override
     public void lock(Duration timeout) {

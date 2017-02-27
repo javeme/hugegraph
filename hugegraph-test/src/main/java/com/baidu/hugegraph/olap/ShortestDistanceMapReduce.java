@@ -24,8 +24,7 @@ import org.apache.commons.configuration.Configuration;
 
 import java.util.Iterator;
 
-public class ShortestDistanceMapReduce
-        extends StaticMapReduce<Object, Long, Object, Long, Iterator<KeyValue<Object, Long>>> {
+public class ShortestDistanceMapReduce extends StaticMapReduce<Object, Long, Object, Long, Iterator<KeyValue<Object, Long>>> {
 
     public static final String SHORTEST_DISTANCE_MEMORY_KEY = "hugegraph.shortestDistanceMapReduce.memoryKey";
     public static final String DEFAULT_MEMORY_KEY = "shortestDistance";

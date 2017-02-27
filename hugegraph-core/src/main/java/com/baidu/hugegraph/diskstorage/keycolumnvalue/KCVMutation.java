@@ -28,7 +28,7 @@ import java.util.List;
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
-public class KCVMutation extends Mutation<Entry, StaticBuffer> {
+public class KCVMutation extends Mutation<Entry,StaticBuffer> {
 
     public KCVMutation(List<Entry> additions, List<StaticBuffer> deletions) {
         super(additions, deletions);
@@ -36,11 +36,11 @@ public class KCVMutation extends Mutation<Entry, StaticBuffer> {
 
     @Override
     public void consolidate() {
-        super.consolidate(KCVEntryMutation.ENTRY2COLUMN_FCT, Functions.<StaticBuffer> identity());
+        super.consolidate(KCVEntryMutation.ENTRY2COLUMN_FCT, Functions.<StaticBuffer>identity());
     }
 
     @Override
     public boolean isConsolidated() {
-        return super.isConsolidated(KCVEntryMutation.ENTRY2COLUMN_FCT, Functions.<StaticBuffer> identity());
+        return super.isConsolidated(KCVEntryMutation.ENTRY2COLUMN_FCT, Functions.<StaticBuffer>identity());
     }
 }

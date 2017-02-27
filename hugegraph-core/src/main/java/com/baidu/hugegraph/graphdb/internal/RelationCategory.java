@@ -20,39 +20,34 @@ import com.baidu.hugegraph.core.HugeGraphVertexQuery;
 import com.baidu.hugegraph.graphdb.query.condition.Condition;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- */
+* @author Matthias Broecheler (me@matthiasb.com)
+*/
 public enum RelationCategory implements Condition<HugeGraphRelation> {
 
     EDGE, PROPERTY, RELATION;
 
     public boolean isProper() {
-        switch (this) {
+        switch(this) {
             case EDGE:
             case PROPERTY:
                 return true;
             case RELATION:
                 return false;
-            default:
-                throw new AssertionError("Unrecognized type: " + this);
+            default: throw new AssertionError("Unrecognized type: " + this);
         }
     }
 
     public Iterable<HugeGraphRelation> executeQuery(HugeGraphVertexQuery query) {
         switch (this) {
-            case EDGE:
-                return (Iterable) query.edges();
-            case PROPERTY:
-                return (Iterable) query.properties();
-            case RELATION:
-                return query.relations();
-            default:
-                throw new AssertionError();
+            case EDGE: return (Iterable)query.edges();
+            case PROPERTY: return (Iterable)query.properties();
+            case RELATION: return query.relations();
+            default: throw new AssertionError();
         }
     }
 
     /*
-     * ########### CONDITION DEFINITION #################
+    ########### CONDITION DEFINITION #################
      */
 
     @Override
@@ -77,15 +72,14 @@ public enum RelationCategory implements Condition<HugeGraphRelation> {
 
     @Override
     public boolean evaluate(HugeGraphRelation relation) {
-        switch (this) {
+        switch(this) {
             case EDGE:
                 return relation.isEdge();
             case PROPERTY:
                 return relation.isProperty();
             case RELATION:
                 return true;
-            default:
-                throw new AssertionError("Unrecognized type: " + this);
+            default: throw new AssertionError("Unrecognized type: " + this);
         }
     }
 }

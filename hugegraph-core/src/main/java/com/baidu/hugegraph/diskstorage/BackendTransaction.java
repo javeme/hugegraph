@@ -48,19 +48,21 @@ import com.baidu.hugegraph.diskstorage.util.BufferUtil;
 import com.baidu.hugegraph.graphdb.database.serialize.DataOutput;
 
 /**
- * Bundles all storage/index transactions and provides a proxy for some of their methods for convenience. Also increases
- * robustness of read call by attempting read calls multiple times on failure.
+ * Bundles all storage/index transactions and provides a proxy for some of their
+ * methods for convenience. Also increases robustness of read call by attempting
+ * read calls multiple times on failure.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class BackendTransaction implements LoggableTransaction {
 
-    private static final Logger log = LoggerFactory.getLogger(BackendTransaction.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(BackendTransaction.class);
 
     public static final int MIN_TASKS_TO_PARALLELIZE = 2;
 
-    // Assumes 64 bit key length as specified in IDManager
+    //Assumes 64 bit key length as specified in IDManager
     public static final StaticBuffer EDGESTORE_MIN_KEY = BufferUtil.zeroBuffer(8);
     public static final StaticBuffer EDGESTORE_MAX_KEY = BufferUtil.oneBuffer(8);
 
@@ -81,9 +83,10 @@ public class BackendTransaction implements LoggableTransaction {
     private boolean acquiredLock = false;
     private boolean cacheEnabled = true;
 
-    public BackendTransaction(CacheTransaction storeTx, BaseTransactionConfig txConfig, StoreFeatures features,
-            KCVSCache edgeStore, KCVSCache indexStore, KCVSCache txLogStore, Duration maxReadTime,
-            Map<String, IndexTransaction> indexTx, Executor threadPool) {
+    public BackendTransaction(CacheTransaction storeTx, BaseTransactionConfig txConfig,
+                              StoreFeatures features, KCVSCache edgeStore, KCVSCache indexStore,
+                              KCVSCache txLogStore, Duration maxReadTime,
+                              Map<String, IndexTransaction> indexTx, Executor threadPool) {
         this.storeTx = storeTx;
         this.txConfig = txConfig;
         this.storeFeatures = features;
@@ -104,7 +107,7 @@ public class BackendTransaction implements LoggableTransaction {
     }
 
     public ExternalCachePersistor getTxLogPersistor() {
-        return new ExternalCachePersistor(txLogStore, storeTx);
+        return new ExternalCachePersistor(txLogStore,storeTx);
     }
 
     public BaseTransactionConfig getBaseTransactionConfig() {
@@ -130,13 +133,13 @@ public class BackendTransaction implements LoggableTransaction {
         storeTx.commit();
     }
 
-    public Map<String, Throwable> commitIndexes() {
-        Map<String, Throwable> exceptions = new HashMap<String, Throwable>(indexTx.size());
-        for (Map.Entry<String, IndexTransaction> txentry : indexTx.entrySet()) {
+    public Map<String,Throwable> commitIndexes() {
+        Map<String,Throwable> exceptions = new HashMap<String, Throwable>(indexTx.size());
+        for (Map.Entry<String,IndexTransaction> txentry : indexTx.entrySet()) {
             try {
                 txentry.getValue().commit();
             } catch (Throwable e) {
-                exceptions.put(txentry.getKey(), e);
+                exceptions.put(txentry.getKey(),e);
             }
         }
         return exceptions;
@@ -145,14 +148,12 @@ public class BackendTransaction implements LoggableTransaction {
     @Override
     public void commit() throws BackendException {
         storeTx.commit();
-        for (IndexTransaction itx : indexTx.values())
-            itx.commit();
+        for (IndexTransaction itx : indexTx.values()) itx.commit();
     }
 
     /**
-     * Rolls back all transactions and makes sure that this does not get cut short by exceptions. If exceptions occur,
-     * the storage exception takes priority on re-throw.
-     * 
+     * Rolls back all transactions and makes sure that this does not get cut short
+     * by exceptions. If exceptions occur, the storage exception takes priority on re-throw.
      * @throws BackendException
      */
     @Override
@@ -166,17 +167,16 @@ public class BackendTransaction implements LoggableTransaction {
             }
         }
         storeTx.rollback();
-        if (excep != null) { // throw any encountered index transaction rollback exceptions
-            if (excep instanceof BackendException)
-                throw (BackendException) excep;
-            else
-                throw new PermanentBackendException("Unexpected exception", excep);
+        if (excep!=null) { //throw any encountered index transaction rollback exceptions
+            if (excep instanceof BackendException) throw (BackendException)excep;
+            else throw new PermanentBackendException("Unexpected exception",excep);
         }
     }
 
+
     @Override
     public void logMutations(DataOutput out) {
-        // Write
+        //Write
         storeTx.logMutations(out);
         for (Map.Entry<String, IndexTransaction> itx : indexTx.entrySet()) {
             out.writeObjectNotNull(itx.getKey());
@@ -184,15 +184,15 @@ public class BackendTransaction implements LoggableTransaction {
         }
     }
 
-    /*
-     * ################################################### Convenience Write Methods
+    /* ###################################################
+            Convenience Write Methods
      */
 
     /**
-     * Applies the specified insertion and deletion mutations on the edge store to the provided key. Both, the list of
-     * additions or deletions, may be empty or NULL if there is nothing to be added and/or deleted.
+     * Applies the specified insertion and deletion mutations on the edge store to the provided key.
+     * Both, the list of additions or deletions, may be empty or NULL if there is nothing to be added and/or deleted.
      *
-     * @param key Key
+     * @param key       Key
      * @param additions List of entries (column + value) to be added
      * @param deletions List of columns to be removed
      */
@@ -201,10 +201,10 @@ public class BackendTransaction implements LoggableTransaction {
     }
 
     /**
-     * Applies the specified insertion and deletion mutations on the property index to the provided key. Both, the list
-     * of additions or deletions, may be empty or NULL if there is nothing to be added and/or deleted.
+     * Applies the specified insertion and deletion mutations on the property index to the provided key.
+     * Both, the list of additions or deletions, may be empty or NULL if there is nothing to be added and/or deleted.
      *
-     * @param key Key
+     * @param key       Key
      * @param additions List of entries (column + value) to be added
      * @param deletions List of columns to be removed
      */
@@ -214,17 +214,17 @@ public class BackendTransaction implements LoggableTransaction {
 
     /**
      * Acquires a lock for the key-column pair on the edge store which ensures that nobody else can take a lock on that
-     * respective entry for the duration of this lock (but somebody could potentially still overwrite the key-value
-     * entry without taking a lock). The expectedValue defines the value expected to match the value at the time the
-     * lock is acquired (or null if it is expected that the key-column pair does not exist).
+     * respective entry for the duration of this lock (but somebody could potentially still overwrite
+     * the key-value entry without taking a lock).
+     * The expectedValue defines the value expected to match the value at the time the lock is acquired (or null if it is expected
+     * that the key-column pair does not exist).
      * <p/>
-     * If this method is called multiple times with the same key-column pair in the same transaction, all but the first
-     * invocation are ignored.
+     * If this method is called multiple times with the same key-column pair in the same transaction, all but the first invocation are ignored.
      * <p/>
      * The lock has to be released when the transaction closes (commits or aborts).
      *
-     * @param key Key on which to lock
-     * @param column Column the column on which to lock
+     * @param key           Key on which to lock
+     * @param column        Column the column on which to lock
      */
     public void acquireEdgeLock(StaticBuffer key, StaticBuffer column) throws BackendException {
         acquiredLock = true;
@@ -233,23 +233,22 @@ public class BackendTransaction implements LoggableTransaction {
 
     public void acquireEdgeLock(StaticBuffer key, Entry entry) throws BackendException {
         acquiredLock = true;
-        edgeStore.acquireLock(key, entry.getColumnAs(StaticBuffer.STATIC_FACTORY),
-                entry.getValueAs(StaticBuffer.STATIC_FACTORY), storeTx);
+        edgeStore.acquireLock(key, entry.getColumnAs(StaticBuffer.STATIC_FACTORY), entry.getValueAs(StaticBuffer.STATIC_FACTORY), storeTx);
     }
 
     /**
-     * Acquires a lock for the key-column pair on the property index which ensures that nobody else can take a lock on
-     * that respective entry for the duration of this lock (but somebody could potentially still overwrite the key-value
-     * entry without taking a lock). The expectedValue defines the value expected to match the value at the time the
-     * lock is acquired (or null if it is expected that the key-column pair does not exist).
+     * Acquires a lock for the key-column pair on the property index which ensures that nobody else can take a lock on that
+     * respective entry for the duration of this lock (but somebody could potentially still overwrite
+     * the key-value entry without taking a lock).
+     * The expectedValue defines the value expected to match the value at the time the lock is acquired (or null if it is expected
+     * that the key-column pair does not exist).
      * <p/>
-     * If this method is called multiple times with the same key-column pair in the same transaction, all but the first
-     * invocation are ignored.
+     * If this method is called multiple times with the same key-column pair in the same transaction, all but the first invocation are ignored.
      * <p/>
      * The lock has to be released when the transaction closes (commits or aborts).
      *
-     * @param key Key on which to lock
-     * @param column Column the column on which to lock
+     * @param key           Key on which to lock
+     * @param column        Column the column on which to lock
      */
     public void acquireIndexLock(StaticBuffer key, StaticBuffer column) throws BackendException {
         acquiredLock = true;
@@ -258,19 +257,19 @@ public class BackendTransaction implements LoggableTransaction {
 
     public void acquireIndexLock(StaticBuffer key, Entry entry) throws BackendException {
         acquiredLock = true;
-        indexStore.acquireLock(key, entry.getColumnAs(StaticBuffer.STATIC_FACTORY),
-                entry.getValueAs(StaticBuffer.STATIC_FACTORY), storeTx);
+        indexStore.acquireLock(key, entry.getColumnAs(StaticBuffer.STATIC_FACTORY), entry.getValueAs(StaticBuffer.STATIC_FACTORY), storeTx);
     }
 
-    /*
-     * ################################################### Convenience Read Methods
+    /* ###################################################
+            Convenience Read Methods
      */
 
     public EntryList edgeStoreQuery(final KeySliceQuery query) {
         return executeRead(new Callable<EntryList>() {
             @Override
             public EntryList call() throws Exception {
-                return cacheEnabled ? edgeStore.getSlice(query, storeTx) : edgeStore.getSliceNoCache(query, storeTx);
+                return cacheEnabled?edgeStore.getSlice(query, storeTx):
+                                    edgeStore.getSliceNoCache(query,storeTx);
             }
 
             @Override
@@ -280,13 +279,13 @@ public class BackendTransaction implements LoggableTransaction {
         });
     }
 
-    public Map<StaticBuffer, EntryList> edgeStoreMultiQuery(final List<StaticBuffer> keys, final SliceQuery query) {
+    public Map<StaticBuffer,EntryList> edgeStoreMultiQuery(final List<StaticBuffer> keys, final SliceQuery query) {
         if (storeFeatures.hasMultiQuery()) {
-            return executeRead(new Callable<Map<StaticBuffer, EntryList>>() {
+            return executeRead(new Callable<Map<StaticBuffer,EntryList>>() {
                 @Override
-                public Map<StaticBuffer, EntryList> call() throws Exception {
-                    return cacheEnabled ? edgeStore.getSlice(keys, query, storeTx)
-                            : edgeStore.getSliceNoCache(keys, query, storeTx);
+                public Map<StaticBuffer,EntryList> call() throws Exception {
+                    return cacheEnabled?edgeStore.getSlice(keys, query, storeTx):
+                                        edgeStore.getSliceNoCache(keys, query, storeTx);
                 }
 
                 @Override
@@ -295,18 +294,18 @@ public class BackendTransaction implements LoggableTransaction {
                 }
             });
         } else {
-            final Map<StaticBuffer, EntryList> results = new HashMap<StaticBuffer, EntryList>(keys.size());
+            final Map<StaticBuffer,EntryList> results = new HashMap<StaticBuffer,EntryList>(keys.size());
             if (threadPool == null || keys.size() < MIN_TASKS_TO_PARALLELIZE) {
                 for (StaticBuffer key : keys) {
-                    results.put(key, edgeStoreQuery(new KeySliceQuery(key, query)));
+                    results.put(key,edgeStoreQuery(new KeySliceQuery(key, query)));
                 }
             } else {
                 final CountDownLatch doneSignal = new CountDownLatch(keys.size());
                 final AtomicInteger failureCount = new AtomicInteger(0);
                 EntryList[] resultArray = new EntryList[keys.size()];
                 for (int i = 0; i < keys.size(); i++) {
-                    threadPool.execute(new SliceQueryRunner(new KeySliceQuery(keys.get(i), query), doneSignal,
-                            failureCount, resultArray, i));
+                    threadPool.execute(new SliceQueryRunner(new KeySliceQuery(keys.get(i), query),
+                            doneSignal, failureCount, resultArray, i));
                 }
                 try {
                     doneSignal.await();
@@ -314,12 +313,11 @@ public class BackendTransaction implements LoggableTransaction {
                     throw new HugeGraphException("Interrupted while waiting for multi-query to complete", e);
                 }
                 if (failureCount.get() > 0) {
-                    throw new HugeGraphException("Could not successfully complete multi-query. " + failureCount.get()
-                            + " individual queries failed.");
+                    throw new HugeGraphException("Could not successfully complete multi-query. " + failureCount.get() + " individual queries failed.");
                 }
-                for (int i = 0; i < keys.size(); i++) {
-                    assert resultArray[i] != null;
-                    results.put(keys.get(i), resultArray[i]);
+                for (int i=0;i<keys.size();i++) {
+                    assert resultArray[i]!=null;
+                    results.put(keys.get(i),resultArray[i]);
                 }
             }
             return results;
@@ -335,7 +333,7 @@ public class BackendTransaction implements LoggableTransaction {
         final int resultPosition;
 
         private SliceQueryRunner(KeySliceQuery kq, CountDownLatch doneSignal, AtomicInteger failureCount,
-                Object[] resultArray, int resultPosition) {
+                                 Object[] resultArray, int resultPosition) {
             this.kq = kq;
             this.doneSignal = doneSignal;
             this.failureCount = failureCount;
@@ -360,14 +358,13 @@ public class BackendTransaction implements LoggableTransaction {
 
     public KeyIterator edgeStoreKeys(final SliceQuery sliceQuery) {
         if (!storeFeatures.hasScan())
-            throw new UnsupportedOperationException(
-                    "The configured storage backend does not support global graph operations - use Faunus instead");
+            throw new UnsupportedOperationException("The configured storage backend does not support global graph operations - use Faunus instead");
 
         return executeRead(new Callable<KeyIterator>() {
             @Override
             public KeyIterator call() throws Exception {
-                return (storeFeatures.isKeyOrdered()) ? edgeStore
-                        .getKeys(new KeyRangeQuery(EDGESTORE_MIN_KEY, EDGESTORE_MAX_KEY, sliceQuery), storeTx)
+                return (storeFeatures.isKeyOrdered())
+                        ? edgeStore.getKeys(new KeyRangeQuery(EDGESTORE_MIN_KEY, EDGESTORE_MAX_KEY, sliceQuery), storeTx)
                         : edgeStore.getKeys(sliceQuery, storeTx);
             }
 
@@ -379,8 +376,7 @@ public class BackendTransaction implements LoggableTransaction {
     }
 
     public KeyIterator edgeStoreKeys(final KeyRangeQuery range) {
-        Preconditions.checkArgument(storeFeatures.hasOrderedScan(),
-                "The configured storage backend does not support ordered scans");
+        Preconditions.checkArgument(storeFeatures.hasOrderedScan(), "The configured storage backend does not support ordered scans");
 
         return executeRead(new Callable<KeyIterator>() {
             @Override
@@ -399,7 +395,8 @@ public class BackendTransaction implements LoggableTransaction {
         return executeRead(new Callable<EntryList>() {
             @Override
             public EntryList call() throws Exception {
-                return cacheEnabled ? indexStore.getSlice(query, storeTx) : indexStore.getSliceNoCache(query, storeTx);
+                return cacheEnabled?indexStore.getSlice(query, storeTx):
+                                    indexStore.getSliceNoCache(query, storeTx);
             }
 
             @Override
@@ -409,6 +406,7 @@ public class BackendTransaction implements LoggableTransaction {
         });
 
     }
+
 
     public List<String> indexQuery(final String index, final IndexQuery query) {
         final IndexTransaction indexTx = getIndexTransaction(index);
@@ -440,14 +438,14 @@ public class BackendTransaction implements LoggableTransaction {
         });
     }
 
+
     private final <V> V executeRead(Callable<V> exe) throws HugeGraphException {
         try {
             return BackendOperation.execute(exe, maxReadTime);
         } catch (HugeGraphException e) {
             // support traversal interruption
             // TODO: Refactor to allow direct propagation of underlying interrupt exception
-            if (Thread.interrupted())
-                throw new TraversalInterruptedException();
+            if (Thread.interrupted()) throw new TraversalInterruptedException();
             throw e;
         }
     }

@@ -30,6 +30,7 @@ public class BooleanSerializer implements OrderPreservingSerializer<Boolean> {
         out.putByte(encode(attribute.booleanValue()));
     }
 
+
     @Override
     public Boolean readByteOrder(ScanBuffer buffer) {
         return read(buffer);
@@ -37,31 +38,27 @@ public class BooleanSerializer implements OrderPreservingSerializer<Boolean> {
 
     @Override
     public void writeByteOrder(WriteBuffer buffer, Boolean attribute) {
-        write(buffer, attribute);
+        write(buffer,attribute);
     }
 
     @Override
     public Boolean convert(Object value) {
         if (value instanceof Number) {
-            return decode(((Number) value).byteValue());
+            return decode(((Number)value).byteValue());
         } else if (value instanceof String) {
-            return Boolean.parseBoolean((String) value);
-        } else
-            return null;
+            return Boolean.parseBoolean((String)value);
+        } else return null;
     }
 
     public static boolean decode(byte b) {
         switch (b) {
-            case 0:
-                return false;
-            case 1:
-                return true;
-            default:
-                throw new IllegalArgumentException("Invalid boolean value: " + b);
+            case 0: return false;
+            case 1: return true;
+            default: throw new IllegalArgumentException("Invalid boolean value: " + b);
         }
     }
 
     public static byte encode(boolean b) {
-        return (byte) (b ? 1 : 0);
+        return (byte)(b?1:0);
     }
 }

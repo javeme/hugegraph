@@ -38,7 +38,7 @@ public class StandardEdge extends AbstractEdge implements StandardRelation, Reas
         this.lifecycle = lifecycle;
     }
 
-    // ############## SAME CODE AS StandardProperty #############################
+    //############## SAME CODE AS StandardProperty #############################
 
     private static final Map<PropertyKey, Object> EMPTY_PROPERTIES = ImmutableMap.of();
 
@@ -65,8 +65,7 @@ public class StandardEdge extends AbstractEdge implements StandardRelation, Reas
 
     @Override
     public void setPropertyDirect(PropertyKey key, Object value) {
-        Preconditions.checkArgument(!(key instanceof ImplicitKey),
-                "Cannot use implicit type [%s] when setting property", key.name());
+        Preconditions.checkArgument(!(key instanceof ImplicitKey), "Cannot use implicit type [%s] when setting property", key.name());
         if (properties == EMPTY_PROPERTIES) {
             if (tx().getConfiguration().isSingleThreaded()) {
                 properties = new HashMap<PropertyKey, Object>(5);
@@ -90,8 +89,7 @@ public class StandardEdge extends AbstractEdge implements StandardRelation, Reas
     public <O> O removePropertyDirect(PropertyKey key) {
         if (!properties.isEmpty())
             return (O) properties.remove(key);
-        else
-            return null;
+        else return null;
     }
 
     @Override
@@ -104,7 +102,7 @@ public class StandardEdge extends AbstractEdge implements StandardRelation, Reas
         if (!ElementLifeCycle.isRemoved(lifecycle)) {
             tx().removeRelation(this);
             lifecycle = ElementLifeCycle.update(lifecycle, ElementLifeCycle.Event.REMOVED);
-        } // else throw InvalidElementException.removedException(this);
+        } //else throw InvalidElementException.removedException(this);
     }
 
 }

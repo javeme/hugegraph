@@ -34,53 +34,44 @@ public class ElementHelper {
     public static Iterable<Object> getValues(HugeGraphElement element, PropertyKey key) {
         if (element instanceof HugeGraphRelation) {
             Object value = element.valueOrNull(key);
-            if (value == null)
-                return Collections.EMPTY_LIST;
-            else
-                return ImmutableList.of(value);
+            if (value==null) return Collections.EMPTY_LIST;
+            else return ImmutableList.of(value);
         } else {
             assert element instanceof HugeGraphVertex;
-            return Iterables.transform((((HugeGraphVertex) element).query()).keys(key.name()).properties(),
-                    new Function<HugeGraphVertexProperty, Object>() {
-                        @Nullable
-                        @Override
-                        public Object apply(@Nullable HugeGraphVertexProperty hugegraphProperty) {
-                            return hugegraphProperty.value();
-                        }
-                    });
+            return Iterables.transform((((HugeGraphVertex) element).query()).keys(key.name()).properties(), new Function<HugeGraphVertexProperty, Object>() {
+                @Nullable
+                @Override
+                public Object apply(@Nullable HugeGraphVertexProperty hugegraphProperty) {
+                    return hugegraphProperty.value();
+                }
+            });
         }
     }
 
     public static long getCompareId(Element element) {
         Object id = element.id();
-        if (id instanceof Long)
-            return (Long) id;
-        else if (id instanceof RelationIdentifier)
-            return ((RelationIdentifier) id).getRelationId();
-        else
-            throw new IllegalArgumentException("Element identifier has unrecognized type: " + id);
+        if (id instanceof Long) return (Long)id;
+        else if (id instanceof RelationIdentifier) return ((RelationIdentifier)id).getRelationId();
+        else throw new IllegalArgumentException("Element identifier has unrecognized type: " + id);
     }
 
-    public static void attachProperties(HugeGraphRelation element, Object...keyValues) {
-        if (keyValues == null || keyValues.length == 0)
-            return; // Do nothing
+    public static void attachProperties(HugeGraphRelation element, Object... keyValues) {
+        if (keyValues==null || keyValues.length==0) return; //Do nothing
         org.apache.tinkerpop.gremlin.structure.util.ElementHelper.legalPropertyKeyValueArray(keyValues);
-        if (org.apache.tinkerpop.gremlin.structure.util.ElementHelper.getIdValue(keyValues).isPresent())
-            throw Edge.Exceptions.userSuppliedIdsNotSupported();
-        if (org.apache.tinkerpop.gremlin.structure.util.ElementHelper.getLabelValue(keyValues).isPresent())
-            throw new IllegalArgumentException("Cannot provide label as argument");
-        org.apache.tinkerpop.gremlin.structure.util.ElementHelper.attachProperties(element, keyValues);
+        if (org.apache.tinkerpop.gremlin.structure.util.ElementHelper.getIdValue(keyValues).isPresent()) throw Edge.Exceptions.userSuppliedIdsNotSupported();
+        if (org.apache.tinkerpop.gremlin.structure.util.ElementHelper.getLabelValue(keyValues).isPresent()) throw new IllegalArgumentException("Cannot provide label as argument");
+        org.apache.tinkerpop.gremlin.structure.util.ElementHelper.attachProperties(element,keyValues);
     }
 
     /**
-     * This is essentially an adjusted copy&paste from TinkerPop's ElementHelper class. The reason for copying it is so
-     * that we can determine the cardinality of a property key based on HugeGraph's schema which is tied to this
-     * particular transaction and not the graph.
+     * This is essentially an adjusted copy&paste from TinkerPop's ElementHelper class.
+     * The reason for copying it is so that we can determine the cardinality of a property key based on
+     * HugeGraph's schema which is tied to this particular transaction and not the graph.
      *
      * @param vertex
      * @param propertyKeyValues
      */
-    public static void attachProperties(final HugeGraphVertex vertex, final Object...propertyKeyValues) {
+    public static void attachProperties(final HugeGraphVertex vertex, final Object... propertyKeyValues) {
         if (null == vertex)
             throw Graph.Exceptions.argumentCanNotBeNull("vertex");
 
@@ -92,7 +83,7 @@ public class ElementHelper {
 
     public static Set<String> getPropertyKeys(HugeGraphVertex v) {
         final Set<String> s = new HashSet<>();
-        v.query().properties().forEach(p -> s.add(p.propertyKey().name()));
+        v.query().properties().forEach( p -> s.add(p.propertyKey().name()));
         return s;
     }
 

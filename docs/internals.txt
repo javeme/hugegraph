@@ -1,5 +1,5 @@
 [[internals]]
-JanusGraph Internals
+hugegraph Internals
 ====================
 
 include::datamodel.txt[]

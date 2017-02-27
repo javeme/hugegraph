@@ -33,8 +33,7 @@ public class DoubleSerializer implements OrderPreservingSerializer<Double> {
             return Double.valueOf(((Number) value).doubleValue());
         } else if (value instanceof String) {
             return Double.valueOf(Double.parseDouble((String) value));
-        } else
-            return null;
+        } else return null;
     }
 
     @Override

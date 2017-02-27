@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,16 +50,16 @@ public class HugeGraphHadoopSetupImpl extends HugeGraphHadoopSetupCommon {
         scanConf = ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, config);
         BasicConfiguration bc = scanConf.getHugeGraphConf();
         graph = (StandardHugeGraph) HugeGraphFactory.open(bc);
-        tx = (StandardHugeGraphTx) graph.buildTransaction().readOnly().vertexCacheSize(200).start();
+        tx = (StandardHugeGraphTx)graph.buildTransaction().readOnly().vertexCacheSize(200).start();
     }
 
     @Override
     public TypeInspector getTypeInspector() {
-        // Pre-load schema
+        //Pre-load schema
         for (HugeGraphSchemaCategory sc : HugeGraphSchemaCategory.values()) {
             for (HugeGraphVertex k : QueryUtil.getVertices(tx, BaseKey.SchemaCategory, sc)) {
                 assert k instanceof HugeGraphSchemaVertex;
-                HugeGraphSchemaVertex s = (HugeGraphSchemaVertex) k;
+                HugeGraphSchemaVertex s = (HugeGraphSchemaVertex)k;
                 if (sc.hasName()) {
                     String name = s.name();
                     Preconditions.checkNotNull(name);
@@ -93,9 +93,11 @@ public class HugeGraphHadoopSetupImpl extends HugeGraphHadoopSetupCommon {
 
             @Override
             public boolean isTypeSystemType(long typeid) {
-                return typeid == BaseKey.SchemaCategory.longId() || typeid == BaseKey.SchemaDefinitionProperty.longId()
-                        || typeid == BaseKey.SchemaDefinitionDesc.longId() || typeid == BaseKey.SchemaName.longId()
-                        || typeid == BaseLabel.SchemaDefinitionEdge.longId();
+                return typeid == BaseKey.SchemaCategory.longId() ||
+                        typeid == BaseKey.SchemaDefinitionProperty.longId() ||
+                        typeid == BaseKey.SchemaDefinitionDesc.longId() ||
+                        typeid == BaseKey.SchemaName.longId() ||
+                        typeid == BaseLabel.SchemaDefinitionEdge.longId();
             }
         };
     }

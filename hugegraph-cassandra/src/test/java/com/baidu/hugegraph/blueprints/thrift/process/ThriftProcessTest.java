@@ -27,10 +27,10 @@ import org.junit.runner.RunWith;
 @GraphProviderClass(provider = ThriftGraphProvider.class, graph = HugeGraph.class)
 public class ThriftProcessTest {
 
-    // TP3 ignores @BeforeClass -- the following method is never executed
-    // @BeforeClass
-    // public static void beforeSuite() {
-    // CassandraStorageSetup.startCleanEmbedded();
-    // }
+//    TP3 ignores @BeforeClass -- the following method is never executed
+//    @BeforeClass
+//    public static void beforeSuite() {
+//        CassandraStorageSetup.startCleanEmbedded();
+//    }
 
 }

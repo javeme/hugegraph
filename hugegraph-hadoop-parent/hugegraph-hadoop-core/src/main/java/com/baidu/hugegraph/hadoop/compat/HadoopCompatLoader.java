@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,14 +23,13 @@ import org.slf4j.LoggerFactory;
 
 public class HadoopCompatLoader {
 
-    private static final Logger log = LoggerFactory.getLogger(HadoopCompatLoader.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HadoopCompatLoader.class);
 
     public static final HadoopCompat DEFAULT_COMPAT = getCompat();
 
-    // TODO add a string argument that allows specifying a class instead of relying heuristics around
-    // VersionInfo.getVersion()
-    // TODO add threadsafe caching that is aware of the string argument and instantiates a compat for each argument at
-    // most once (assuming the instantiation succeeds)
+    // TODO add a string argument that allows specifying a class instead of relying heuristics around VersionInfo.getVersion()
+    // TODO add threadsafe caching that is aware of the string argument and instantiates a compat for each argument at most once (assuming the instantiation succeeds)
     public static HadoopCompat getCompat() {
         String ver = VersionInfo.getVersion();
 
@@ -49,7 +48,7 @@ public class HadoopCompatLoader {
         try {
             Constructor<?> ctor = Class.forName(className).getConstructor();
             log.debug("Invoking constructor {}", ctor);
-            return (HadoopCompat) ctor.newInstance();
+            return (HadoopCompat)ctor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (SecurityException e) {

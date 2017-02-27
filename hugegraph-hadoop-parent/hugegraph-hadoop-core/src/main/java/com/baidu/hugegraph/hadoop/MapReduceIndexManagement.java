@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,25 +70,28 @@ public class MapReduceIndexManagement {
     private static final EnumSet<SchemaAction> SUPPORTED_ACTIONS =
             EnumSet.of(SchemaAction.REINDEX, SchemaAction.REMOVE_INDEX);
 
-    private static final String SUPPORTED_ACTIONS_STRING = Joiner.on(", ").join(SUPPORTED_ACTIONS);
+    private static final String SUPPORTED_ACTIONS_STRING =
+            Joiner.on(", ").join(SUPPORTED_ACTIONS);
 
-    private static final Set<Class<? extends KeyColumnValueStoreManager>> CASSANDRA_STORE_MANAGER_CLASSES = ImmutableSet
-            .of(CassandraEmbeddedStoreManager.class, AstyanaxStoreManager.class, CassandraThriftStoreManager.class);
+    private static final Set<Class<? extends KeyColumnValueStoreManager>> CASSANDRA_STORE_MANAGER_CLASSES =
+            ImmutableSet.of(CassandraEmbeddedStoreManager.class,
+                    AstyanaxStoreManager.class, CassandraThriftStoreManager.class);
 
     private static final Set<Class<? extends KeyColumnValueStoreManager>> HBASE_STORE_MANAGER_CLASSES =
             ImmutableSet.of(HBaseStoreManager.class);
 
     public MapReduceIndexManagement(HugeGraph g) {
-        this.graph = (StandardHugeGraph) g;
+        this.graph = (StandardHugeGraph)g;
     }
 
     /**
-     * Updates the provided index according to the given {@link SchemaAction}. Only {@link SchemaAction#REINDEX} and
-     * {@link SchemaAction#REMOVE_INDEX} are supported.
+     * Updates the provided index according to the given {@link SchemaAction}.
+     * Only {@link SchemaAction#REINDEX} and {@link SchemaAction#REMOVE_INDEX} are supported.
      *
      * @param index the index to process
      * @param updateAction either {@code REINDEX} or {@code REMOVE_INDEX}
-     * @return a future that returns immediately; this method blocks until the Hadoop MapReduce job completes
+     * @return a future that returns immediately;
+     *         this method blocks until the Hadoop MapReduce job completes
      */
     // TODO make this future actually async and update javadoc @return accordingly
     public HugeGraphManagement.IndexJobFuture updateIndex(Index index, SchemaAction updateAction)
@@ -97,13 +100,13 @@ public class MapReduceIndexManagement {
         Preconditions.checkNotNull(index, "Index parameter must not be null", index);
         Preconditions.checkNotNull(updateAction, "%s parameter must not be null", SchemaAction.class.getSimpleName());
         Preconditions.checkArgument(SUPPORTED_ACTIONS.contains(updateAction),
-                "Only these %s parameters are supported: %s (was given %s)", SchemaAction.class.getSimpleName(),
-                SUPPORTED_ACTIONS_STRING, updateAction);
+                "Only these %s parameters are supported: %s (was given %s)",
+                SchemaAction.class.getSimpleName(), SUPPORTED_ACTIONS_STRING, updateAction);
         Preconditions.checkArgument(
-                RelationTypeIndex.class.isAssignableFrom(index.getClass())
-                        || HugeGraphIndex.class.isAssignableFrom(index.getClass()),
-                "Index %s has class %s: must be a %s or %s (or subtype)", index.getClass(),
-                RelationTypeIndex.class.getSimpleName(), HugeGraphIndex.class.getSimpleName());
+                RelationTypeIndex.class.isAssignableFrom(index.getClass()) ||
+                        HugeGraphIndex.class.isAssignableFrom(index.getClass()),
+                "Index %s has class %s: must be a %s or %s (or subtype)",
+                index.getClass(), RelationTypeIndex.class.getSimpleName(), HugeGraphIndex.class.getSimpleName());
 
         org.apache.hadoop.conf.Configuration hadoopConf = new org.apache.hadoop.conf.Configuration();
         ModifiableHadoopConfiguration hugegraphmrConf =
@@ -130,10 +133,9 @@ public class MapReduceIndexManagement {
         if (RelationTypeIndex.class.isAssignableFrom(index.getClass())) {
             readCF = Backend.EDGESTORE_NAME;
         } else {
-            HugeGraphIndex gindex = (HugeGraphIndex) index;
+            HugeGraphIndex gindex = (HugeGraphIndex)index;
             if (gindex.isMixedIndex() && !updateAction.equals(SchemaAction.REINDEX))
-                throw new UnsupportedOperationException(
-                        "External mixed indexes must be removed in the indexing system directly.");
+                throw new UnsupportedOperationException("External mixed indexes must be removed in the indexing system directly.");
 
             Preconditions.checkState(HugeGraphIndex.class.isAssignableFrom(index.getClass()));
             if (updateAction.equals(SchemaAction.REMOVE_INDEX))
@@ -145,12 +147,13 @@ public class MapReduceIndexManagement {
 
         // The MapReduce InputFormat class based on the open graph's store manager
         final Class<? extends InputFormat> inputFormat;
-        final Class<? extends KeyColumnValueStoreManager> storeManagerClass = graph.getBackend().getStoreManagerClass();
+        final Class<? extends KeyColumnValueStoreManager> storeManagerClass =
+                graph.getBackend().getStoreManagerClass();
         if (CASSANDRA_STORE_MANAGER_CLASSES.contains(storeManagerClass)) {
             inputFormat = CassandraBinaryInputFormat.class;
             // Set the partitioner
             IPartitioner part =
-                    ((AbstractCassandraStoreManager) graph.getBackend().getStoreManager()).getCassandraPartitioner();
+                    ((AbstractCassandraStoreManager)graph.getBackend().getStoreManager()).getCassandraPartitioner();
             hadoopConf.set("cassandra.input.partitioner.class", part.getClass().getName());
         } else if (HBASE_STORE_MANAGER_CLASSES.contains(storeManagerClass)) {
             inputFormat = HBaseBinaryInputFormat.class;
@@ -160,8 +163,10 @@ public class MapReduceIndexManagement {
 
         // The index name and relation type name (if the latter is applicable)
         final String indexName = index.name();
-        final String relationTypeName = RelationTypeIndex.class.isAssignableFrom(index.getClass())
-                ? ((RelationTypeIndex) index).getType().name() : "";
+        final String relationTypeName =
+                RelationTypeIndex.class.isAssignableFrom(index.getClass()) ?
+                ((RelationTypeIndex)index).getType().name() :
+                "";
         Preconditions.checkNotNull(indexName);
 
         // Set the class of the IndexUpdateJob
@@ -170,7 +175,7 @@ public class MapReduceIndexManagement {
         copyIndexJobKeys(hadoopConf, indexName, relationTypeName);
         hugegraphmrConf.set(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_ROOT,
                 GraphDatabaseConfiguration.class.getName() + "#JOB_NS");
-        // Copy the StandardHugeGraph configuration under HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS
+        // Copy the Standardhugegraph configuration under hugegraphHadoopConfiguration.GRAPH_CONFIG_KEYS
         org.apache.commons.configuration.Configuration localbc = graph.getConfiguration().getLocalConfiguration();
         localbc.clearProperty(Graph.GRAPH);
         copyInputKeys(hadoopConf, localbc);
@@ -184,8 +189,7 @@ public class MapReduceIndexManagement {
         }
     }
 
-    private static void copyInputKeys(org.apache.hadoop.conf.Configuration hadoopConf,
-            org.apache.commons.configuration.Configuration source) {
+    private static void copyInputKeys(org.apache.hadoop.conf.Configuration hadoopConf, org.apache.commons.configuration.Configuration source) {
         // Copy IndexUpdateJob settings into the hadoop-backed cfg
         Iterator<String> keyIter = source.getKeys();
         while (keyIter.hasNext()) {
@@ -209,21 +213,19 @@ public class MapReduceIndexManagement {
         }
     }
 
-    private static void copyIndexJobKeys(org.apache.hadoop.conf.Configuration hadoopConf, String indexName,
-            String relationType) {
-        hadoopConf.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "."
-                + ConfigElement.getPath(IndexUpdateJob.INDEX_NAME), indexName);
+    private static void copyIndexJobKeys(org.apache.hadoop.conf.Configuration hadoopConf, String indexName, String relationType) {
+        hadoopConf.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "." +
+                        ConfigElement.getPath(IndexUpdateJob.INDEX_NAME), indexName);
 
-        hadoopConf.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "."
-                + ConfigElement.getPath(IndexUpdateJob.INDEX_RELATION_TYPE), relationType);
+        hadoopConf.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "." +
+                ConfigElement.getPath(IndexUpdateJob.INDEX_RELATION_TYPE), relationType);
 
-        hadoopConf.set(
-                ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "."
-                        + ConfigElement.getPath(GraphDatabaseConfiguration.JOB_START_TIME),
+        hadoopConf.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.SCAN_JOB_CONFIG_KEYS, true) + "." +
+                ConfigElement.getPath(GraphDatabaseConfiguration.JOB_START_TIME),
                 String.valueOf(System.currentTimeMillis()));
     }
 
-    private static class CompletedJobFuture implements HugeGraphManagement.IndexJobFuture {
+    private static class CompletedJobFuture implements HugeGraphManagement.IndexJobFuture  {
 
         private final ScanMetrics completedJobMetrics;
 
@@ -257,8 +259,7 @@ public class MapReduceIndexManagement {
         }
 
         @Override
-        public ScanMetrics get(long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
+        public ScanMetrics get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             return completedJobMetrics;
         }
     }
@@ -297,8 +298,7 @@ public class MapReduceIndexManagement {
         }
 
         @Override
-        public ScanMetrics get(long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
+        public ScanMetrics get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             throw new ExecutionException(cause);
         }
     }

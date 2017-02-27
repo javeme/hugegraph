@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,10 +38,11 @@ import java.util.Properties;
 
 public class MapReduceIndexJobs {
 
-    private static final Logger log = LoggerFactory.getLogger(MapReduceIndexJobs.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(MapReduceIndexJobs.class);
 
-    public static ScanMetrics cassandraRepair(String hugegraphPropertiesPath, String indexName, String relationType,
-            String partitionerName) throws InterruptedException, IOException, ClassNotFoundException {
+    public static ScanMetrics cassandraRepair(String hugegraphPropertiesPath, String indexName, String relationType, String partitionerName)
+            throws InterruptedException, IOException, ClassNotFoundException {
         Properties p = new Properties();
         FileInputStream fis = null;
         try {
@@ -54,12 +55,13 @@ public class MapReduceIndexJobs {
     }
 
     public static ScanMetrics cassandraRepair(Properties hugegraphProperties, String indexName, String relationType,
-            String partitionerName) throws InterruptedException, IOException, ClassNotFoundException {
+                                              String partitionerName)
+            throws InterruptedException, IOException, ClassNotFoundException {
         return cassandraRepair(hugegraphProperties, indexName, relationType, partitionerName, new Configuration());
     }
 
     public static ScanMetrics cassandraRepair(Properties hugegraphProperties, String indexName, String relationType,
-            String partitionerName, Configuration hadoopBaseConf)
+                                              String partitionerName, Configuration hadoopBaseConf)
             throws InterruptedException, IOException, ClassNotFoundException {
         IndexRepairJob job = new IndexRepairJob();
         CassandraHadoopScanRunner cr = new CassandraHadoopScanRunner(job);
@@ -72,8 +74,9 @@ public class MapReduceIndexJobs {
         return cr.run();
     }
 
-    public static ScanMetrics cassandraRemove(String hugegraphPropertiesPath, String indexName, String relationType,
-            String partitionerName) throws InterruptedException, IOException, ClassNotFoundException {
+
+    public static ScanMetrics cassandraRemove(String hugegraphPropertiesPath, String indexName, String relationType, String partitionerName)
+            throws InterruptedException, IOException, ClassNotFoundException {
         Properties p = new Properties();
         FileInputStream fis = null;
         try {
@@ -86,12 +89,13 @@ public class MapReduceIndexJobs {
     }
 
     public static ScanMetrics cassandraRemove(Properties hugegraphProperties, String indexName, String relationType,
-            String partitionerName) throws InterruptedException, IOException, ClassNotFoundException {
+                                              String partitionerName)
+            throws InterruptedException, IOException, ClassNotFoundException {
         return cassandraRemove(hugegraphProperties, indexName, relationType, partitionerName, new Configuration());
     }
 
     public static ScanMetrics cassandraRemove(Properties hugegraphProperties, String indexName, String relationType,
-            String partitionerName, Configuration hadoopBaseConf)
+                                              String partitionerName, Configuration hadoopBaseConf)
             throws InterruptedException, IOException, ClassNotFoundException {
         IndexRemoveJob job = new IndexRemoveJob();
         CassandraHadoopScanRunner cr = new CassandraHadoopScanRunner(job);
@@ -123,7 +127,8 @@ public class MapReduceIndexJobs {
     }
 
     public static ScanMetrics hbaseRepair(Properties hugegraphProperties, String indexName, String relationType,
-            Configuration hadoopBaseConf) throws InterruptedException, IOException, ClassNotFoundException {
+                                          Configuration hadoopBaseConf)
+            throws InterruptedException, IOException, ClassNotFoundException {
         IndexRepairJob job = new IndexRepairJob();
         HBaseHadoopScanRunner cr = new HBaseHadoopScanRunner(job);
         ModifiableConfiguration mc = getIndexJobConf(indexName, relationType);
@@ -153,7 +158,8 @@ public class MapReduceIndexJobs {
     }
 
     public static ScanMetrics hbaseRemove(Properties hugegraphProperties, String indexName, String relationType,
-            Configuration hadoopBaseConf) throws InterruptedException, IOException, ClassNotFoundException {
+                                          Configuration hadoopBaseConf)
+            throws InterruptedException, IOException, ClassNotFoundException {
         IndexRemoveJob job = new IndexRemoveJob();
         HBaseHadoopScanRunner cr = new HBaseHadoopScanRunner(job);
         ModifiableConfiguration mc = getIndexJobConf(indexName, relationType);

@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,10 +57,10 @@ public class HBaseBinaryInputFormat extends AbstractBinaryInputFormat {
     }
 
     @Override
-    public RecordReader<StaticBuffer, Iterable<Entry>> createRecordReader(final InputSplit inputSplit,
-            final TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
+    public RecordReader<StaticBuffer, Iterable<Entry>> createRecordReader(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
         tableReader = tableInputFormat.createRecordReader(inputSplit, taskAttemptContext);
-        hugegraphRecordReader = new HBaseBinaryRecordReader(tableReader, inputCFBytes);
+        hugegraphRecordReader =
+                new HBaseBinaryRecordReader(tableReader, inputCFBytes);
         return hugegraphRecordReader;
     }
 
@@ -68,15 +68,13 @@ public class HBaseBinaryInputFormat extends AbstractBinaryInputFormat {
     public void setConf(final Configuration config) {
         super.setConf(config);
 
-        // config.set(TableInputFormat.SCAN_COLUMN_FAMILY, Backend.EDGESTORE_NAME);
+        //config.set(TableInputFormat.SCAN_COLUMN_FAMILY, Backend.EDGESTORE_NAME);
         config.set(TableInputFormat.INPUT_TABLE, hugegraphConf.get(HBaseStoreManager.HBASE_TABLE));
-        // config.set(HConstants.ZOOKEEPER_QUORUM,
-        // config.get(JANUSGRAPH_HADOOP_GRAPH_INPUT_JANUSGRAPH_STORAGE_HOSTNAME));
+        //config.set(HConstants.ZOOKEEPER_QUORUM, config.get(hugegraph_HADOOP_GRAPH_INPUT_hugegraph_STORAGE_HOSTNAME));
         config.set(HConstants.ZOOKEEPER_QUORUM, hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_HOSTS)[0]);
-        // if (basicConf.get(JANUSGRAPH_HADOOP_GRAPH_INPUT_JANUSGRAPH_STORAGE_PORT, null) != null)
+//        if (basicConf.get(hugegraph_HADOOP_GRAPH_INPUT_hugegraph_STORAGE_PORT, null) != null)
         if (hugegraphConf.has(GraphDatabaseConfiguration.STORAGE_PORT))
-            config.set(HConstants.ZOOKEEPER_CLIENT_PORT,
-                    String.valueOf(hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_PORT)));
+            config.set(HConstants.ZOOKEEPER_CLIENT_PORT, String.valueOf(hugegraphConf.get(GraphDatabaseConfiguration.STORAGE_PORT)));
         config.set("autotype", "none");
         log.debug("hbase.security.authentication={}", config.get("hbase.security.authentication"));
         Scan scanner = new Scan();
@@ -92,9 +90,8 @@ public class HBaseBinaryInputFormat extends AbstractBinaryInputFormat {
         scanner.addFamily(cfName.getBytes());
         inputCFBytes = Bytes.toBytes(cfName);
 
-        // scanner.setFilter(getColumnFilter(hugegraphSetup.inputSlice(this.vertexQuery))); // TODO
-        // TODO (minor): should we set other options in
-        // http://hbase.apache.org/apidocs/org/apache/hadoop/hbase/client/Scan.html for optimization?
+        //scanner.setFilter(getColumnFilter(hugegraphSetup.inputSlice(this.vertexQuery))); // TODO
+        //TODO (minor): should we set other options in http://hbase.apache.org/apidocs/org/apache/hadoop/hbase/client/Scan.html for optimization?
         Method converter;
         try {
             converter = TableMapReduceUtil.class.getDeclaredMethod("convertScanToString", Scan.class);
@@ -117,7 +114,7 @@ public class HBaseBinaryInputFormat extends AbstractBinaryInputFormat {
 
     private Filter getColumnFilter(SliceQuery query) {
         return null;
-        // TODO: return HBaseKeyColumnValueStore.getFilter(hugegraphSetup.inputSlice(inputFilter));
+        //TODO: return HBaseKeyColumnValueStore.getFilter(hugegraphSetup.inputSlice(inputFilter));
     }
 
     @Override

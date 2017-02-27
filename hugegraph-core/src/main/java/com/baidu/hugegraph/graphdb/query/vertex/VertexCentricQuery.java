@@ -30,8 +30,8 @@ import java.util.List;
 
 /**
  * A vertex-centric query which implements {@link ElementQuery} so that it can be executed by
- * {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}. Most of the query definition is in the extended
- * {@link BaseVertexCentricQuery} - this class only adds the base vertex to the mix.
+ * {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}. Most of the query definition
+ * is in the extended {@link BaseVertexCentricQuery} - this class only adds the base vertex to the mix.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -39,8 +39,11 @@ public class VertexCentricQuery extends BaseVertexCentricQuery implements Elemen
 
     private final InternalVertex vertex;
 
-    public VertexCentricQuery(InternalVertex vertex, Condition<HugeGraphRelation> condition, Direction direction,
-            List<BackendQueryHolder<SliceQuery>> queries, OrderList orders, int limit) {
+    public VertexCentricQuery(InternalVertex vertex, Condition<HugeGraphRelation> condition,
+                              Direction direction,
+                              List<BackendQueryHolder<SliceQuery>> queries,
+                              OrderList orders,
+                              int limit) {
         super(condition, direction, queries, orders, limit);
         Preconditions.checkNotNull(vertex);
         this.vertex = vertex;
@@ -54,7 +57,6 @@ public class VertexCentricQuery extends BaseVertexCentricQuery implements Elemen
 
     /**
      * Constructs an empty query
-     * 
      * @param vertex
      */
     protected VertexCentricQuery(InternalVertex vertex) {
@@ -78,17 +80,17 @@ public class VertexCentricQuery extends BaseVertexCentricQuery implements Elemen
 
     @Override
     public Comparator getSortOrder() {
-        return new RelationComparator(vertex, getOrders());
+        return new RelationComparator(vertex,getOrders());
     }
 
     @Override
     public boolean hasDuplicateResults() {
-        return false; // We wanna count self-loops twice
+        return false; //We wanna count self-loops twice
     }
 
     @Override
     public String toString() {
-        return vertex + super.toString();
+        return vertex+super.toString();
     }
 
 }

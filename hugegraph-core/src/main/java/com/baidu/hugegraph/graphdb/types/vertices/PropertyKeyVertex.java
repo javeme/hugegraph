@@ -28,7 +28,7 @@ public class PropertyKeyVertex extends RelationTypeVertex implements PropertyKey
 
     @Override
     public Class<?> dataType() {
-        return getDefinition().getValue(TypeDefinitionCategory.DATATYPE, Class.class);
+        return getDefinition().getValue(TypeDefinitionCategory.DATATYPE,Class.class);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class PropertyKeyVertex extends RelationTypeVertex implements PropertyKey
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return dir == Direction.OUT;
+        return dir==Direction.OUT;
     }
 }

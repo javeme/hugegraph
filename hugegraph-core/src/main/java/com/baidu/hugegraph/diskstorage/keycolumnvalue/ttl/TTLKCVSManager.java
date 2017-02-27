@@ -34,10 +34,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Turns a store with fine-grained cell-level TTL support into a store with coarse-grained store-level
- * (columnfamily-level) TTL support. Useful when running a KCVSLog atop Cassandra. Cassandra has cell-level TTL support,
- * but KCVSLog just wants to write all of its data with a fixed, CF-wide TTL. This class stores a fixed TTL set during
- * construction and applies it to every entry written through subsequent mutate/mutateMany calls.
+ * Turns a store with fine-grained cell-level TTL support into a store
+ * with coarse-grained store-level (columnfamily-level) TTL support.
+ * Useful when running a KCVSLog atop Cassandra.  Cassandra has
+ * cell-level TTL support, but KCVSLog just wants to write all of its
+ * data with a fixed, CF-wide TTL.  This class stores a fixed TTL set
+ * during construction and applies it to every entry written through
+ * subsequent mutate/mutateMany calls.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -87,34 +90,33 @@ public class TTLKCVSManager extends KCVSManagerProxy {
         if (metaData.contains(StoreMetaData.TTL)) {
             storeTTL = (Integer) metaData.get(StoreMetaData.TTL);
         }
-        Preconditions.checkArgument(storeTTL > 0, "TTL must be positive: %s", storeTTL);
+        Preconditions.checkArgument(storeTTL>0,"TTL must be positive: %s", storeTTL);
         ttlEnabledStores.put(name, storeTTL);
         return new TTLKCVS(store, storeTTL);
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         if (!manager.getFeatures().hasStoreTTL()) {
             assert manager.getFeatures().hasCellTTL();
-            for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> sentry : mutations.entrySet()) {
+            for (Map.Entry<String,Map<StaticBuffer, KCVMutation>> sentry : mutations.entrySet()) {
                 Integer ttl = ttlEnabledStores.get(sentry.getKey());
                 if (null != ttl && 0 < ttl) {
                     for (KCVMutation mut : sentry.getValue().values()) {
-                        if (mut.hasAdditions())
-                            applyTTL(mut.getAdditions(), ttl);
+                        if (mut.hasAdditions()) applyTTL(mut.getAdditions(), ttl);
                     }
                 }
             }
         }
-        manager.mutateMany(mutations, txh);
+        manager.mutateMany(mutations,txh);
     }
 
     public static void applyTTL(Collection<Entry> additions, int ttl) {
         for (Entry entry : additions) {
             assert entry instanceof MetaAnnotatable;
-            ((MetaAnnotatable) entry).setMetaData(EntryMetaData.TTL, ttl);
+            ((MetaAnnotatable)entry).setMetaData(EntryMetaData.TTL, ttl);
         }
     }
+
 
 }

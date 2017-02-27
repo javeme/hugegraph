@@ -17,9 +17,10 @@ package com.baidu.hugegraph.diskstorage.locking;
 import com.baidu.hugegraph.diskstorage.PermanentBackendException;
 
 /**
- * This exception signifies a failure to lock based on durable state. For example, another machine holds the lock we
- * attempted to claim. These exceptions typically will not go away on retries unless a machine modifies the underlying
- * lock state in some way.
+ * This exception signifies a failure to lock based on durable state. For
+ * example, another machine holds the lock we attempted to claim. These
+ * exceptions typically will not go away on retries unless a machine modifies
+ * the underlying lock state in some way.
  * <p/>
  * 
  * @author Matthias Broecheler (me@matthiasb.com)
@@ -37,7 +38,7 @@ public class PermanentLockingException extends PermanentBackendException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public PermanentLockingException(String msg, Throwable cause) {
@@ -52,5 +53,6 @@ public class PermanentLockingException extends PermanentBackendException {
     public PermanentLockingException(Throwable cause) {
         this("Permanent locking failure", cause);
     }
+
 
 }

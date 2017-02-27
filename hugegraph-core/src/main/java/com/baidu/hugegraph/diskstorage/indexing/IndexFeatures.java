@@ -37,12 +37,13 @@ public class IndexFeatures {
     private final boolean supportsNanoseconds;
     private ImmutableSet<Cardinality> supportedCardinaities;
 
-    public IndexFeatures(boolean supportsDocumentTTL, Mapping defaultMap, ImmutableSet<Mapping> supportedMap,
-            String wildcardField, ImmutableSet<Cardinality> supportedCardinaities, boolean supportsNanoseconds) {
+    public IndexFeatures(boolean supportsDocumentTTL,
+                         Mapping defaultMap,
+                         ImmutableSet<Mapping> supportedMap, String wildcardField, ImmutableSet<Cardinality> supportedCardinaities, boolean supportsNanoseconds) {
 
-        Preconditions.checkArgument(defaultMap != null || defaultMap != Mapping.DEFAULT);
-        Preconditions
-                .checkArgument(supportedMap != null && !supportedMap.isEmpty() && supportedMap.contains(defaultMap));
+        Preconditions.checkArgument(defaultMap!=null || defaultMap!=Mapping.DEFAULT);
+        Preconditions.checkArgument(supportedMap!=null && !supportedMap.isEmpty()
+                                    && supportedMap.contains(defaultMap));
         this.supportsDocumentTTL = supportsDocumentTTL;
         this.defaultStringMapping = defaultMap;
         this.supportedStringMappings = supportedMap;
@@ -85,7 +86,7 @@ public class IndexFeatures {
         private boolean supportsNanoseconds;
 
         public Builder supportsDocumentTTL() {
-            supportsDocumentTTL = true;
+            supportsDocumentTTL=true;
             return this;
         }
 
@@ -94,7 +95,7 @@ public class IndexFeatures {
             return this;
         }
 
-        public Builder supportedStringMappings(Mapping...maps) {
+        public Builder supportedStringMappings(Mapping... maps) {
             supportedMappings.addAll(Arrays.asList(maps));
             return this;
         }
@@ -115,9 +116,10 @@ public class IndexFeatures {
         }
 
         public IndexFeatures build() {
-            return new IndexFeatures(supportsDocumentTTL, defaultStringMapping, ImmutableSet.copyOf(supportedMappings),
-                    wildcardField, ImmutableSet.copyOf(supportedCardinalities), supportsNanoseconds);
+            return new IndexFeatures(supportsDocumentTTL, defaultStringMapping,
+                    ImmutableSet.copyOf(supportedMappings), wildcardField,  ImmutableSet.copyOf(supportedCardinalities), supportsNanoseconds);
         }
+
 
     }
 

@@ -22,9 +22,9 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import java.util.UUID;
 
 /**
- * @author Bryn Cooke (bryn.cooke@datastax.com)
+ *  @author Bryn Cooke (bryn.cooke@datastax.com)
  */
-public class UUIDSerializer implements AttributeSerializer<UUID> {
+public class UUIDSerializer implements AttributeSerializer<UUID>  {
 
     @Override
     public UUID read(ScanBuffer buffer) {
@@ -42,7 +42,7 @@ public class UUIDSerializer implements AttributeSerializer<UUID> {
     @Override
     public UUID convert(Object value) {
         Preconditions.checkNotNull(value);
-        if (value instanceof String) {
+        if(value instanceof String){
             return UUID.fromString((String) value);
         }
         return null;

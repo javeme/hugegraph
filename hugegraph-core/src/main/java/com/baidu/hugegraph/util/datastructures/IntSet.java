@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.util.datastructures;
 
+
 public interface IntSet {
 
     public boolean add(int value);

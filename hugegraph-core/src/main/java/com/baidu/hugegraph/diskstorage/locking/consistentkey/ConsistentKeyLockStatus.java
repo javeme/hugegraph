@@ -14,12 +14,14 @@
 
 package com.baidu.hugegraph.diskstorage.locking.consistentkey;
 
+
 import com.baidu.hugegraph.diskstorage.locking.LockStatus;
 
 import java.time.Instant;
 
 /**
- * The timestamps of a lock held by a {@link ConsistentKeyLocker} and whether the held lock has or has not been checked.
+ * The timestamps of a lock held by a {@link ConsistentKeyLocker}
+ * and whether the held lock has or has not been checked.
  *
  * {@see ConsistentKeyLockStore}
  */
@@ -39,6 +41,7 @@ public class ConsistentKeyLockStatus implements LockStatus {
     public Instant getExpirationTimestamp() {
         return expire;
     }
+
 
     public Instant getWriteTimestamp() {
         return write;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Partition JanusGraph's dependency set to support modular packaging.
+# Partition hugegraph's dependency set to support modular packaging.
 #
 # Dependencies used in more than one module ("used" directly or
 # indirectly through an arbitrary degree of transitivity) go into a
@@ -19,7 +19,7 @@
 set -e
 set -u
 
-# Change to janusgraph repository root
+# Change to hugegraph repository root
 cd "`dirname $0`/../../"
 
 # Load config
@@ -34,8 +34,8 @@ pkgcommon/bin/clean.sh
 mvn_deps() {
     local outfile="$1"
     mvn dependency:list $MVN_OPTS \
-        -Pjanusgraph-release \
-        -DexcludeGroupIds=org.janusgraph \
+        -Phugegraph-release \
+        -DexcludeGroupIds=com.baidu.hugegraph \
         -DoutputFile=$outfile -DincludeScope=runtime \
         -DoutputAbsoluteArtifactFilename=true
     # Delete first two lines of human-readable junk and kill leading spaces
@@ -46,13 +46,13 @@ mvn_deps() {
 
 # Generate complete dependency list (incl transitive deps) for each module
 for m in $MODULES; do
-    cd janusgraph-$m
+    cd hugegraph-$m
     mvn_deps "$DEP_DIR/dep-part-$m.txt"
     cd - >/dev/null
 done
 
 # dep-all.txt lists every dependency in the project
-cd janusgraph-dist/janusgraph-dist-all/
+cd hugegraph-dist/hugegraph-dist-all/
 mvn_deps "$DEP_DIR/dep-all.txt"
 cd - >/dev/null
 cat $DEP_DIR/dep-part-*.txt $DEP_DIR/dep-all.txt | sort | uniq > \
@@ -70,25 +70,25 @@ for m in $MODULES; do
     mv $DEP_DIR/dep-part-$m.txt{.tmp,}
 done
 
-# We can't use dep-repeated.txt as the contents of the main janusgraph
+# We can't use dep-repeated.txt as the contents of the main hugegraph
 # partition, because that would drop jars that exist only on the
-# janusgraph-dist assembly.  Generate the main janusgraph partition my
+# hugegraph-dist assembly.  Generate the main hugegraph partition my
 # subtracting the union of all module partitions from dep-all.txt.
 cat $DEP_DIR/dep-part-*.txt | sort | uniq > $DEP_DIR/dep-modules.txt
 comm -2 -3 $DEP_DIR/dep-all.txt $DEP_DIR/dep-modules.txt > $DEP_DIR/dep-part-main.txt
 
 
-# This is a hack for Lucene and ES.  Every Lucene jar used by janusgraph-lucene
-# is also used by janusgraph-es, so those go into janusgraph-main.  Some additional
-# Lucene jars are used only by janusgraph-es, so those go into janusgraph-es.  The
+# This is a hack for Lucene and ES.  Every Lucene jar used by hugegraph-lucene
+# is also used by hugegraph-es, so those go into hugegraph-main.  Some additional
+# Lucene jars are used only by hugegraph-es, so those go into hugegraph-es.  The
 # result is a completely empty dep-lucene.txt file with Lucene jars split
 # between dep-es.txt and dep-part-main.txt.  It's technically the intended
 # result of the partition algorithm, but it's also utterly nonsensical from
 # a practical point of view.
 #
 # Force all org.apache.lucene packages into dep-lucene.txt.  The .deb and
-# .rpm package definitions must make the janusgraph-es subpackage depend on the
-# janusgraph-lucene subpackage for this to work.
+# .rpm package definitions must make the hugegraph-es subpackage depend on the
+# hugegraph-lucene subpackage for this to work.
 for m in $MODULES main; do
     [ "$m" = "lucene" ] && continue
     grep '^org\.apache\.lucene:' $DEP_DIR/dep-part-$m.txt >> $DEP_DIR/dep-part-lucene.txt || continue
@@ -107,8 +107,8 @@ for m in $MODULES main; do
         echo $j >> $DEP_DIR/jar-$m.txt
     done
     if [ 'main' = $m ]; then
-	echo "$my_pwd"/janusgraph-core/target/janusgraph-core-$VER.jar >> $DEP_DIR/jar-$m.txt
+	echo "$my_pwd"/hugegraph-core/target/hugegraph-core-$VER.jar >> $DEP_DIR/jar-$m.txt
     else
-	echo "$my_pwd"/janusgraph-$m/target/janusgraph-$m-$VER.jar >> $DEP_DIR/jar-$m.txt
+	echo "$my_pwd"/hugegraph-$m/target/hugegraph-$m-$VER.jar >> $DEP_DIR/jar-$m.txt
     fi
 done

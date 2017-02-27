@@ -31,7 +31,7 @@ public class VertexLabelDefinition extends SchemaElementDefinition {
     }
 
     public VertexLabelDefinition(VertexLabel vl) {
-        this(vl.name(), vl.longId(), vl.isPartitioned(), vl.isStatic());
+        this(vl.name(),vl.longId(),vl.isPartitioned(),vl.isStatic());
     }
 
     public boolean isStatic() {
@@ -43,7 +43,7 @@ public class VertexLabelDefinition extends SchemaElementDefinition {
     }
 
     public boolean hasDefaultConfiguration() {
-        return isPartitioned == false && isStatic == false;
+        return isPartitioned==false && isStatic==false;
     }
 
 }

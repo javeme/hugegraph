@@ -34,10 +34,10 @@ public interface InternalElement extends HugeGraphElement {
 
     /**
      * Returns the transaction to which the element is currently bound or should be refreshed into
-     * 
      * @return
      */
     public StandardHugeGraphTx tx();
+
 
     @Override
     public default HugeGraphTransaction graph() {
@@ -53,9 +53,7 @@ public interface InternalElement extends HugeGraphElement {
     public byte getLifeCycle();
 
     /**
-     * Whether this element is invisible and should only be returned to queries that explicitly ask for invisible
-     * elements.
-     * 
+     * Whether this element is invisible and should only be returned to queries that explicitly ask for invisible elements.
      * @return
      */
     public boolean isInvisible();

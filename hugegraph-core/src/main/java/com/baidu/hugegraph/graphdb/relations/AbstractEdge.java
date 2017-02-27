@@ -84,13 +84,14 @@ public abstract class AbstractEdge extends AbstractTypedRelation implements Huge
     @Override
     public int getLen() {
         assert !type.isUnidirected(Direction.IN);
-        return type.isUnidirected(Direction.OUT) ? 1 : 2;
+        return type.isUnidirected(Direction.OUT)?1:2;
     }
 
     @Override
     public HugeGraphVertex vertex(Direction dir) {
         return getVertex(EdgeDirection.position(dir));
     }
+
 
     @Override
     public HugeGraphVertex otherVertex(Vertex vertex) {
@@ -112,5 +113,6 @@ public abstract class AbstractEdge extends AbstractTypedRelation implements Huge
     public boolean isEdge() {
         return true;
     }
+
 
 }

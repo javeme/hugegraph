@@ -1,13 +1,13 @@
-# Contributing to JanusGraph
+# Contributing to hugegraph
 
 ## Sign the CLA
 
-To sign the JanusGraph CLA, please follow [the
-instructions in `janusgraph/legal`](https://github.com/JanusGraph/legal).
+To sign the hugegraph CLA, please follow [the
+instructions in `hugegraph/legal`](https://github.com/hugegraph/legal).
 
 ## Fork the repository on GitHub
 
-Click on the [fork](https://github.com/JanusGraph/janusgraph/fork) button at the
+Click on the [fork](https://github.com/hugegraph/hugegraph/fork) button at the
 upper-right of the repository to create a fork of the repository in your own
 account.
 
@@ -18,25 +18,25 @@ To fork the repo locally, use one of the following methods:
   * if you have set up and are using [SSH keys](https://help.github.com/articles/generating-an-ssh-key/), run:
 
     ```bash
-    $ git clone git@github.com:$USER/janusgraph
+    $ git clone git@github.com:$USER/hugegraph
     ```
 
   * otherwise, to use HTTPS transfer, run:
 
     ```bash
-    $ git clone https://github.com/$USER/janusgraph
+    $ git clone https://github.com/$USER/hugegraph
     ```
 
 Add the original repo to synchronize new changes:
 
 ```bash
-$ git remote add upstream git@github.com:JanusGraph/janusgraph
+$ git remote add upstream git@github.com:hugegraph/hugegraph
 ```
 
 Do not contribute to `master` from our own fork's `master` branch.
 
 Also, do not push your working, in-progress, or PR branches to
-`JanusGraph/janusgraph`; instead, use your own fork.
+`hugegraph/hugegraph`; instead, use your own fork.
 
 You can avoid pushing to upstream by accident by setting it as follows:
 
@@ -52,13 +52,13 @@ to make sure that the automated verification process correctly matches it.
 To configure them, use the following commands
 
 ```bash
-$ cd janusgraph
+$ cd hugegraph
 $ git config user.name "My Name"
 $ git config user.email "my-email@example.com"
 ```
 
 > Note: if you forget to use the right email address the first time, and
-> @janusgraph-bot adds the `[cla: no]` label to your PR, you can fix it in-place
+> @hugegraph-bot adds the `[cla: no]` label to your PR, you can fix it in-place
 > while reusing your existing PR as follows:
 >
 > * set your name and email as per above
@@ -142,19 +142,19 @@ changes.
 
 ## Open a Pull Request
 
-Go to the [JanusGraph repository](https://github.com/JanusGraph/janusgraph) and
+Go to the [hugegraph repository](https://github.com/hugegraph/hugegraph) and
 you should see that it will offer you a chance to compare your recently-pushed
-branch to the current `master` of JanusGraph and subit a PR at the same time.
+branch to the current `master` of hugegraph and subit a PR at the same time.
 
 ## Code review
 
 If you have signed the CLA, and it was processed and acknowledged on the email
 thread, you should get a `[cla: yes]` label added to your PR by our bot,
-@janusgraph-bot, during the course of the review.
+@hugegraph-bot, during the course of the review.
 
 If you see a `[cla: no]` label attached, there will be an explanation of what
 went wrong, but generally, you should make sure that your CLA and your name,
 email, and GitHub usernames all match, for all of the commits in your PR.
 
 If you are still not sure what's wrong, reach out to
-janusgraph-cla@googlegroups.com with further questions.
+hugegraph-cla@googlegroups.com with further questions.

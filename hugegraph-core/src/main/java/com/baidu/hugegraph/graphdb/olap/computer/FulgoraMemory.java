@@ -60,15 +60,13 @@ public class FulgoraMemory implements Memory.Admin {
             }
         }
         for (final MapReduce mapReduce : mapReducers) {
-            this.memoryKeys.put(mapReduce.getMemoryKey(),
-                    MemoryComputeKey.of(mapReduce.getMemoryKey(), Operator.assign, false, false));
+            this.memoryKeys.put(mapReduce.getMemoryKey(), MemoryComputeKey.of(mapReduce.getMemoryKey(), Operator.assign, false, false));
         }
     }
 
     @Override
     public Set<String> keys() {
-        return this.previousMap.keySet().stream()
-                .filter(key -> !this.inExecute || this.memoryKeys.get(key).isBroadcast()).collect(Collectors.toSet());
+        return this.previousMap.keySet().stream().filter(key -> !this.inExecute || this.memoryKeys.get(key).isBroadcast()).collect(Collectors.toSet());
     }
 
     @Override
@@ -99,8 +97,7 @@ public class FulgoraMemory implements Memory.Admin {
     protected void complete() {
         this.iteration.decrementAndGet();
         this.previousMap = this.currentMap;
-        this.memoryKeys.values().stream().filter(MemoryComputeKey::isTransient)
-                .forEach(computeKey -> this.previousMap.remove(computeKey.getKey()));
+        this.memoryKeys.values().stream().filter(MemoryComputeKey::isTransient).forEach(computeKey -> this.previousMap.remove(computeKey.getKey()));
     }
 
     protected void completeSubRound() {
@@ -131,8 +128,7 @@ public class FulgoraMemory implements Memory.Admin {
             throw Memory.Exceptions.memoryIsCurrentlyImmutable();
         else if (!this.inExecute)
             throw Memory.Exceptions.memoryAddOnlyDuringVertexProgramExecute(key);
-        this.currentMap.compute(key,
-                (k, v) -> null == v ? value : this.memoryKeys.get(key).getReducer().apply(v, value));
+        this.currentMap.compute(key, (k, v) -> null == v ? value : this.memoryKeys.get(key).getReducer().apply(v, value));
     }
 
     @Override
@@ -156,7 +152,7 @@ public class FulgoraMemory implements Memory.Admin {
 
     protected void attachReferenceElements(Graph graph) {
         currentMap.values().stream().filter(v -> v instanceof TraverserSet)
-                .forEach(v -> attachReferenceElements((TraverserSet<Object>) v, graph));
+                .forEach(v-> attachReferenceElements((TraverserSet<Object>) v, graph));
     }
 
     private static void attachReferenceElements(TraverserSet<Object> toProcessTraversers, Graph graph) {

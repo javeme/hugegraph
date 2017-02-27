@@ -52,8 +52,8 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
 
     private final MessageCombiner<M> combiner;
 
-    private VertexProgramScanJob(IDManager idManager, FulgoraMemory memory, FulgoraVertexMemory vertexMemory,
-            VertexProgram<M> vertexProgram) {
+    private VertexProgramScanJob(IDManager idManager, FulgoraMemory memory,
+                                FulgoraVertexMemory vertexMemory, VertexProgram<M> vertexProgram) {
         this.idManager = idManager;
         this.memory = memory;
         this.vertexMemory = vertexMemory;
@@ -63,7 +63,8 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
 
     @Override
     public VertexProgramScanJob<M> clone() {
-        return new VertexProgramScanJob<>(this.idManager, this.memory, this.vertexMemory, this.vertexProgram.clone());
+        return new VertexProgramScanJob<>(this.idManager, this.memory, this.vertexMemory, this.vertexProgram
+                .clone());
     }
 
     @Override
@@ -78,30 +79,26 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
 
     @Override
     public void process(HugeGraphVertex vertex, ScanMetrics metrics) {
-        PreloadedVertex v = (PreloadedVertex) vertex;
+        PreloadedVertex v = (PreloadedVertex)vertex;
         long vertexId = v.longId();
-        VertexMemoryHandler<M> vh = new VertexMemoryHandler(vertexMemory, v);
+        VertexMemoryHandler<M> vh = new VertexMemoryHandler(vertexMemory,v);
         vh.setInExecute(true);
         v.setAccessCheck(PreloadedVertex.OPENSTAR_CHECK);
         if (idManager.isPartitionedVertex(vertexId)) {
             if (idManager.isCanonicalVertexId(vertexId)) {
                 EntryList results = v.getFromCache(SYSTEM_PROPS_QUERY);
-                if (results == null)
-                    results = EntryList.EMPTY_LIST;
-                vertexMemory.setLoadedProperties(vertexId, results);
+                if (results == null) results = EntryList.EMPTY_LIST;
+                vertexMemory.setLoadedProperties(vertexId,results);
             }
             for (MessageScope scope : vertexMemory.getPreviousScopes()) {
                 if (scope instanceof MessageScope.Local) {
                     M combinedMsg = null;
-                    for (Iterator<M> msgIter = vh.receiveMessages(scope).iterator(); msgIter.hasNext();) {
+                    for (Iterator<M> msgIter = vh.receiveMessages(scope).iterator(); msgIter.hasNext(); ) {
                         M msg = msgIter.next();
-                        if (combinedMsg == null)
-                            combinedMsg = msg;
-                        else
-                            combinedMsg = combiner.combine(combinedMsg, msg);
+                        if (combinedMsg==null) combinedMsg=msg;
+                        else combinedMsg = combiner.combine(combinedMsg,msg);
                     }
-                    if (combinedMsg != null)
-                        vertexMemory.aggregateMessage(vertexId, combinedMsg, scope);
+                    if (combinedMsg!=null) vertexMemory.aggregateMessage(vertexId,combinedMsg,scope);
                 }
             }
         } else {
@@ -114,9 +111,9 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
     @Override
     public void getQueries(QueryContainer queries) {
         if (vertexProgram instanceof TraversalVertexProgram) {
-            // TraversalVertexProgram currently makes the assumption that the entire star-graph around a vertex
-            // is available (in-memory). Hence, this special treatment here.
-            // TODO: After TraversalVertexProgram is adjusted, remove this
+            //TraversalVertexProgram currently makes the assumption that the entire star-graph around a vertex
+            //is available (in-memory). Hence, this special treatment here.
+            //TODO: After TraversalVertexProgram is adjusted, remove this
             queries.addQuery().direction(Direction.BOTH).edges();
             return;
         }
@@ -126,8 +123,7 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
                 queries.addQuery().direction(Direction.BOTH).edges();
             } else {
                 assert scope instanceof MessageScope.Local;
-                HugeGraphVertexStep<Vertex> startStep =
-                        FulgoraUtil.getReverseHugeGraphVertexStep((MessageScope.Local) scope, queries.getTransaction());
+                HugeGraphVertexStep<Vertex> startStep = FulgoraUtil.getReverseHugeGraphVertexStep((MessageScope.Local) scope,queries.getTransaction());
                 QueryContainer.QueryBuilder qb = queries.addQuery();
                 startStep.makeQuery(qb);
                 qb.edges();
@@ -135,16 +131,17 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
         }
     }
 
-    public static <M> Executor getVertexProgramScanJob(StandardHugeGraph graph, FulgoraMemory memory,
-            FulgoraVertexMemory vertexMemory, VertexProgram<M> vertexProgram) {
-        VertexProgramScanJob<M> job =
-                new VertexProgramScanJob<M>(graph.getIDManager(), memory, vertexMemory, vertexProgram);
-        return new Executor(graph, job);
+
+    public static<M> Executor getVertexProgramScanJob(StandardHugeGraph graph, FulgoraMemory memory,
+                                                  FulgoraVertexMemory vertexMemory, VertexProgram<M> vertexProgram) {
+        VertexProgramScanJob<M> job = new VertexProgramScanJob<M>(graph.getIDManager(),memory,vertexMemory,vertexProgram);
+        return new Executor(graph,job);
     }
 
-    // Query for all system properties+edges and normal properties
-    static final SliceQuery SYSTEM_PROPS_QUERY = new SliceQuery(IDHandler.getBounds(RelationCategory.PROPERTY, true)[0],
-            IDHandler.getBounds(RelationCategory.PROPERTY, false)[1]);
+    //Query for all system properties+edges and normal properties
+    static final SliceQuery SYSTEM_PROPS_QUERY = new SliceQuery(
+            IDHandler.getBounds(RelationCategory.PROPERTY, true)[0],
+            IDHandler.getBounds(RelationCategory.PROPERTY,false)[1]);
 
     public static class Executor extends VertexJobConverter implements Closeable {
 
@@ -176,9 +173,7 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
         }
 
         @Override
-        public Executor clone() {
-            return new Executor(this);
-        }
+        public Executor clone() { return new Executor(this); }
 
         @Override
         public void close() {
@@ -187,4 +182,10 @@ public class VertexProgramScanJob<M> implements VertexScanJob {
 
     }
 
+
+
+
+
 }
+
+

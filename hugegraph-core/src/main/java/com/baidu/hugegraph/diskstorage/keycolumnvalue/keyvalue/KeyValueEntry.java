@@ -38,8 +38,10 @@ public class KeyValueEntry {
         return key;
     }
 
+
     public StaticBuffer getValue() {
         return value;
     }
+
 
 }

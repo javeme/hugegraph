@@ -37,7 +37,8 @@ import com.baidu.hugegraph.testcategory.UnorderedKeyStoreTests;
 
 public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractCassandraStoreTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(AbstractCassandraStoreTest.class);
     private static final String TEST_CF_NAME = "testcf";
     private static final String DEFAULT_COMPRESSOR_PACKAGE = "org.apache.cassandra.io.compress";
 
@@ -49,9 +50,11 @@ public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest
     @Category({ UnorderedKeyStoreTests.class })
     public void testUnorderedConfiguration() {
         if (!manager.getFeatures().hasUnorderedScan()) {
-            log.warn("Can't test key-unordered features on incompatible store.  "
-                    + "This warning could indicate reduced test coverage and "
-                    + "a broken JUnit configuration.  Skipping test {}.", name.getMethodName());
+            log.warn(
+                "Can't test key-unordered features on incompatible store.  "
+                + "This warning could indicate reduced test coverage and "
+                + "a broken JUnit configuration.  Skipping test {}.",
+                name.getMethodName());
             return;
         }
 
@@ -64,9 +67,11 @@ public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest
     @Category({ OrderedKeyStoreTests.class })
     public void testOrderedConfiguration() {
         if (!manager.getFeatures().hasOrderedScan()) {
-            log.warn("Can't test key-ordered features on incompatible store.  "
-                    + "This warning could indicate reduced test coverage and "
-                    + "a broken JUnit configuration.  Skipping test {}.", name.getMethodName());
+            log.warn(
+                "Can't test key-ordered features on incompatible store.  "
+                + "This warning could indicate reduced test coverage and "
+                + "a broken JUnit configuration.  Skipping test {}.",
+                name.getMethodName());
             return;
         }
 
@@ -83,11 +88,11 @@ public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest
 
         mgr.openDatabase(cf);
 
-        Map<String, String> defaultCfCompressionOps = new ImmutableMap.Builder<String, String>()
-                .put("sstable_compression",
-                        DEFAULT_COMPRESSOR_PACKAGE + "."
-                                + AbstractCassandraStoreManager.CF_COMPRESSION_TYPE.getDefaultValue())
-                .put("chunk_length_kb", "64").build();
+        Map<String, String> defaultCfCompressionOps =
+                new ImmutableMap.Builder<String, String>()
+                .put("sstable_compression", DEFAULT_COMPRESSOR_PACKAGE + "." + AbstractCassandraStoreManager.CF_COMPRESSION_TYPE.getDefaultValue())
+                .put("chunk_length_kb", "64")
+                .build();
 
         assertEquals(defaultCfCompressionOps, mgr.getCompressionOptions(cf));
     }
@@ -100,16 +105,18 @@ public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest
         final String cf = TEST_CF_NAME + "_gzip";
 
         ModifiableConfiguration config = getBaseStorageConfiguration();
-        config.set(AbstractCassandraStoreManager.CF_COMPRESSION_TYPE, cname);
-        config.set(AbstractCassandraStoreManager.CF_COMPRESSION_BLOCK_SIZE, ckb);
+        config.set(AbstractCassandraStoreManager.CF_COMPRESSION_TYPE,cname);
+        config.set(AbstractCassandraStoreManager.CF_COMPRESSION_BLOCK_SIZE,ckb);
 
         AbstractCassandraStoreManager mgr = openStorageManager(config);
 
         // N.B.: clearStorage() truncates CFs but does not delete them
         mgr.openDatabase(cf);
 
-        final Map<String, String> expected = ImmutableMap.<String, String> builder()
-                .put("sstable_compression", DEFAULT_COMPRESSOR_PACKAGE + "." + cname)
+        final Map<String, String> expected = ImmutableMap
+                .<String, String> builder()
+                .put("sstable_compression",
+                        DEFAULT_COMPRESSOR_PACKAGE + "." + cname)
                 .put("chunk_length_kb", String.valueOf(ckb)).build();
 
         assertEquals(expected, mgr.getCompressionOptions(cf));
@@ -121,7 +128,7 @@ public abstract class AbstractCassandraStoreTest extends KeyColumnValueStoreTest
         final String cf = TEST_CF_NAME + "_nocompress";
 
         ModifiableConfiguration config = getBaseStorageConfiguration();
-        config.set(AbstractCassandraStoreManager.CF_COMPRESSION, false);
+        config.set(AbstractCassandraStoreManager.CF_COMPRESSION,false);
         AbstractCassandraStoreManager mgr = openStorageManager(config);
 
         // N.B.: clearStorage() truncates CFs but does not delete them

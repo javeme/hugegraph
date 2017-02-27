@@ -35,17 +35,17 @@ public class PointInterval<T> implements Interval<T> {
     }
 
     public PointInterval(T point) {
-        points = new HashSet<T>(1);
+        points=new HashSet<T>(1);
         points.add(point);
     }
 
-    public PointInterval(T...points) {
+    public PointInterval(T... points) {
         this(Arrays.asList(points));
     }
 
     public PointInterval(Iterable<T> points) {
-        this.points = new HashSet<T>(4);
-        Iterables.addAll(this.points, points);
+        this.points=new HashSet<T>(4);
+        Iterables.addAll(this.points,points);
     }
 
     @Override
@@ -64,14 +64,14 @@ public class PointInterval<T> implements Interval<T> {
 
     @Override
     public T getStart() {
-        Preconditions.checkArgument(!isEmpty(), "There are no points in this interval");
-        return (T) Collections.min(points, ComparableComparator.getInstance());
+        Preconditions.checkArgument(!isEmpty(),"There are no points in this interval");
+        return (T)Collections.min(points,ComparableComparator.getInstance());
     }
 
     @Override
     public T getEnd() {
         Preconditions.checkArgument(!isEmpty(), "There are no points in this interval");
-        return (T) Collections.max(points, ComparableComparator.getInstance());
+        return (T)Collections.max(points,ComparableComparator.getInstance());
     }
 
     @Override
@@ -96,21 +96,21 @@ public class PointInterval<T> implements Interval<T> {
 
     @Override
     public Interval<T> intersect(Interval<T> other) {
-        Preconditions.checkArgument(other != null);
+        Preconditions.checkArgument(other!=null);
         if (other instanceof PointInterval) {
             Sets.newHashSet(points);
-            points.retainAll(((PointInterval) other).points);
+            points.retainAll(((PointInterval)other).points);
             return new PointInterval<T>(points);
         } else if (other instanceof RangeInterval) {
-            final RangeInterval<T> rint = (RangeInterval) other;
-            return new PointInterval<T>(Sets.newHashSet(Iterables.filter(points, new Predicate<T>() {
-                @Override
-                public boolean apply(@Nullable T t) {
-                    return rint.containsPoint(t);
-                }
-            })));
-        } else
-            throw new AssertionError("Unexpected interval: " + other);
+            final RangeInterval<T> rint = (RangeInterval)other;
+            return new PointInterval<T>(Sets.newHashSet(Iterables.filter(points,
+                    new Predicate<T>() {
+                        @Override
+                        public boolean apply(@Nullable T t) {
+                            return rint.containsPoint(t);
+                        }
+                    })));
+        } else throw new AssertionError("Unexpected interval: " + other);
     }
 
     @Override
@@ -120,13 +120,10 @@ public class PointInterval<T> implements Interval<T> {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (other == null)
-            return false;
-        else if (!getClass().isInstance(other))
-            return false;
-        PointInterval oth = (PointInterval) other;
+        if (this==other) return true;
+        else if (other==null) return false;
+        else if (!getClass().isInstance(other)) return false;
+        PointInterval oth = (PointInterval)other;
         return points.equals(oth.points);
     }
 
@@ -136,8 +133,7 @@ public class PointInterval<T> implements Interval<T> {
         s.append("[");
         int i = 0;
         for (T point : points) {
-            if (i > 0)
-                s.append(",");
+            if (i>0) s.append(",");
             s.append(point);
             i++;
         }

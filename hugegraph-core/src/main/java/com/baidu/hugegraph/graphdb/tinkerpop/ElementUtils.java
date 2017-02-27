@@ -27,10 +27,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 public class ElementUtils {
 
     public static long getVertexId(Object id) {
-        if (null == id)
-            return 0;
+        if (null == id) return 0;
 
-        if (id instanceof HugeGraphVertex) // allows vertices to be "re-attached" to the current transaction
+        if (id instanceof HugeGraphVertex) //allows vertices to be "re-attached" to the current transaction
             return ((HugeGraphVertex) id).longId();
         if (id instanceof Long)
             return (Long) id;
@@ -49,34 +48,26 @@ public class ElementUtils {
     }
 
     public static RelationIdentifier getEdgeId(Object id) {
-        if (null == id)
-            return null;
+        if (null == id) return null;
 
         try {
-            if (id instanceof HugeGraphEdge)
-                return (RelationIdentifier) ((HugeGraphEdge) id).id();
-            else if (id instanceof RelationIdentifier)
-                return (RelationIdentifier) id;
-            else if (id instanceof String)
-                return RelationIdentifier.parse((String) id);
-            else if (id instanceof long[])
-                return RelationIdentifier.get((long[]) id);
-            else if (id instanceof int[])
-                return RelationIdentifier.get((int[]) id);
+            if (id instanceof HugeGraphEdge) return (RelationIdentifier) ((HugeGraphEdge) id).id();
+            else if (id instanceof RelationIdentifier) return (RelationIdentifier) id;
+            else if (id instanceof String) return RelationIdentifier.parse((String) id);
+            else if (id instanceof long[]) return RelationIdentifier.get((long[]) id);
+            else if (id instanceof int[]) return RelationIdentifier.get((int[]) id);
         } catch (IllegalArgumentException e) {
-            // swallow since null will be returned below
+            //swallow since null will be returned below
         }
         return null;
     }
 
-    public static void verifyArgsMustBeEitherIdorElement(Object...ids) {
-        assert ids.length > 0;
+    public static void verifyArgsMustBeEitherIdorElement(Object... ids) {
+        assert ids.length>0;
         int numElements = 0;
         for (int i = 0; i < ids.length; i++) {
-            if (ids[i] instanceof Element)
-                numElements++;
+            if (ids[i] instanceof Element) numElements++;
         }
-        if (numElements > 0 && numElements < ids.length)
-            throw Graph.Exceptions.idArgsMustBeEitherIdOrElement();
+        if (numElements>0 && numElements<ids.length) throw Graph.Exceptions.idArgsMustBeEitherIdOrElement();
     }
 }

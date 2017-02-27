@@ -42,7 +42,9 @@ import java.util.Map;
  */
 public class VertexMapJob implements VertexScanJob {
 
-    private static final Logger log = LoggerFactory.getLogger(VertexMapJob.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(VertexMapJob.class);
+
 
     public static final PreloadedVertex.AccessCheck MAPREDUCE_CHECK = new PreloadedVertex.AccessCheck() {
         @Override
@@ -52,7 +54,7 @@ public class VertexMapJob implements VertexScanJob {
 
         @Override
         public final void accessProperties() {
-            return; // Allowed
+            return; //Allowed
         }
 
         @Override
@@ -74,7 +76,7 @@ public class VertexMapJob implements VertexScanJob {
     public static final String MAP_JOB_FAILURE = "map-fail";
 
     private VertexMapJob(IDManager idManager, FulgoraVertexMemory vertexMemory,
-            Map<MapReduce, FulgoraMapEmitter> mapJobs) {
+                         Map<MapReduce, FulgoraMapEmitter> mapJobs) {
         this.mapJobs = mapJobs;
         this.vertexMemory = vertexMemory;
         this.idManager = idManager;
@@ -112,7 +114,7 @@ public class VertexMapJob implements VertexScanJob {
         }
         v.setAccessCheck(MAPREDUCE_CHECK);
         if (idManager.isPartitionedVertex(v.longId()) && !idManager.isCanonicalVertexId(v.longId())) {
-            return; // Only consider the canonical partition vertex representative
+            return; //Only consider the canonical partition vertex representative
         } else {
             for (Map.Entry<MapReduce, FulgoraMapEmitter> mapJob : mapJobs.entrySet()) {
                 MapReduce job = mapJob.getKey();
@@ -133,7 +135,7 @@ public class VertexMapJob implements VertexScanJob {
     }
 
     public static Executor getVertexMapJob(StandardHugeGraph graph, FulgoraVertexMemory vertexMemory,
-            Map<MapReduce, FulgoraMapEmitter> mapJobs) {
+                                           Map<MapReduce, FulgoraMapEmitter> mapJobs) {
         VertexMapJob job = new VertexMapJob(graph.getIDManager(), vertexMemory, mapJobs);
         for (Map.Entry<MapReduce, FulgoraMapEmitter> mapJob : mapJobs.entrySet()) {
             mapJob.getKey().workerStart(MapReduce.Stage.MAP);
@@ -183,3 +185,5 @@ public class VertexMapJob implements VertexScanJob {
     }
 
 }
+
+

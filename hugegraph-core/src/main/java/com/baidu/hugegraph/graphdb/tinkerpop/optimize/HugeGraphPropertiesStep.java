@@ -40,8 +40,7 @@ import java.util.*;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
-        implements HasStepFolder<Element, E>, Profiling, MultiQueriable<Element, E> {
+public class HugeGraphPropertiesStep<E> extends PropertiesStep<E> implements HasStepFolder<Element, E>, Profiling, MultiQueriable<Element,E> {
 
     public HugeGraphPropertiesStep(PropertiesStep<E> originalStep) {
         super(originalStep.getTraversal(), originalStep.getReturnType(), originalStep.getPropertyKeys());
@@ -55,6 +54,7 @@ public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
     private Map<HugeGraphVertex, Iterable<? extends HugeGraphProperty>> multiQueryResults = null;
     private QueryProfiler queryProfiler = QueryProfiler.NO_OP;
 
+
     @Override
     public void setUseMultiQuery(boolean useMultiQuery) {
         this.useMultiQuery = useMultiQuery;
@@ -64,20 +64,16 @@ public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
         String[] keys = getPropertyKeys();
         query.keys(keys);
         for (HasContainer condition : hasContainers) {
-            query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()),
-                    condition.getValue());
+            query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()), condition.getValue());
         }
-        for (OrderEntry order : orders)
-            query.orderBy(order.key, order.order);
-        if (limit != BaseQuery.NO_LIMIT)
-            query.limit(limit);
+        for (OrderEntry order : orders) query.orderBy(order.key, order.order);
+        if (limit != BaseQuery.NO_LIMIT) query.limit(limit);
         ((BasicVertexCentricQueryBuilder) query).profiler(queryProfiler);
         return query;
     }
 
     private Iterator<E> convertIterator(Iterable<? extends HugeGraphProperty> iterable) {
-        if (getReturnType().forProperties())
-            return (Iterator<E>) iterable.iterator();
+        if (getReturnType().forProperties()) return (Iterator<E>) iterable.iterator();
         assert getReturnType().forValues();
         return (Iterator<E>) Iterators.transform(iterable.iterator(), p -> ((HugeGraphProperty) p).value());
     }
@@ -88,8 +84,7 @@ public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
         initialized = true;
         assert getReturnType().forProperties() || (orders.isEmpty() && hasContainers.isEmpty());
 
-        if (!starts.hasNext())
-            throw FastNoSuchElementException.instance();
+        if (!starts.hasNext()) throw FastNoSuchElementException.instance();
         List<Traverser.Admin<Element>> elements = new ArrayList<>();
         starts.forEachRemaining(v -> elements.add(v));
         starts.add(elements.iterator());
@@ -108,35 +103,32 @@ public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
 
     @Override
     protected Traverser.Admin<E> processNextStart() {
-        if (!initialized)
-            initialize();
+        if (!initialized) initialize();
         return super.processNextStart();
     }
 
     @Override
     protected Iterator<E> flatMap(final Traverser.Admin<Element> traverser) {
-        if (useMultiQuery) { // it is guaranteed that all elements are vertices
+        if (useMultiQuery) { //it is guaranteed that all elements are vertices
             assert multiQueryResults != null;
             return convertIterator(multiQueryResults.get(traverser.get()));
         } else if (traverser.get() instanceof HugeGraphVertex || traverser.get() instanceof WrappedVertex) {
             HugeGraphVertexQuery query = makeQuery((HugeGraphTraversalUtil.getHugeGraphVertex(traverser)).query());
             return convertIterator(query.properties());
         } else {
-            // It is some other element (edge or vertex property)
+            //It is some other element (edge or vertex property)
             Iterator<E> iter;
             if (getReturnType().forValues()) {
                 assert orders.isEmpty() && hasContainers.isEmpty();
                 iter = traverser.get().values(getPropertyKeys());
             } else {
-                // this asks for properties
+                //this asks for properties
                 assert orders.isEmpty();
-                // HasContainers don't apply => empty result set
-                if (!hasContainers.isEmpty())
-                    return Collections.emptyIterator();
+                //HasContainers don't apply => empty result set
+                if (!hasContainers.isEmpty()) return Collections.emptyIterator();
                 iter = (Iterator<E>) traverser.get().properties(getPropertyKeys());
             }
-            if (limit != Query.NO_LIMIT)
-                iter = Iterators.limit(iter, limit);
+            if (limit!=Query.NO_LIMIT) iter = Iterators.limit(iter,limit);
             return iter;
         }
     }
@@ -155,12 +147,13 @@ public class HugeGraphPropertiesStep<E> extends PropertiesStep<E>
     }
 
     /*
-     * ===== HOLDER =====
+    ===== HOLDER =====
      */
 
     private final List<HasContainer> hasContainers;
     private int limit = BaseQuery.NO_LIMIT;
     private List<HasStepFolder.OrderEntry> orders = new ArrayList<>();
+
 
     @Override
     public void addAll(Iterable<HasContainer> has) {

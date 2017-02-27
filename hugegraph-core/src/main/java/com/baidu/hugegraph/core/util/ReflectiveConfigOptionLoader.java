@@ -39,20 +39,23 @@ import com.baidu.hugegraph.graphdb.configuration.PreInitializeConfigOptions;
 /**
  * This class supports iteration over HugeGraph's ConfigNamespaces at runtime.
  *
- * HugeGraph's ConfigOptions and ConfigNamespaces are defined by public static final fields spread across more than ten
- * classes in various hugegraph modules/jars. A ConfigOption effectively does not exist at runtime until the static
- * initializer of the field in which it is defined is executed by the JVM. This class contains utility methods
- * internally called by HugeGraph to preload ConfigOptions when performing lookups or iterations in which a ConfigOption
- * might not necessarily be loaded yet (such as when iterating over the collection of ConfigOption children in a
- * ConfigNamespace). Normally, only HugeGraph internals should use this class.
+ * HugeGraph's ConfigOptions and ConfigNamespaces are defined by public static final fields
+ * spread across more than ten classes in various hugegraph modules/jars.  A ConfigOption
+ * effectively does not exist at runtime until the static initializer of the field in
+ * which it is defined is executed by the JVM.  This class contains utility methods
+ * internally called by HugeGraph to preload ConfigOptions when performing lookups or
+ * iterations in which a ConfigOption might not necessarily be loaded yet (such as
+ * when iterating over the collection of ConfigOption children in a ConfigNamespace).
+ * Normally, only HugeGraph internals should use this class.
  */
 public enum ReflectiveConfigOptionLoader {
     INSTANCE;
 
     private static final String SYS_PROP_NAME = "hugegraph.load.cfg.opts";
-    private static final String ENV_VAR_NAME = "JANUSGRAPH_LOAD_CFG_OPTS";
+    private static final String ENV_VAR_NAME  = "hugegraph_LOAD_CFG_OPTS";
 
-    private static final Logger log = LoggerFactory.getLogger(ReflectiveConfigOptionLoader.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ReflectiveConfigOptionLoader.class);
 
     private volatile LoaderConfiguration cfg = new LoaderConfiguration();
 
@@ -82,9 +85,11 @@ public enum ReflectiveConfigOptionLoader {
     }
 
     /**
-     * Reflectively load types at most once over the life of this class. This method is synchronized and uses a static
-     * class field to ensure that it calls {@link #load()} only on the first invocation and does nothing thereafter.
-     * This is the right behavior as long as the classpath doesn't change in the middle of the enclosing JVM's lifetime.
+     * Reflectively load types at most once over the life of this class. This
+     * method is synchronized and uses a static class field to ensure that it
+     * calls {@link #load()} only on the first invocation and does nothing
+     * thereafter. This is the right behavior as long as the classpath doesn't
+     * change in the middle of the enclosing JVM's lifetime.
      */
     public void loadAll(Class<?> caller) {
 
@@ -106,23 +111,26 @@ public enum ReflectiveConfigOptionLoader {
             return;
 
         /*
-         * Aside from the classes in hugegraph-core, we can't guarantee the presence of these classes at runtime. That's
-         * why they're loaded reflectively. We could probably hard-code the initialization of the hugegraph-core
-         * classes, but the benefit isn't substantial.
+         * Aside from the classes in hugegraph-core, we can't guarantee the presence
+         * of these classes at runtime.  That's why they're loaded reflectively.
+         * We could probably hard-code the initialization of the hugegraph-core classes,
+         * but the benefit isn't substantial.
          */
-        List<String> classnames = ImmutableList.of("com.baidu.hugegraph.diskstorage.hbase.HBaseStoreManager",
-                "com.baidu.hugegraph.diskstorage.cassandra.astyanax.AstyanaxStoreManager",
-                "com.baidu.hugegraph.diskstorage.cassandra.AbstractCassandraStoreManager",
-                "com.baidu.hugegraph.diskstorage.cassandra.thrift.CassandraThriftStoreManager",
-                "com.baidu.hugegraph.diskstorage.es.ElasticSearchIndex",
-                "com.baidu.hugegraph.diskstorage.solr.SolrIndex", "com.baidu.hugegraph.diskstorage.log.kcvs.KCVSLog",
-                "com.baidu.hugegraph.diskstorage.log.kcvs.KCVSLogManager",
-                "com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration",
-                "com.baidu.hugegraph.graphdb.database.idassigner.placement.SimpleBulkPlacementStrategy",
-                "com.baidu.hugegraph.graphdb.database.idassigner.VertexIDAssigner",
-                // "com.baidu.hugegraph.graphdb.TestMockIndexProvider",
-                // "com.baidu.hugegraph.graphdb.TestMockLog",
-                "com.baidu.hugegraph.diskstorage.berkeleyje.BerkeleyJEStoreManager");
+        List<String> classnames = ImmutableList.of(
+            "com.baidu.hugegraph.diskstorage.hbase.HBaseStoreManager",
+            "com.baidu.hugegraph.diskstorage.cassandra.astyanax.AstyanaxStoreManager",
+            "com.baidu.hugegraph.diskstorage.cassandra.AbstractCassandraStoreManager",
+            "com.baidu.hugegraph.diskstorage.cassandra.thrift.CassandraThriftStoreManager",
+            "com.baidu.hugegraph.diskstorage.es.ElasticSearchIndex",
+            "com.baidu.hugegraph.diskstorage.solr.SolrIndex",
+            "com.baidu.hugegraph.diskstorage.log.kcvs.KCVSLog",
+            "com.baidu.hugegraph.diskstorage.log.kcvs.KCVSLogManager",
+            "com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration",
+            "com.baidu.hugegraph.graphdb.database.idassigner.placement.SimpleBulkPlacementStrategy",
+            "com.baidu.hugegraph.graphdb.database.idassigner.VertexIDAssigner",
+            //"com.baidu.hugegraph.graphdb.TestMockIndexProvider",
+            //"com.baidu.hugegraph.graphdb.TestMockLog",
+            "com.baidu.hugegraph.diskstorage.berkeleyje.BerkeleyJEStoreManager");
 
         Timer t = new Timer(TimestampProviders.MILLI);
         t.start();
@@ -162,15 +170,14 @@ public enum ReflectiveConfigOptionLoader {
             }
         }
 
-        log.info("Loaded and initialized config classes: {} OK out of {} attempts in {}", loadedClasses,
-                classnames.size(), t.elapsed());
+        log.info("Loaded and initialized config classes: {} OK out of {} attempts in {}", loadedClasses, classnames.size(), t.elapsed());
 
         cfg.standardInit = true;
     }
 
     private List<ClassLoader> getClassLoaders(LoaderConfiguration cfg, Class<?> caller) {
 
-        ImmutableList.Builder<ClassLoader> builder = ImmutableList.<ClassLoader> builder();
+        ImmutableList.Builder<ClassLoader> builder = ImmutableList.<ClassLoader>builder();
 
         builder.addAll(cfg.preferredLoaders);
         for (ClassLoader c : cfg.preferredLoaders)
@@ -192,20 +199,19 @@ public enum ReflectiveConfigOptionLoader {
     }
 
     /**
-     * Use reflection to iterate over the classpath looking for {@link PreInitializeConfigOptions} annotations, then
-     * load any such annotated types found. This method's runtime is roughly proportional to the number of elements in
-     * the classpath (and can be substantial).
+     * Use reflection to iterate over the classpath looking for
+     * {@link PreInitializeConfigOptions} annotations, then load any such
+     * annotated types found. This method's runtime is roughly proportional to
+     * the number of elements in the classpath (and can be substantial).
      */
     private synchronized void load(LoaderConfiguration cfg, Class<?> caller) {
         try {
             loadAllClassesUnsafe(cfg, caller);
         } catch (Throwable t) {
             // We could probably narrow the caught exception type to Error or maybe even just LinkageError,
-            // but in this case catching anything via Throwable seems appropriate. RuntimeException is
+            // but in this case catching anything via Throwable seems appropriate.  RuntimeException is
             // not sufficient -- it wouldn't even catch NoClassDefFoundError.
-            log.error(
-                    "Failed to iterate over classpath using Reflections; this usually indicates a broken classpath/classloader",
-                    PreInitializeConfigOptions.class, t);
+            log.error("Failed to iterate over classpath using Reflections; this usually indicates a broken classpath/classloader", PreInitializeConfigOptions.class, t);
         }
     }
 
@@ -232,18 +238,17 @@ public enum ReflectiveConfigOptionLoader {
             log.trace("Retaining classpath element {}", f);
         }
 
-        org.reflections.Configuration rc = new org.reflections.util.ConfigurationBuilder().setUrls(scanUrls)
-                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
+        org.reflections.Configuration rc = new org.reflections.util.ConfigurationBuilder()
+            .setUrls(scanUrls)
+            .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
         Reflections reflections = new Reflections(rc);
 
-        // for (Class<?> c : reflections.getSubTypesOf(Object.class)) { // Returns nothing
+        //for (Class<?> c : reflections.getSubTypesOf(Object.class)) {  // Returns nothing
         for (Class<?> c : reflections.getTypesAnnotatedWith(PreInitializeConfigOptions.class)) {
             try {
                 loadCount += loadSingleClassUnsafe(c);
             } catch (Throwable t) {
-                log.warn(
-                        "Failed to load class {} or its referenced types; this usually indicates a broken classpath/classloader",
-                        c, t);
+                log.warn("Failed to load class {} or its referenced types; this usually indicates a broken classpath/classloader", c, t);
                 errorCount++;
             }
         }
@@ -255,8 +260,8 @@ public enum ReflectiveConfigOptionLoader {
     /**
      * This method is based on ClasspathHelper.forClassLoader from Reflections.
      *
-     * We made our own copy to avoid dealing with bytecode-level incompatibilities introduced by changing method
-     * signatures between 0.9.9-RC1 and 0.9.9.
+     * We made our own copy to avoid dealing with bytecode-level incompatibilities
+     * introduced by changing method signatures between 0.9.9-RC1 and 0.9.9.
      *
      * @return A set of all URLs associated with URLClassLoaders in the argument
      */
@@ -309,7 +314,8 @@ public enum ReflectiveConfigOptionLoader {
 
     private static class LoaderConfiguration {
 
-        private static final Logger log = LoggerFactory.getLogger(LoaderConfiguration.class);
+        private static final Logger log =
+                LoggerFactory.getLogger(LoaderConfiguration.class);
 
         private final boolean enabled;
         private final List<ClassLoader> preferredLoaders;
@@ -318,8 +324,8 @@ public enum ReflectiveConfigOptionLoader {
         private volatile boolean allInit = false;
         private volatile boolean standardInit = false;
 
-        private LoaderConfiguration(boolean enabled, List<ClassLoader> preferredLoaders, boolean useCallerLoader,
-                boolean useThreadContextLoader) {
+        private LoaderConfiguration(boolean enabled, List<ClassLoader> preferredLoaders,
+                                    boolean useCallerLoader, boolean useThreadContextLoader) {
             this.enabled = enabled;
             this.preferredLoaders = preferredLoaders;
             this.useCallerLoader = useCallerLoader;
@@ -334,7 +340,8 @@ public enum ReflectiveConfigOptionLoader {
         }
 
         private boolean getEnabledByDefault() {
-            List<String> sources = Arrays.asList(System.getProperty(SYS_PROP_NAME), System.getenv(ENV_VAR_NAME));
+            List<String> sources =
+                    Arrays.asList(System.getProperty(SYS_PROP_NAME), System.getenv(ENV_VAR_NAME));
 
             for (String setting : sources) {
                 if (null != setting) {

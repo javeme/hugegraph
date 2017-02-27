@@ -33,8 +33,7 @@ public class ThriftLogTest extends KCVSLogTest {
 
     @Override
     public KeyColumnValueStoreManager openStorageManager() throws BackendException {
-        return new CassandraThriftStoreManager(
-                CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
+        return new CassandraThriftStoreManager(CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
     }
 
 }

@@ -45,14 +45,15 @@ import com.baidu.hugegraph.util.datastructures.IntSet;
 
 public class IDPoolTest {
 
+
+
     @Test
     public void testStandardIDPool1() throws InterruptedException {
         final MockIDAuthority idauth = new MockIDAuthority(200);
         testIDPoolWith(new IDPoolFactory() {
             @Override
             public StandardIDPool get(int partitionID) {
-                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(2000L),
-                        0.2);
+                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(2000L), 0.2);
             }
         }, 1000, 6, 100000);
     }
@@ -63,8 +64,7 @@ public class IDPoolTest {
         testIDPoolWith(new IDPoolFactory() {
             @Override
             public StandardIDPool get(int partitionID) {
-                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(4000),
-                        0.1);
+                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(4000), 0.1);
             }
         }, 2, 5, 10000);
     }
@@ -75,20 +75,19 @@ public class IDPoolTest {
         testIDPoolWith(new IDPoolFactory() {
             @Override
             public StandardIDPool get(int partitionID) {
-                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(2000),
-                        0.2);
+                return new StandardIDPool(idauth, partitionID, partitionID, Integer.MAX_VALUE, Duration.ofMillis(2000), 0.2);
             }
         }, 10, 20, 100000);
     }
 
-    private void testIDPoolWith(IDPoolFactory poolFactory, final int numPartitions, final int numThreads,
-            final int attemptsPerThread) throws InterruptedException {
+    private void testIDPoolWith(IDPoolFactory poolFactory, final int numPartitions,
+                                       final int numThreads, final int attemptsPerThread) throws InterruptedException {
         final Random random = new Random();
         final IntSet[] ids = new IntSet[numPartitions];
         final StandardIDPool[] idPools = new StandardIDPool[numPartitions];
         for (int i = 0; i < numPartitions; i++) {
             ids[i] = new IntHashSet(attemptsPerThread * numThreads / numPartitions);
-            int partition = i * 100;
+            int partition = i*100;
             idPools[i] = poolFactory.get(partition);
         }
 
@@ -111,20 +110,15 @@ public class IDPoolTest {
             });
             threads[i].start();
         }
-        for (int i = 0; i < numThreads; i++)
-            threads[i].join();
-        for (int i = 0; i < idPools.length; i++)
-            idPools[i].close();
-        // Verify consecutive id assignment
+        for (int i = 0; i < numThreads; i++) threads[i].join();
+        for (int i = 0; i < idPools.length; i++) idPools[i].close();
+        //Verify consecutive id assignment
         for (int i = 0; i < ids.length; i++) {
             IntSet set = ids[i];
             int max = 0;
             int[] all = set.getAll();
-            for (int j = 0; j < all.length; j++)
-                if (all[j] > max)
-                    max = all[j];
-            for (int j = 1; j <= max; j++)
-                assertTrue(i + " contains: " + j, set.contains(j));
+            for (int j=0;j<all.length;j++) if (all[j]>max) max=all[j];
+            for (int j=1;j<=max;j++) assertTrue(i+ " contains: " + j,set.contains(j));
         }
     }
 
@@ -185,7 +179,8 @@ public class IDPoolTest {
             }
 
             @Override
-            public boolean supportsInterruption() {
+            public boolean supportsInterruption()
+            {
                 return true;
             }
         });
@@ -203,8 +198,7 @@ public class IDPoolTest {
         expect(mockAuthority.supportsInterruption()).andStubReturn(true);
 
         ctrl.replay();
-        StandardIDPool pool =
-                new StandardIDPool(mockAuthority, partition, idNamespace, Integer.MAX_VALUE, timeout, 0.1);
+        StandardIDPool pool = new StandardIDPool(mockAuthority, partition, idNamespace, Integer.MAX_VALUE, timeout, 0.1);
         try {
             pool.nextID();
             fail();

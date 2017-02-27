@@ -23,16 +23,16 @@ import java.util.Optional;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class FulgoraElementTraversal<S, E> extends DefaultGraphTraversal<S, E> {
+public class FulgoraElementTraversal<S, E>  extends DefaultGraphTraversal<S, E> {
 
     private final HugeGraphTransaction graph;
 
     private FulgoraElementTraversal(final HugeGraphTransaction graph) {
         super(graph);
-        this.graph = graph;
+        this.graph=graph;
     }
 
-    public static <S, E> FulgoraElementTraversal<S, E> of(final HugeGraphTransaction graph) {
+    public static<S,E> FulgoraElementTraversal<S,E> of(final HugeGraphTransaction graph) {
         return new FulgoraElementTraversal<>(graph);
     }
 

@@ -30,22 +30,22 @@ import java.util.concurrent.ExecutionException;
  */
 public class RelationQueryCache implements AutoCloseable {
 
-    private final Cache<Long, CacheEntry> cache;
+    private final Cache<Long,CacheEntry> cache;
     private final EdgeSerializer edgeSerializer;
 
-    private final EnumMap<RelationCategory, SliceQuery> relationTypes;
+    private final EnumMap<RelationCategory,SliceQuery> relationTypes;
 
     public RelationQueryCache(EdgeSerializer edgeSerializer) {
-        this(edgeSerializer, 256);
+        this(edgeSerializer,256);
     }
 
     public RelationQueryCache(EdgeSerializer edgeSerializer, int capacity) {
         this.edgeSerializer = edgeSerializer;
-        this.cache = CacheBuilder.newBuilder().maximumSize(capacity * 3 / 2).initialCapacity(capacity)
+        this.cache = CacheBuilder.newBuilder().maximumSize(capacity*3/2).initialCapacity(capacity)
                 .concurrencyLevel(2).build();
         relationTypes = new EnumMap<RelationCategory, SliceQuery>(RelationCategory.class);
         for (RelationCategory rt : RelationCategory.values()) {
-            relationTypes.put(rt, edgeSerializer.getQuery(rt, false));
+            relationTypes.put(rt,edgeSerializer.getQuery(rt,false));
         }
     }
 
@@ -56,16 +56,16 @@ public class RelationQueryCache implements AutoCloseable {
     public SliceQuery getQuery(final InternalRelationType type, Direction dir) {
         CacheEntry ce;
         try {
-            ce = cache.get(type.longId(), new Callable<CacheEntry>() {
+            ce = cache.get(type.longId(),new Callable<CacheEntry>() {
                 @Override
                 public CacheEntry call() throws Exception {
-                    return new CacheEntry(edgeSerializer, type);
+                    return new CacheEntry(edgeSerializer,type);
                 }
             });
         } catch (ExecutionException e) {
             throw new AssertionError("Should not happen: " + e.getMessage());
         }
-        assert ce != null;
+        assert ce!=null;
         return ce.get(dir);
     }
 
@@ -82,29 +82,25 @@ public class RelationQueryCache implements AutoCloseable {
 
         public CacheEntry(EdgeSerializer edgeSerializer, InternalRelationType t) {
             if (t.isPropertyKey()) {
-                out = edgeSerializer.getQuery(t, Direction.OUT,
-                        new EdgeSerializer.TypedInterval[t.getSortKey().length]);
+                out = edgeSerializer.getQuery(t, Direction.OUT,new EdgeSerializer.TypedInterval[t.getSortKey().length]);
                 in = out;
                 both = out;
             } else {
-                out = edgeSerializer.getQuery(t, Direction.OUT,
+                out = edgeSerializer.getQuery(t,Direction.OUT,
+                            new EdgeSerializer.TypedInterval[t.getSortKey().length]);
+                in = edgeSerializer.getQuery(t,Direction.IN,
                         new EdgeSerializer.TypedInterval[t.getSortKey().length]);
-                in = edgeSerializer.getQuery(t, Direction.IN, new EdgeSerializer.TypedInterval[t.getSortKey().length]);
-                both = edgeSerializer.getQuery(t, Direction.BOTH,
+                both = edgeSerializer.getQuery(t,Direction.BOTH,
                         new EdgeSerializer.TypedInterval[t.getSortKey().length]);
             }
         }
 
         public SliceQuery get(Direction dir) {
             switch (dir) {
-                case IN:
-                    return in;
-                case OUT:
-                    return out;
-                case BOTH:
-                    return both;
-                default:
-                    throw new AssertionError("Unknown direction: " + dir);
+                case IN: return in;
+                case OUT: return out;
+                case BOTH: return both;
+                default: throw new AssertionError("Unknown direction: " + dir);
             }
         }
 

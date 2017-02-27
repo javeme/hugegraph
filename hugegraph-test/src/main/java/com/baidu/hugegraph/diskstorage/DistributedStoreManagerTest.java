@@ -29,16 +29,16 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyRange;
 import com.baidu.hugegraph.testcategory.OrderedKeyStoreTests;
 
 public abstract class DistributedStoreManagerTest<T extends DistributedStoreManager> {
-
+    
     protected T manager;
     protected KeyColumnValueStore store;
-
+    
     @Test
     @Category({ OrderedKeyStoreTests.class })
     public void testGetDeployment() {
         assertEquals(Deployment.LOCAL, manager.getDeployment());
     }
-
+    
     @Test
     @Category({ OrderedKeyStoreTests.class })
     public void testGetLocalKeyPartition() throws BackendException {

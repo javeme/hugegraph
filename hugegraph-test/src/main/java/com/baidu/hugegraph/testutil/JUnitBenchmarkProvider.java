@@ -47,18 +47,20 @@ import com.carrotsearch.junitbenchmarks.XMLConsumer;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * JUB can write the results of a single JVM run to an XML file, but it does not support appending to an existing file.
- * When given a path to an existing file, it silently overwrites the old contents. This is unusable in a
- * fork-per-test-class surefire configuration. The results of each test class overwrite those previous, so that the only
- * results still readable at the end of a test run are those of the final class executed.
+ * JUB can write the results of a single JVM run to an XML file, but it does not
+ * support appending to an existing file. When given a path to an existing file,
+ * it silently overwrites the old contents. This is unusable in a
+ * fork-per-test-class surefire configuration. The results of each test class
+ * overwrite those previous, so that the only results still readable at the end
+ * of a test run are those of the final class executed.
  * <p>
- * This class exists to configure JUB programmatically and avoid the annoying behavior of the system-property-configured
- * XMLConsumer.
+ * This class exists to configure JUB programmatically and avoid the annoying
+ * behavior of the system-property-configured XMLConsumer.
  */
 public class JUnitBenchmarkProvider {
 
     public static final String ENV_EFFORT_GENERATE = "JUB_EFFORT_GENERATE";
-    public static final String ENV_EFFORT_FILE = "JUB_EFFORT_FILE";
+    public static final String ENV_EFFORT_FILE  = "JUB_EFFORT_FILE";
     public static final String ENV_DEFAULT_ROUNDS = "JUB_DEFAULT_ROUNDS";
     public static final String ENV_WARMUP_ROUNDS = "JUB_WARMUP_ROUNDS";
     public static final String ENV_TARGET_RUNTIME_MS = "JUB_TARGET_RUNTIME_MS";
@@ -81,12 +83,15 @@ public class JUnitBenchmarkProvider {
     /**
      * Get a JUnitBenchmarks rule configured for HugeGraph performance testing.
      * <p>
-     * The returned rule will write results to an XML file named jub.(abs(current nanotime)).xml and to the console.
+     * The returned rule will write results to an XML file named
+     * jub.(abs(current nanotime)).xml and to the console.
      * <p>
-     * This method concentrates our JUB configuration in a single code block and gives us programmatic flexibility that
-     * exceeds the limited flexibility of configuring JUB through its hardcoded global system properties. It also
-     * converts the IOException that XMLConsumer's constructor can throw into a RuntimeException. In test classes, this
-     * conversion is the difference between:
+     * This method concentrates our JUB configuration in a single code block and
+     * gives us programmatic flexibility that exceeds the limited flexibility of
+     * configuring JUB through its hardcoded global system properties. It also
+     * converts the IOException that XMLConsumer's constructor can throw into a
+     * RuntimeException. In test classes, this conversion is the difference
+     * between:
      *
      * <pre>
      * {@literal @}Rule
@@ -121,21 +126,25 @@ public class JUnitBenchmarkProvider {
     }
 
     /**
-     * Like {@link #get()}, except extra JUB Results consumers can be attached to the returned rule.
+     * Like {@link #get()}, except extra JUB Results consumers can be attached
+     * to the returned rule.
      *
-     * @param additionalConsumers extra JUB results consumers to apply in the returned rule object
+     * @param additionalConsumers
+     *            extra JUB results consumers to apply in the returned rule
+     *            object
      * @return a BenchmarkRule ready for use with the JUnit @Rule annotation
      */
-    public static TestRule get(IResultsConsumer...additionalConsumers) {
+    public static TestRule get(IResultsConsumer... additionalConsumers) {
         return new AdjustableRoundsBenchmarkRule(efforts, getConsumers(additionalConsumers));
     }
 
     /**
-     * Get a filename from {@link #ENV_EFFORT_FILE}, then open the file and read method execution multipliers from it.
-     * Such a file can be produced using {@link TimeScaleConsumer}.
+     * Get a filename from {@link #ENV_EFFORT_FILE}, then open the file and read
+     * method execution multipliers from it. Such a file can be produced using
+     * {@link TimeScaleConsumer}.
      *
-     * @return map of classname + '.' + methodname to the number of iterations needed to run for at least
-     *         {@link #TARGET_RUNTIME_MS}
+     * @return map of classname + '.' + methodname to the number of iterations
+     *         needed to run for at least {@link #TARGET_RUNTIME_MS}
      */
     private static Map<String, Integer> loadScalarsFromEnvironment() {
 
@@ -164,7 +173,7 @@ public class JUnitBenchmarkProvider {
         }
     }
 
-    private static IResultsConsumer[] getConsumers(IResultsConsumer...additional) {
+    private static IResultsConsumer[] getConsumers(IResultsConsumer... additional) {
         try {
             return getConsumersUnsafe(additional);
         } catch (IOException e) {
@@ -172,7 +181,7 @@ public class JUnitBenchmarkProvider {
         }
     }
 
-    private static IResultsConsumer[] getConsumersUnsafe(IResultsConsumer...additional) throws IOException {
+    private static IResultsConsumer[] getConsumersUnsafe(IResultsConsumer... additional) throws IOException {
         List<IResultsConsumer> consumers = new ArrayList<IResultsConsumer>();
         consumers.add(new XMLConsumer(new File("jub." + Math.abs(System.nanoTime()) + ".xml")));
         consumers.add(new WriterConsumer()); // defaults to System.out
@@ -218,8 +227,8 @@ public class JUnitBenchmarkProvider {
             }
 
             int t = 0;
-            String name = tokens[t++];
-            String rawscalar = tokens[t++];
+            String name       = tokens[t++];
+            String rawscalar  = tokens[t++];
             assert tokensPerLine == t;
 
             assert null != name;
@@ -286,17 +295,17 @@ public class JUnitBenchmarkProvider {
     }
 
     private static BenchmarkOptions getDefaultBenchmarkOptions(int rounds) {
-        return (BenchmarkOptions) Proxy.newProxyInstance(JUnitBenchmarkProvider.class.getClassLoader(), // which
-                                                                                                        // classloader
-                                                                                                        // is correct?
-                new Class[] { BenchmarkOptions.class }, new DefaultBenchmarkOptionsHandler(rounds));
+        return (BenchmarkOptions)Proxy.newProxyInstance(
+                JUnitBenchmarkProvider.class.getClassLoader(), // which classloader is correct?
+                new Class[] { BenchmarkOptions.class },
+                new DefaultBenchmarkOptionsHandler(rounds));
     }
 
     private static BenchmarkOptions getWrappedBenchmarkOptions(BenchmarkOptions base, int rounds) {
-        return (BenchmarkOptions) Proxy.newProxyInstance(JUnitBenchmarkProvider.class.getClassLoader(), // which
-                                                                                                        // classloader
-                                                                                                        // is correct?
-                new Class[] { BenchmarkOptions.class }, new WrappedBenchmarkOptionsHandler(base, rounds));
+        return (BenchmarkOptions)Proxy.newProxyInstance(
+                JUnitBenchmarkProvider.class.getClassLoader(), // which classloader is correct?
+                new Class[] { BenchmarkOptions.class },
+                new WrappedBenchmarkOptionsHandler(base, rounds));
     }
 
     private static int loadIntFromEnvironment(String envKey, int dfl) {
@@ -315,17 +324,19 @@ public class JUnitBenchmarkProvider {
         return dfl;
     }
 
+
     /**
-     * This class uses particularly awkward and inelegant encapsulation. I don't have much flexibility to improve it
-     * because both JUnit and JUnitBenchmarks aggressively prohibit inheritance through final and restrictive
-     * method/constructor visibility.
+     * This class uses particularly awkward and inelegant encapsulation. I don't
+     * have much flexibility to improve it because both JUnit and
+     * JUnitBenchmarks aggressively prohibit inheritance through final and
+     * restrictive method/constructor visibility.
      */
     private static class AdjustableRoundsBenchmarkRule implements TestRule {
 
         private final BenchmarkRule rule;
         private final Map<String, Integer> efforts;
 
-        public AdjustableRoundsBenchmarkRule(Map<String, Integer> efforts, IResultsConsumer...consumers) {
+        public AdjustableRoundsBenchmarkRule(Map<String, Integer> efforts, IResultsConsumer... consumers) {
             rule = new BenchmarkRule(consumers);
             this.efforts = efforts;
         }
@@ -343,7 +354,7 @@ public class JUnitBenchmarkProvider {
 
             for (Annotation a : annotations) {
                 if (a.annotationType().equals(BenchmarkOptions.class)) {
-                    final BenchmarkOptions old = (BenchmarkOptions) a;
+                    final BenchmarkOptions old = (BenchmarkOptions)a;
                     BenchmarkOptions replacement = getWrappedBenchmarkOptions(old, rounds);
                     modifiedAnnotations.add(replacement);
                     log.debug("Modified BenchmarkOptions annotation on {}", mname);
@@ -362,8 +373,10 @@ public class JUnitBenchmarkProvider {
                         new Object[] { opts, opts.annotationType(), mname });
             }
 
-            Description roundsAdjustedDesc = Description.createTestDescription(clazz, mname,
-                    modifiedAnnotations.toArray(new Annotation[modifiedAnnotations.size()]));
+            Description roundsAdjustedDesc =
+                    Description.createTestDescription(
+                            clazz, mname,
+                            modifiedAnnotations.toArray(new Annotation[modifiedAnnotations.size()]));
             return rule.apply(base, roundsAdjustedDesc);
         }
 
@@ -389,7 +402,8 @@ public class JUnitBenchmarkProvider {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
-                throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                throws IllegalAccessException, IllegalArgumentException,
+                InvocationTargetException {
             if (method.getName().equals("benchmarkRounds")) {
                 log.trace("Intercepted benchmarkRounds() invocation: returning {}", rounds);
                 return rounds;
@@ -418,7 +432,8 @@ public class JUnitBenchmarkProvider {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
-                throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                throws IllegalAccessException, IllegalArgumentException,
+                InvocationTargetException {
             if (method.getName().equals("benchmarkRounds")) {
                 log.trace("Intercepted benchmarkRounds() invocation: returning {}", rounds);
                 return rounds;
@@ -427,8 +442,7 @@ public class JUnitBenchmarkProvider {
                 log.trace("Intercepted warmupRounds() invocation: returning {}", WARMUP_ROUNDS);
                 return WARMUP_ROUNDS;
             }
-            log.trace("Delegating intercepted invocation of method {} to wrapped base instance {}", method.getName(),
-                    base);
+            log.trace("Delegating intercepted invocation of method {} to wrapped base instance {}", method.getName(), base);
             return method.invoke(base, args);
         }
 

@@ -1,6 +1,6 @@
-The **JanusGraph Bus** describes a collection of configurable logs to which JanusGraph writes changes to the graph and its management. The JanusGraph Bus is used for internal (i.e. between multiple JanusGraph instances) and external (i.e. integration with other systems) communication.
+The **hugegraph Bus** describes a collection of configurable logs to which hugegraph writes changes to the graph and its management. The hugegraph Bus is used for internal (i.e. between multiple hugegraph instances) and external (i.e. integration with other systems) communication.
 
-In particular, JanusGraph maintains three separate logs:
+In particular, hugegraph maintains three separate logs:
 
 ## Trigger Log
 The purpose of the trigger log is to capture the mutations of a transaction so that the resulting changes to the graph can trigger events in other system. Such events may be propagating the change to other data stores, view maintenance, or aggregate computation.
@@ -13,7 +13,7 @@ In this case, the identifier is "purchase" which means that the mutations of thi
 
 ## Transaction Log
 
-The transaction log is maintained by JanusGraph and contains two entries for each transaction if enabled:
+The transaction log is maintained by hugegraph and contains two entries for each transaction if enabled:
 1. Pre-Commit: Before the changes are persisted to the storage and indexing backends, the changes are compiled and written to the log.
 2. Post-Commit: The success status of the transaction is written to the log.
 
@@ -23,4 +23,4 @@ The transaction log can be enabled via the root-level configuration option "log-
 
 ## Management Log
 
-The management log is maintained by JanusGraph internally to communicate and persist all changes to global configuration options or the graph schema.
+The management log is maintained by hugegraph internally to communicate and persist all changes to global configuration options or the graph schema.

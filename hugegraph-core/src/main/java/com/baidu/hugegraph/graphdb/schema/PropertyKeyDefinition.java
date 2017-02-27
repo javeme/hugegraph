@@ -27,7 +27,7 @@ public class PropertyKeyDefinition extends RelationTypeDefinition {
     private final Class<?> dataType;
 
     public PropertyKeyDefinition(String name, long id, Cardinality cardinality, Class dataType) {
-        this(name, id, Multiplicity.convert(cardinality), dataType);
+        this(name,id,Multiplicity.convert(cardinality),dataType);
     }
 
     public PropertyKeyDefinition(String name, long id, Multiplicity multiplicity, Class dataType) {
@@ -36,7 +36,7 @@ public class PropertyKeyDefinition extends RelationTypeDefinition {
     }
 
     public PropertyKeyDefinition(PropertyKey key) {
-        this(key.name(), key.longId(), key.cardinality(), key.dataType());
+        this(key.name(),key.longId(),key.cardinality(),key.dataType());
     }
 
     public Class<?> getDataType() {
@@ -45,7 +45,7 @@ public class PropertyKeyDefinition extends RelationTypeDefinition {
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return dir == Direction.OUT;
+        return dir==Direction.OUT;
     }
 
 }

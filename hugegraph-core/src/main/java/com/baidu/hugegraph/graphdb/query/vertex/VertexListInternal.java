@@ -18,8 +18,8 @@ import com.baidu.hugegraph.core.HugeGraphVertex;
 import com.baidu.hugegraph.core.VertexList;
 
 /**
- * Extends on the {@link VertexList} interface by provided methods to add elements to the list which is needed during
- * query execution when the result list is created.
+ * Extends on the {@link VertexList} interface by provided methods to add elements to the list
+ * which is needed during query execution when the result list is created.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */

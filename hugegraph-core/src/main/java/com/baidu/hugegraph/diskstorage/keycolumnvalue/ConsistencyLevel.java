@@ -32,12 +32,13 @@ public enum ConsistencyLevel {
     KEY_CONSISTENT,
 
     /**
-     * Consistency level which ensures that operations on a {@link KeyColumnValueStore} are key-consistent with respect
-     * to a local cluster where multiple local clusters form the entire (global) cluster. In other words,
-     * {@link #KEY_CONSISTENT} ensures key consistency across the entire global cluster whereas this is restricted to
-     * the local cluster.
+     * Consistency level which ensures that operations on a {@link KeyColumnValueStore} are key-consistent with
+     * respect to a local cluster where multiple local clusters form the entire (global) cluster.
+     * In other words, {@link #KEY_CONSISTENT} ensures key consistency across the entire global cluster whereas this
+     * is restricted to the local cluster.
      */
     LOCAL_KEY_CONSISTENT;
+
 
     public boolean isKeyConsistent() {
         switch (this) {
@@ -46,8 +47,7 @@ public enum ConsistencyLevel {
                 return true;
             case DEFAULT:
                 return false;
-            default:
-                throw new AssertionError(this.toString());
+            default: throw new AssertionError(this.toString());
         }
     }
 

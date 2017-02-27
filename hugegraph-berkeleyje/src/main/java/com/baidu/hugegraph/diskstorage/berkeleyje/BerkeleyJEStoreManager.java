@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage.berkeleyje;
 
+
 import com.google.common.base.Preconditions;
 import com.sleepycat.je.*;
 import com.baidu.hugegraph.diskstorage.*;
@@ -49,19 +50,23 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
 
     private static final Logger log = LoggerFactory.getLogger(BerkeleyJEStoreManager.class);
 
-    public static final ConfigNamespace BERKELEY_NS = new ConfigNamespace(GraphDatabaseConfiguration.STORAGE_NS,
-            "berkeleyje", "BerkeleyDB JE configuration options");
+    public static final ConfigNamespace BERKELEY_NS =
+            new ConfigNamespace(GraphDatabaseConfiguration.STORAGE_NS, "berkeleyje", "BerkeleyDB JE configuration options");
 
-    public static final ConfigOption<Integer> JVM_CACHE = new ConfigOption<Integer>(BERKELEY_NS, "cache-percentage",
-            "Percentage of JVM heap reserved for BerkeleyJE's cache", ConfigOption.Type.MASKABLE, 65,
-            ConfigOption.positiveInt());
+    public static final ConfigOption<Integer> JVM_CACHE =
+            new ConfigOption<Integer>(BERKELEY_NS,"cache-percentage",
+            "Percentage of JVM heap reserved for BerkeleyJE's cache",
+            ConfigOption.Type.MASKABLE, 65, ConfigOption.positiveInt());
 
     public static final ConfigOption<String> LOCK_MODE =
-            new ConfigOption<>(BERKELEY_NS, "lock-mode", "The BDB record lock mode used for read operations",
-                    ConfigOption.Type.MASKABLE, String.class, LockMode.DEFAULT.toString(), disallowEmpty(String.class));
+            new ConfigOption<>(BERKELEY_NS, "lock-mode",
+            "The BDB record lock mode used for read operations",
+            ConfigOption.Type.MASKABLE, String.class, LockMode.DEFAULT.toString(), disallowEmpty(String.class));
 
-    public static final ConfigOption<String> ISOLATION_LEVEL = new ConfigOption<>(BERKELEY_NS, "isolation-level",
-            "The isolation level used by transactions", ConfigOption.Type.MASKABLE, String.class,
+    public static final ConfigOption<String> ISOLATION_LEVEL =
+            new ConfigOption<>(BERKELEY_NS, "isolation-level",
+            "The isolation level used by transactions",
+            ConfigOption.Type.MASKABLE,  String.class,
             IsolationLevel.REPEATABLE_READ.toString(), disallowEmpty(String.class));
 
     private final Map<String, BerkeleyJEKeyValueStore> stores;
@@ -76,23 +81,28 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
         int cachePercentage = configuration.get(JVM_CACHE);
         initialize(cachePercentage);
 
-        features = new StandardStoreFeatures.Builder().orderedScan(true).transactional(transactional)
-                .keyConsistent(GraphDatabaseConfiguration.buildGraphConfiguration())
-                .locking(true).keyOrdered(true).scanTxConfig(GraphDatabaseConfiguration.buildGraphConfiguration()
-                        .set(ISOLATION_LEVEL, IsolationLevel.READ_UNCOMMITTED.toString()))
-                .supportsInterruption(false).build();
+        features = new StandardStoreFeatures.Builder()
+                    .orderedScan(true)
+                    .transactional(transactional)
+                    .keyConsistent(GraphDatabaseConfiguration.buildGraphConfiguration())
+                    .locking(true)
+                    .keyOrdered(true)
+                    .scanTxConfig(GraphDatabaseConfiguration.buildGraphConfiguration()
+                            .set(ISOLATION_LEVEL, IsolationLevel.READ_UNCOMMITTED.toString()))
+                    .supportsInterruption(false)
+                    .build();
 
-        // features = new StoreFeatures();
-        // features.supportsOrderedScan = true;
-        // features.supportsUnorderedScan = false;
-        // features.supportsBatchMutation = false;
-        // features.supportsTxIsolation = transactional;
-        // features.supportsConsistentKeyOperations = true;
-        // features.supportsLocking = true;
-        // features.isKeyOrdered = true;
-        // features.isDistributed = false;
-        // features.hasLocalKeyPartition = false;
-        // features.supportsMultiQuery = false;
+//        features = new StoreFeatures();
+//        features.supportsOrderedScan = true;
+//        features.supportsUnorderedScan = false;
+//        features.supportsBatchMutation = false;
+//        features.supportsTxIsolation = transactional;
+//        features.supportsConsistentKeyOperations = true;
+//        features.supportsLocking = true;
+//        features.isKeyOrdered = true;
+//        features.isDistributed = false;
+//        features.hasLocalKeyPartition = false;
+//        features.supportsMultiQuery = false;
     }
 
     private void initialize(int cachePercent) throws BackendException {
@@ -107,8 +117,9 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
                 envConfig.setConfigParam(EnvironmentConfig.ENV_RUN_CLEANER, "false");
             }
 
-            // Open the environment
+            //Open the environment
             environment = new Environment(directory, envConfig);
+
 
         } catch (DatabaseException e) {
             throw new PermanentBackendException("Error during BerkeleyJE initialization: ", e);
@@ -131,15 +142,15 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
         try {
             Transaction tx = null;
 
-            Configuration effectiveCfg = new MergedConfiguration(txCfg.getCustomOptions(), getStorageConfig());
+            Configuration effectiveCfg =
+                    new MergedConfiguration(txCfg.getCustomOptions(), getStorageConfig());
 
             if (transactional) {
                 TransactionConfig txnConfig = new TransactionConfig();
-                ConfigOption.getEnumValue(effectiveCfg.get(ISOLATION_LEVEL), IsolationLevel.class).configure(txnConfig);
+                ConfigOption.getEnumValue(effectiveCfg.get(ISOLATION_LEVEL),IsolationLevel.class).configure(txnConfig);
                 tx = environment.beginTransaction(null, txnConfig);
             }
-            BerkeleyJETx btx =
-                    new BerkeleyJETx(tx, ConfigOption.getEnumValue(effectiveCfg.get(LOCK_MODE), LockMode.class), txCfg);
+            BerkeleyJETx btx = new BerkeleyJETx(tx, ConfigOption.getEnumValue(effectiveCfg.get(LOCK_MODE),LockMode.class), txCfg);
 
             if (log.isTraceEnabled()) {
                 log.trace("Berkeley tx created", new TransactionBegin(btx.toString()));
@@ -184,7 +195,7 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
 
     @Override
     public void mutateMany(Map<String, KVMutation> mutations, StoreTransaction txh) throws BackendException {
-        for (Map.Entry<String, KVMutation> muts : mutations.entrySet()) {
+        for (Map.Entry<String,KVMutation> muts : mutations.entrySet()) {
             BerkeleyJEKeyValueStore store = openDatabase(muts.getKey());
             KVMutation mut = muts.getValue();
 
@@ -196,13 +207,13 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
 
             if (mut.hasAdditions()) {
                 for (KeyValueEntry entry : mut.getAdditions()) {
-                    store.insert(entry.getKey(), entry.getValue(), txh);
+                    store.insert(entry.getKey(),entry.getValue(),txh);
                     log.trace("Insertion on {}: {}", muts.getKey(), entry);
                 }
             }
             if (mut.hasDeletions()) {
                 for (StaticBuffer del : mut.getDeletions()) {
-                    store.delete(del, txh);
+                    store.delete(del,txh);
                     log.trace("Deletion on {}: {}", muts.getKey(), del);
                 }
             }
@@ -218,6 +229,7 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
         log.debug("Removed database {}", name);
     }
 
+
     @Override
     public void close() throws BackendException {
         if (environment != null) {
@@ -225,10 +237,10 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
                 throw new IllegalStateException("Cannot shutdown manager since some databases are still open");
             try {
                 // TODO this looks like a race condition
-                // Wait just a little bit before closing so that independent transaction threads can clean up.
+                //Wait just a little bit before closing so that independent transaction threads can clean up.
                 Thread.sleep(30);
             } catch (InterruptedException e) {
-                // Ignore
+                //Ignore
             }
             try {
                 environment.close();
@@ -242,8 +254,7 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
     @Override
     public void clearStorage() throws BackendException {
         if (!stores.isEmpty())
-            throw new IllegalStateException(
-                    "Cannot delete store, since database is open: " + stores.keySet().toString());
+            throw new IllegalStateException("Cannot delete store, since database is open: " + stores.keySet().toString());
 
         Transaction tx = null;
         for (String db : environment.getDatabaseNames()) {
@@ -259,27 +270,25 @@ public class BerkeleyJEStoreManager extends LocalStoreManager implements Ordered
         return getClass().getSimpleName() + ":" + directory.toString();
     }
 
+
     public static enum IsolationLevel {
         READ_UNCOMMITTED {
             @Override
             void configure(TransactionConfig cfg) {
                 cfg.setReadUncommitted(true);
             }
-        },
-        READ_COMMITTED {
+        }, READ_COMMITTED {
             @Override
             void configure(TransactionConfig cfg) {
                 cfg.setReadCommitted(true);
 
             }
-        },
-        REPEATABLE_READ {
+        }, REPEATABLE_READ {
             @Override
             void configure(TransactionConfig cfg) {
                 // This is the default and has no setter
             }
-        },
-        SERIALIZABLE {
+        }, SERIALIZABLE {
             @Override
             void configure(TransactionConfig cfg) {
                 cfg.setSerializableIsolation(true);

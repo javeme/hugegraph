@@ -1,9 +1,9 @@
-/janusgraph-hbase-*/.settings/
-/janusgraph-hbase-*/.project
-/janusgraph-hbase-*/.classpath
-/janusgraph-hbase-*/bin/
-/janusgraph-hbase-*/conf/
-/janusgraph-hbase-*/logs/
+/hugegraph-hbase-*/.settings/
+/hugegraph-hbase-*/.project
+/hugegraph-hbase-*/.classpath
+/hugegraph-hbase-*/bin/
+/hugegraph-hbase-*/conf/
+/hugegraph-hbase-*/logs/
 *~
 .classpath
 .project

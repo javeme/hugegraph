@@ -41,7 +41,8 @@ public class BerkeleyGraphTest extends HugeGraphTest {
     @Rule
     public TestName methodNameRule = new TestName();
 
-    private static final Logger log = LoggerFactory.getLogger(BerkeleyGraphTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(BerkeleyGraphTest.class);
 
     @Override
     public WriteConfiguration getConfiguration() {
@@ -54,7 +55,7 @@ public class BerkeleyGraphTest extends HugeGraphTest {
         } else {
             IsolationLevel iso = null;
             if (mcfg.has(BerkeleyJEStoreManager.ISOLATION_LEVEL)) {
-                iso = ConfigOption.getEnumValue(mcfg.get(BerkeleyJEStoreManager.ISOLATION_LEVEL), IsolationLevel.class);
+                iso = ConfigOption.getEnumValue(mcfg.get(BerkeleyJEStoreManager.ISOLATION_LEVEL),IsolationLevel.class);
             }
             log.debug("Using isolation level {} (null means adapter default) for test method {}", iso, methodName);
         }
@@ -67,9 +68,7 @@ public class BerkeleyGraphTest extends HugeGraphTest {
         // This could be enforced with a JUnit assertion instead of a Precondition,
         // but a failure here indicates a problem in the test itself rather than the
         // system-under-test, so a Precondition seems more appropriate
-        IsolationLevel effective = ConfigOption.getEnumValue(
-                config.get(ConfigElement.getPath(BerkeleyJEStoreManager.ISOLATION_LEVEL), String.class),
-                IsolationLevel.class);
+        IsolationLevel effective = ConfigOption.getEnumValue(config.get(ConfigElement.getPath(BerkeleyJEStoreManager.ISOLATION_LEVEL), String.class),IsolationLevel.class);
         Preconditions.checkState(IsolationLevel.SERIALIZABLE.equals(effective));
         super.testConsistencyEnforcement();
     }
@@ -81,11 +80,12 @@ public class BerkeleyGraphTest extends HugeGraphTest {
 
     @Override
     public void testConcurrentConsistencyEnforcement() {
-        // Do nothing TODO: Figure out why this is failing in BerkeleyDB!!
+        //Do nothing TODO: Figure out why this is failing in BerkeleyDB!!
     }
 
     @Test
-    public void testIDBlockAllocationTimeout() {
+    public void testIDBlockAllocationTimeout()
+    {
         config.set("ids.authority.wait-time", Duration.of(0L, ChronoUnit.NANOS));
         config.set("ids.renew-timeout", Duration.of(1L, ChronoUnit.MILLIS));
         close();
@@ -105,6 +105,6 @@ public class BerkeleyGraphTest extends HugeGraphTest {
         // Must be able to reopen
         open(config);
 
-        assertEquals(0L, (long) graph.traversal().V().count().next());
+        assertEquals(0L, (long)graph.traversal().V().count().next());
     }
 }

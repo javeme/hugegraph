@@ -17,8 +17,8 @@ package com.baidu.hugegraph.graphdb.query;
 /**
  * A BackendQuery is a query that can be updated to a new limit.
  * </p>
- * This is useful in query execution where the query limit is successively relaxed to find all the needed elements of
- * the result set.
+ * This is useful in query execution where the query limit is successively relaxed to find all the needed elements
+ * of the result set.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */

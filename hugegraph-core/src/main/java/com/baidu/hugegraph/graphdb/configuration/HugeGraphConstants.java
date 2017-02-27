@@ -30,7 +30,7 @@ import java.util.Properties;
  */
 public class HugeGraphConstants {
 
-    public static final String JANUSGRAPH_PROPERTIES_FILE = "hugegraph.internal.properties";
+    public static final String hugegraph_PROPERTIES_FILE = "hugegraph.internal.properties";
 
     /**
      * Runtime version of HugeGraph, as read from a properties file inside the core jar
@@ -45,18 +45,18 @@ public class HugeGraphConstants {
     static {
 
         /*
-         * Preempt some potential NPEs with Preconditions bearing messages. They are unlikely to fail outside of some
-         * crazy test environment. Still, if something goes horribly wrong, even a cryptic error message is better than
-         * a message-less NPE.
+         * Preempt some potential NPEs with Preconditions bearing messages. They
+         * are unlikely to fail outside of some crazy test environment. Still,
+         * if something goes horribly wrong, even a cryptic error message is
+         * better than a message-less NPE.
          */
         Package p = HugeGraphConstants.class.getPackage();
         Preconditions.checkNotNull(p, "Unable to load package containing class " + HugeGraphConstants.class);
         String packageName = p.getName();
         Preconditions.checkNotNull(packageName, "Unable to get name of package containing " + HugeGraphConstants.class);
-        String resourceName = packageName.replace('.', '/') + "/" + JANUSGRAPH_PROPERTIES_FILE;
+        String resourceName = packageName.replace('.', '/') + "/" + hugegraph_PROPERTIES_FILE;
         InputStream is = HugeGraphFactory.class.getClassLoader().getResourceAsStream(resourceName);
-        Preconditions.checkNotNull(is,
-                "Unable to locate classpath resource " + resourceName + " containing HugeGraph version");
+        Preconditions.checkNotNull(is, "Unable to locate classpath resource " + resourceName + " containing HugeGraph version");
 
         Properties props = new Properties();
 
@@ -70,8 +70,7 @@ public class HugeGraphConstants {
         ImmutableList.Builder<String> b = ImmutableList.builder();
         for (String v : props.getProperty("hugegraph.compatible-versions", "").split(",")) {
             v = v.trim();
-            if (!v.isEmpty())
-                b.add(v);
+            if (!v.isEmpty()) b.add(v);
         }
         COMPATIBLE_VERSIONS = b.build();
     }

@@ -27,12 +27,9 @@ public class HashingUtil {
 
         public int length() {
             switch (this) {
-                case SHORT:
-                    return 4;
-                case LONG:
-                    return 8;
-                default:
-                    throw new AssertionError("Unknown hash type: " + this);
+                case SHORT: return 4;
+                case LONG: return 8;
+                default: throw new AssertionError("Unknown hash type: " + this);
             }
         }
     }
@@ -47,7 +44,7 @@ public class HashingUtil {
     private static final StaticBuffer.Factory<HashCode> LONG_HASH_FACTORY = new StaticBuffer.Factory<HashCode>() {
         @Override
         public HashCode get(byte[] array, int offset, int limit) {
-            return HashUtility.LONG.get().hashBytes(array, offset, limit);
+            return HashUtility.LONG.get().hashBytes(array,offset,limit);
         }
     };
 
@@ -61,17 +58,14 @@ public class HashingUtil {
             case LONG:
                 hashFactory = LONG_HASH_FACTORY;
                 break;
-            default:
-                throw new IllegalArgumentException("Unknown hash prefix: " + hashPrefixLen);
+            default: throw new IllegalArgumentException("Unknown hash prefix: " + hashPrefixLen);
         }
 
         HashCode hashcode = key.as(hashFactory);
-        WriteByteBuffer newKey = new WriteByteBuffer(prefixLen + key.length());
-        assert prefixLen == 4 || prefixLen == 8;
-        if (prefixLen == 4)
-            newKey.putInt(hashcode.asInt());
-        else
-            newKey.putLong(hashcode.asLong());
+        WriteByteBuffer newKey = new WriteByteBuffer(prefixLen+key.length());
+        assert prefixLen==4 || prefixLen==8;
+        if (prefixLen==4) newKey.putInt(hashcode.asInt());
+        else newKey.putLong(hashcode.asLong());
         newKey.putBytes(key);
         return newKey.getStaticBuffer();
     }
@@ -79,5 +73,7 @@ public class HashingUtil {
     public static final StaticBuffer getKey(final HashLength hashPrefixLen, StaticBuffer hasPrefixedKey) {
         return hasPrefixedKey.subrange(hashPrefixLen.length(), hasPrefixedKey.length() - hashPrefixLen.length());
     }
+
+
 
 }

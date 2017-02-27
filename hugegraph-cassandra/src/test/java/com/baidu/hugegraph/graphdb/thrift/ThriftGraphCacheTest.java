@@ -24,14 +24,16 @@ public class ThriftGraphCacheTest extends HugeGraphTest {
 
     @Override
     public WriteConfiguration getConfiguration() {
-        return StorageSetup
-                .addPermanentCache(CassandraStorageSetup.getCassandraThriftConfiguration(getClass().getSimpleName()));
+        return StorageSetup.addPermanentCache(CassandraStorageSetup.getCassandraThriftConfiguration(getClass().getSimpleName()));
     }
+
 
     @BeforeClass
     public static void beforeClass() {
         CassandraStorageSetup.startCleanEmbedded();
     }
+
+
 
     @Override
     protected boolean isLockingOptimistic() {

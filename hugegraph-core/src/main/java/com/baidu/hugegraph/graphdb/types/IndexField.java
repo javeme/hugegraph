@@ -45,20 +45,16 @@ public class IndexField {
 
     @Override
     public boolean equals(Object oth) {
-        if (this == oth)
-            return true;
-        else if (oth == null || !getClass().isInstance(oth))
-            return false;
-        IndexField other = (IndexField) oth;
-        if (key == null)
-            return key == other.key;
-        else
-            return key.equals(other.key);
+        if (this==oth) return true;
+        else if (oth==null || !getClass().isInstance(oth)) return false;
+        IndexField other = (IndexField)oth;
+        if (key==null) return key==other.key;
+        else return key.equals(other.key);
     }
 
     @Override
     public String toString() {
-        return "[" + key.name() + "]";
+        return "["+key.name()+"]";
     }
 
 }

@@ -20,8 +20,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
- * A Buffer that only allows static access. This Buffer is immutable if any returned byte array or ByteBuffer is not
- * mutated.
+ * A Buffer that only allows static access. This Buffer is immutable if
+ * any returned byte array or ByteBuffer is not mutated.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -65,9 +65,9 @@ public interface StaticBuffer extends Comparable<StaticBuffer> {
 
     public ReadBuffer asReadBuffer();
 
-    public <T> T as(Factory<T> factory);
+    public<T> T as(Factory<T> factory);
 
-    // Convenience method
+    //Convenience method
     public ByteBuffer asByteBuffer();
 
     public interface Factory<T> {
@@ -79,10 +79,8 @@ public interface StaticBuffer extends Comparable<StaticBuffer> {
     public static final Factory<byte[]> ARRAY_FACTORY = new Factory<byte[]>() {
         @Override
         public byte[] get(byte[] array, int offset, int limit) {
-            if (offset == 0 && limit == array.length)
-                return array;
-            else
-                return Arrays.copyOfRange(array, offset, limit);
+            if (offset==0 && limit==array.length) return array;
+            else return Arrays.copyOfRange(array,offset,limit);
         }
 
     };

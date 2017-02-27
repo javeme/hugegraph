@@ -23,7 +23,7 @@ import com.baidu.hugegraph.core.HugeGraphElement;
  */
 public class And<E extends HugeGraphElement> extends MultiCondition<E> {
 
-    public And(Condition<E>...elements) {
+    public And(Condition<E>... elements) {
         super(elements);
     }
 
@@ -59,7 +59,7 @@ public class And<E extends HugeGraphElement> extends MultiCondition<E> {
         return true;
     }
 
-    public static <E extends HugeGraphElement> And<E> of(Condition<E>...elements) {
+    public static <E extends HugeGraphElement> And<E> of(Condition<E>... elements) {
         return new And<E>(elements);
     }
 

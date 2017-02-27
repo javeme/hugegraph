@@ -31,7 +31,7 @@ public class AbstractKCVSTest {
     }
 
     protected StandardBaseTransactionConfig getConsistentTxConfig(StoreManager manager) {
-        return StandardBaseTransactionConfig.of(times, manager.getFeatures().getKeyConsistentTxConfig());
+        return StandardBaseTransactionConfig.of(times,manager.getFeatures().getKeyConsistentTxConfig());
     }
 
 }

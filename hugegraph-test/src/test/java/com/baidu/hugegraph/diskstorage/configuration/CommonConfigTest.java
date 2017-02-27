@@ -44,19 +44,19 @@ public class CommonConfigTest extends WritableConfigurationTest {
         BaseConfiguration base = new BaseConfiguration();
         CommonsConfiguration config = new CommonsConfiguration(base);
 
-        for (ChronoUnit unit : Arrays.asList(ChronoUnit.NANOS, ChronoUnit.MICROS, ChronoUnit.MILLIS, ChronoUnit.SECONDS,
-                ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)) {
+        for (ChronoUnit unit : Arrays.asList(ChronoUnit.NANOS, ChronoUnit.MICROS, ChronoUnit.MILLIS, ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)) {
             base.setProperty("test", "100 " + unit.toString());
-            Duration d = config.get("test", Duration.class);
+            Duration d = config.get("test",Duration.class);
             assertEquals(TimeUnit.NANOSECONDS.convert(100, Temporals.timeUnit(unit)), d.toNanos());
         }
 
-        Map<ChronoUnit, String> mapping = ImmutableMap.of(ChronoUnit.MICROS, "us", ChronoUnit.DAYS, "d");
-        for (Map.Entry<ChronoUnit, String> entry : mapping.entrySet()) {
-            base.setProperty("test", "100 " + entry.getValue());
-            Duration d = config.get("test", Duration.class);
-            assertEquals(TimeUnit.NANOSECONDS.convert(100, Temporals.timeUnit(entry.getKey())), d.toNanos());
+        Map<ChronoUnit,String> mapping = ImmutableMap.of(ChronoUnit.MICROS,"us", ChronoUnit.DAYS,"d");
+        for (Map.Entry<ChronoUnit,String> entry : mapping.entrySet()) {
+            base.setProperty("test","100 " + entry.getValue());
+            Duration d = config.get("test",Duration.class);
+            assertEquals(TimeUnit.NANOSECONDS.convert(100, Temporals.timeUnit(entry.getKey())),d.toNanos());
         }
+
 
     }
 }

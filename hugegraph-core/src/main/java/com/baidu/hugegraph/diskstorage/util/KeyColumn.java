@@ -77,6 +77,7 @@ public class KeyColumn {
 
     @Override
     public String toString() {
-        return "KeyColumn [k=0x" + key.toString() + ", c=0x" + col.toString() + "]";
+        return "KeyColumn [k=0x" + key.toString() +
+                ", c=0x" + col.toString() + "]";
     }
 }

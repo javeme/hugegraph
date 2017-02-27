@@ -31,12 +31,12 @@ public class MergedConfiguration implements Configuration {
     }
 
     @Override
-    public boolean has(ConfigOption option, String...umbrellaElements) {
+    public boolean has(ConfigOption option, String... umbrellaElements) {
         return first.has(option, umbrellaElements) || second.has(option, umbrellaElements);
     }
 
     @Override
-    public <O> O get(ConfigOption<O> option, String...umbrellaElements) {
+    public <O> O get(ConfigOption<O> option, String... umbrellaElements) {
         if (first.has(option, umbrellaElements))
             return first.get(option, umbrellaElements);
 
@@ -45,17 +45,17 @@ public class MergedConfiguration implements Configuration {
 
         return option.getDefaultValue();
     }
-
     @Override
-    public Set<String> getContainedNamespaces(ConfigNamespace umbrella, String...umbrellaElements) {
+    public Set<String> getContainedNamespaces(ConfigNamespace umbrella,
+            String... umbrellaElements) {
         ImmutableSet.Builder<String> b = ImmutableSet.builder();
         b.addAll(first.getContainedNamespaces(umbrella, umbrellaElements));
         b.addAll(second.getContainedNamespaces(umbrella, umbrellaElements));
         return b.build();
     }
-
     @Override
-    public Map<String, Object> getSubset(ConfigNamespace umbrella, String...umbrellaElements) {
+    public Map<String, Object> getSubset(ConfigNamespace umbrella,
+            String... umbrellaElements) {
         ImmutableMap.Builder<String, Object> b = ImmutableMap.builder();
         Map<String, Object> fm = first.getSubset(umbrella, umbrellaElements);
         Map<String, Object> sm = second.getSubset(umbrella, umbrellaElements);
@@ -70,9 +70,8 @@ public class MergedConfiguration implements Configuration {
 
         return b.build();
     }
-
     @Override
-    public Configuration restrictTo(String...umbrellaElements) {
+    public Configuration restrictTo(String... umbrellaElements) {
         return new MergedConfiguration(first.restrictTo(umbrellaElements), second.restrictTo(umbrellaElements));
     }
 }

@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
-        <artifactId>janusgraph-hadoop-parent</artifactId>
+        <groupId>com.baidu.hugegraph</groupId>
+        <artifactId>hugegraph-hadoop-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-hadoop-2</artifactId>
-    <name>JanusGraph-Hadoop: 2.x Compatibility Shim</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-hadoop-2</artifactId>
+    <name>hugegraph-Hadoop: 2.x Compatibility Shim</name>
+    <url>http://hugegraph.org</url>
 
     <properties>
         <top.level.basedir>${basedir}/../..</top.level.basedir>
@@ -22,29 +22,29 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-hadoop-core</artifactId>
+            <artifactId>hugegraph-hadoop-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-hadoop-core</artifactId>
+            <artifactId>hugegraph-hadoop-core</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-hadoop-core</artifactId>
+            <artifactId>hugegraph-hadoop-core</artifactId>
             <version>${project.version}</version>
             <classifier>shared-resources</classifier>
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
-        <!-- Include janusgraph-hbase-core to resolve Guava StopWatch error in HBase tests.
+        <!-- Include hugegraph-hbase-core to resolve Guava StopWatch error in HBase tests.
              Can be removed when Guava version is updated in HBase -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-hbase-core</artifactId>
+            <artifactId>hugegraph-hbase-core</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -81,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>janusgraph-es</artifactId>
+            <artifactId>hugegraph-es</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>

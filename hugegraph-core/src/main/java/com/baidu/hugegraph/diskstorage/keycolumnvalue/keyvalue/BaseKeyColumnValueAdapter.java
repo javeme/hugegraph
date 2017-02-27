@@ -40,11 +40,12 @@ public abstract class BaseKeyColumnValueAdapter implements KeyColumnValueStore {
     @Override
     public void close() throws BackendException {
         store.close();
-        isClosed = true;
+        isClosed=true;
     }
 
     public boolean isClosed() {
         return isClosed;
     }
+
 
 }

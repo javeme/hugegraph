@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public abstract class AbstractInputFormatIT extends HugeGraphBaseTest {
     public void testReadWideVertexWithManyProperties() throws Exception {
         int numProps = 1 << 16;
 
-        long numV = 1;
+        long numV  = 1;
         mgmt.makePropertyKey("p").cardinality(Cardinality.LIST).dataType(Integer.class).make();
         mgmt.commit();
         finishSchema();
@@ -68,13 +68,13 @@ public abstract class AbstractInputFormatIT extends HugeGraphBaseTest {
 
         assertEquals(numV, (long) graph.traversal().V().count().next());
         Map<String, Object> propertiesOnVertex = graph.traversal().V().valueMap().next();
-        List<?> valuesOnP = (List) propertiesOnVertex.values().iterator().next();
+        List<?> valuesOnP = (List)propertiesOnVertex.values().iterator().next();
         assertEquals(numProps, valuesOnP.size());
         Graph g = getGraph();
         GraphTraversalSource t = g.traversal(GraphTraversalSource.computer(SparkGraphComputer.class));
         assertEquals(numV, (long) t.V().count().next());
         propertiesOnVertex = t.V().valueMap().next();
-        valuesOnP = (List) propertiesOnVertex.values().iterator().next();
+        valuesOnP = (List)propertiesOnVertex.values().iterator().next();
         assertEquals(numProps, valuesOnP.size());
     }
 
@@ -84,7 +84,7 @@ public abstract class AbstractInputFormatIT extends HugeGraphBaseTest {
         assertEquals(12L, (long) graph.traversal().V().count().next());
 
         // Add a self-loop on sky with edge label "lives"; it's nonsense, but at least it needs no schema changes
-        HugeGraphVertex sky = (HugeGraphVertex) graph.query().has("name", "sky").vertices().iterator().next();
+        HugeGraphVertex sky = (HugeGraphVertex)graph.query().has("name", "sky").vertices().iterator().next();
         assertNotNull(sky);
         assertEquals("sky", sky.value("name"));
         assertEquals(1L, sky.query().direction(Direction.IN).edgeCount());

@@ -48,20 +48,25 @@ public class InMemoryStoreManager implements KeyColumnValueStoreManager {
 
         stores = new ConcurrentHashMap<String, InMemoryKeyColumnValueStore>();
 
-        features = new StandardStoreFeatures.Builder().orderedScan(true).unorderedScan(true).keyOrdered(true)
-                .persists(false).keyConsistent(GraphDatabaseConfiguration.buildGraphConfiguration()).build();
+        features = new StandardStoreFeatures.Builder()
+            .orderedScan(true)
+            .unorderedScan(true)
+            .keyOrdered(true)
+            .persists(false)
+            .keyConsistent(GraphDatabaseConfiguration.buildGraphConfiguration())
+            .build();
 
-        // features = new StoreFeatures();
-        // features.supportsOrderedScan = true;
-        // features.supportsUnorderedScan = true;
-        // features.supportsBatchMutation = false;
-        // features.supportsTxIsolation = false;
-        // features.supportsConsistentKeyOperations = true;
-        // features.supportsLocking = false;
-        // features.isDistributed = false;
-        // features.supportsMultiQuery = false;
-        // features.isKeyOrdered = true;
-        // features.hasLocalKeyPartition = false;
+//        features = new StoreFeatures();
+//        features.supportsOrderedScan = true;
+//        features.supportsUnorderedScan = true;
+//        features.supportsBatchMutation = false;
+//        features.supportsTxIsolation = false;
+//        features.supportsConsistentKeyOperations = true;
+//        features.supportsLocking = false;
+//        features.isDistributed = false;
+//        features.supportsMultiQuery = false;
+//        features.isKeyOrdered = true;
+//        features.hasLocalKeyPartition = false;
     }
 
     @Override
@@ -90,8 +95,7 @@ public class InMemoryStoreManager implements KeyColumnValueStoreManager {
     }
 
     @Override
-    public KeyColumnValueStore openDatabase(final String name, StoreMetaData.Container metaData)
-            throws BackendException {
+    public KeyColumnValueStore openDatabase(final String name, StoreMetaData.Container metaData) throws BackendException {
         if (!stores.containsKey(name)) {
             stores.putIfAbsent(name, new InMemoryKeyColumnValueStore(name));
         }
@@ -101,8 +105,7 @@ public class InMemoryStoreManager implements KeyColumnValueStoreManager {
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> storeMut : mutations.entrySet()) {
             KeyColumnValueStore store = stores.get(storeMut.getKey());
             Preconditions.checkNotNull(store);

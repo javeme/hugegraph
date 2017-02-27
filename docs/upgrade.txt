@@ -4,22 +4,22 @@ Upgrade Instructions
 --------------------
 
 Please follow these instructions when upgrading from Titan or an older
-JanusGraph release.
+hugegraph release.
 
 Upgrading from Titan
 ~~~~~~~~~~~~~~~~~~~~
 
-JanusGraph is based on the latest commit to the `titan11` branch of
+hugegraph is based on the latest commit to the `titan11` branch of
 https://github.com/thinkaurelius/titan[Titan repo].
 
-JanusGraph has made the following changes to Titan, so you will need to adjust
+hugegraph has made the following changes to Titan, so you will need to adjust
 your code and configuration accordingly:
 
-. module names: `titan-*` are now `janusgraph-*`
-. package names: `com.thinkaurelius.titan` are now `org.janusgraph`
-. class names: `Titan*` are now `JanusGraph*` except in cases where this would
-  duplicate a word, e.g., `TitanGraph` is simply `JanusGraph` rather than
-  `JanusGraphGraph`
+. module names: `titan-*` are now `hugegraph-*`
+. package names: `com.thinkaurelius.titan` are now `com.baidu.hugegraph`
+. class names: `Titan*` are now `hugegraph*` except in cases where this would
+  duplicate a word, e.g., `TitanGraph` is simply `hugegraph` rather than
+  `hugegraphGraph`
 
 The BerkeleyDB version has been updated, and it contains changes to the file
 format stored on disk. This file format change is forward compatible with
@@ -27,4 +27,4 @@ previous versions of BerkeleyDB, so existing graph data stored with Titan
 can be read in. However, once the data has been read in with the newer version
 of BerkeleyDB, those files can no longer be read by the older version. Users
 are encouraged to backup the BerkeleyDB storage directory before attempting to
-use it with the JanusGraph release.
+use it with the hugegraph release.

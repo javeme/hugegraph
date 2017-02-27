@@ -27,7 +27,7 @@ import java.util.List;
 
 public class ConcurrentIndexCache implements IndexCache {
 
-    private final HashMultimap<Object, HugeGraphVertexProperty> map;
+    private final HashMultimap<Object,HugeGraphVertexProperty> map;
 
     public ConcurrentIndexCache() {
         this.map = HashMultimap.create();
@@ -35,20 +35,19 @@ public class ConcurrentIndexCache implements IndexCache {
 
     @Override
     public synchronized void add(HugeGraphVertexProperty property) {
-        map.put(property.value(), property);
+        map.put(property.value(),property);
     }
 
     @Override
     public synchronized void remove(HugeGraphVertexProperty property) {
-        map.remove(property.value(), property);
+        map.remove(property.value(),property);
     }
 
     @Override
     public synchronized Iterable<HugeGraphVertexProperty> get(final Object value, final PropertyKey key) {
         List<HugeGraphVertexProperty> result = new ArrayList<HugeGraphVertexProperty>(4);
         for (HugeGraphVertexProperty p : map.get(value)) {
-            if (p.propertyKey().equals(key))
-                result.add(p);
+            if (p.propertyKey().equals(key)) result.add(p);
         }
         return result;
     }

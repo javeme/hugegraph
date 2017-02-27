@@ -53,7 +53,7 @@ public class BerkeleyJETx extends AbstractStoreTransaction {
     void registerCursor(Cursor cursor) {
         Preconditions.checkArgument(cursor != null);
         synchronized (openCursors) {
-            // TODO: attempt to remove closed cursors if there are too many
+            //TODO: attempt to remove closed cursors if there are too many
             openCursors.add(cursor);
         }
     }
@@ -71,8 +71,7 @@ public class BerkeleyJETx extends AbstractStoreTransaction {
     @Override
     public synchronized void rollback() throws BackendException {
         super.rollback();
-        if (tx == null)
-            return;
+        if (tx == null) return;
         if (log.isTraceEnabled())
             log.trace("{} rolled back", this.toString(), new TransactionClose(this.toString()));
         try {
@@ -87,8 +86,7 @@ public class BerkeleyJETx extends AbstractStoreTransaction {
     @Override
     public synchronized void commit() throws BackendException {
         super.commit();
-        if (tx == null)
-            return;
+        if (tx == null) return;
         if (log.isTraceEnabled())
             log.trace("{} committed", this.toString(), new TransactionClose(this.toString()));
 

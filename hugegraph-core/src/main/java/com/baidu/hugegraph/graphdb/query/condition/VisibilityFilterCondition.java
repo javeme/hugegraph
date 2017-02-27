@@ -29,9 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class VisibilityFilterCondition<E extends HugeGraphElement> extends Literal<E> {
 
-    public enum Visibility {
-        NORMAL, SYSTEM
-    }
+    public enum Visibility { NORMAL, SYSTEM }
 
     private final Visibility visibility;
 
@@ -41,15 +39,12 @@ public class VisibilityFilterCondition<E extends HugeGraphElement> extends Liter
 
     @Override
     public boolean evaluate(E element) {
-        switch (visibility) {
-            case NORMAL:
-                return !((InternalElement) element).isInvisible();
-            case SYSTEM:
-                return (element instanceof HugeGraphRelation
-                        && ((HugeGraphRelation) element).getType() instanceof SystemRelationType)
-                        || (element instanceof HugeGraphVertex && element instanceof HugeGraphSchemaElement);
-            default:
-                throw new AssertionError("Unrecognized visibility: " + visibility);
+        switch(visibility) {
+            case NORMAL: return !((InternalElement)element).isInvisible();
+            case SYSTEM: return (element instanceof HugeGraphRelation &&
+                                    ((HugeGraphRelation)element).getType() instanceof SystemRelationType)
+                    || (element instanceof HugeGraphVertex && element instanceof HugeGraphSchemaElement);
+            default: throw new AssertionError("Unrecognized visibility: " + visibility);
         }
     }
 
@@ -66,6 +61,6 @@ public class VisibilityFilterCondition<E extends HugeGraphElement> extends Liter
 
     @Override
     public String toString() {
-        return "visibility:" + visibility.toString().toLowerCase();
+        return "visibility:"+visibility.toString().toLowerCase();
     }
 }

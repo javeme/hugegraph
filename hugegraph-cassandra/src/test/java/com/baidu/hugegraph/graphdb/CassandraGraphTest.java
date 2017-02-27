@@ -57,11 +57,13 @@ public abstract class CassandraGraphTest extends HugeGraphTest {
 
         graph = (StandardHugeGraph) HugeGraphFactory.open(wc);
 
-        StandardHugeGraphTx tx = (StandardHugeGraphTx) graph.getCurrentThreadTx();
-        assertEquals("ALL", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
-        assertEquals("LOCAL_QUORUM", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
+        StandardHugeGraphTx tx = (StandardHugeGraphTx)graph.getCurrentThreadTx();
+        assertEquals("ALL",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
+        assertEquals("LOCAL_QUORUM",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
     }
 
     @Test
@@ -73,11 +75,13 @@ public abstract class CassandraGraphTest extends HugeGraphTest {
 
         graph = (StandardHugeGraph) HugeGraphFactory.open(wc);
 
-        StandardHugeGraphTx tx = (StandardHugeGraphTx) graph.newTransaction();
-        assertEquals("TWO", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
-        assertEquals("THREE", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
+        StandardHugeGraphTx tx = (StandardHugeGraphTx)graph.newTransaction();
+        assertEquals("TWO",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
+        assertEquals("THREE",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
         tx.rollback();
     }
 
@@ -90,14 +94,16 @@ public abstract class CassandraGraphTest extends HugeGraphTest {
 
         graph = (StandardHugeGraph) HugeGraphFactory.open(wc);
 
-        StandardHugeGraphTx tx = (StandardHugeGraphTx) graph.buildTransaction()
+        StandardHugeGraphTx tx = (StandardHugeGraphTx)graph.buildTransaction()
                 .customOption(ConfigElement.getPath(CASSANDRA_READ_CONSISTENCY), "ONE")
                 .customOption(ConfigElement.getPath(CASSANDRA_WRITE_CONSISTENCY), "TWO").start();
 
-        assertEquals("ONE", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
-        assertEquals("TWO", tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
-                .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
+        assertEquals("ONE",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_READ_CONSISTENCY));
+        assertEquals("TWO",
+                tx.getTxHandle().getBaseTransactionConfig().getCustomOptions()
+                        .get(AbstractCassandraStoreManager.CASSANDRA_WRITE_CONSISTENCY));
         tx.rollback();
     }
 }

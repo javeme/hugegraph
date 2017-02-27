@@ -27,8 +27,7 @@ import com.baidu.hugegraph.graphdb.types.TypeDefinitionDescription;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class TypeDefinitionDescriptionSerializer
-        implements AttributeSerializer<TypeDefinitionDescription>, SerializerInjected {
+public class TypeDefinitionDescriptionSerializer implements AttributeSerializer<TypeDefinitionDescription>, SerializerInjected {
 
     private Serializer serializer;
 
@@ -36,12 +35,12 @@ public class TypeDefinitionDescriptionSerializer
     public TypeDefinitionDescription read(ScanBuffer buffer) {
         TypeDefinitionCategory defCategory = serializer.readObjectNotNull(buffer, TypeDefinitionCategory.class);
         Object modifier = serializer.readClassAndObject(buffer);
-        return new TypeDefinitionDescription(defCategory, modifier);
+        return new TypeDefinitionDescription(defCategory,modifier);
     }
 
     @Override
     public void write(WriteBuffer buffer, TypeDefinitionDescription attribute) {
-        DataOutput out = (DataOutput) buffer;
+        DataOutput out = (DataOutput)buffer;
         out.writeObjectNotNull(attribute.getCategory());
         out.writeClassAndObject(attribute.getModifier());
     }
@@ -49,6 +48,6 @@ public class TypeDefinitionDescriptionSerializer
     @Override
     public void setSerializer(Serializer serializer) {
         Preconditions.checkNotNull(serializer);
-        this.serializer = serializer;
+        this.serializer=serializer;
     }
 }

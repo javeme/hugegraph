@@ -1,26 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-hbase-parent</artifactId>
+    <artifactId>hugegraph-hbase-parent</artifactId>
     <packaging>pom</packaging>
-    <name>JanusGraph-HBase: Parent Module</name>
-    <url>http://janusgraph.org</url>
+    <name>hugegraph-HBase: Parent Module</name>
+    <url>http://hugegraph.org</url>
     
     <modules>
-        <module>janusgraph-hbase-core</module>
-        <module>janusgraph-hbase-098</module>
-        <module>janusgraph-hbase-10</module>
-        <module>janusgraph-hbase</module>
+        <module>hugegraph-hbase-core</module>
+        <module>hugegraph-hbase-098</module>
+        <module>hugegraph-hbase-10</module>
+        <module>hugegraph-hbase</module>
     </modules>
     
     <properties>
-        <janusgraph.hbase.mvn.opts>-Dhadoop.version=${hadoop.version} -Dhadoop.profile=${hadoop.profile} ${janusgraph.hbase.mvn.opts.extra}</janusgraph.hbase.mvn.opts>
-        <janusgraph.hbase.mvn.opts.extra />
+        <hugegraph.hbase.mvn.opts>-Dhadoop.version=${hadoop.version} -Dhadoop.profile=${hadoop.profile} ${hugegraph.hbase.mvn.opts.extra}</hugegraph.hbase.mvn.opts>
+        <hugegraph.hbase.mvn.opts.extra />
         <default.test.jvm.opts>-Xms256m -Xmx1280m -XX:+HeapDumpOnOutOfMemoryError -ea ${test.extra.jvm.opts}</default.test.jvm.opts>
         <mem.jvm.opts>-Xms256m -Xmx768m -ea -XX:+HeapDumpOnOutOfMemoryError ${test.extra.jvm.opts}</mem.jvm.opts>
         <top.level.basedir>${project.parent.basedir}</top.level.basedir>
@@ -28,19 +28,19 @@
     
     <dependencies>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-core</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-test</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-es</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-es</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -63,7 +63,7 @@
 
              Note, logback-classic is added explicitly to ensure slf4j-log4j12
              binding appears on the classpath before logback-classic. See
-             comments in janusgraph-cassandra/pom.xml for more information.
+             comments in hugegraph-cassandra/pom.xml for more information.
         -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -113,7 +113,7 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <excludedGroups>${test.excluded.groups},org.janusgraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
+                        <excludedGroups>${test.excluded.groups},com.baidu.hugegraph.testcategory.UnorderedKeyStoreTests</excludedGroups>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -139,7 +139,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>${project.groupId}</groupId>
-                                        <artifactId>janusgraph-hbase-core</artifactId>
+                                        <artifactId>hugegraph-hbase-core</artifactId>
                                         <version>${project.version}</version>
                                         <classifier>tests</classifier>
                                         <outputDirectory>${project.build.directory}/test-classes</outputDirectory>

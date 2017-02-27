@@ -28,11 +28,11 @@ public class LongEncoding {
     private static final String BASE_SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
     public static long decode(String s) {
-        return decode(s, BASE_SYMBOLS);
+        return decode(s,BASE_SYMBOLS);
     }
 
     public static String encode(long num) {
-        return encode(num, BASE_SYMBOLS);
+        return encode(num,BASE_SYMBOLS);
     }
 
     public static long decode(String s, String symbols) {
@@ -41,15 +41,14 @@ public class LongEncoding {
         for (char ch : s.toCharArray()) {
             num *= B;
             int pos = symbols.indexOf(ch);
-            if (pos < 0)
-                throw new NumberFormatException("Symbol set does not match string");
+            if (pos<0) throw new NumberFormatException("Symbol set does not match string");
             num += pos;
         }
         return num;
     }
 
     public static String encode(long num, String symbols) {
-        Preconditions.checkArgument(num >= 0, "Expected non-negative number: " + num);
+        Preconditions.checkArgument(num>=0,"Expected non-negative number: " + num);
         final int B = symbols.length();
         StringBuilder sb = new StringBuilder();
         while (num != 0) {

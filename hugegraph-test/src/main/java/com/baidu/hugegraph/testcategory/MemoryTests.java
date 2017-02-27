@@ -15,10 +15,11 @@
 package com.baidu.hugegraph.testcategory;
 
 /**
- * This is a JUnit category for performance-measuring tests implemented with JUnitBenchmarks. These tests are not part
- * of HugeGraph's default "mvn test" execution.
+ * This is a JUnit category for performance-measuring tests implemented with
+ * JUnitBenchmarks. These tests are not part of HugeGraph's default "mvn test"
+ * execution.
  * 
- * If you rename or move this class, then you must also update mentions of it in the HugeGraph root pom.xml.
+ * If you rename or move this class, then you must also update mentions of it in
+ * the HugeGraph root pom.xml.
  */
-public interface MemoryTests {
-}
+public interface MemoryTests { }

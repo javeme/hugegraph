@@ -31,13 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The base implementation for {@link VertexCentricQuery} which does not yet contain a reference to the base vertex of
- * the query. This query is constructed by
- * {@link BasicVertexCentricQueryBuilder#constructQuery(com.baidu.hugegraph.graphdb.internal.RelationCategory)} and then
- * later extended by single or multi-vertex query which add the vertex to the query.
+ * The base implementation for {@link VertexCentricQuery} which does not yet contain a reference to the
+ * base vertex of the query. This query is constructed by {@link BasicVertexCentricQueryBuilder#constructQuery(com.baidu.hugegraph.graphdb.internal.RelationCategory)}
+ * and then later extended by single or multi-vertex query which add the vertex to the query.
  * </p>
- * This class override many methods in {@link com.baidu.hugegraph.graphdb.query.ElementQuery} - check there for a
- * description.
+ * This class override many methods in {@link com.baidu.hugegraph.graphdb.query.ElementQuery} - check there
+ * for a description.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -48,8 +47,8 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
      */
     protected final Condition<HugeGraphRelation> condition;
     /**
-     * The individual component {@link SliceQuery} of this query. This query is considered an OR of the individual
-     * components (possibly filtered by the condition if not fitted).
+     * The individual component {@link SliceQuery} of this query. This query is considered an OR
+     * of the individual components (possibly filtered by the condition if not fitted).
      */
     protected final List<BackendQueryHolder<SliceQuery>> queries;
     /**
@@ -62,14 +61,15 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
     protected final Direction direction;
 
     public BaseVertexCentricQuery(Condition<HugeGraphRelation> condition, Direction direction,
-            List<BackendQueryHolder<SliceQuery>> queries, OrderList orders, int limit) {
+                                  List<BackendQueryHolder<SliceQuery>> queries, OrderList orders,
+                                  int limit) {
         super(limit);
         Preconditions.checkArgument(condition != null && queries != null && direction != null);
-        Preconditions.checkArgument(QueryUtil.isQueryNormalForm(condition) && limit >= 0);
+        Preconditions.checkArgument(QueryUtil.isQueryNormalForm(condition) && limit>=0);
         this.condition = condition;
         this.queries = queries;
         this.orders = orders;
-        this.direction = direction;
+        this.direction=direction;
     }
 
     protected BaseVertexCentricQuery(BaseVertexCentricQuery query) {
@@ -80,8 +80,7 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
      * Construct an empty query
      */
     protected BaseVertexCentricQuery() {
-        this(new FixedCondition<HugeGraphRelation>(false), Direction.BOTH,
-                new ArrayList<BackendQueryHolder<SliceQuery>>(0), OrderList.NO_ORDER, 0);
+        this(new FixedCondition<HugeGraphRelation>(false), Direction.BOTH, new ArrayList<BackendQueryHolder<SliceQuery>>(0),OrderList.NO_ORDER,0);
     }
 
     public static BaseVertexCentricQuery emptyQuery() {
@@ -105,7 +104,7 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
     }
 
     public boolean isEmpty() {
-        return getLimit() <= 0;
+        return getLimit()<=0;
     }
 
     public int numSubQueries() {
@@ -113,13 +112,12 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
     }
 
     /**
-     * A query is considered 'simple' if it is comprised of just one sub-query and that query is fitted (i.e. does not
-     * require an in-memory filtering).
-     * 
+     * A query is considered 'simple' if it is comprised of just one sub-query and that query
+     * is fitted (i.e. does not require an in-memory filtering).
      * @return
      */
     public boolean isSimple() {
-        return queries.size() == 1 && queries.get(0).isFitted() && queries.get(0).isSorted();
+        return queries.size()==1 && queries.get(0).isFitted() && queries.get(0).isSorted();
     }
 
     public BackendQueryHolder<SliceQuery> getSubQuery(int position) {
@@ -132,18 +130,16 @@ public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservab
 
     @Override
     public String toString() {
-        String s = "[" + condition.toString() + "]";
-        if (hasLimit())
-            s += ":" + getLimit();
+        String s = "["+condition.toString()+"]";
+        if (hasLimit()) s+=":"+getLimit();
         return s;
     }
 
     @Override
     public void observeWith(QueryProfiler profiler) {
-        profiler.setAnnotation(QueryProfiler.CONDITION_ANNOTATION, condition);
-        profiler.setAnnotation(QueryProfiler.ORDERS_ANNOTATION, orders);
-        if (hasLimit())
-            profiler.setAnnotation(QueryProfiler.LIMIT_ANNOTATION, getLimit());
+        profiler.setAnnotation(QueryProfiler.CONDITION_ANNOTATION,condition);
+        profiler.setAnnotation(QueryProfiler.ORDERS_ANNOTATION,orders);
+        if (hasLimit()) profiler.setAnnotation(QueryProfiler.LIMIT_ANNOTATION,getLimit());
         queries.forEach(bqh -> bqh.observeWith(profiler));
     }
 }

@@ -32,15 +32,17 @@ public class VertexCentricEdgeIterable<R extends HugeGraphRelation> implements I
     private final RelationCategory relationCategory;
 
     public VertexCentricEdgeIterable(final Iterable<InternalVertex> vertices, final RelationCategory relationCategory) {
-        Preconditions.checkArgument(vertices != null && relationCategory != null);
+        Preconditions.checkArgument(vertices!=null && relationCategory!=null);
         this.vertices = vertices;
         this.relationCategory = relationCategory;
     }
+
 
     @Override
     public Iterator<R> iterator() {
         return new EdgeIterator();
     }
+
 
     private class EdgeIterator implements Iterator<R> {
 
@@ -51,8 +53,7 @@ public class VertexCentricEdgeIterable<R extends HugeGraphRelation> implements I
         public EdgeIterator() {
             this.vertexIter = vertices.iterator();
             if (vertexIter.hasNext()) {
-                currentOutEdges =
-                        relationCategory.executeQuery(vertexIter.next().query().direction(Direction.OUT)).iterator();
+                currentOutEdges = relationCategory.executeQuery(vertexIter.next().query().direction(Direction.OUT)).iterator();
                 getNextEdge();
             }
         }
@@ -65,10 +66,8 @@ public class VertexCentricEdgeIterable<R extends HugeGraphRelation> implements I
                     nextEdge = currentOutEdges.next();
                     break;
                 } else if (vertexIter.hasNext()) {
-                    currentOutEdges = relationCategory.executeQuery(vertexIter.next().query().direction(Direction.OUT))
-                            .iterator();
-                } else
-                    break;
+                    currentOutEdges = relationCategory.executeQuery(vertexIter.next().query().direction(Direction.OUT)).iterator();
+                } else break;
             }
         }
 
@@ -79,11 +78,10 @@ public class VertexCentricEdgeIterable<R extends HugeGraphRelation> implements I
 
         @Override
         public R next() {
-            if (nextEdge == null)
-                throw new NoSuchElementException();
+            if (nextEdge == null) throw new NoSuchElementException();
             HugeGraphRelation returnEdge = nextEdge;
             getNextEdge();
-            return (R) returnEdge;
+            return (R)returnEdge;
         }
 
         @Override

@@ -34,6 +34,7 @@ public class HugeGraphDefaultSchemaMaker implements DefaultSchemaMaker {
         return Cardinality.SINGLE;
     }
 
+
     @Override
     public boolean ignoreUndefinedQueryTypes() {
         return true;

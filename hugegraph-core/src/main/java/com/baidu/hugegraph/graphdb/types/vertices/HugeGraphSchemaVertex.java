@@ -56,7 +56,7 @@ public class HugeGraphSchemaVertex extends CacheVertex implements SchemaSource {
             } else {
                 p = Iterables.getOnlyElement(query().type(BaseKey.SchemaName).properties(), null);
             }
-            Preconditions.checkState(p != null, "Could not find type for id: %s", longId());
+            Preconditions.checkState(p!=null,"Could not find type for id: %s", longId());
             name = p.value();
         }
         assert name != null;
@@ -78,88 +78,86 @@ public class HugeGraphSchemaVertex extends CacheVertex implements SchemaSource {
             Iterable<HugeGraphVertexProperty> ps;
             if (isLoaded()) {
                 StandardHugeGraphTx tx = tx();
-                ps = (Iterable) RelationConstructor.readRelation(this, tx.getGraph().getSchemaCache()
-                        .getSchemaRelations(longId(), BaseKey.SchemaDefinitionProperty, Direction.OUT), tx);
+                ps = (Iterable)RelationConstructor.readRelation(this,
+                        tx.getGraph().getSchemaCache().getSchemaRelations(longId(), BaseKey.SchemaDefinitionProperty, Direction.OUT),
+                        tx);
             } else {
                 ps = query().type(BaseKey.SchemaDefinitionProperty).properties();
             }
             for (HugeGraphVertexProperty property : ps) {
                 TypeDefinitionDescription desc = property.valueOrNull(BaseKey.SchemaDefinitionDesc);
-                Preconditions.checkArgument(desc != null && desc.getCategory().isProperty());
+                Preconditions.checkArgument(desc!=null && desc.getCategory().isProperty());
                 def.setValue(desc.getCategory(), property.value());
             }
-            assert def.size() > 0;
+            assert def.size()>0;
             definition = def;
         }
-        assert def != null;
+        assert def!=null;
         return def;
     }
 
-    private ListMultimap<TypeDefinitionCategory, Entry> outRelations = null;
-    private ListMultimap<TypeDefinitionCategory, Entry> inRelations = null;
+    private ListMultimap<TypeDefinitionCategory,Entry> outRelations = null;
+    private ListMultimap<TypeDefinitionCategory,Entry> inRelations = null;
+
 
     @Override
     public Iterable<Entry> getRelated(TypeDefinitionCategory def, Direction dir) {
-        assert dir == Direction.OUT || dir == Direction.IN;
-        ListMultimap<TypeDefinitionCategory, Entry> rels = dir == Direction.OUT ? outRelations : inRelations;
-        if (rels == null) {
-            ImmutableListMultimap.Builder<TypeDefinitionCategory, Entry> b = ImmutableListMultimap.builder();
+        assert dir==Direction.OUT || dir==Direction.IN;
+        ListMultimap<TypeDefinitionCategory,Entry> rels = dir==Direction.OUT?outRelations:inRelations;
+        if (rels==null) {
+            ImmutableListMultimap.Builder<TypeDefinitionCategory,Entry> b = ImmutableListMultimap.builder();
             Iterable<HugeGraphEdge> edges;
             if (isLoaded()) {
                 StandardHugeGraphTx tx = tx();
-                edges = (Iterable) RelationConstructor.readRelation(this, tx.getGraph().getSchemaCache()
-                        .getSchemaRelations(longId(), BaseLabel.SchemaDefinitionEdge, dir), tx);
+                edges = (Iterable)RelationConstructor.readRelation(this,
+                        tx.getGraph().getSchemaCache().getSchemaRelations(longId(), BaseLabel.SchemaDefinitionEdge, dir),
+                        tx);
             } else {
                 edges = query().type(BaseLabel.SchemaDefinitionEdge).direction(dir).edges();
             }
-            for (HugeGraphEdge edge : edges) {
+            for (HugeGraphEdge edge: edges) {
                 HugeGraphVertex oth = edge.vertex(dir.opposite());
                 assert oth instanceof HugeGraphSchemaVertex;
                 TypeDefinitionDescription desc = edge.valueOrNull(BaseKey.SchemaDefinitionDesc);
                 Object modifier = null;
                 if (desc.getCategory().hasDataType()) {
-                    assert desc.getModifier() != null
-                            && desc.getModifier().getClass().equals(desc.getCategory().getDataType());
+                    assert desc.getModifier()!=null && desc.getModifier().getClass().equals(desc.getCategory().getDataType());
                     modifier = desc.getModifier();
                 }
                 b.put(desc.getCategory(), new Entry((HugeGraphSchemaVertex) oth, modifier));
             }
             rels = b.build();
-            if (dir == Direction.OUT)
-                outRelations = rels;
-            else
-                inRelations = rels;
+            if (dir==Direction.OUT) outRelations=rels;
+            else inRelations=rels;
         }
-        assert rels != null;
+        assert rels!=null;
         return rels.get(def);
     }
 
     /**
-     * Resets the internal caches used to speed up lookups on this index type. This is needed when the type gets
-     * modified in the {@link com.baidu.hugegraph.graphdb.database.management.ManagementSystem}.
+     * Resets the internal caches used to speed up lookups on this index type.
+     * This is needed when the type gets modified in the {@link com.baidu.hugegraph.graphdb.database.management.ManagementSystem}.
      */
     @Override
-    public void resetCache() {
+  public void resetCache() {
         name = null;
-        definition = null;
-        outRelations = null;
-        inRelations = null;
+        definition=null;
+        outRelations=null;
+        inRelations=null;
     }
 
     public Iterable<HugeGraphEdge> getEdges(final TypeDefinitionCategory def, final Direction dir) {
-        return getEdges(def, dir, null);
+        return getEdges(def,dir,null);
     }
 
-    public Iterable<HugeGraphEdge> getEdges(final TypeDefinitionCategory def, final Direction dir,
-            HugeGraphSchemaVertex other) {
+    public Iterable<HugeGraphEdge> getEdges(final TypeDefinitionCategory def, final Direction dir, HugeGraphSchemaVertex other) {
         HugeGraphVertexQuery query = query().type(BaseLabel.SchemaDefinitionEdge).direction(dir);
-        if (other != null)
-            query.adjacent(other);
-        return Iterables.filter(query.edges(), new Predicate<HugeGraphEdge>() {
+        if (other!=null) query.adjacent(other);
+        return Iterables.filter(query.edges(),new Predicate<HugeGraphEdge>() {
             @Override
             public boolean apply(@Nullable HugeGraphEdge edge) {
                 TypeDefinitionDescription desc = edge.valueOrNull(BaseKey.SchemaDefinitionDesc);
-                return desc.getCategory() == def;
+                return desc.getCategory()==def;
             }
         });
     }
@@ -171,14 +169,13 @@ public class HugeGraphSchemaVertex extends CacheVertex implements SchemaSource {
 
     @Override
     public SchemaStatus getStatus() {
-        return getDefinition().getValue(TypeDefinitionCategory.STATUS, SchemaStatus.class);
+        return getDefinition().getValue(TypeDefinitionCategory.STATUS,SchemaStatus.class);
     }
 
     @Override
     public IndexType asIndexType() {
-        Preconditions.checkArgument(getDefinition().containsKey(TypeDefinitionCategory.INTERNAL_INDEX),
-                "Schema vertex is not a type vertex: [%s,%s]", longId(), name());
-        if (getDefinition().<Boolean> getValue(TypeDefinitionCategory.INTERNAL_INDEX)) {
+        Preconditions.checkArgument(getDefinition().containsKey(TypeDefinitionCategory.INTERNAL_INDEX),"Schema vertex is not a type vertex: [%s,%s]", longId(), name());
+        if (getDefinition().<Boolean>getValue(TypeDefinitionCategory.INTERNAL_INDEX)) {
             return new CompositeIndexTypeWrapper(this);
         } else {
             return new MixedIndexTypeWrapper(this);

@@ -62,33 +62,28 @@ public class HugeGraphIndexWrapper implements HugeGraphIndex {
         IndexField[] fields = index.getFieldKeys();
         PropertyKey[] keys = new PropertyKey[fields.length];
         for (int i = 0; i < fields.length; i++) {
-            keys[i] = fields[i].getFieldKey();
+            keys[i]=fields[i].getFieldKey();
         }
         return keys;
     }
 
     @Override
     public Parameter[] getParametersFor(PropertyKey key) {
-        if (index.isCompositeIndex())
-            return new Parameter[0];
-        return ((MixedIndexType) index).getField(key).getParameters();
+        if (index.isCompositeIndex()) return new Parameter[0];
+        return ((MixedIndexType)index).getField(key).getParameters();
     }
 
     @Override
     public boolean isUnique() {
-        if (index.isMixedIndex())
-            return false;
-        return ((CompositeIndexType) index).getCardinality() == Cardinality.SINGLE;
+        if (index.isMixedIndex()) return false;
+        return ((CompositeIndexType)index).getCardinality()== Cardinality.SINGLE;
     }
 
     @Override
     public SchemaStatus getIndexStatus(PropertyKey key) {
-        Preconditions.checkArgument(Sets.newHashSet(getFieldKeys()).contains(key),
-                "Provided key is not part of this index: %s", key);
-        if (index.isCompositeIndex())
-            return ((CompositeIndexType) index).getStatus();
-        else
-            return ((MixedIndexType) index).getField(key).getStatus();
+        Preconditions.checkArgument(Sets.newHashSet(getFieldKeys()).contains(key),"Provided key is not part of this index: %s",key);
+        if (index.isCompositeIndex()) return ((CompositeIndexType)index).getStatus();
+        else return ((MixedIndexType)index).getField(key).getStatus();
     }
 
     @Override
@@ -107,3 +102,4 @@ public class HugeGraphIndexWrapper implements HugeGraphIndex {
     }
 
 }
+

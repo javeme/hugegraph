@@ -36,7 +36,7 @@ public class BerkeleyGraphComputerProvider extends AbstractHugeGraphComputerProv
         ModifiableConfiguration config = super.getHugeGraphConfiguration(graphName, test, testMethodName);
         config.setAll(BerkeleyStorageSetup.getBerkeleyJEConfiguration(StorageSetup.getHomeDir(graphName)).getAll());
         config.set(GraphDatabaseConfiguration.IDAUTHORITY_WAIT, Duration.ofMillis(20));
-        config.set(GraphDatabaseConfiguration.STORAGE_TRANSACTIONAL, false);
+        config.set(GraphDatabaseConfiguration.STORAGE_TRANSACTIONAL,false);
         return config;
     }
 

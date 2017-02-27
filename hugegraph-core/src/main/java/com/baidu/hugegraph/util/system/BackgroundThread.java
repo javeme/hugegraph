@@ -24,7 +24,8 @@ import java.time.Duration;
  */
 public abstract class BackgroundThread extends Thread {
 
-    private static final Logger log = LoggerFactory.getLogger(BackgroundThread.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(BackgroundThread.class);
 
     private volatile boolean interruptible = true;
     private volatile boolean softInterrupted = false;
@@ -45,9 +46,9 @@ public abstract class BackgroundThread extends Thread {
     @Override
     public void run() {
 
-        /*
-         * We use interrupted() instead of isInterrupted() to guarantee that the interrupt flag is cleared when we exit
-         * this loop. cleanup() can then run blocking operations without failing due to interruption.
+        /* We use interrupted() instead of isInterrupted() to guarantee that the
+         * interrupt flag is cleared when we exit this loop. cleanup() can then
+         * run blocking operations without failing due to interruption.
          */
         while (!interrupted() && !softInterrupted) {
 
@@ -58,14 +59,16 @@ public abstract class BackgroundThread extends Thread {
                 break;
             }
 
-            /*
-             * This check could be removed without affecting correctness. At worst, removing it should just reduce
-             * shutdown responsiveness in a couple of corner cases:
+            /* This check could be removed without affecting correctness. At
+             * worst, removing it should just reduce shutdown responsiveness in
+             * a couple of corner cases:
              *
-             * 1. Rare interruptions are those that occur while this thread is in the RUNNABLE state
+             * 1. Rare interruptions are those that occur while this thread is
+             * in the RUNNABLE state
              *
-             * 2. Odd waitCondition() implementations that swallow an InterruptedException and set the interrupt status
-             * instead of just propagating the InterruptedException to us
+             * 2. Odd waitCondition() implementations that swallow an
+             * InterruptedException and set the interrupt status instead of just
+             * propagating the InterruptedException to us
              */
             if (interrupted())
                 break;
@@ -74,11 +77,12 @@ public abstract class BackgroundThread extends Thread {
             try {
                 action();
             } catch (Throwable e) {
-                log.error("Exception while executing action on background thread", e);
+                log.error("Exception while executing action on background thread",e);
             } finally {
                 /*
-                 * This doesn't really need to be in a finally block as long as we catch Throwable, but it's here as
-                 * future-proofing in case the catch-clause type is narrowed in future revisions.
+                 * This doesn't really need to be in a finally block as long as
+                 * we catch Throwable, but it's here as future-proofing in case
+                 * the catch-clause type is narrowed in future revisions.
                  */
                 interruptible = true;
             }
@@ -87,14 +91,14 @@ public abstract class BackgroundThread extends Thread {
         try {
             cleanup();
         } catch (Throwable e) {
-            log.error("Exception while executing cleanup on background thread", e);
+            log.error("Exception while executing cleanup on background thread",e);
         }
 
     }
 
     /**
-     * The wait condition for the background thread. This determines what this background thread is waiting for in its
-     * execution. This might be elapsing time or availability of resources.
+     * The wait condition for the background thread. This determines what this background thread is waiting for in
+     * its execution. This might be elapsing time or availability of resources.
      *
      * Since there is a wait involved, this method should throw an InterruptedException
      *
@@ -103,8 +107,8 @@ public abstract class BackgroundThread extends Thread {
     protected abstract void waitCondition() throws InterruptedException;
 
     /**
-     * The action taken by this background thread when the wait condition is met. This action should execute swiftly to
-     * ensure that this thread can be closed in a reasonable amount of time.
+     * The action taken by this background thread when the wait condition is met.
+     * This action should execute swiftly to ensure that this thread can be closed in a reasonable amount of time.
      *
      * This action will not be interrupted by {@link #close(Duration)}.
      */
@@ -114,7 +118,7 @@ public abstract class BackgroundThread extends Thread {
      * Any clean up that needs to be done before this thread is closed down.
      */
     protected void cleanup() {
-        // Do nothing by default
+        //Do nothing by default
     }
 
     public void close(Duration duration) {
@@ -134,12 +138,10 @@ public abstract class BackgroundThread extends Thread {
         try {
             join(maxWaitMs);
         } catch (InterruptedException e) {
-            log.error("Interrupted while waiting for thread {} to join", e);
+            log.error("Interrupted while waiting for thread {} to join",e);
         }
         if (isAlive()) {
-            log.error(
-                    "Thread {} did not terminate in time [{}]. This could mean that important clean up functions could not be called.",
-                    getName(), maxWaitMs);
+            log.error("Thread {} did not terminate in time [{}]. This could mean that important clean up functions could not be called.", getName(), maxWaitMs);
         }
     }
 

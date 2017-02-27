@@ -18,4 +18,5 @@ import com.baidu.hugegraph.graphdb.internal.InternalRelationType;
 
 public interface SystemRelationType extends InternalRelationType {
 
+
 }

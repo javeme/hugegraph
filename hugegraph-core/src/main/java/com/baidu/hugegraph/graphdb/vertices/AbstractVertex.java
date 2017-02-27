@@ -38,6 +38,7 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
 
     private final StandardHugeGraphTx tx;
 
+
     protected AbstractVertex(StandardHugeGraphTx tx, long id) {
         super(id);
         assert tx != null;
@@ -50,10 +51,8 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
             return this;
 
         InternalVertex next = (InternalVertex) tx.getNextTx().getVertex(longId());
-        if (next == null)
-            throw InvalidElementException.removedException(this);
-        else
-            return next;
+        if (next == null) throw InvalidElementException.removedException(this);
+        else return next;
     }
 
     @Override
@@ -63,10 +62,8 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
 
     @Override
     public long getCompareId() {
-        if (tx.isPartitionedVertex(this))
-            return tx.getIdInspector().getCanonicalVertexId(longId());
-        else
-            return longId();
+        if (tx.isPartitionedVertex(this)) return tx.getIdInspector().getCanonicalVertexId(longId());
+        else return longId();
     }
 
     @Override
@@ -90,30 +87,30 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
         }
     }
 
-    /*
-     * --------------------------------------------------------------- Changing Edges
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+     * Changing Edges
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
     public synchronized void remove() {
         verifyAccess();
-        // if (isRemoved()) return; //Remove() is idempotent
+//        if (isRemoved()) return; //Remove() is idempotent
         Iterator<HugeGraphRelation> iter = it().query().noPartitionRestriction().relations().iterator();
         while (iter.hasNext()) {
             iter.next();
             iter.remove();
         }
-        // Remove all system types on the vertex
+        //Remove all system types on the vertex
         for (HugeGraphRelation r : it().query().noPartitionRestriction().system().relations()) {
             r.remove();
         }
     }
 
-    /*
-     * --------------------------------------------------------------- HugeGraphRelation Iteration/Access
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+	 * HugeGraphRelation Iteration/Access
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
     public String label() {
@@ -121,17 +118,14 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
     }
 
     protected Vertex getVertexLabelInternal() {
-        return Iterables.getOnlyElement(tx().query(this).noPartitionRestriction().type(BaseLabel.VertexLabelEdge)
-                .direction(Direction.OUT).vertices(), null);
+        return Iterables.getOnlyElement(tx().query(this).noPartitionRestriction().type(BaseLabel.VertexLabelEdge).direction(Direction.OUT).vertices(),null);
     }
 
     @Override
     public VertexLabel vertexLabel() {
         Vertex label = getVertexLabelInternal();
-        if (label == null)
-            return BaseVertexLabel.DEFAULT_VERTEXLABEL;
-        else
-            return (VertexLabelVertex) label;
+        if (label==null) return BaseVertexLabel.DEFAULT_VERTEXLABEL;
+        else return (VertexLabelVertex)label;
     }
 
     @Override
@@ -142,47 +136,49 @@ public abstract class AbstractVertex extends AbstractElement implements Internal
 
     @Override
     public <O> O valueOrNull(PropertyKey key) {
-        return (O) property(key.name()).orElse(null);
+        return (O)property(key.name()).orElse(null);
     }
 
-    /*
-     * --------------------------------------------------------------- Convenience Methods for HugeGraphElement Creation
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+	 * Convenience Methods for HugeGraphElement Creation
+	 * ---------------------------------------------------------------
+	 */
 
-    public <V> HugeGraphVertexProperty<V> property(final String key, final V value, final Object...keyValues) {
+    public<V> HugeGraphVertexProperty<V> property(final String key, final V value, final Object... keyValues) {
         HugeGraphVertexProperty<V> p = tx().addProperty(it(), tx().getOrCreatePropertyKey(key), value);
-        ElementHelper.attachProperties(p, keyValues);
+        ElementHelper.attachProperties(p,keyValues);
         return p;
     }
 
     @Override
-    public <V> HugeGraphVertexProperty<V> property(final VertexProperty.Cardinality cardinality, final String key,
-            final V value, final Object...keyValues) {
+    public <V> HugeGraphVertexProperty<V> property(final VertexProperty.Cardinality cardinality, final String key, final V value, final Object... keyValues) {
         HugeGraphVertexProperty<V> p = tx().addProperty(cardinality, it(), tx().getOrCreatePropertyKey(key), value);
-        ElementHelper.attachProperties(p, keyValues);
+        ElementHelper.attachProperties(p,keyValues);
         return p;
     }
 
     @Override
-    public HugeGraphEdge addEdge(String label, Vertex vertex, Object...keyValues) {
-        Preconditions.checkArgument(vertex instanceof HugeGraphVertex, "Invalid vertex provided: %s", vertex);
+    public HugeGraphEdge addEdge(String label, Vertex vertex, Object... keyValues) {
+        Preconditions.checkArgument(vertex instanceof HugeGraphVertex,"Invalid vertex provided: %s",vertex);
         HugeGraphEdge edge = tx().addEdge(it(), (HugeGraphVertex) vertex, tx().getOrCreateEdgeLabel(label));
-        ElementHelper.attachProperties(edge, keyValues);
+        ElementHelper.attachProperties(edge,keyValues);
         return edge;
     }
 
-    public Iterator<Edge> edges(Direction direction, String...labels) {
-        return (Iterator) query().direction(direction).labels(labels).edges().iterator();
+    public Iterator<Edge> edges(Direction direction, String... labels) {
+        return (Iterator)query().direction(direction).labels(labels).edges().iterator();
     }
 
-    public <V> Iterator<VertexProperty<V>> properties(String...keys) {
-        return (Iterator) query().direction(Direction.OUT).keys(keys).properties().iterator();
+    public <V> Iterator<VertexProperty<V>> properties(String... keys) {
+        return (Iterator)query().direction(Direction.OUT).keys(keys).properties().iterator();
     }
 
-    public Iterator<Vertex> vertices(final Direction direction, final String...edgeLabels) {
-        return (Iterator) query().direction(direction).labels(edgeLabels).vertices().iterator();
+    public Iterator<Vertex> vertices(final Direction direction, final String... edgeLabels) {
+        return (Iterator)query().direction(direction).labels(edgeLabels).vertices().iterator();
 
     }
+
+
+
 
 }

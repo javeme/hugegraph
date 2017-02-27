@@ -31,35 +31,35 @@ public class RidGenerationTest {
         Preconditions.checkArgument(1 < n); // n <= 1 is useless
         Collection<byte[]> rids = Collections.synchronizedSet(new HashSet<byte[]>());
         RidThread[] threads = new RidThread[n];
-
+        
         for (int i = 0; i < n; i++) {
             threads[i] = new RidThread(rids, c);
         }
-
+        
         for (int i = 0; i < n; i++) {
             threads[i].start();
         }
-
+        
         for (int i = 0; i < n; i++) {
             threads[i].join();
         }
-        // TODO: rewrite test case in terms of GraphDatabaseConfiguration
-        // assertEquals(n, rids.size());
+        //TODO: rewrite test case in terms of GraphDatabaseConfiguration
+        //assertEquals(n, rids.size());
     }
-
+    
     private static class RidThread extends Thread {
-
+        
         private final Collection<byte[]> rids;
         private final Configuration c;
-
+        
         private RidThread(Collection<byte[]> rids, Configuration c) {
             this.rids = rids;
             this.c = c;
         }
-
+        
         @Override
         public void run() {
-            // rids.add(DistributedStoreManager.getRid(c));
+            //rids.add(DistributedStoreManager.getRid(c));
         }
     };
 }

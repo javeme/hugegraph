@@ -44,14 +44,13 @@ public class DateSerializer implements OrderPreservingSerializer<Date> {
 
     @Override
     public void writeByteOrder(WriteBuffer buffer, Date attribute) {
-        write(buffer, attribute);
+        write(buffer,attribute);
     }
 
     @Override
     public Date convert(Object value) {
         if (value instanceof Number && !(value instanceof Float) && !(value instanceof Double)) {
-            return new Date(((Number) value).longValue());
-        } else
-            return null;
+            return new Date(((Number)value).longValue());
+        } else return null;
     }
 }

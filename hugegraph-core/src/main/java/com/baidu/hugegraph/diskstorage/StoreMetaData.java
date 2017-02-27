@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Store-specific (Columnfamily-specific) options passed between HugeGraph core and its underlying KeyColumnValueStore
- * implementation. This is part of HugeGraph's internals and is not user-facing in ordinary operation.
+ * Store-specific (Columnfamily-specific) options passed between
+ * HugeGraph core and its underlying KeyColumnValueStore implementation.
+ * This is part of HugeGraph's internals and is not user-facing in
+ * ordinary operation.
  */
 public interface StoreMetaData<T> {
 
@@ -69,9 +71,11 @@ public interface StoreMetaData<T> {
 }
 
 /**
- * Time-to-live for all data written to the store. Values associated with this enum will be expressed in seconds. The
- * TTL is only required to be honored when the associated store is opened for the first time. Subsequent reopenings of
- * an existing store need not check for or modify the existing TTL (though implementations are free to do so).
+ * Time-to-live for all data written to the store.  Values associated
+ * with this enum will be expressed in seconds.  The TTL is only required
+ * to be honored when the associated store is opened for the first time.
+ * Subsequent reopenings of an existing store need not check for or
+ * modify the existing TTL (though implementations are free to do so).
  */
 enum TTLImpl implements StoreMetaData<Integer> {
     INSTANCE;

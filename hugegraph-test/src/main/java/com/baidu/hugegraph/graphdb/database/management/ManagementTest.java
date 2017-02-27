@@ -26,12 +26,21 @@ import java.util.Set;
 
 public abstract class ManagementTest extends HugeGraphBaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagementTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ManagementTest.class);
 
-    private static final Set<String> ILLEGAL_USER_DEFINED_NAMES = ImmutableSet.of("~key", "~value", "~id", "~nid",
-            "~label", "~adjacent", "~timestamp", "~ttl", "~visibility", "key", "vertex", "edge", "element", "property",
-            "label", "~T$VertexExists", "~T$SchemaName", "~T$SchemaDefinitionProperty", "~T$SchemaCategory",
-            "~T$SchemaDefinitionDescription", "~T$SchemaUpdateTimestamp", "~T$SchemaRelated", "~T$VertexLabel");
+    private static final Set<String> ILLEGAL_USER_DEFINED_NAMES = ImmutableSet.of(
+            "~key", "~value", "~id", "~nid", "~label", "~adjacent",
+            "~timestamp", "~ttl", "~visibility",
+            "key", "vertex", "edge", "element", "property", "label",
+            "~T$VertexExists",
+            "~T$SchemaName",
+            "~T$SchemaDefinitionProperty",
+            "~T$SchemaCategory",
+            "~T$SchemaDefinitionDescription",
+            "~T$SchemaUpdateTimestamp",
+            "~T$SchemaRelated",
+            "~T$VertexLabel");
 
     @Test
     public void testReservedNamesRejectedForPropertyKeys() {

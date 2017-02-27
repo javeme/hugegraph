@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An implementation of {@link VertexListInternal} that stores only the vertex ids and simply wraps an
- * {@link LongArrayList} and keeps a boolean flag to remember whether this list is in sort order. In addition, we need a
- * transaction reference in order to construct actual vertex references on request.
+ * An implementation of {@link VertexListInternal} that stores only the vertex ids
+ * and simply wraps an {@link LongArrayList} and keeps a boolean flag to remember whether this list is in sort order.
+ * In addition, we need a transaction reference in order to construct actual vertex references on request.
  * </p>
- * This is a more efficient way to represent a vertex result set but only applies to loaded vertices that have ids. So,
- * compared to {@link VertexArrayList} this is an optimization for the special use case that a vertex is loaded.
+ * This is a more efficient way to represent a vertex result set but only applies to loaded vertices that have ids.
+ * So, compared to {@link VertexArrayList} this is an optimization for the special use case that a vertex is loaded.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -41,7 +41,7 @@ public class VertexLongList implements VertexListInternal {
     private boolean sorted;
 
     public VertexLongList(StandardHugeGraphTx tx) {
-        this(tx, new LongArrayList(10), true);
+        this(tx,new LongArrayList(10),true);
     }
 
     public VertexLongList(StandardHugeGraphTx tx, LongArrayList vertices, boolean sorted) {
@@ -53,8 +53,7 @@ public class VertexLongList implements VertexListInternal {
 
     @Override
     public void add(HugeGraphVertex n) {
-        if (!vertices.isEmpty())
-            sorted = sorted && vertices.get(vertices.size() - 1) <= n.longId();
+        if (!vertices.isEmpty()) sorted = sorted && vertices.get(vertices.size()-1)<=n.longId();
         vertices.add(n.longId());
     }
 
@@ -75,9 +74,8 @@ public class VertexLongList implements VertexListInternal {
 
     @Override
     public void sort() {
-        if (sorted)
-            return;
-        Arrays.sort(vertices.buffer, 0, vertices.size());
+        if (sorted) return;
+        Arrays.sort(vertices.buffer,0,vertices.size());
         sorted = true;
     }
 
@@ -90,8 +88,8 @@ public class VertexLongList implements VertexListInternal {
     public VertexList subList(int fromPosition, int length) {
         LongArrayList subList = new LongArrayList(length);
         subList.add(vertices.buffer, fromPosition, length);
-        assert subList.size() == length;
-        return new VertexLongList(tx, subList, sorted);
+        assert subList.size()==length;
+        return new VertexLongList(tx,subList,sorted);
     }
 
     @Override
@@ -107,14 +105,13 @@ public class VertexLongList implements VertexListInternal {
         } else if (vertexlist instanceof VertexArrayList) {
             VertexArrayList other = (VertexArrayList) vertexlist;
             othervertexids = new LongArrayList(other.size());
-            for (int i = 0; i < other.size(); i++)
-                othervertexids.add(other.getID(i));
+            for (int i = 0; i < other.size(); i++) othervertexids.add(other.getID(i));
         } else {
             throw new IllegalArgumentException("Unsupported vertex-list: " + vertexlist.getClass());
         }
         if (sorted && vertexlist.isSorted()) {
-            // Merge join
-            vertices = AbstractLongListUtil.mergeSort(vertices, othervertexids);
+            //Merge join
+            vertices = AbstractLongListUtil.mergeSort(vertices,othervertexids);
         } else {
             sorted = false;
             vertices.add(othervertexids.buffer, 0, othervertexids.size());
@@ -123,7 +120,7 @@ public class VertexLongList implements VertexListInternal {
 
     public VertexArrayList toVertexArrayList() {
         VertexArrayList list = new VertexArrayList(tx);
-        for (int i = 0; i < vertices.size(); i++) {
+        for (int i=0;i<vertices.size();i++) {
             list.add(get(i));
         }
         return list;
@@ -142,8 +139,7 @@ public class VertexLongList implements VertexListInternal {
 
             @Override
             public HugeGraphVertex next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
+                if (!hasNext()) throw new NoSuchElementException();
                 pos++;
                 return get(pos);
             }

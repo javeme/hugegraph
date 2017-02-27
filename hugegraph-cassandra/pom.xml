@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-cassandra</artifactId>
-    <name>JanusGraph-Cassandra: Distributed Graph Database</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-cassandra</artifactId>
+    <name>hugegraph-Cassandra: Distributed Graph Database</name>
+    <url>http://hugegraph.org</url>
     <properties>
         <astyanax.version>3.8.0</astyanax.version>
         <jamm.group>com.github.jbellis</jamm.group>
@@ -22,13 +22,13 @@
     
     <dependencies>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-core</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-test</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -42,7 +42,7 @@
             <scope>test</scope>
         </dependency>
         <!-- Logging backends.
-             Cassandra 2.1+ moved to Logback.  JanusGraph is logging-backend-agnostic,
+             Cassandra 2.1+ moved to Logback.  hugegraph is logging-backend-agnostic,
              but still uses Log4j in testing.  The slf4j binding for logback is,
              inconveniently, packed into the logback-classic artifact.  This means
              the binding can't easily be removed from the classpath without losing
@@ -53,10 +53,10 @@
              least-worst approach is to enforce a classpath ordering constraint: as
              long as the slf4j-log4j12 binding appears on the classpath before
              logback-classic, log4j will be used instead of logback.  I don't have
-             any special love for log4j, but JanusGraph should use a single logging
+             any special love for log4j, but hugegraph should use a single logging
              backend throughout all its tests.   I don't want to maintain a mixture
              of logback.xml and log4j.properties files scattered randomly through
-             the janusgraph-* submodules.  Maven populates the classpath elements for
+             the hugegraph-* submodules.  Maven populates the classpath elements for
              tests in pom appearance order.  That's why these dependencies are 
              explicitly declared below: to make slf4j-log4j12 preced logback-classic
              on the test classpath. -->
@@ -262,7 +262,7 @@
                         <phase>test</phase>
                         <configuration>
                             <argLine>${default.test.jvm.opts} -Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-bop -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-bop</argLine>
-                            <excludedGroups>${test.excluded.groups},org.janusgraph.testcategory.UnorderedKeyStoreTests,org.janusgraph.testcategory.SerialTests,org.janusgraph.testcategory.CassandraSSLTests</excludedGroups>
+                            <excludedGroups>${test.excluded.groups},com.baidu.hugegraph.testcategory.UnorderedKeyStoreTests,com.baidu.hugegraph.testcategory.SerialTests,com.baidu.hugegraph.testcategory.CassandraSSLTests</excludedGroups>
                             <groups />
                             <forkCount>1</forkCount>
                             <reuseForks>false</reuseForks>
@@ -282,7 +282,7 @@
                         <phase>test</phase>
                         <configuration>
                             <argLine>${default.test.jvm.opts} -Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-murmur -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-murmur</argLine>
-                            <excludedGroups>${test.excluded.groups},org.janusgraph.testcategory.OrderedKeyStoreTests,org.janusgraph.testcategory.SerialTests,org.janusgraph.testcategory.CassandraSSLTests</excludedGroups>
+                            <excludedGroups>${test.excluded.groups},com.baidu.hugegraph.testcategory.OrderedKeyStoreTests,com.baidu.hugegraph.testcategory.SerialTests,com.baidu.hugegraph.testcategory.CassandraSSLTests</excludedGroups>
                             <groups />
                             <forkCount>1</forkCount>
                             <reuseForks>false</reuseForks>
@@ -303,7 +303,7 @@
                         <configuration>
                             <argLine>${default.test.jvm.opts} -Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-murmur-ssl -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-murmur-ssl</argLine>
                             <excludedGroups />
-                            <groups>org.janusgraph.testcategory.CassandraSSLTests</groups>
+                            <groups>com.baidu.hugegraph.testcategory.CassandraSSLTests</groups>
                             <!-- The TP3 JUnit Suite/Runner ignores groups/@Category and I'm not sure why.  Redundant excludes to keep TP3 tests from using non-SSL configs on SSL -->
                             <excludes>
                                 <exclude>**/*ComputerTest.java</exclude>
@@ -329,7 +329,7 @@
                         <configuration>
                             <argLine>${default.test.jvm.opts} -Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-murmur -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-murmur</argLine>
                             <excludedGroups />
-                            <groups>org.janusgraph.testcategory.SerialTests</groups>
+                            <groups>com.baidu.hugegraph.testcategory.SerialTests</groups>
                             <forkCount>1</forkCount>
                             <reuseForks>false</reuseForks>
                             <parallel>none</parallel>

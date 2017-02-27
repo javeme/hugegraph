@@ -18,7 +18,7 @@ import com.baidu.hugegraph.diskstorage.ScanBuffer;
 import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import com.baidu.hugegraph.graphdb.database.serialize.OrderPreservingSerializer;
 
-public class CharacterSerializer implements OrderPreservingSerializer<Character> {
+public class CharacterSerializer implements OrderPreservingSerializer<Character>  {
 
     private final ShortSerializer ss = new ShortSerializer();
 
@@ -40,7 +40,7 @@ public class CharacterSerializer implements OrderPreservingSerializer<Character>
 
     @Override
     public void writeByteOrder(WriteBuffer buffer, Character attribute) {
-        write(buffer, attribute);
+        write(buffer,attribute);
     }
 
     public static final short char2short(char c) {

@@ -58,8 +58,9 @@ import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 import static com.baidu.hugegraph.diskstorage.configuration.ConfigOption.disallowEmpty;
 
 /**
- * This class creates {@see CassandraThriftKeyColumnValueStore}s and handles Cassandra-backed allocation of vertex IDs
- * for HugeGraph (when so configured).
+ * This class creates {@see CassandraThriftKeyColumnValueStore}s and
+ * handles Cassandra-backed allocation of vertex IDs for HugeGraph (when so
+ * configured).
  *
  * @author Dan LaRocque <dalaro@hopcount.org>
  */
@@ -67,8 +68,9 @@ import static com.baidu.hugegraph.diskstorage.configuration.ConfigOption.disallo
 public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
     public enum PoolExhaustedAction {
-        BLOCK(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK), FAIL(GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL), GROW(
-                GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
+        BLOCK(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK),
+        FAIL(GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL),
+        GROW(GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
 
         private final byte b;
 
@@ -83,62 +85,72 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
     private static final Logger log = LoggerFactory.getLogger(CassandraThriftStoreManager.class);
 
-    public static final ConfigNamespace THRIFT_NS = new ConfigNamespace(AbstractCassandraStoreManager.CASSANDRA_NS,
-            "thrift", "Options for HugeGraph's own Thrift Cassandra backend");
+    public static final ConfigNamespace THRIFT_NS =
+            new ConfigNamespace(AbstractCassandraStoreManager.CASSANDRA_NS, "thrift",
+                    "Options for HugeGraph's own Thrift Cassandra backend");
 
     public static final ConfigNamespace CPOOL_NS =
             new ConfigNamespace(THRIFT_NS, "cpool", "Options for the Apache commons-pool connection manager");
 
-    public static final ConfigOption<String> CPOOL_WHEN_EXHAUSTED = new ConfigOption<>(CPOOL_NS, "when-exhausted",
-            "What to do when clients concurrently request more active connections than are allowed "
-                    + "by the pool.  The value must be one of BLOCK, FAIL, or GROW.",
+    public static final ConfigOption<String> CPOOL_WHEN_EXHAUSTED =
+            new ConfigOption<>(CPOOL_NS, "when-exhausted",
+            "What to do when clients concurrently request more active connections than are allowed " +
+            "by the pool.  The value must be one of BLOCK, FAIL, or GROW.",
             ConfigOption.Type.MASKABLE, String.class, PoolExhaustedAction.BLOCK.toString(),
             disallowEmpty(String.class));
 
-    public static final ConfigOption<Integer> CPOOL_MAX_TOTAL = new ConfigOption<Integer>(CPOOL_NS, "max-total",
+    public static final ConfigOption<Integer> CPOOL_MAX_TOTAL =
+            new ConfigOption<Integer>(CPOOL_NS, "max-total",
             "Max number of allowed Thrift connections, idle or active (-1 to leave undefined)",
             ConfigOption.Type.MASKABLE, -1);
 
-    public static final ConfigOption<Integer> CPOOL_MAX_ACTIVE = new ConfigOption<Integer>(CPOOL_NS, "max-active",
-            "Maximum number of concurrently in-use connections (-1 to leave undefined)", ConfigOption.Type.MASKABLE,
-            16);
+    public static final ConfigOption<Integer> CPOOL_MAX_ACTIVE =
+            new ConfigOption<Integer>(CPOOL_NS, "max-active",
+            "Maximum number of concurrently in-use connections (-1 to leave undefined)",
+            ConfigOption.Type.MASKABLE, 16);
 
-    public static final ConfigOption<Integer> CPOOL_MAX_IDLE = new ConfigOption<Integer>(CPOOL_NS, "max-idle",
-            "Maximum number of concurrently idle connections (-1 to leave undefined)", ConfigOption.Type.MASKABLE, 4);
+    public static final ConfigOption<Integer> CPOOL_MAX_IDLE =
+            new ConfigOption<Integer>(CPOOL_NS, "max-idle",
+            "Maximum number of concurrently idle connections (-1 to leave undefined)",
+            ConfigOption.Type.MASKABLE, 4);
 
-    public static final ConfigOption<Integer> CPOOL_MIN_IDLE = new ConfigOption<Integer>(CPOOL_NS, "min-idle",
-            "Minimum number of idle connections the pool attempts to maintain", ConfigOption.Type.MASKABLE, 0);
+    public static final ConfigOption<Integer> CPOOL_MIN_IDLE =
+            new ConfigOption<Integer>(CPOOL_NS, "min-idle",
+            "Minimum number of idle connections the pool attempts to maintain",
+            ConfigOption.Type.MASKABLE, 0);
 
     // Wart: allowing -1 like commons-pool's convention precludes using StandardDuration
-    public static final ConfigOption<Long> CPOOL_MAX_WAIT = new ConfigOption<Long>(CPOOL_NS, "max-wait",
-            "Maximum number of milliseconds to block when " + ConfigElement.getPath(CPOOL_WHEN_EXHAUSTED)
-                    + " is set to BLOCK.  Has no effect when set to actions besides BLOCK.  Set to -1 to wait indefinitely.",
+    public static final ConfigOption<Long> CPOOL_MAX_WAIT =
+            new ConfigOption<Long>(CPOOL_NS, "max-wait",
+            "Maximum number of milliseconds to block when " + ConfigElement.getPath(CPOOL_WHEN_EXHAUSTED) +
+            " is set to BLOCK.  Has no effect when set to actions besides BLOCK.  Set to -1 to wait indefinitely.",
             ConfigOption.Type.MASKABLE, -1L);
 
     // Wart: allowing -1 like commons-pool's convention precludes using StandardDuration
     public static final ConfigOption<Long> CPOOL_EVICTOR_PERIOD =
             new ConfigOption<Long>(CPOOL_NS, "evictor-period",
-                    "Approximate number of milliseconds between runs of the idle connection evictor.  "
-                            + "Set to -1 to never run the idle connection evictor.",
-                    ConfigOption.Type.MASKABLE, 30L * 1000L);
+            "Approximate number of milliseconds between runs of the idle connection evictor.  " +
+            "Set to -1 to never run the idle connection evictor.",
+            ConfigOption.Type.MASKABLE, 30L * 1000L);
 
     // Wart: allowing -1 like commons-pool's convention precludes using StandardDuration
-    public static final ConfigOption<Long> CPOOL_MIN_EVICTABLE_IDLE_TIME = new ConfigOption<Long>(CPOOL_NS,
-            "min-evictable-idle-time",
-            "Minimum number of milliseconds a connection must be idle before it is eligible for "
-                    + "eviction.  See also " + ConfigElement.getPath(CPOOL_EVICTOR_PERIOD)
-                    + ".  Set to -1 to never evict " + "idle connections.",
-            ConfigOption.Type.MASKABLE, 60L * 1000L);
+    public static final ConfigOption<Long> CPOOL_MIN_EVICTABLE_IDLE_TIME =
+            new ConfigOption<Long>(CPOOL_NS, "min-evictable-idle-time",
+            "Minimum number of milliseconds a connection must be idle before it is eligible for " +
+            "eviction.  See also " + ConfigElement.getPath(CPOOL_EVICTOR_PERIOD) + ".  Set to -1 to never evict " +
+            "idle connections.", ConfigOption.Type.MASKABLE, 60L * 1000L);
 
-    public static final ConfigOption<Boolean> CPOOL_IDLE_TESTS = new ConfigOption<Boolean>(CPOOL_NS, "idle-test",
+    public static final ConfigOption<Boolean> CPOOL_IDLE_TESTS =
+            new ConfigOption<Boolean>(CPOOL_NS, "idle-test",
             "Whether the idle connection evictor validates idle connections and drops those that fail to validate",
             ConfigOption.Type.MASKABLE, false);
 
     public static final ConfigOption<Integer> CPOOL_IDLE_TESTS_PER_EVICTION_RUN =
             new ConfigOption<Integer>(CPOOL_NS, "idle-tests-per-eviction-run",
-                    "When the value is negative, e.g. -n, roughly one nth of the idle connections are tested per run.  "
-                            + "When the value is positive, e.g. n, the min(idle-count, n) connections are tested per run.",
-                    ConfigOption.Type.MASKABLE, 0);
+            "When the value is negative, e.g. -n, roughly one nth of the idle connections are tested per run.  " +
+            "When the value is positive, e.g. n, the min(idle-count, n) connections are tested per run.",
+            ConfigOption.Type.MASKABLE, 0);
+
 
     private final Map<String, CassandraThriftKeyColumnValueStore> openStores;
     private final CTConnectionPool pool;
@@ -148,20 +160,22 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         super(config);
 
         /*
-         * This is eventually passed to Thrift's TSocket constructor. The constructor parameter is of type int.
+         * This is eventually passed to Thrift's TSocket constructor. The
+         * constructor parameter is of type int.
          */
-        int thriftTimeoutMS = (int) config.get(GraphDatabaseConfiguration.CONNECTION_TIMEOUT).toMillis();
+        int thriftTimeoutMS = (int)config.get(GraphDatabaseConfiguration.CONNECTION_TIMEOUT).toMillis();
 
         CTConnectionFactory.Config factoryConfig = new CTConnectionFactory.Config(hostnames, port, username, password)
-                .setTimeoutMS(thriftTimeoutMS).setFrameSize(thriftFrameSizeBytes);
+                                                                            .setTimeoutMS(thriftTimeoutMS)
+                                                                            .setFrameSize(thriftFrameSizeBytes);
 
         if (config.get(SSL_ENABLED)) {
             factoryConfig.setSSLTruststoreLocation(config.get(SSL_TRUSTSTORE_LOCATION));
             factoryConfig.setSSLTruststorePassword(config.get(SSL_TRUSTSTORE_PASSWORD));
         }
 
-        final PoolExhaustedAction poolExhaustedAction =
-                ConfigOption.getEnumValue(config.get(CPOOL_WHEN_EXHAUSTED), PoolExhaustedAction.class);
+        final PoolExhaustedAction poolExhaustedAction = ConfigOption.getEnumValue(
+                config.get(CPOOL_WHEN_EXHAUSTED), PoolExhaustedAction.class);
 
         CTConnectionPool p = new CTConnectionPool(factoryConfig.build());
         p.setTestOnBorrow(true);
@@ -182,10 +196,9 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
 
         // Only watch the ring and change endpoints with BOP
         if (getCassandraPartitioner() instanceof ByteOrderedPartitioner) {
-            deployment = (hostnames.length == 1)// mark deployment as local only in case we have byte ordered
-                                                // partitioner and local connection
-                    ? (NetworkUtil.isLocalConnection(hostnames[0])) ? Deployment.LOCAL : Deployment.REMOTE
-                    : Deployment.REMOTE;
+            deployment = (hostnames.length == 1)// mark deployment as local only in case we have byte ordered partitioner and local connection
+                          ? (NetworkUtil.isLocalConnection(hostnames[0])) ? Deployment.LOCAL : Deployment.REMOTE
+                          : Deployment.REMOTE;
         } else {
             deployment = Deployment.REMOTE;
         }
@@ -221,8 +234,7 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         Preconditions.checkNotNull(mutations);
 
         final MaskedTimestamp commitTime = new MaskedTimestamp(txh);
@@ -232,10 +244,10 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         // Generate Thrift-compatible batch_mutate() datastructure
         // key -> cf -> cassmutation
         int size = 0;
-        for (Map<StaticBuffer, KCVMutation> mutation : mutations.values())
-            size += mutation.size();
+        for (Map<StaticBuffer, KCVMutation> mutation : mutations.values()) size += mutation.size();
         Map<ByteBuffer, Map<String, List<org.apache.cassandra.thrift.Mutation>>> batch =
                 new HashMap<ByteBuffer, Map<String, List<org.apache.cassandra.thrift.Mutation>>>(size);
+
 
         for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> keyMutation : mutations.entrySet()) {
             String columnFamily = keyMutation.getKey();
@@ -245,10 +257,7 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
                 // Get or create the single Cassandra Mutation object responsible for this key
                 Map<String, List<org.apache.cassandra.thrift.Mutation>> cfmutation = batch.get(keyBB);
                 if (cfmutation == null) {
-                    cfmutation = new HashMap<String, List<org.apache.cassandra.thrift.Mutation>>(3); // Most mutations
-                                                                                                     // only modify the
-                                                                                                     // edgeStore and
-                                                                                                     // indexStore
+                    cfmutation = new HashMap<String, List<org.apache.cassandra.thrift.Mutation>>(3); // Most mutations only modify the edgeStore and indexStore
                     batch.put(keyBB, cfmutation);
                 }
 
@@ -312,15 +321,13 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
     }
 
     @Override // TODO: *BIG FAT WARNING* 'synchronized is always *bad*, change openStores to use ConcurrentLinkedHashMap
-    public synchronized CassandraThriftKeyColumnValueStore openDatabase(final String name,
-            StoreMetaData.Container metaData) throws BackendException {
+    public synchronized CassandraThriftKeyColumnValueStore openDatabase(final String name, StoreMetaData.Container metaData) throws BackendException {
         if (openStores.containsKey(name))
             return openStores.get(name);
 
         ensureColumnFamilyExists(keySpaceName, name);
 
-        CassandraThriftKeyColumnValueStore store =
-                new CassandraThriftKeyColumnValueStore(keySpaceName, name, this, pool);
+        CassandraThriftKeyColumnValueStore store = new CassandraThriftKeyColumnValueStore(keySpaceName, name, this, pool);
         openStores.put(name, store);
         return store;
     }
@@ -331,26 +338,24 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         IPartitioner partitioner = getCassandraPartitioner();
 
         if (!(partitioner instanceof AbstractByteOrderedPartitioner))
-            throw new UnsupportedOperationException(
-                    "getLocalKeyPartition() only supported by byte ordered partitioner.");
+            throw new UnsupportedOperationException("getLocalKeyPartition() only supported by byte ordered partitioner.");
 
         Token.TokenFactory tokenFactory = partitioner.getTokenFactory();
 
         try {
-            // Resist the temptation to describe SYSTEM_KS. It has no ring.
+            // Resist the temptation to describe SYSTEM_KS.  It has no ring.
             // Instead, we'll create our own keyspace (or check that it exists), then describe it.
             ensureKeyspaceExists(keySpaceName);
 
             conn = pool.borrowObject(keySpaceName);
-            List<TokenRange> ranges = conn.getClient().describe_ring(keySpaceName);
+            List<TokenRange> ranges  = conn.getClient().describe_ring(keySpaceName);
             List<KeyRange> keyRanges = new ArrayList<KeyRange>(ranges.size());
 
             for (TokenRange range : ranges) {
                 if (!NetworkUtil.hasLocalAddress(range.endpoints))
                     continue;
 
-                keyRanges.add(CassandraHelper.transformRange(tokenFactory.fromString(range.start_token),
-                        tokenFactory.fromString(range.end_token)));
+                keyRanges.add(CassandraHelper.transformRange(tokenFactory.fromString(range.start_token), tokenFactory.fromString(range.end_token)));
             }
 
             return keyRanges;
@@ -364,24 +369,25 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
     /**
      * Connect to Cassandra via Thrift on the specified host and port and attempt to truncate the named keyspace.
      * <p/>
-     * This is a utility method intended mainly for testing. It is equivalent to issuing 'truncate <cf>' for each of the
-     * column families in keyspace using the cassandra-cli tool.
+     * This is a utility method intended mainly for testing. It is
+     * equivalent to issuing 'truncate <cf>' for each of the column families in keyspace using
+     * the cassandra-cli tool.
      * <p/>
-     * Using truncate is better for a number of reasons, most significantly because it doesn't involve any schema
-     * modifications which can take time to propagate across the cluster such leaves nodes in the inconsistent state and
-     * could result in read/write failures. Any schema modifications are discouraged until there is no traffic to
-     * Keyspace or ColumnFamilies.
+     * Using truncate is better for a number of reasons, most significantly because it doesn't
+     * involve any schema modifications which can take time to propagate across the cluster such
+     * leaves nodes in the inconsistent state and could result in read/write failures.
+     * Any schema modifications are discouraged until there is no traffic to Keyspace or ColumnFamilies.
      *
-     * @throws com.baidu.hugegraph.diskstorage.BackendException if any checked Thrift or UnknownHostException is thrown
-     *             in the body of this method
+     * @throws com.baidu.hugegraph.diskstorage.BackendException if any checked Thrift or UnknownHostException is thrown in the body of this method
      */
     public void clearStorage() throws BackendException {
         openStores.clear();
         final String lp = "ClearStorage: "; // "log prefix"
         /*
-         * log4j is capable of automatically writing the name of a method that generated a log message, but the docs
-         * warn that "generating caller location information is extremely slow and should be avoided unless execution
-         * speed is not an issue."
+         * log4j is capable of automatically writing the name of a method that
+         * generated a log message, but the docs warn that "generating caller
+         * location information is extremely slow and should be avoided unless
+         * execution speed is not an issue."
          */
 
         CTConnection conn = null;
@@ -397,11 +403,10 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
                 log.debug(lp + "Keyspace {} does not exist, not attempting to truncate.", keySpaceName);
                 return;
             } catch (InvalidRequestException e) {
-                log.debug(
-                        lp + "InvalidRequestException when attempting to describe keyspace {}, not attempting to truncate.",
-                        keySpaceName);
+                log.debug(lp + "InvalidRequestException when attempting to describe keyspace {}, not attempting to truncate.", keySpaceName);
                 return;
             }
+
 
             if (null == ksDef) {
                 log.debug(lp + "Received null KsDef for keyspace {}; not truncating its CFs", keySpaceName);
@@ -421,8 +426,9 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
             }
 
             /*
-             * Clearing the CTConnectionPool is unnecessary. This method removes no keyspaces. All open Cassandra
-             * connections will remain valid.
+             * Clearing the CTConnectionPool is unnecessary. This method
+             * removes no keyspaces. All open Cassandra connections will
+             * remain valid.
              */
         } catch (Exception e) {
             throw new TemporaryBackendException(e);
@@ -456,8 +462,8 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
                 // Keyspace didn't exist; create it
                 log.debug("Creating keyspace {}...", keyspaceName);
 
-                KsDef ksdef = new KsDef().setName(keyspaceName).setCf_defs(new LinkedList<CfDef>()) // cannot be null
-                                                                                                    // but can be empty
+                KsDef ksdef = new KsDef().setName(keyspaceName)
+                        .setCf_defs(new LinkedList<CfDef>()) // cannot be null but can be empty
                         .setStrategy_class(storageConfig.get(REPLICATION_STRATEGY))
                         .setStrategy_options(strategyOptions);
 
@@ -536,8 +542,10 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         }
     }
 
-    private void createColumnFamily(Cassandra.Client client, String ksName, String cfName, String comparator)
-            throws BackendException {
+    private void createColumnFamily(Cassandra.Client client,
+                                    String ksName,
+                                    String cfName,
+                                    String comparator) throws BackendException {
 
         CfDef createColumnFamily = new CfDef();
         createColumnFamily.setName(cfName);
@@ -552,8 +560,8 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         ImmutableMap.Builder<String, String> compressionOptions = new ImmutableMap.Builder<String, String>();
 
         if (compressionEnabled) {
-            compressionOptions.put("sstable_compression", compressionClass).put("chunk_length_kb",
-                    Integer.toString(compressionChunkSizeKB));
+            compressionOptions.put("sstable_compression", compressionClass)
+                    .put("chunk_length_kb", Integer.toString(compressionChunkSizeKB));
         }
 
         createColumnFamily.setCompression_options(compressionOptions.build());
@@ -610,14 +618,17 @@ public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {
         /*
          * pool.close() does not affect borrowed connections.
          *
-         * Connections currently borrowed by some thread which are talking to the old host will eventually be destroyed
-         * by CTConnectionFactory#validateObject() returning false when those connections are returned to the pool.
+         * Connections currently borrowed by some thread which are
+         * talking to the old host will eventually be destroyed by
+         * CTConnectionFactory#validateObject() returning false when
+         * those connections are returned to the pool.
          */
         try {
             pool.close();
             log.info("Closed Thrift connection pooler.");
         } catch (Exception e) {
-            log.warn("Failed to close connection pooler.  " + "We might be leaking Cassandra connections.", e);
+            log.warn("Failed to close connection pooler.  "
+                    + "We might be leaking Cassandra connections.", e);
             // There's still hope: CTConnectionFactory#validateObject()
             // will be called on borrow() and might tear down the
             // connections that close() failed to tear down

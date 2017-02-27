@@ -30,7 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public class GuavaVertexCache implements VertexCache {
 
-    private static final Logger log = LoggerFactory.getLogger(GuavaVertexCache.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(GuavaVertexCache.class);
 
     private final ConcurrentMap<Long, InternalVertex> volatileVertices;
     private final Cache<Long, InternalVertex> cache;
@@ -43,20 +44,19 @@ public class GuavaVertexCache implements VertexCache {
                 .removalListener(new RemovalListener<Long, InternalVertex>() {
                     @Override
                     public void onRemoval(RemovalNotification<Long, InternalVertex> notification) {
-                        if (notification.getCause() == RemovalCause.EXPLICIT) { // Due to invalidation at the end
+                        if (notification.getCause() == RemovalCause.EXPLICIT) { //Due to invalidation at the end
                             assert volatileVertices.isEmpty();
                             return;
                         }
-                        // Should only get evicted based on size constraint or replaced through add
-                        assert (notification.getCause() == RemovalCause.SIZE
-                                || notification.getCause() == RemovalCause.REPLACED) : "Cause: "
-                                        + notification.getCause();
+                        //Should only get evicted based on size constraint or replaced through add
+                        assert (notification.getCause() == RemovalCause.SIZE || notification.getCause() == RemovalCause.REPLACED) : "Cause: " + notification.getCause();
                         InternalVertex v = notification.getValue();
                         if (v.isModified()) {
                             volatileVertices.putIfAbsent(notification.getKey(), v);
                         }
                     }
-                }).build();
+                })
+                .build();
         log.debug("Created vertex cache with max size {}", maxCacheSize);
     }
 
@@ -78,13 +78,11 @@ public class GuavaVertexCache implements VertexCache {
             if (newVertex == null) {
                 newVertex = retriever.get(vertexId);
             }
-            assert newVertex != null;
+            assert newVertex!=null;
             try {
                 vertex = cache.get(vertexId, new NewVertexCallable(newVertex));
-            } catch (Exception e) {
-                throw new AssertionError("Should not happen: " + e.getMessage());
-            }
-            assert vertex != null;
+            } catch (Exception e) { throw new AssertionError("Should not happen: "+e.getMessage()); }
+            assert vertex!=null;
         }
 
         return vertex;
@@ -105,8 +103,7 @@ public class GuavaVertexCache implements VertexCache {
     public List<InternalVertex> getAllNew() {
         List<InternalVertex> vertices = new ArrayList<InternalVertex>(10);
         for (InternalVertex v : volatileVertices.values()) {
-            if (v.isNew())
-                vertices.add(v);
+            if (v.isNew()) vertices.add(v);
         }
         return vertices;
     }

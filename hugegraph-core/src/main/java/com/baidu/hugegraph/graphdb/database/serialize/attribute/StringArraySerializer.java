@@ -39,25 +39,22 @@ public class StringArraySerializer extends ArraySerializer implements AttributeS
         Array.set(array, pos, ((String) value));
     }
 
-    // ############### Serialization ###################
+    //############### Serialization ###################
 
     @Override
     public String[] read(ScanBuffer buffer) {
         int length = getLength(buffer);
-        if (length < 0)
-            return null;
+        if (length<0) return null;
         String[] result = new String[length];
         for (int i = 0; i < length; i++) {
-            result[i] = stringSerializer.read(buffer);
+            result[i]=stringSerializer.read(buffer);
         }
         return result;
     }
 
     @Override
     public void write(WriteBuffer buffer, String[] attribute) {
-        writeLength(buffer, attribute);
-        if (attribute != null)
-            for (int i = 0; i < attribute.length; i++)
-                stringSerializer.write(buffer, attribute[i]);
+        writeLength(buffer,attribute);
+        if (attribute!=null) for (int i = 0; i < attribute.length; i++) stringSerializer.write(buffer, attribute[i]);
     }
 }

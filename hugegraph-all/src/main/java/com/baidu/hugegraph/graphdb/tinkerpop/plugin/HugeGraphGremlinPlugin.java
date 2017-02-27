@@ -36,25 +36,23 @@ public class HugeGraphGremlinPlugin implements GremlinPlugin {
     private static final String IMPORT_STATIC = IMPORT + "static ";
     private static final String DOT_STAR = ".*";
 
-    private static final Set<String> IMPORTS = new HashSet<String>() {
-        {
-            add(IMPORT + "com.baidu.hugegraph.core" + DOT_STAR);
-            add(IMPORT + "com.baidu.hugegraph.core.attribute" + DOT_STAR);
-            add(IMPORT + "com.baidu.hugegraph.core.schema" + DOT_STAR);
-            add(IMPORT + GraphOfTheGodsFactory.class.getName());
-            add(IMPORT + "com.baidu.hugegraph.hadoop.MapReduceIndexManagement");
-            add(IMPORT + "java.time" + DOT_STAR);
-            add(IMPORT + HugeGraphIoRegistry.class.getName());
+    private static final Set<String> IMPORTS = new HashSet<String>() {{
+        add(IMPORT + "com.baidu.hugegraph.core" + DOT_STAR);
+        add(IMPORT + "com.baidu.hugegraph.core.attribute" + DOT_STAR);
+        add(IMPORT + "com.baidu.hugegraph.core.schema" + DOT_STAR);
+        add(IMPORT + GraphOfTheGodsFactory.class.getName());
+        add(IMPORT + "com.baidu.hugegraph.hadoop.MapReduceIndexManagement");
+        add(IMPORT + "java.time" + DOT_STAR);
+        add(IMPORT + HugeGraphIoRegistry.class.getName());
 
-            // Static imports on enum values used in query constraint expressions
-            add(IMPORT_STATIC + Geo.class.getName() + DOT_STAR);
-            add(IMPORT_STATIC + Text.class.getName() + DOT_STAR);
-            add(IMPORT_STATIC + Multiplicity.class.getName() + DOT_STAR);
-            add(IMPORT_STATIC + Cardinality.class.getName() + DOT_STAR);
-            add(IMPORT_STATIC + ChronoUnit.class.getName() + DOT_STAR);
+        // Static imports on enum values used in query constraint expressions
+        add(IMPORT_STATIC + Geo.class.getName() + DOT_STAR);
+        add(IMPORT_STATIC + Text.class.getName() + DOT_STAR);
+        add(IMPORT_STATIC + Multiplicity.class.getName() + DOT_STAR);
+        add(IMPORT_STATIC + Cardinality.class.getName() + DOT_STAR);
+        add(IMPORT_STATIC + ChronoUnit.class.getName() + DOT_STAR);
 
-        }
-    };
+    }};
 
     @Override
     public String getName() {

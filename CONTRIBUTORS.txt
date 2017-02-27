@@ -1,4 +1,4 @@
-# This is the official list of people who have contributed to JanusGraph,
+# This is the official list of people who have contributed to hugegraph,
 # including contributors to Titan.
 #
 # The AUTHORS.txt file lists the copyright holders; this file lists people. For

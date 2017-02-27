@@ -1,4 +1,4 @@
-// Copyright 2017 JanusGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import org.apache.thrift.transport.TTransport;
 /**
  * This is necessary until Astyanax is updated to "officially" support Cassandra 2.0.x.
  *
- * The story is as follows: Cassandra 2.0.x moved to the new version of Thrift (0.9.x) where problem with
- * TBinaryProtocol was fixed, so TBinaryProtocol class was removed as no longer necessary. Astyanax in it's current
- * state still wants to use TBinaryProtocol bundled with Cassandra, so this class is essentially tricking it (Astyanax)
- * into believing that class is still there.
+ * The story is as follows: Cassandra 2.0.x moved to the new version of Thrift (0.9.x)
+ * where problem with TBinaryProtocol was fixed, so TBinaryProtocol class was removed as no longer necessary.
+ * Astyanax in it's current state still wants to use TBinaryProtocol bundled with Cassandra,
+ * so this class is essentially tricking it (Astyanax) into believing that class is still there.
  *
  * No other changes necessary to make Astyanax work with Cassandra 2.0.x because Thrift API is completely in-tact.
  */

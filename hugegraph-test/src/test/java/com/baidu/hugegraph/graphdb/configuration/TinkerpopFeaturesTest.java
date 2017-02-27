@@ -25,22 +25,26 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-public class TinkerpopFeaturesTest {
+public class TinkerpopFeaturesTest
+{
 
     private HugeGraph graph;
 
     @Before
-    public void setupGraph() {
+    public void setupGraph()
+    {
         graph = open(false);
     }
 
     @After
-    public void closeGraph() {
+    public void closeGraph()
+    {
         if (null != graph)
             graph.close();
     }
 
-    public HugeGraph open(boolean useVertexIdSetting) {
+    public HugeGraph open(boolean useVertexIdSetting)
+    {
         HugeGraphFactory.Builder builder = HugeGraphFactory.build();
         builder.set("storage.backend", "inmemory");
         builder.set("graph.set-vertex-id", useVertexIdSetting);
@@ -48,7 +52,8 @@ public class TinkerpopFeaturesTest {
     }
 
     @Test
-    public void testVertexFeatures() {
+    public void testVertexFeatures()
+    {
         Graph.Features.VertexFeatures vf = graph.features().vertex();
         assertFalse(vf.supportsCustomIds());
         assertFalse(vf.supportsStringIds());
@@ -73,7 +78,8 @@ public class TinkerpopFeaturesTest {
     }
 
     @Test
-    public void testEdgeFeatures() {
+    public void testEdgeFeatures()
+    {
         Graph.Features.EdgeFeatures ef = graph.features().edge();
         assertFalse(ef.supportsStringIds());
         assertFalse(ef.supportsUuidIds());

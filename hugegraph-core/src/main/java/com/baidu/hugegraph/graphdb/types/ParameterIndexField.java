@@ -29,12 +29,12 @@ public class ParameterIndexField extends IndexField {
     private ParameterIndexField(PropertyKey key, Parameter[] parameters) {
         super(key);
         Preconditions.checkNotNull(parameters);
-        this.parameters = parameters;
+        this.parameters=parameters;
     }
 
     public SchemaStatus getStatus() {
         SchemaStatus status = ParameterType.STATUS.findParameter(parameters, null);
-        Preconditions.checkState(status != null, "Field [%s] did not have a status", this);
+        Preconditions.checkState(status!=null,"Field [%s] did not have a status",this);
         return status;
     }
 
@@ -42,8 +42,9 @@ public class ParameterIndexField extends IndexField {
         return parameters;
     }
 
-    public static ParameterIndexField of(PropertyKey key, Parameter...parameters) {
-        return new ParameterIndexField(key, parameters);
+    public static ParameterIndexField of(PropertyKey key, Parameter... parameters) {
+        return new ParameterIndexField(key,parameters);
     }
+
 
 }

@@ -29,6 +29,7 @@ public class RawQuery extends BaseQuery {
     private final Parameter[] parameters;
     private int offset;
 
+
     public RawQuery(String store, String query, Parameter[] parameters) {
         Preconditions.checkNotNull(store);
         Preconditions.checkArgument(StringUtils.isNotBlank(query));
@@ -40,8 +41,8 @@ public class RawQuery extends BaseQuery {
     }
 
     public RawQuery setOffset(int offset) {
-        Preconditions.checkArgument(offset >= 0, "Invalid offset: %s", offset);
-        this.offset = offset;
+        Preconditions.checkArgument(offset>=0,"Invalid offset: %s",offset);
+        this.offset=offset;
         return this;
     }
 
@@ -71,6 +72,7 @@ public class RawQuery extends BaseQuery {
 
         private final O result;
         private final double score;
+
 
         public Result(O result, double score) {
             this.result = result;

@@ -23,9 +23,7 @@ import com.google.common.base.Preconditions;
  */
 public class ElementLifeCycle {
 
-    public enum Event {
-        REMOVED, REMOVED_RELATION, ADDED_RELATION, UPDATE
-    }
+    public enum Event {REMOVED, REMOVED_RELATION, ADDED_RELATION, UPDATE }
 
     /**
      * The entity has been newly created and not yet persisted.
@@ -33,7 +31,8 @@ public class ElementLifeCycle {
     public final static byte New = 1;
 
     /**
-     * The entity has been loaded from the database and has not changed after initial loading.
+     * The entity has been loaded from the database and has not changed
+     * after initial loading.
      */
     public final static byte Loaded = 2;
 
@@ -57,64 +56,57 @@ public class ElementLifeCycle {
      */
     public final static byte Removed = 6;
 
+
     public static final boolean isModified(byte lifecycle) {
-        return lifecycle >= AddedRelations && lifecycle <= Modified;
+        return lifecycle>=AddedRelations && lifecycle<=Modified;
     }
 
     public static final boolean hasRemovedRelations(byte lifecycle) {
-        return lifecycle == RemovedRelations || lifecycle == Modified;
+        return lifecycle== RemovedRelations || lifecycle==Modified;
     }
 
     public static final boolean hasAddedRelations(byte lifecycle) {
-        return lifecycle == AddedRelations || lifecycle == Modified;
+        return lifecycle==AddedRelations || lifecycle==Modified;
     }
 
+
     public static final boolean isNew(byte lifecycle) {
-        return lifecycle == New;
+        return lifecycle==New;
     }
 
     public static final boolean isLoaded(byte lifecycle) {
-        return lifecycle == Loaded;
+        return lifecycle==Loaded;
     }
 
     public static final boolean isRemoved(byte lifecycle) {
-        return lifecycle == Removed;
+        return lifecycle== Removed;
     }
 
     public static boolean isValid(byte lifecycle) {
-        return lifecycle >= New && lifecycle <= Removed;
+        return lifecycle>=New && lifecycle<=Removed;
     }
 
     public static final byte update(final byte lifecycle, final Event event) {
-        Preconditions.checkArgument(isValid(lifecycle), "Invalid element state: " + lifecycle);
-        if (event == Event.REMOVED)
-            return Removed;
-        else if (lifecycle == New || lifecycle == Modified) {
+        Preconditions.checkArgument(isValid(lifecycle),"Invalid element state: " + lifecycle);
+        if (event==Event.REMOVED) return Removed;
+        else if (lifecycle==New || lifecycle==Modified) {
             return lifecycle;
-        } else if (lifecycle == Removed) {
+        } else if (lifecycle== Removed) {
             throw new IllegalStateException("No event can occur on deleted vertices: " + event);
-        } else if (event == Event.REMOVED_RELATION) {
-            if (lifecycle == Loaded)
-                return RemovedRelations;
-            else if (lifecycle == AddedRelations)
-                return Modified;
-            else if (lifecycle == RemovedRelations)
-                return RemovedRelations;
-            else
-                throw new IllegalStateException("Unexpected state: " + lifecycle + " - " + event);
-        } else if (event == Event.ADDED_RELATION) {
-            if (lifecycle == Loaded)
-                return AddedRelations;
-            else if (lifecycle == RemovedRelations)
-                return Modified;
-            else if (lifecycle == AddedRelations)
-                return AddedRelations;
-            else
-                throw new IllegalStateException("Unexpected state: " + lifecycle + " - " + event);
-        } else if (event == Event.UPDATE) {
+        } else if (event==Event.REMOVED_RELATION) {
+            if (lifecycle==Loaded) return RemovedRelations;
+            else if (lifecycle==AddedRelations) return Modified;
+            else if (lifecycle== RemovedRelations) return RemovedRelations;
+            else throw new IllegalStateException("Unexpected state: " + lifecycle + " - " + event);
+        } else if (event==Event.ADDED_RELATION) {
+            if (lifecycle==Loaded) return AddedRelations;
+            else if (lifecycle== RemovedRelations) return Modified;
+            else if (lifecycle==AddedRelations) return AddedRelations;
+            else throw new IllegalStateException("Unexpected state: " + lifecycle + " - " + event);
+        } else if (event==Event.UPDATE) {
             return Modified;
-        } else
-            throw new IllegalStateException("Unexpected state event: " + lifecycle + " - " + event);
+        } else throw new IllegalStateException("Unexpected state event: " + lifecycle + " - " + event);
     }
+
 
 }

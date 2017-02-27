@@ -14,5 +14,4 @@
 
 package com.baidu.hugegraph.testcategory;
 
-public interface OrderedKeyStoreTests {
-}
+public interface OrderedKeyStoreTests { }

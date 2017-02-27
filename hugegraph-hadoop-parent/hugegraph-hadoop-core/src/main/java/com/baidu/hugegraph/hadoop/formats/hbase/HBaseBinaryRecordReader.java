@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,21 +30,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public class HBaseBinaryRecordReader extends RecordReader<StaticBuffer, Iterable<Entry>> {
+public class HBaseBinaryRecordReader  extends RecordReader<StaticBuffer, Iterable<Entry>> {
 
     private RecordReader<ImmutableBytesWritable, Result> reader;
 
     private final byte[] edgestoreFamilyBytes;
 
-    public HBaseBinaryRecordReader(final RecordReader<ImmutableBytesWritable, Result> reader,
-            final byte[] edgestoreFamilyBytes) {
+    public HBaseBinaryRecordReader(final RecordReader<ImmutableBytesWritable, Result> reader, final byte[] edgestoreFamilyBytes) {
         this.reader = reader;
         this.edgestoreFamilyBytes = edgestoreFamilyBytes;
     }
 
     @Override
-    public void initialize(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext)
-            throws IOException, InterruptedException {
+    public void initialize(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
         reader.initialize(inputSplit, taskAttemptContext);
     }
 
@@ -116,3 +114,4 @@ public class HBaseBinaryRecordReader extends RecordReader<StaticBuffer, Iterable
         }
     }
 }
+

@@ -41,9 +41,10 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
     private static final StaticBuffer.Factory<DatabaseEntry> ENTRY_FACTORY = new StaticBuffer.Factory<DatabaseEntry>() {
         @Override
         public DatabaseEntry get(byte[] array, int offset, int limit) {
-            return new DatabaseEntry(array, offset, limit - offset);
+            return new DatabaseEntry(array,offset,limit-offset);
         }
     };
+
 
     private final Database db;
     private final String name;
@@ -71,20 +72,18 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
     }
 
     private static final Transaction getTransaction(StoreTransaction txh) {
-        Preconditions.checkArgument(txh != null);
+        Preconditions.checkArgument(txh!=null);
         return ((BerkeleyJETx) txh).getTransaction();
     }
 
     @Override
     public synchronized void close() throws BackendException {
         try {
-            if (isOpen)
-                db.close();
+            if(isOpen) db.close();
         } catch (DatabaseException e) {
             throw new PermanentBackendException(e);
         }
-        if (isOpen)
-            manager.removeDatabase(this);
+        if (isOpen) manager.removeDatabase(this);
         isOpen = false;
     }
 
@@ -111,15 +110,14 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
 
     @Override
     public boolean containsKey(StaticBuffer key, StoreTransaction txh) throws BackendException {
-        return get(key, txh) != null;
+        return get(key,txh)!=null;
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
+    public void acquireLock(StaticBuffer key, StaticBuffer expectedValue, StoreTransaction txh) throws BackendException {
         if (getTransaction(txh) == null) {
             log.warn("Attempt to acquire lock with transactions disabled");
-        } // else we need no locking
+        } //else we need no locking
     }
 
     @Override
@@ -137,7 +135,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
 
             cursor = db.openCursor(tx, null);
             OperationStatus status = cursor.getSearchKeyRange(foundKey, foundData, getLockMode(txh));
-            // Iterate until given condition is satisfied or end of records
+            //Iterate until given condition is satisfied or end of records
             while (status == OperationStatus.SUCCESS) {
                 StaticBuffer key = getBuffer(foundKey);
 
@@ -154,8 +152,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
                 status = cursor.getNext(foundKey, foundData, getLockMode(txh));
             }
             log.trace("db={}, op=getSlice, tx={}, resultcount={}", name, txh, result.size());
-            // log.trace("db={}, op=getSlice, tx={}, resultcount={}", name, txh, result.size(), new Throwable("getSlice
-            // trace"));
+//            log.trace("db={}, op=getSlice, tx={}, resultcount={}", name, txh, result.size(), new Throwable("getSlice trace"));
 
             return new RecordIterator<KeyValueEntry>() {
                 private final Iterator<KeyValueEntry> entries = result.iterator();
@@ -183,8 +180,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
             throw new PermanentBackendException(e);
         } finally {
             try {
-                if (cursor != null)
-                    cursor.close();
+                if (cursor != null) cursor.close();
             } catch (Exception e) {
                 throw new PermanentBackendException(e);
             }
@@ -192,8 +188,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
     }
 
     @Override
-    public Map<KVQuery, RecordIterator<KeyValueEntry>> getSlices(List<KVQuery> queries, StoreTransaction txh)
-            throws BackendException {
+    public Map<KVQuery,RecordIterator<KeyValueEntry>> getSlices(List<KVQuery> queries, StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException();
     }
 
@@ -202,8 +197,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
         insert(key, value, txh, true);
     }
 
-    public void insert(StaticBuffer key, StaticBuffer value, StoreTransaction txh, boolean allowOverwrite)
-            throws BackendException {
+    public void insert(StaticBuffer key, StaticBuffer value, StoreTransaction txh, boolean allowOverwrite) throws BackendException {
         Transaction tx = getTransaction(txh);
         try {
             OperationStatus status;
@@ -227,6 +221,7 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
         }
     }
 
+
     @Override
     public void delete(StaticBuffer key, StoreTransaction txh) throws BackendException {
         log.trace("Deletion");
@@ -243,10 +238,10 @@ public class BerkeleyJEKeyValueStore implements OrderedKeyValueStore {
     }
 
     private static StaticBuffer getBuffer(DatabaseEntry entry) {
-        return new StaticArrayBuffer(entry.getData(), entry.getOffset(), entry.getOffset() + entry.getSize());
+        return new StaticArrayBuffer(entry.getData(),entry.getOffset(),entry.getOffset()+entry.getSize());
     }
 
     private static LockMode getLockMode(StoreTransaction txh) {
-        return ((BerkeleyJETx) txh).getLockMode();
+        return ((BerkeleyJETx)txh).getLockMode();
     }
 }

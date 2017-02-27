@@ -18,12 +18,12 @@ import com.baidu.hugegraph.graphdb.query.HugeGraphPredicate;
 import org.apache.tinkerpop.gremlin.process.traversal.Order;
 
 /**
- * Constructs a query against a mixed index to retrieve all elements (either vertices or edges) that match all
- * conditions.
+ * Constructs a query against a mixed index to retrieve all elements (either vertices or edges)
+ * that match all conditions.
  * <p/>
- * Finding matching elements efficiently using this query mechanism requires that appropriate index structures have been
- * defined for the keys. See {@link com.baidu.hugegraph.core.schema.HugeGraphManagement} for more information on how to
- * define index structures in HugeGraph.
+ * Finding matching elements efficiently using this query mechanism requires that appropriate index structures have
+ * been defined for the keys. See {@link com.baidu.hugegraph.core.schema.HugeGraphManagement} for more information
+ * on how to define index structures in HugeGraph.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  * @since 0.3.0
@@ -31,16 +31,16 @@ import org.apache.tinkerpop.gremlin.process.traversal.Order;
 
 public interface HugeGraphQuery<Q extends HugeGraphQuery<Q>> {
 
-    /*
-     * --------------------------------------------------------------- Query Specification
-     * ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Query Specification
+    * ---------------------------------------------------------------
+    */
 
     /**
-     * The returned element must have a property for the given key that matches the condition according to the specified
-     * relation
+     * The returned element must have a property for the given key that matches the condition according to the
+     * specified relation
      *
-     * @param key Key that identifies the property
+     * @param key       Key that identifies the property
      * @param predicate Relation between property and condition
      * @param condition
      * @return This query
@@ -66,19 +66,20 @@ public interface HugeGraphQuery<Q extends HugeGraphQuery<Q>> {
     public Q limit(final int max);
 
     /**
-     * Orders the element results of this query according to their property for the given key in the given order
-     * (increasing/decreasing).
+     * Orders the element results of this query according
+     * to their property for the given key in the given order (increasing/decreasing).
      *
-     * @param key The key of the properties on which to order
+     * @param key   The key of the properties on which to order
      * @param order the ordering direction
      * @return
      */
     public Q orderBy(String key, Order order);
 
-    /*
-     * --------------------------------------------------------------- Query Execution
-     * ---------------------------------------------------------------
-     */
+
+    /* ---------------------------------------------------------------
+    * Query Execution
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Returns all vertices that match the conditions.
@@ -100,5 +101,6 @@ public interface HugeGraphQuery<Q extends HugeGraphQuery<Q>> {
      * @return
      */
     public Iterable<HugeGraphVertexProperty> properties();
+
 
 }

@@ -27,6 +27,7 @@ public class ThriftGraphPerformanceMemoryTest extends HugeGraphPerformanceMemory
         return CassandraStorageSetup.getCassandraThriftGraphConfiguration(getClass().getSimpleName());
     }
 
+
     @BeforeClass
     public static void beforeClass() {
         CassandraStorageSetup.startCleanEmbedded();

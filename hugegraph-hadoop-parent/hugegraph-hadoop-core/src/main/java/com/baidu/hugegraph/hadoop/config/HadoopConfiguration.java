@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,11 +30,13 @@ import com.google.common.collect.Iterables;
 import com.baidu.hugegraph.diskstorage.configuration.WriteConfiguration;
 import com.baidu.hugegraph.diskstorage.util.time.Durations;
 
+
 import javax.annotation.Nullable;
 
 public class HadoopConfiguration implements WriteConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(HadoopConfiguration.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HadoopConfiguration.class);
 
     private final Configuration config;
     private final String prefix;
@@ -57,16 +59,15 @@ public class HadoopConfiguration implements WriteConfiguration {
             return null;
 
         if (datatype.isArray()) {
-            Preconditions.checkArgument(datatype.getComponentType() == String.class,
-                    "Only string arrays are supported: %s", datatype);
-            return (O) config.getStrings(internalKey);
+            Preconditions.checkArgument(datatype.getComponentType()==String.class,"Only string arrays are supported: %s",datatype);
+            return (O)config.getStrings(internalKey);
         } else if (Number.class.isAssignableFrom(datatype)) {
             String s = config.get(internalKey);
             return constructFromStringArgument(datatype, s);
-        } else if (datatype == String.class) {
-            return (O) config.get(internalKey);
-        } else if (datatype == Boolean.class) {
-            return (O) Boolean.valueOf(config.get(internalKey));
+        } else if (datatype==String.class) {
+            return (O)config.get(internalKey);
+        } else if (datatype==Boolean.class) {
+            return (O)Boolean.valueOf(config.get(internalKey));
         } else if (datatype.isEnum()) {
             O[] constants = datatype.getEnumConstants();
             Preconditions.checkState(null != constants && 0 < constants.length, "Zero-length or undefined enum");
@@ -75,17 +76,17 @@ public class HadoopConfiguration implements WriteConfiguration {
                 if (c.toString().equals(estr))
                     return c;
             throw new IllegalArgumentException("No match for string \"" + estr + "\" in enum " + datatype);
-        } else if (datatype == Object.class) {
+        } else if (datatype==Object.class) {
             // Return String when an Object is requested
             // Object.class must be supported for the sake of AbstractConfiguration's getSubset impl
-            return (O) config.get(internalKey);
+            return (O)config.get(internalKey);
         } else if (Duration.class.isAssignableFrom(datatype)) {
             // This is a conceptual leak; the config layer should ideally only handle standard library types
             String s = config.get(internalKey);
             String[] comps = s.split("\\s");
             TemporalUnit unit = null;
             if (comps.length == 1) {
-                // By default, times are in milli seconds
+                //By default, times are in milli seconds
                 unit = ChronoUnit.MILLIS;
             } else if (comps.length == 2) {
                 unit = Durations.parse(comps[1]);
@@ -93,15 +94,14 @@ public class HadoopConfiguration implements WriteConfiguration {
                 throw new IllegalArgumentException("Cannot parse time duration from: " + s);
             }
             return (O) Duration.of(Long.valueOf(comps[0]), unit);
-        } else
-            throw new IllegalArgumentException("Unsupported data type: " + datatype);
+        } else throw new IllegalArgumentException("Unsupported data type: " + datatype);
     }
 
     @Override
     public Iterable<String> getKeys(final String userPrefix) {
         /*
-         * Is there a way to iterate over just the keys of a Hadoop Configuration? Iterating over Map.Entry is
-         * needlessly wasteful since we don't need the values.
+         * Is there a way to iterate over just the keys of a Hadoop Configuration?
+         * Iterating over Map.Entry is needlessly wasteful since we don't need the values.
          */
         Iterable<String> internalKeys = Iterables.transform(config, new Function<Entry<String, String>, String>() {
             @Override
@@ -150,25 +150,23 @@ public class HadoopConfiguration implements WriteConfiguration {
         Class<?> datatype = value.getClass();
 
         if (datatype.isArray()) {
-            Preconditions.checkArgument(datatype.getComponentType() == String.class,
-                    "Only string arrays are supported: %s", datatype);
-            config.setStrings(internalKey, (String[]) value);
+            Preconditions.checkArgument(datatype.getComponentType()==String.class,"Only string arrays are supported: %s",datatype);
+            config.setStrings(internalKey, (String[])value);
         } else if (Number.class.isAssignableFrom(datatype)) {
             config.set(internalKey, value.toString());
-        } else if (datatype == String.class) {
+        } else if (datatype==String.class) {
             config.set(internalKey, value.toString());
-        } else if (datatype == Boolean.class) {
-            config.setBoolean(internalKey, (Boolean) value);
+        } else if (datatype==Boolean.class) {
+            config.setBoolean(internalKey, (Boolean)value);
         } else if (datatype.isEnum()) {
             config.set(internalKey, value.toString());
-        } else if (datatype == Object.class) {
+        } else if (datatype==Object.class) {
             config.set(internalKey, value.toString());
         } else if (Duration.class.isAssignableFrom(datatype)) {
             // This is a conceptual leak; the config layer should ideally only handle standard library types
-            String millis = String.valueOf(((Duration) value).toMillis());
+            String millis = String.valueOf(((Duration)value).toMillis());
             config.set(internalKey, millis);
-        } else
-            throw new IllegalArgumentException("Unsupported data type: " + datatype);
+        } else throw new IllegalArgumentException("Unsupported data type: " + datatype);
     }
 
     @Override
@@ -185,12 +183,10 @@ public class HadoopConfiguration implements WriteConfiguration {
         try {
             Constructor<O> ctor = datatype.getConstructor(String.class);
             return ctor.newInstance(arg);
-            // ReflectiveOperationException is narrower and more appropriate than Exception, but only @since 1.7
-            // } catch (ReflectiveOperationException e) {
+        // ReflectiveOperationException is narrower and more appropriate than Exception, but only @since 1.7
+        //} catch (ReflectiveOperationException e) {
         } catch (Exception e) {
-            log.error(
-                    "Failed to parse configuration string \"{}\" into type {} due to the following reflection exception",
-                    arg, datatype, e);
+            log.error("Failed to parse configuration string \"{}\" into type {} due to the following reflection exception", arg, datatype, e);
             throw new RuntimeException(e);
         }
     }

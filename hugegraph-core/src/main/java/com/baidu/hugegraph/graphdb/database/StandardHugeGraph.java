@@ -88,14 +88,15 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 
 public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
 
-    private static final Logger log = LoggerFactory.getLogger(StandardHugeGraph.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(StandardHugeGraph.class);
+
 
     static {
         TraversalStrategies graphStrategies = TraversalStrategies.GlobalCache.getStrategies(Graph.class).clone()
-                .addStrategies(AdjacentVertexFilterOptimizerStrategy.instance(),
-                        HugeGraphLocalQueryOptimizerStrategy.instance(), HugeGraphStepStrategy.instance());
+                .addStrategies(AdjacentVertexFilterOptimizerStrategy.instance(), HugeGraphLocalQueryOptimizerStrategy.instance(), HugeGraphStepStrategy.instance());
 
-        // Register with cache
+        //Register with cache
         TraversalStrategies.GlobalCache.registerStrategies(StandardHugeGraph.class, graphStrategies);
         TraversalStrategies.GlobalCache.registerStrategies(StandardHugeGraphTx.class, graphStrategies);
     }
@@ -106,20 +107,20 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     private VertexIDAssigner idAssigner;
     private TimestampProvider times;
 
-    // Serializers
+    //Serializers
     protected IndexSerializer indexSerializer;
     protected EdgeSerializer edgeSerializer;
     protected Serializer serializer;
 
-    // Caches
+    //Caches
     public SliceQuery vertexExistenceQuery;
     private RelationQueryCache queryCache;
     private SchemaCache schemaCache;
 
-    // Log
+    //Log
     private ManagementLogger mgmtLogger;
 
-    // Shutdown hook
+    //Shutdown hook
     private volatile ShutdownThread shutdownHook;
 
     private volatile boolean isOpen = true;
@@ -140,24 +141,20 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
         this.indexSerializer = new IndexSerializer(configuration.getConfiguration(), this.serializer,
                 this.backend.getIndexInformation(), storeFeatures.isDistributed() && storeFeatures.isKeyOrdered());
         this.edgeSerializer = new EdgeSerializer(this.serializer);
-        this.vertexExistenceQuery = edgeSerializer
-                .getQuery(BaseKey.VertexExists, Direction.OUT, new EdgeSerializer.TypedInterval[0]).setLimit(1);
+        this.vertexExistenceQuery = edgeSerializer.getQuery(BaseKey.VertexExists, Direction.OUT, new EdgeSerializer.TypedInterval[0]).setLimit(1);
         this.queryCache = new RelationQueryCache(this.edgeSerializer);
         this.schemaCache = configuration.getTypeCache(typeCacheRetrieval);
         this.times = configuration.getTimestampProvider();
 
         isOpen = true;
         txCounter = new AtomicLong(0);
-        openTransactions =
-                Collections.newSetFromMap(new ConcurrentHashMap<StandardHugeGraphTx, Boolean>(100, 0.75f, 1));
+        openTransactions = Collections.newSetFromMap(new ConcurrentHashMap<StandardHugeGraphTx, Boolean>(100, 0.75f, 1));
 
-        // Register instance and ensure uniqueness
+        //Register instance and ensure uniqueness
         String uniqueInstanceId = configuration.getUniqueGraphId();
         ModifiableConfiguration globalConfig = GraphDatabaseConfiguration.getGlobalSystemConfig(backend);
         if (globalConfig.has(REGISTRATION_TIME, uniqueInstanceId)) {
-            throw new HugeGraphException(String.format(
-                    "A HugeGraph graph with the same instance id [%s] is already open. Might required forced shutdown.",
-                    uniqueInstanceId));
+            throw new HugeGraphException(String.format("A HugeGraph graph with the same instance id [%s] is already open. Might required forced shutdown.", uniqueInstanceId));
         }
         globalConfig.set(REGISTRATION_TIME, times.getTime(), uniqueInstanceId);
 
@@ -169,6 +166,7 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         log.debug("Installed shutdown hook {}", shutdownHook, new Throwable("Hook creation trace"));
     }
+
 
     @Override
     public boolean isOpen() {
@@ -191,13 +189,12 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
 
     private synchronized void closeInternal() {
 
-        if (!isOpen)
-            return;
+        if (!isOpen) return;
 
         Map<HugeGraphTransaction, RuntimeException> txCloseExceptions = new HashMap<>();
 
         try {
-            // Unregister instance
+            //Unregister instance
             String uniqueid = null;
             try {
                 uniqueid = config.getUniqueGraphId();
@@ -207,9 +204,9 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
                 log.warn("Unable to remove graph instance uniqueid {}", uniqueid, e);
             }
 
-            /*
-             * Assuming a couple of properties about openTransactions: 1. no concurrent modifications during graph
-             * shutdown 2. all contained txs are open
+            /* Assuming a couple of properties about openTransactions:
+             * 1. no concurrent modifications during graph shutdown
+             * 2. all contained txs are open
              */
             for (StandardHugeGraphTx otx : openTransactions) {
                 try {
@@ -238,15 +235,15 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             throw new IllegalStateException("Unable to close transaction",
                     Iterables.getOnlyElement(txCloseExceptions.values()));
         } else if (1 < txCloseExceptions.size()) {
-            throw new IllegalStateException(
-                    String.format("Unable to close %s transactions (see warnings in log output for details)",
-                            txCloseExceptions.size()));
+            throw new IllegalStateException(String.format(
+                    "Unable to close %s transactions (see warnings in log output for details)",
+                    txCloseExceptions.size()));
         }
     }
 
     private synchronized void removeHook() {
         if (null == shutdownHook)
-            return;
+                return;
 
         ShutdownThread tmp = shutdownHook;
         shutdownHook = null;
@@ -259,12 +256,14 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
         }
     }
 
+
     // ################### Simple Getters #########################
 
     @Override
     public Features features() {
         return HugeGraphFeatures.getFeatures(this, backend.getStoreFeatures());
     }
+
 
     public IndexSerializer getIndexSerializer() {
         return indexSerializer;
@@ -286,10 +285,10 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
         return serializer;
     }
 
-    // TODO: premature optimization, re-evaluate later
-    // public RelationQueryCache getQueryCache() {
-    // return queryCache;
-    // }
+    //TODO: premature optimization, re-evaluate later
+//    public RelationQueryCache getQueryCache() {
+//        return queryCache;
+//    }
 
     public SchemaCache getSchemaCache() {
         return schemaCache;
@@ -301,8 +300,7 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
 
     @Override
     public HugeGraphManagement openManagement() {
-        return new ManagementSystem(this, backend.getGlobalSystemConfig(), backend.getSystemMgmtLog(), mgmtLogger,
-                schemaCache);
+        return new ManagementSystem(this,backend.getGlobalSystemConfig(),backend.getSystemMgmtLog(), mgmtLogger, schemaCache);
     }
 
     public Set<? extends HugeGraphTransaction> getOpenTransactions() {
@@ -327,8 +325,7 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     }
 
     public StandardHugeGraphTx newTransaction(final TransactionConfiguration configuration) {
-        if (!isOpen)
-            ExceptionFactory.graphShutdown();
+        if (!isOpen) ExceptionFactory.graphShutdown();
         try {
             StandardHugeGraphTx tx = new StandardHugeGraphTx(this, configuration);
             tx.setBackendTransaction(openBackendTransaction(tx));
@@ -358,28 +355,24 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             Configuration customTxOptions = backend.getStoreFeatures().getKeyConsistentTxConfig();
             StandardHugeGraphTx consistentTx = null;
             try {
-                consistentTx = StandardHugeGraph.this.newTransaction(
-                        new StandardTransactionBuilder(getConfiguration(), StandardHugeGraph.this, customTxOptions)
-                                .groupName(GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT));
+                consistentTx = StandardHugeGraph.this.newTransaction(new StandardTransactionBuilder(getConfiguration(),
+                        StandardHugeGraph.this, customTxOptions).groupName(GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT));
                 consistentTx.getTxHandle().disableCache();
-                HugeGraphVertex v = Iterables
-                        .getOnlyElement(QueryUtil.getVertices(consistentTx, BaseKey.SchemaName, typeName), null);
-                return v != null ? v.longId() : null;
+                HugeGraphVertex v = Iterables.getOnlyElement(QueryUtil.getVertices(consistentTx, BaseKey.SchemaName, typeName), null);
+                return v!=null?v.longId():null;
             } finally {
                 TXUtils.rollbackQuietly(consistentTx);
             }
         }
 
         @Override
-        public EntryList retrieveSchemaRelations(final long schemaId, final BaseRelationType type,
-                final Direction dir) {
-            SliceQuery query = queryCache.getQuery(type, dir);
+        public EntryList retrieveSchemaRelations(final long schemaId, final BaseRelationType type, final Direction dir) {
+            SliceQuery query = queryCache.getQuery(type,dir);
             Configuration customTxOptions = backend.getStoreFeatures().getKeyConsistentTxConfig();
             StandardHugeGraphTx consistentTx = null;
             try {
-                consistentTx = StandardHugeGraph.this.newTransaction(
-                        new StandardTransactionBuilder(getConfiguration(), StandardHugeGraph.this, customTxOptions)
-                                .groupName(GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT));
+                consistentTx = StandardHugeGraph.this.newTransaction(new StandardTransactionBuilder(getConfiguration(),
+                        StandardHugeGraph.this, customTxOptions).groupName(GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT));
                 consistentTx.getTxHandle().disableCache();
                 EntryList result = edgeQuery(schemaId, query, consistentTx.getTxHandle());
                 return result;
@@ -391,8 +384,8 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     };
 
     public RecordIterator<Long> getVertexIDs(final BackendTransaction tx) {
-        Preconditions.checkArgument(
-                backend.getStoreFeatures().hasOrderedScan() || backend.getStoreFeatures().hasUnorderedScan(),
+        Preconditions.checkArgument(backend.getStoreFeatures().hasOrderedScan() ||
+                backend.getStoreFeatures().hasUnorderedScan(),
                 "The configured storage backend does not support global graph operations - use Faunus instead");
 
         final KeyIterator keyiter;
@@ -438,12 +431,12 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             Preconditions.checkArgument(vids.get(i) > 0);
             vertexIds.add(idManager.getKey(vids.get(i)));
         }
-        Map<StaticBuffer, EntryList> result = tx.edgeStoreMultiQuery(vertexIds, query);
+        Map<StaticBuffer,EntryList> result = tx.edgeStoreMultiQuery(vertexIds, query);
         List<EntryList> resultList = new ArrayList<EntryList>(result.size());
-        for (StaticBuffer v : vertexIds)
-            resultList.add(result.get(v));
+        for (StaticBuffer v : vertexIds) resultList.add(result.get(v));
         return resultList;
     }
+
 
     // ################### WRITE #########################
 
@@ -452,24 +445,25 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     }
 
     public void assignID(InternalVertex vertex, VertexLabel label) {
-        idAssigner.assignID(vertex, label);
+        idAssigner.assignID(vertex,label);
     }
 
     public static boolean acquireLock(InternalRelation relation, int pos, boolean acquireLocksConfig) {
-        InternalRelationType type = (InternalRelationType) relation.getType();
-        return acquireLocksConfig && type.getConsistencyModifier() == ConsistencyModifier.LOCK
-                && (type.multiplicity().isUnique(EdgeDirection.fromPosition(pos))
-                        || pos == 0 && type.multiplicity() == Multiplicity.SIMPLE);
+        InternalRelationType type = (InternalRelationType)relation.getType();
+        return acquireLocksConfig && type.getConsistencyModifier()== ConsistencyModifier.LOCK &&
+                ( type.multiplicity().isUnique(EdgeDirection.fromPosition(pos))
+                        || pos==0 && type.multiplicity()== Multiplicity.SIMPLE);
     }
 
     public static boolean acquireLock(CompositeIndexType index, boolean acquireLocksConfig) {
-        return acquireLocksConfig && index.getConsistencyModifier() == ConsistencyModifier.LOCK
-                && index.getCardinality() != Cardinality.LIST;
+        return acquireLocksConfig && index.getConsistencyModifier()==ConsistencyModifier.LOCK
+                && index.getCardinality()!= Cardinality.LIST;
     }
 
     /**
-     * The TTL of a relation (edge or property) is the minimum of: 1) The TTL configured of the relation type (if
-     * exists) 2) The TTL configured for the label any of the relation end point vertices (if exists)
+     * The TTL of a relation (edge or property) is the minimum of:
+     * 1) The TTL configured of the relation type (if exists)
+     * 2) The TTL configured for the label any of the relation end point vertices (if exists)
      *
      * @param rel relation to determine the TTL for
      * @return
@@ -477,15 +471,13 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     public static int getTTL(InternalRelation rel) {
         assert rel.isNew();
         InternalRelationType baseType = (InternalRelationType) rel.getType();
-        assert baseType.getBaseType() == null;
+        assert baseType.getBaseType()==null;
         int ttl = 0;
         Integer ettl = baseType.getTTL();
-        if (ettl > 0)
-            ttl = ettl;
-        for (int i = 0; i < rel.getArity(); i++) {
+        if (ettl>0) ttl = ettl;
+        for (int i=0;i<rel.getArity();i++) {
             int vttl = getTTL(rel.getVertex(i));
-            if (vttl > 0 && (vttl < ttl || ttl <= 0))
-                ttl = vttl;
+            if (vttl>0 && (vttl<ttl || ttl<=0)) ttl = vttl;
         }
         return ttl;
     }
@@ -494,9 +486,8 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
         assert v.hasId();
         if (IDManager.VertexIDType.UnmodifiableVertex.is(v.longId())) {
             assert v.isNew() : "Should not be able to add relations to existing static vertices: " + v;
-            return ((InternalVertexLabel) v.vertexLabel()).getTTL();
-        } else
-            return 0;
+            return ((InternalVertexLabel)v.vertexLabel()).getTTL();
+        } else return 0;
     }
 
     private static class ModificationSummary {
@@ -511,24 +502,25 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     }
 
     public ModificationSummary prepareCommit(final Collection<InternalRelation> addedRelations,
-            final Collection<InternalRelation> deletedRelations, final Predicate<InternalRelation> filter,
-            final BackendTransaction mutator, final StandardHugeGraphTx tx, final boolean acquireLocks)
-            throws BackendException {
+                                     final Collection<InternalRelation> deletedRelations,
+                                     final Predicate<InternalRelation> filter,
+                                     final BackendTransaction mutator, final StandardHugeGraphTx tx,
+                                     final boolean acquireLocks) throws BackendException {
+
 
         ListMultimap<Long, InternalRelation> mutations = ArrayListMultimap.create();
         ListMultimap<InternalVertex, InternalRelation> mutatedProperties = ArrayListMultimap.create();
         List<IndexSerializer.IndexUpdate> indexUpdates = Lists.newArrayList();
-        // 1) Collect deleted edges and their index updates and acquire edge locks
-        for (InternalRelation del : Iterables.filter(deletedRelations, filter)) {
+        //1) Collect deleted edges and their index updates and acquire edge locks
+        for (InternalRelation del : Iterables.filter(deletedRelations,filter)) {
             Preconditions.checkArgument(del.isRemoved());
             for (int pos = 0; pos < del.getLen(); pos++) {
                 InternalVertex vertex = del.getVertex(pos);
                 if (pos == 0 || !del.isLoop()) {
-                    if (del.isProperty())
-                        mutatedProperties.put(vertex, del);
+                    if (del.isProperty()) mutatedProperties.put(vertex,del);
                     mutations.put(vertex.longId(), del);
                 }
-                if (acquireLock(del, pos, acquireLocks)) {
+                if (acquireLock(del,pos,acquireLocks)) {
                     Entry entry = edgeSerializer.writeRelation(del, pos, tx);
                     mutator.acquireEdgeLock(idManager.getKey(vertex.longId()), entry);
                 }
@@ -536,18 +528,17 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             indexUpdates.addAll(indexSerializer.getIndexUpdates(del));
         }
 
-        // 2) Collect added edges and their index updates and acquire edge locks
-        for (InternalRelation add : Iterables.filter(addedRelations, filter)) {
+        //2) Collect added edges and their index updates and acquire edge locks
+        for (InternalRelation add : Iterables.filter(addedRelations,filter)) {
             Preconditions.checkArgument(add.isNew());
 
             for (int pos = 0; pos < add.getLen(); pos++) {
                 InternalVertex vertex = add.getVertex(pos);
                 if (pos == 0 || !add.isLoop()) {
-                    if (add.isProperty())
-                        mutatedProperties.put(vertex, add);
+                    if (add.isProperty()) mutatedProperties.put(vertex,add);
                     mutations.put(vertex.longId(), add);
                 }
-                if (!vertex.isNew() && acquireLock(add, pos, acquireLocks)) {
+                if (!vertex.isNew() && acquireLock(add,pos,acquireLocks)) {
                     Entry entry = edgeSerializer.writeRelation(add, pos, tx);
                     mutator.acquireEdgeLock(idManager.getKey(vertex.longId()), entry.getColumn());
                 }
@@ -555,29 +546,27 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             indexUpdates.addAll(indexSerializer.getIndexUpdates(add));
         }
 
-        // 3) Collect all index update for vertices
+        //3) Collect all index update for vertices
         for (InternalVertex v : mutatedProperties.keySet()) {
-            indexUpdates.addAll(indexSerializer.getIndexUpdates(v, mutatedProperties.get(v)));
+            indexUpdates.addAll(indexSerializer.getIndexUpdates(v,mutatedProperties.get(v)));
         }
-        // 4) Acquire index locks (deletions first)
+        //4) Acquire index locks (deletions first)
         for (IndexSerializer.IndexUpdate update : indexUpdates) {
-            if (!update.isCompositeIndex() || !update.isDeletion())
-                continue;
+            if (!update.isCompositeIndex() || !update.isDeletion()) continue;
             CompositeIndexType iIndex = (CompositeIndexType) update.getIndex();
-            if (acquireLock(iIndex, acquireLocks)) {
-                mutator.acquireIndexLock((StaticBuffer) update.getKey(), (Entry) update.getEntry());
+            if (acquireLock(iIndex,acquireLocks)) {
+                mutator.acquireIndexLock((StaticBuffer)update.getKey(), (Entry)update.getEntry());
             }
         }
         for (IndexSerializer.IndexUpdate update : indexUpdates) {
-            if (!update.isCompositeIndex() || !update.isAddition())
-                continue;
+            if (!update.isCompositeIndex() || !update.isAddition()) continue;
             CompositeIndexType iIndex = (CompositeIndexType) update.getIndex();
-            if (acquireLock(iIndex, acquireLocks)) {
-                mutator.acquireIndexLock((StaticBuffer) update.getKey(), ((Entry) update.getEntry()).getColumn());
+            if (acquireLock(iIndex,acquireLocks)) {
+                mutator.acquireIndexLock((StaticBuffer)update.getKey(), ((Entry)update.getEntry()).getColumn());
             }
         }
 
-        // 5) Add relation mutations
+        //5) Add relation mutations
         for (Long vertexid : mutations.keySet()) {
             Preconditions.checkArgument(vertexid > 0, "Vertex has no id: %s", vertexid);
             List<InternalRelation> edges = mutations.get(vertexid);
@@ -585,15 +574,14 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             List<Entry> deletions = new ArrayList<Entry>(Math.max(10, edges.size() / 10));
             for (InternalRelation edge : edges) {
                 InternalRelationType baseType = (InternalRelationType) edge.getType();
-                assert baseType.getBaseType() == null;
+                assert baseType.getBaseType()==null;
 
                 for (InternalRelationType type : baseType.getRelationIndexes()) {
-                    if (type.getStatus() == SchemaStatus.DISABLED)
-                        continue;
+                    if (type.getStatus()== SchemaStatus.DISABLED) continue;
                     for (int pos = 0; pos < edge.getArity(); pos++) {
                         if (!type.isUnidirected(Direction.BOTH) && !type.isUnidirected(EdgeDirection.fromPosition(pos)))
-                            continue; // Directionality is not covered
-                        if (edge.getVertex(pos).longId() == vertexid) {
+                            continue; //Directionality is not covered
+                        if (edge.getVertex(pos).longId()==vertexid) {
                             StaticArrayEntry entry = edgeSerializer.writeRelation(edge, type, pos, tx);
                             if (edge.isRemoved()) {
                                 deletions.add(entry);
@@ -614,37 +602,34 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             mutator.mutateEdges(vertexKey, additions, deletions);
         }
 
-        // 6) Add index updates
+        //6) Add index updates
         boolean has2iMods = false;
         for (IndexSerializer.IndexUpdate indexUpdate : indexUpdates) {
             assert indexUpdate.isAddition() || indexUpdate.isDeletion();
             if (indexUpdate.isCompositeIndex()) {
-                IndexSerializer.IndexUpdate<StaticBuffer, Entry> update = indexUpdate;
+                IndexSerializer.IndexUpdate<StaticBuffer,Entry> update = indexUpdate;
                 if (update.isAddition())
                     mutator.mutateIndex(update.getKey(), Lists.newArrayList(update.getEntry()), KCVSCache.NO_DELETIONS);
                 else
-                    mutator.mutateIndex(update.getKey(), KeyColumnValueStore.NO_ADDITIONS,
-                            Lists.newArrayList(update.getEntry()));
+                    mutator.mutateIndex(update.getKey(), KeyColumnValueStore.NO_ADDITIONS, Lists.newArrayList(update.getEntry()));
             } else {
-                IndexSerializer.IndexUpdate<String, IndexEntry> update = indexUpdate;
+                IndexSerializer.IndexUpdate<String,IndexEntry> update = indexUpdate;
                 has2iMods = true;
                 IndexTransaction itx = mutator.getIndexTransaction(update.getIndex().getBackingIndexName());
-                String indexStore = ((MixedIndexType) update.getIndex()).getStoreName();
+                String indexStore = ((MixedIndexType)update.getIndex()).getStoreName();
                 if (update.isAddition())
                     itx.add(indexStore, update.getKey(), update.getEntry(), update.getElement().isNew());
                 else
-                    itx.delete(indexStore, update.getKey(), update.getEntry().field, update.getEntry().value,
-                            update.getElement().isRemoved());
+                    itx.delete(indexStore,update.getKey(),update.getEntry().field,update.getEntry().value,update.getElement().isRemoved());
             }
         }
-        return new ModificationSummary(!mutations.isEmpty(), has2iMods);
+        return new ModificationSummary(!mutations.isEmpty(),has2iMods);
     }
 
     private static final Predicate<InternalRelation> SCHEMA_FILTER = new Predicate<InternalRelation>() {
         @Override
         public boolean apply(@Nullable InternalRelation internalRelation) {
-            return internalRelation.getType() instanceof BaseRelationType
-                    && internalRelation.getVertex(0) instanceof HugeGraphSchemaVertex;
+            return internalRelation.getType() instanceof BaseRelationType && internalRelation.getVertex(0) instanceof HugeGraphSchemaVertex;
         }
     };
 
@@ -658,64 +643,58 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
     private static final Predicate<InternalRelation> NO_FILTER = Predicates.alwaysTrue();
 
     public void commit(final Collection<InternalRelation> addedRelations,
-            final Collection<InternalRelation> deletedRelations, final StandardHugeGraphTx tx) {
-        if (addedRelations.isEmpty() && deletedRelations.isEmpty())
-            return;
-        // 1. Finalize transaction
+                     final Collection<InternalRelation> deletedRelations, final StandardHugeGraphTx tx) {
+        if (addedRelations.isEmpty() && deletedRelations.isEmpty()) return;
+        //1. Finalize transaction
         log.debug("Saving transaction. Added {}, removed {}", addedRelations.size(), deletedRelations.size());
-        if (!tx.getConfiguration().hasCommitTime())
-            tx.getConfiguration().setCommitTime(times.getTime());
+        if (!tx.getConfiguration().hasCommitTime()) tx.getConfiguration().setCommitTime(times.getTime());
         final Instant txTimestamp = tx.getConfiguration().getCommitTime();
         final long transactionId = txCounter.incrementAndGet();
 
-        // 2. Assign HugeGraphVertex IDs
+        //2. Assign HugeGraphVertex IDs
         if (!tx.getConfiguration().hasAssignIDsImmediately())
             idAssigner.assignIDs(addedRelations);
 
-        // 3. Commit
+        //3. Commit
         BackendTransaction mutator = tx.getTxHandle();
         final boolean acquireLocks = tx.getConfiguration().hasAcquireLocks();
         final boolean hasTxIsolation = backend.getStoreFeatures().hasTxIsolation();
         final boolean logTransaction = config.hasLogTransactions() && !tx.getConfiguration().hasEnabledBatchLoading();
-        final KCVSLog txLog = logTransaction ? backend.getSystemTxLog() : null;
-        final TransactionLogHeader txLogHeader = new TransactionLogHeader(transactionId, txTimestamp, times);
+        final KCVSLog txLog = logTransaction?backend.getSystemTxLog():null;
+        final TransactionLogHeader txLogHeader = new TransactionLogHeader(transactionId,txTimestamp, times);
         ModificationSummary commitSummary;
 
         try {
-            // 3.1 Log transaction (write-ahead log) if enabled
+            //3.1 Log transaction (write-ahead log) if enabled
             if (logTransaction) {
-                // [FAILURE] Inability to log transaction fails the transaction by escalation since it's likely due to
-                // unavailability of primary
-                // storage backend.
-                txLog.add(txLogHeader.serializeModifications(serializer, LogTxStatus.PRECOMMIT, tx, addedRelations,
-                        deletedRelations), txLogHeader.getLogKey());
+                //[FAILURE] Inability to log transaction fails the transaction by escalation since it's likely due to unavailability of primary
+                //storage backend.
+                txLog.add(txLogHeader.serializeModifications(serializer, LogTxStatus.PRECOMMIT, tx, addedRelations, deletedRelations),txLogHeader.getLogKey());
             }
 
-            // 3.2 Commit schema elements and their associated relations in a separate transaction if backend does not
-            // support
-            // transactional isolation
-            boolean hasSchemaElements = !Iterables.isEmpty(Iterables.filter(deletedRelations, SCHEMA_FILTER))
-                    || !Iterables.isEmpty(Iterables.filter(addedRelations, SCHEMA_FILTER));
-            Preconditions.checkArgument(
-                    !hasSchemaElements || (!tx.getConfiguration().hasEnabledBatchLoading() && acquireLocks),
+            //3.2 Commit schema elements and their associated relations in a separate transaction if backend does not support
+            //    transactional isolation
+            boolean hasSchemaElements = !Iterables.isEmpty(Iterables.filter(deletedRelations,SCHEMA_FILTER))
+                    || !Iterables.isEmpty(Iterables.filter(addedRelations,SCHEMA_FILTER));
+            Preconditions.checkArgument(!hasSchemaElements || (!tx.getConfiguration().hasEnabledBatchLoading() && acquireLocks),
                     "Attempting to create schema elements in inconsistent state");
 
             if (hasSchemaElements && !hasTxIsolation) {
                 /*
-                 * On storage without transactional isolation, create separate backend transaction for schema aspects to
-                 * make sure that those are persisted prior to and independently of other mutations in the tx. If the
-                 * storage supports transactional isolation, then don't create a separate tx.
+                 * On storage without transactional isolation, create separate
+                 * backend transaction for schema aspects to make sure that
+                 * those are persisted prior to and independently of other
+                 * mutations in the tx. If the storage supports transactional
+                 * isolation, then don't create a separate tx.
                  */
                 final BackendTransaction schemaMutator = openBackendTransaction(tx);
 
                 try {
-                    // [FAILURE] If the preparation throws an exception abort directly - nothing persisted since
-                    // batch-loading cannot be enabled for schema elements
-                    commitSummary = prepareCommit(addedRelations, deletedRelations, SCHEMA_FILTER, schemaMutator, tx,
-                            acquireLocks);
+                    //[FAILURE] If the preparation throws an exception abort directly - nothing persisted since batch-loading cannot be enabled for schema elements
+                    commitSummary = prepareCommit(addedRelations,deletedRelations, SCHEMA_FILTER, schemaMutator, tx, acquireLocks);
                     assert commitSummary.hasModifications && !commitSummary.has2iModifications;
                 } catch (Throwable e) {
-                    // Roll back schema tx and escalate exception
+                    //Roll back schema tx and escalate exception
                     schemaMutator.rollback();
                     throw e;
                 }
@@ -723,69 +702,57 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
                 try {
                     schemaMutator.commit();
                 } catch (Throwable e) {
-                    // [FAILURE] Primary persistence failed => abort and escalate exception, nothing should have been
-                    // persisted
-                    log.error("Could not commit transaction [" + transactionId
-                            + "] due to storage exception in system-commit", e);
+                    //[FAILURE] Primary persistence failed => abort and escalate exception, nothing should have been persisted
+                    log.error("Could not commit transaction ["+transactionId+"] due to storage exception in system-commit",e);
                     throw e;
                 }
             }
 
-            // [FAILURE] Exceptions during preparation here cause the entire transaction to fail on transactional
-            // systems
-            // or just the non-system part on others. Nothing has been persisted unless batch-loading
-            commitSummary = prepareCommit(addedRelations, deletedRelations,
-                    hasTxIsolation ? NO_FILTER : NO_SCHEMA_FILTER, mutator, tx, acquireLocks);
+            //[FAILURE] Exceptions during preparation here cause the entire transaction to fail on transactional systems
+            //or just the non-system part on others. Nothing has been persisted unless batch-loading
+            commitSummary = prepareCommit(addedRelations,deletedRelations, hasTxIsolation? NO_FILTER : NO_SCHEMA_FILTER, mutator, tx, acquireLocks);
             if (commitSummary.hasModifications) {
                 String logTxIdentifier = tx.getConfiguration().getLogIdentifier();
-                boolean hasSecondaryPersistence = logTxIdentifier != null || commitSummary.has2iModifications;
+                boolean hasSecondaryPersistence = logTxIdentifier!=null || commitSummary.has2iModifications;
 
-                // 1. Commit storage - failures lead to immediate abort
+                //1. Commit storage - failures lead to immediate abort
 
-                // 1a. Add success message to tx log which will be committed atomically with all transactional changes
-                // so that we can recover secondary failures
-                // This should not throw an exception since the mutations are just cached. If it does, it will be
-                // escalated since its critical
+                //1a. Add success message to tx log which will be committed atomically with all transactional changes so that we can recover secondary failures
+                //    This should not throw an exception since the mutations are just cached. If it does, it will be escalated since its critical
                 if (logTransaction) {
-                    txLog.add(
-                            txLogHeader.serializePrimary(serializer,
-                                    hasSecondaryPersistence ? LogTxStatus.PRIMARY_SUCCESS
-                                            : LogTxStatus.COMPLETE_SUCCESS),
-                            txLogHeader.getLogKey(), mutator.getTxLogPersistor());
+                    txLog.add(txLogHeader.serializePrimary(serializer,
+                                        hasSecondaryPersistence?LogTxStatus.PRIMARY_SUCCESS:LogTxStatus.COMPLETE_SUCCESS),
+                            txLogHeader.getLogKey(),mutator.getTxLogPersistor());
                 }
 
                 try {
                     mutator.commitStorage();
                 } catch (Throwable e) {
-                    // [FAILURE] If primary storage persistence fails abort directly (only schema could have been
-                    // persisted)
-                    log.error("Could not commit transaction [" + transactionId + "] due to storage exception in commit",
-                            e);
+                    //[FAILURE] If primary storage persistence fails abort directly (only schema could have been persisted)
+                    log.error("Could not commit transaction ["+transactionId+"] due to storage exception in commit",e);
                     throw e;
                 }
 
                 if (hasSecondaryPersistence) {
                     LogTxStatus status = LogTxStatus.SECONDARY_SUCCESS;
-                    Map<String, Throwable> indexFailures = ImmutableMap.of();
+                    Map<String,Throwable> indexFailures = ImmutableMap.of();
                     boolean userlogSuccess = true;
 
                     try {
-                        // 2. Commit indexes - [FAILURE] all exceptions are collected and logged but nothing is aborted
+                        //2. Commit indexes - [FAILURE] all exceptions are collected and logged but nothing is aborted
                         indexFailures = mutator.commitIndexes();
                         if (!indexFailures.isEmpty()) {
                             status = LogTxStatus.SECONDARY_FAILURE;
-                            for (Map.Entry<String, Throwable> entry : indexFailures.entrySet()) {
-                                log.error("Error while commiting index mutations for transaction [" + transactionId
-                                        + "] on index: " + entry.getKey(), entry.getValue());
+                            for (Map.Entry<String,Throwable> entry : indexFailures.entrySet()) {
+                                log.error("Error while commiting index mutations for transaction ["+transactionId+"] on index: " +entry.getKey(),entry.getValue());
                             }
                         }
-                        // 3. Log transaction if configured - [FAILURE] is recorded but does not cause exception
-                        if (logTxIdentifier != null) {
+                        //3. Log transaction if configured - [FAILURE] is recorded but does not cause exception
+                        if (logTxIdentifier!=null) {
                             try {
                                 userlogSuccess = false;
                                 final Log userLog = backend.getUserLog(logTxIdentifier);
-                                Future<Message> env = userLog.add(txLogHeader.serializeModifications(serializer,
-                                        LogTxStatus.USER_LOG, tx, addedRelations, deletedRelations));
+                                Future<Message> env = userLog.add(txLogHeader.serializeModifications(serializer, LogTxStatus.USER_LOG, tx, addedRelations, deletedRelations));
                                 if (env.isDone()) {
                                     try {
                                         env.get();
@@ -793,49 +760,45 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
                                         throw ex.getCause();
                                     }
                                 }
-                                userlogSuccess = true;
+                                userlogSuccess=true;
                             } catch (Throwable e) {
                                 status = LogTxStatus.SECONDARY_FAILURE;
-                                log.error("Could not user-log committed transaction [" + transactionId + "] to "
-                                        + logTxIdentifier, e);
+                                log.error("Could not user-log committed transaction ["+transactionId+"] to " + logTxIdentifier, e);
                             }
                         }
                     } finally {
                         if (logTransaction) {
-                            // [FAILURE] An exception here will be logged and not escalated; tx considered success and
+                            //[FAILURE] An exception here will be logged and not escalated; tx considered success and
                             // needs to be cleaned up later
                             try {
-                                txLog.add(txLogHeader.serializeSecondary(serializer, status, indexFailures,
-                                        userlogSuccess), txLogHeader.getLogKey());
+                                txLog.add(txLogHeader.serializeSecondary(serializer,status,indexFailures,userlogSuccess),txLogHeader.getLogKey());
                             } catch (Throwable e) {
-                                log.error("Could not tx-log secondary persistence status on transaction ["
-                                        + transactionId + "]", e);
+                                log.error("Could not tx-log secondary persistence status on transaction ["+transactionId+"]",e);
                             }
                         }
                     }
                 } else {
-                    // This just closes the transaction since there are no modifications
+                    //This just closes the transaction since there are no modifications
                     mutator.commitIndexes();
                 }
-            } else { // Just commit everything at once
-                // [FAILURE] This case only happens when there are no non-system mutations in which case all changes
-                // are already flushed. Hence, an exception here is unlikely and should abort
+            } else { //Just commit everything at once
+                //[FAILURE] This case only happens when there are no non-system mutations in which case all changes
+                //are already flushed. Hence, an exception here is unlikely and should abort
                 mutator.commit();
             }
         } catch (Throwable e) {
-            log.error("Could not commit transaction [" + transactionId + "] due to exception", e);
+            log.error("Could not commit transaction ["+transactionId+"] due to exception",e);
             try {
-                // Clean up any left-over transaction handles
+                //Clean up any left-over transaction handles
                 mutator.rollback();
             } catch (Throwable e2) {
-                log.error("Could not roll-back transaction [" + transactionId + "] after failure due to exception", e2);
+                log.error("Could not roll-back transaction ["+transactionId+"] after failure due to exception",e2);
             }
-            if (e instanceof RuntimeException)
-                throw (RuntimeException) e;
-            else
-                throw new HugeGraphException("Unexpected exception", e);
+            if (e instanceof RuntimeException) throw (RuntimeException)e;
+            else throw new HugeGraphException("Unexpected exception",e);
         }
     }
+
 
     private static class ShutdownThread extends Thread {
         private final StandardHugeGraph graph;
@@ -851,5 +814,6 @@ public class StandardHugeGraph extends HugeGraphBlueprintsGraph {
             graph.closeInternal();
         }
     }
+
 
 }

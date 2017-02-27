@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.tinkerpop.gremlin.hadoop.structure.io.HadoopPoolsConfigurable;
 
-public abstract class AbstractBinaryInputFormat extends InputFormat<StaticBuffer, Iterable<Entry>>
-        implements HadoopPoolsConfigurable {
+public abstract class AbstractBinaryInputFormat extends InputFormat<StaticBuffer, Iterable<Entry>> implements HadoopPoolsConfigurable {
 
     protected Configuration hadoopConf;
     protected ModifiableHadoopConfiguration mrConf;

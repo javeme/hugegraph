@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,17 +38,20 @@ public class HBaseCompat0_98 implements HBaseCompat {
     }
 
     @Override
-    public ConnectionMask createConnection(Configuration conf) throws IOException {
+    public ConnectionMask createConnection(Configuration conf) throws IOException
+    {
         return new HConnection0_98(HConnectionManager.createConnection(conf));
     }
 
     @Override
-    public void addColumnFamilyToTableDescriptor(HTableDescriptor tdesc, HColumnDescriptor cdesc) {
+    public void addColumnFamilyToTableDescriptor(HTableDescriptor tdesc, HColumnDescriptor cdesc)
+    {
         tdesc.addFamily(cdesc);
     }
 
     @Override
-    public void setTimestamp(Delete d, long timestamp) {
+    public void setTimestamp(Delete d, long timestamp)
+    {
         d.setTimestamp(timestamp);
     }
 

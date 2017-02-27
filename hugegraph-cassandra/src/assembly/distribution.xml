@@ -6,7 +6,7 @@
     <fileSets>
         <fileSet>
             <fileMode>0775</fileMode>
-            <directory>../janusgraph-all/src/main/bin</directory>
+            <directory>../hugegraph-all/src/main/bin</directory>
             <outputDirectory>bin</outputDirectory>
             <includes>
                 <include>*.sh</include>
@@ -60,7 +60,7 @@
              <outputDirectory>/</outputDirectory>
          </file>
          <file>
-             <source>../janusgraph-all/src/main/bin/README.txt</source>
+             <source>../hugegraph-all/src/main/bin/README.txt</source>
              <outputDirectory>/</outputDirectory>
          </file>
     </files>

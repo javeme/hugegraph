@@ -31,8 +31,8 @@ public class TransactionalConfiguration implements WriteConfiguration {
 
     private final WriteConfiguration config;
 
-    private final Map<String, Object> readValues;
-    private final Map<String, Object> writtenValues;
+    private final Map<String,Object> readValues;
+    private final Map<String,Object> writtenValues;
 
     public TransactionalConfiguration(WriteConfiguration config) {
         Preconditions.checkNotNull(config);
@@ -43,12 +43,12 @@ public class TransactionalConfiguration implements WriteConfiguration {
 
     @Override
     public <O> void set(String key, O value) {
-        writtenValues.put(key, value);
+        writtenValues.put(key,value);
     }
 
     @Override
     public void remove(String key) {
-        writtenValues.put(key, null);
+        writtenValues.put(key,null);
     }
 
     @Override
@@ -59,24 +59,24 @@ public class TransactionalConfiguration implements WriteConfiguration {
     @Override
     public <O> O get(String key, Class<O> datatype) {
         Object value = writtenValues.get(key);
-        if (value != null)
-            return (O) value;
+        if (value!=null) return (O)value;
         value = readValues.get(key);
-        if (value != null)
-            return (O) value;
-        value = config.get(key, datatype);
-        readValues.put(key, value);
-        return (O) value;
+        if (value!=null) return (O)value;
+        value = config.get(key,datatype);
+        readValues.put(key,value);
+        return (O)value;
     }
 
     @Override
     public Iterable<String> getKeys(final String prefix) {
-        return Iterables.concat(Iterables.filter(writtenValues.keySet(), new Predicate<String>() {
+        return Iterables.concat(
+        Iterables.filter(writtenValues.keySet(),new Predicate<String>() {
             @Override
             public boolean apply(@Nullable String s) {
                 return s.startsWith(prefix);
             }
-        }), Iterables.filter(config.getKeys(prefix), new Predicate<String>() {
+        }),
+        Iterables.filter(config.getKeys(prefix),new Predicate<String>() {
             @Override
             public boolean apply(@Nullable String s) {
                 return !writtenValues.containsKey(s);
@@ -85,12 +85,12 @@ public class TransactionalConfiguration implements WriteConfiguration {
     }
 
     public void commit() {
-        for (Map.Entry<String, Object> entry : writtenValues.entrySet()) {
+        for (Map.Entry<String,Object> entry : writtenValues.entrySet()) {
             if (config instanceof ConcurrentWriteConfiguration && readValues.containsKey(entry.getKey())) {
-                ((ConcurrentWriteConfiguration) config).set(entry.getKey(), entry.getValue(),
-                        readValues.get(entry.getKey()));
+                ((ConcurrentWriteConfiguration)config)
+                        .set(entry.getKey(), entry.getValue(), readValues.get(entry.getKey()));
             } else {
-                config.set(entry.getKey(), entry.getValue());
+                config.set(entry.getKey(),entry.getValue());
             }
         }
         rollback();
@@ -107,8 +107,8 @@ public class TransactionalConfiguration implements WriteConfiguration {
 
     public void logMutations(DataOutput out) {
         Preconditions.checkArgument(hasMutations());
-        VariableLong.writePositive(out, writtenValues.size());
-        for (Map.Entry<String, Object> entry : writtenValues.entrySet()) {
+        VariableLong.writePositive(out,writtenValues.size());
+        for (Map.Entry<String,Object> entry : writtenValues.entrySet()) {
             out.writeObjectNotNull(entry.getKey());
             out.writeClassAndObject(entry.getValue());
         }

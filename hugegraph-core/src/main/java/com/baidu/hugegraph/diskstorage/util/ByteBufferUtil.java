@@ -17,36 +17,36 @@ package com.baidu.hugegraph.diskstorage.util;
 import java.nio.ByteBuffer;
 
 /**
- * Utility methods for dealing with ByteBuffers in concurrent access environments, i.e. these methods only use static
- * access to the buffer.
+ * Utility methods for dealing with ByteBuffers in concurrent access
+ * environments, i.e. these methods only use static access to the buffer.
  *
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ByteBufferUtil {
 
-    /*
-     * ################ ByteBuffer Creation Helpers ################
+    /* ################
+     * ByteBuffer Creation Helpers
+     * ################
      */
 
     public static final ByteBuffer zeroByteBuffer(int len) {
         ByteBuffer res = ByteBuffer.allocate(len);
-        for (int i = 0; i < len; i++)
-            res.put((byte) 0);
+        for (int i = 0; i < len; i++) res.put((byte) 0);
         res.flip();
         return res;
     }
 
     public static final ByteBuffer oneByteBuffer(int len) {
         ByteBuffer res = ByteBuffer.allocate(len);
-        for (int i = 0; i < len; i++)
-            res.put((byte) -1);
+        for (int i = 0; i < len; i++) res.put((byte) -1);
         res.flip();
         return res;
     }
 
-    /*
-     * ################ ByteBuffer Comparison, HashCode and toString ################
+    /* ################
+     * ByteBuffer Comparison, HashCode and toString
+     * ################
      */
 
     /**
@@ -57,49 +57,43 @@ public class ByteBufferUtil {
      * @return true if the first ByteBuffer is smaller than the second
      */
     public static final boolean isSmallerThan(ByteBuffer a, ByteBuffer b) {
-        return compare(a, b) < 0;
+        return compare(a, b)<0;
     }
 
     /**
-     * Compares two {@link java.nio.ByteBuffer}s and checks whether the first ByteBuffer is smaller than or equal to the
-     * second.
+     * Compares two {@link java.nio.ByteBuffer}s and checks whether the first ByteBuffer is smaller than or equal to the second.
      *
      * @param a First ByteBuffer
      * @param b Second ByteBuffer
      * @return true if the first ByteBuffer is smaller than or equal to the second
      */
     public static boolean isSmallerOrEqualThan(ByteBuffer a, ByteBuffer b) {
-        return compare(a, b) <= 0;
+        return compare(a, b)<=0;
     }
 
     /**
      * Compares two {@link java.nio.ByteBuffer}s according to their byte order (and not the byte value).
      * <p/>
      *
-     * @param b1 First ByteBuffer
-     * @param b2 Second ByteBuffer
-     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
-     *         than the second.
+     * @param b1             First ByteBuffer
+     * @param b2             Second ByteBuffer
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
      */
     public static final int compare(ByteBuffer b1, ByteBuffer b2) {
         if (b1 == b2) {
             return 0;
         }
-        int p1 = b1.position(), p2 = b2.position();
-        while (p1 < b1.limit() || p2 < b2.limit()) {
-            if (p1 >= b1.limit())
-                return -1;
-            else if (p2 >= b2.limit())
-                return 1;
+        int p1=b1.position(), p2 = b2.position();
+        while (p1<b1.limit() || p2<b2.limit()) {
+            if (p1>=b1.limit()) return -1;
+            else if (p2>=b2.limit()) return 1;
             else {
                 int cmp = compare(b1.get(p1), b2.get(p2));
-                if (cmp != 0)
-                    return cmp;
+                if (cmp!=0) return cmp;
             }
-            p1++;
-            p2++;
+            p1++; p2++;
         }
-        return 0; // Must be equal
+        return 0; //Must be equal
     }
 
     private static int compare(byte c1, byte c2) {
@@ -121,16 +115,14 @@ public class ByteBufferUtil {
         return Hex.wrapCharArray(c);
     }
 
+
     public static final String toString(ByteBuffer b, String separator) {
         StringBuilder s = new StringBuilder();
-        for (int i = b.position(); i < b.limit(); i++) {
-            if (i > b.position())
-                s.append(separator);
+        for (int i=b.position();i<b.limit();i++) {
+            if (i>b.position()) s.append(separator);
             byte c = b.get(i);
-            if (c >= 0)
-                s.append(c);
-            else
-                s.append(256 + c);
+            if (c>=0) s.append(c);
+            else s.append(256+c);
         }
         return s.toString();
     }

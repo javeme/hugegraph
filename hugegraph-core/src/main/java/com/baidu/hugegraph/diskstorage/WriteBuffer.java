@@ -22,6 +22,7 @@ package com.baidu.hugegraph.diskstorage;
 
 public interface WriteBuffer {
 
+
     public WriteBuffer putByte(byte val);
 
     public WriteBuffer putBytes(byte[] val);

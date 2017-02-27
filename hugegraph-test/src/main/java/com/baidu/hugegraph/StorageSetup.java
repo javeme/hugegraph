@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph;
 
+
 import com.baidu.hugegraph.core.HugeGraphFactory;
 import com.baidu.hugegraph.core.HugeGraph;
 import com.baidu.hugegraph.diskstorage.configuration.BasicConfiguration;
@@ -30,18 +31,16 @@ import java.time.Duration;
 
 public class StorageSetup {
 
-    // ############ UTILITIES #############
+    //############ UTILITIES #############
 
     public static final String getHomeDir(String subdir) {
         String homedir = System.getProperty("hugegraph.testdir");
         if (null == homedir) {
             homedir = "target" + File.separator + "db";
         }
-        if (subdir != null && !StringUtils.isEmpty(subdir))
-            homedir += File.separator + subdir;
+        if (subdir!=null && !StringUtils.isEmpty(subdir)) homedir += File.separator + subdir;
         File homefile = new File(homedir);
-        if (!homefile.exists())
-            homefile.mkdirs();
+        if (!homefile.exists()) homefile.mkdirs();
         return homedir;
     }
 
@@ -63,8 +62,7 @@ public class StorageSetup {
         if (!homeDirFile.exists())
             homeDirFile.mkdirs();
         boolean success = IOUtils.deleteFromDirectory(homeDirFile);
-        if (!success)
-            throw new IllegalStateException("Could not remove " + homeDirFile);
+        if (!success) throw new IllegalStateException("Could not remove " + homeDirFile);
     }
 
     public static ModifiableConfiguration getInMemoryConfiguration() {
@@ -77,16 +75,16 @@ public class StorageSetup {
 
     public static WriteConfiguration addPermanentCache(ModifiableConfiguration conf) {
         conf.set(DB_CACHE, true);
-        conf.set(DB_CACHE_TIME, 0l);
+        conf.set(DB_CACHE_TIME,0l);
         return conf.getConfiguration();
     }
 
     public static ModifiableConfiguration getConfig(WriteConfiguration config) {
-        return new ModifiableConfiguration(ROOT_NS, config, BasicConfiguration.Restriction.NONE);
+        return new ModifiableConfiguration(ROOT_NS,config, BasicConfiguration.Restriction.NONE);
     }
 
     public static BasicConfiguration getConfig(ReadConfiguration config) {
-        return new BasicConfiguration(ROOT_NS, config, BasicConfiguration.Restriction.NONE);
+        return new BasicConfiguration(ROOT_NS,config, BasicConfiguration.Restriction.NONE);
     }
 
 }

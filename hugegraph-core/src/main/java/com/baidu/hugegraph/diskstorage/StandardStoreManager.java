@@ -20,19 +20,16 @@ import com.google.common.collect.ImmutableMap;
 import java.util.*;
 
 /**
- * This enum is only intended for use by HugeGraph internals. It is subject to backwards-incompatible change.
+ * This enum is only intended for use by HugeGraph internals.
+ * It is subject to backwards-incompatible change.
  */
 public enum StandardStoreManager {
-    BDB_JE("com.baidu.hugegraph.diskstorage.berkeleyje.BerkeleyJEStoreManager", "berkeleyje"), CASSANDRA_THRIFT(
-            "com.baidu.hugegraph.diskstorage.cassandra.thrift.CassandraThriftStoreManager",
-            "cassandrathrift"), CASSANDRA_ASTYANAX(
-                    "com.baidu.hugegraph.diskstorage.cassandra.astyanax.AstyanaxStoreManager",
-                    ImmutableList.of("cassandra", "astyanax")), CASSANDRA_EMBEDDED(
-                            "com.baidu.hugegraph.diskstorage.cassandra.embedded.CassandraEmbeddedStoreManager",
-                            "embeddedcassandra"), HBASE("com.baidu.hugegraph.diskstorage.hbase.HBaseStoreManager",
-                                    "hbase"), IN_MEMORY(
-                                            "com.baidu.hugegraph.diskstorage.keycolumnvalue.inmemory.InMemoryStoreManager",
-                                            "inmemory");
+    BDB_JE("com.baidu.hugegraph.diskstorage.berkeleyje.BerkeleyJEStoreManager", "berkeleyje"),
+    CASSANDRA_THRIFT("com.baidu.hugegraph.diskstorage.cassandra.thrift.CassandraThriftStoreManager", "cassandrathrift"),
+    CASSANDRA_ASTYANAX("com.baidu.hugegraph.diskstorage.cassandra.astyanax.AstyanaxStoreManager", ImmutableList.of("cassandra", "astyanax")),
+    CASSANDRA_EMBEDDED("com.baidu.hugegraph.diskstorage.cassandra.embedded.CassandraEmbeddedStoreManager", "embeddedcassandra"),
+    HBASE("com.baidu.hugegraph.diskstorage.hbase.HBaseStoreManager", "hbase"),
+    IN_MEMORY("com.baidu.hugegraph.diskstorage.keycolumnvalue.inmemory.InMemoryStoreManager", "inmemory");
 
     private final String managerClass;
     private final ImmutableList<String> shorthands;

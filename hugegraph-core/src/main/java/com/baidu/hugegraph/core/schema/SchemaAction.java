@@ -19,8 +19,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 
 /**
- * Update actions to be executed through {@link HugeGraphManagement} in
- * {@link HugeGraphManagement#updateIndex(Index, SchemaAction)}.
+ * Update actions to be executed through {@link HugeGraphManagement} in {@link HugeGraphManagement#updateIndex(Index, SchemaAction)}.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -54,43 +53,30 @@ public enum SchemaAction {
     REMOVE_INDEX;
 
     public Set<SchemaStatus> getApplicableStatus() {
-        switch (this) {
-            case REGISTER_INDEX:
-                return ImmutableSet.of(SchemaStatus.INSTALLED);
-            case REINDEX:
-                return ImmutableSet.of(SchemaStatus.REGISTERED, SchemaStatus.ENABLED);
-            case ENABLE_INDEX:
-                return ImmutableSet.of(SchemaStatus.REGISTERED);
-            case DISABLE_INDEX:
-                return ImmutableSet.of(SchemaStatus.REGISTERED, SchemaStatus.INSTALLED, SchemaStatus.ENABLED);
-            case REMOVE_INDEX:
-                return ImmutableSet.of(SchemaStatus.DISABLED);
-            default:
-                throw new IllegalArgumentException("Action is invalid: " + this);
+        switch(this) {
+            case REGISTER_INDEX: return ImmutableSet.of(SchemaStatus.INSTALLED);
+            case REINDEX: return ImmutableSet.of(SchemaStatus.REGISTERED,SchemaStatus.ENABLED);
+            case ENABLE_INDEX: return ImmutableSet.of(SchemaStatus.REGISTERED);
+            case DISABLE_INDEX: return ImmutableSet.of(SchemaStatus.REGISTERED,SchemaStatus.INSTALLED,SchemaStatus.ENABLED);
+            case REMOVE_INDEX: return ImmutableSet.of(SchemaStatus.DISABLED);
+            default: throw new IllegalArgumentException("Action is invalid: " + this);
         }
     }
 
     public Set<SchemaStatus> getFailureStatus() {
-        switch (this) {
-            case REGISTER_INDEX:
-                return ImmutableSet.of(SchemaStatus.DISABLED);
-            case REINDEX:
-                return ImmutableSet.of(SchemaStatus.INSTALLED, SchemaStatus.DISABLED);
-            case ENABLE_INDEX:
-                return ImmutableSet.of(SchemaStatus.INSTALLED, SchemaStatus.DISABLED);
-            case DISABLE_INDEX:
-                return ImmutableSet.of();
-            case REMOVE_INDEX:
-                return ImmutableSet.of(SchemaStatus.REGISTERED, SchemaStatus.INSTALLED, SchemaStatus.ENABLED);
-            default:
-                throw new IllegalArgumentException("Action is invalid: " + this);
+        switch(this) {
+            case REGISTER_INDEX: return ImmutableSet.of(SchemaStatus.DISABLED);
+            case REINDEX: return ImmutableSet.of(SchemaStatus.INSTALLED, SchemaStatus.DISABLED);
+            case ENABLE_INDEX: return ImmutableSet.of(SchemaStatus.INSTALLED, SchemaStatus.DISABLED);
+            case DISABLE_INDEX: return ImmutableSet.of();
+            case REMOVE_INDEX: return ImmutableSet.of(SchemaStatus.REGISTERED,SchemaStatus.INSTALLED,SchemaStatus.ENABLED);
+            default: throw new IllegalArgumentException("Action is invalid: " + this);
         }
     }
 
     public boolean isApplicableStatus(SchemaStatus status) {
         if (getFailureStatus().contains(status))
-            throw new IllegalArgumentException(
-                    String.format("Update action [%s] cannot be invoked for index with status [%s]", this, status));
+            throw new IllegalArgumentException(String.format("Update action [%s] cannot be invoked for index with status [%s]",this,status));
         return getApplicableStatus().contains(status);
     }
 

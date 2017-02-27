@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,13 +43,16 @@ import java.util.*;
 /**
  * Here are some areas that might need work:
  * <p/>
- * - batching? (consider HTable#batch, HTable#setAutoFlush(false) - tuning HTable#setWriteBufferSize (?) - writing a
- * server-side filter to replace ColumnCountGetFilter, which drops all columns on the row where it reaches its limit.
- * This requires getSlice, currently, to impose its limit on the client side. That obviously won't scale. - RowMutations
- * for combining Puts+Deletes (need a newer HBase than 0.92 for this) - (maybe) fiddle with
- * HTable#setRegionCachePrefetch and/or #prewarmRegionCache
+ * - batching? (consider HTable#batch, HTable#setAutoFlush(false)
+ * - tuning HTable#setWriteBufferSize (?)
+ * - writing a server-side filter to replace ColumnCountGetFilter, which drops
+ * all columns on the row where it reaches its limit.  This requires getSlice,
+ * currently, to impose its limit on the client side.  That obviously won't
+ * scale.
+ * - RowMutations for combining Puts+Deletes (need a newer HBase than 0.92 for this)
+ * - (maybe) fiddle with HTable#setRegionCachePrefetch and/or #prewarmRegionCache
  * <p/>
- * There may be other problem areas. These are just the ones of which I'm aware.
+ * There may be other problem areas.  These are just the ones of which I'm aware.
  */
 public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
 
@@ -60,7 +63,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
 
     // When using shortened CF names, columnFamily is the shortname and storeName is the longname
     // When not using shortened CF names, they are the same
-    // private final String columnFamily;
+    //private final String columnFamily;
     private final String storeName;
     // This is columnFamily.getBytes()
     private final byte[] columnFamilyBytes;
@@ -68,12 +71,11 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
 
     private final ConnectionMask cnx;
 
-    HBaseKeyColumnValueStore(HBaseStoreManager storeManager, ConnectionMask cnx, String tableName, String columnFamily,
-            String storeName) {
+    HBaseKeyColumnValueStore(HBaseStoreManager storeManager, ConnectionMask cnx, String tableName, String columnFamily, String storeName) {
         this.storeManager = storeManager;
         this.cnx = cnx;
         this.tableName = tableName;
-        // this.columnFamily = columnFamily;
+        //this.columnFamily = columnFamily;
         this.storeName = storeName;
         this.columnFamilyBytes = columnFamily.getBytes();
         this.entryGetter = new HBaseGetter(storeManager.getMetaDataSchema(storeName));
@@ -90,28 +92,29 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
     }
 
     @Override
-    public Map<StaticBuffer, EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
+    public Map<StaticBuffer,EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh) throws BackendException {
         return getHelper(keys, getFilter(query));
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         Map<StaticBuffer, KCVMutation> mutations = ImmutableMap.of(key, new KCVMutation(additions, deletions));
         mutateMany(mutations, txh);
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
+    public void acquireLock(StaticBuffer key,
+                            StaticBuffer column,
+                            StaticBuffer expectedValue,
+                            StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public KeyIterator getKeys(KeyRangeQuery query, StoreTransaction txh) throws BackendException {
         return executeKeySliceQuery(query.getKeyStart().as(StaticBuffer.ARRAY_FACTORY),
-                query.getKeyEnd().as(StaticBuffer.ARRAY_FACTORY), new FilterList(FilterList.Operator.MUST_PASS_ALL),
+                query.getKeyEnd().as(StaticBuffer.ARRAY_FACTORY),
+                new FilterList(FilterList.Operator.MUST_PASS_ALL),
                 query);
     }
 
@@ -126,15 +129,14 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
     }
 
     public static Filter getFilter(SliceQuery query) {
-        byte[] colStartBytes =
-                query.getSliceStart().length() > 0 ? query.getSliceStart().as(StaticBuffer.ARRAY_FACTORY) : null;
-        byte[] colEndBytes =
-                query.getSliceEnd().length() > 0 ? query.getSliceEnd().as(StaticBuffer.ARRAY_FACTORY) : null;
+        byte[] colStartBytes = query.getSliceStart().length() > 0 ? query.getSliceStart().as(StaticBuffer.ARRAY_FACTORY) : null;
+        byte[] colEndBytes = query.getSliceEnd().length() > 0 ? query.getSliceEnd().as(StaticBuffer.ARRAY_FACTORY) : null;
 
         Filter filter = new ColumnRangeFilter(colStartBytes, true, colEndBytes, false);
 
         if (query.hasLimit()) {
-            filter = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter,
+            filter = new FilterList(FilterList.Operator.MUST_PASS_ALL,
+                    filter,
                     new ColumnPaginationFilter(query.getLimit(), 0));
         }
 
@@ -143,7 +145,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
         return filter;
     }
 
-    private Map<StaticBuffer, EntryList> getHelper(List<StaticBuffer> keys, Filter getFilter) throws BackendException {
+    private Map<StaticBuffer,EntryList> getHelper(List<StaticBuffer> keys, Filter getFilter) throws BackendException {
         List<Get> requests = new ArrayList<Get>(keys.size());
         {
             for (StaticBuffer key : keys) {
@@ -157,7 +159,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
             }
         }
 
-        Map<StaticBuffer, EntryList> resultMap = new HashMap<StaticBuffer, EntryList>(keys.size());
+        Map<StaticBuffer,EntryList> resultMap = new HashMap<StaticBuffer,EntryList>(keys.size());
 
         try {
             TableMask table = null;
@@ -173,7 +175,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
             if (results == null)
                 return KCVSUtil.emptyResults(keys);
 
-            assert results.length == keys.size();
+            assert results.length==keys.size();
 
             for (int i = 0; i < results.length; i++) {
                 Result result = results[i];
@@ -186,8 +188,9 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
 
                 // actual key with <timestamp, value>
                 NavigableMap<byte[], NavigableMap<Long, byte[]>> r = f.get(columnFamilyBytes);
-                resultMap.put(keys.get(i),
-                        (r == null) ? EntryList.EMPTY_LIST : StaticArrayEntryList.ofBytes(r.entrySet(), entryGetter));
+                resultMap.put(keys.get(i), (r == null)
+                                            ? EntryList.EMPTY_LIST
+                                            : StaticArrayEntryList.ofBytes(r.entrySet(), entryGetter));
             }
 
             return resultMap;
@@ -204,13 +207,14 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
         storeManager.mutateMany(ImmutableMap.of(storeName, mutations), txh);
     }
 
-    private KeyIterator executeKeySliceQuery(FilterList filters, @Nullable SliceQuery columnSlice)
-            throws BackendException {
+    private KeyIterator executeKeySliceQuery(FilterList filters, @Nullable SliceQuery columnSlice) throws BackendException {
         return executeKeySliceQuery(null, null, filters, columnSlice);
     }
 
-    private KeyIterator executeKeySliceQuery(@Nullable byte[] startKey, @Nullable byte[] endKey, FilterList filters,
-            @Nullable SliceQuery columnSlice) throws BackendException {
+    private KeyIterator executeKeySliceQuery(@Nullable byte[] startKey,
+                                            @Nullable byte[] endKey,
+                                            FilterList filters,
+                                            @Nullable SliceQuery columnSlice) throws BackendException {
         Scan scan = new Scan().addFamily(columnFamilyBytes);
 
         try {
@@ -259,8 +263,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
             ensureOpen();
 
             return new RecordIterator<Entry>() {
-                private final Iterator<Map.Entry<byte[], NavigableMap<Long, byte[]>>> kv =
-                        currentRow.getMap().get(columnFamilyBytes).entrySet().iterator();
+                private final Iterator<Map.Entry<byte[], NavigableMap<Long, byte[]>>> kv = currentRow.getMap().get(columnFamilyBytes).entrySet().iterator();
 
                 @Override
                 public boolean hasNext() {
@@ -318,8 +321,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
         }
     }
 
-    private static class HBaseGetter
-            implements StaticArrayEntry.GetColVal<Map.Entry<byte[], NavigableMap<Long, byte[]>>, byte[]> {
+    private static class HBaseGetter implements StaticArrayEntry.GetColVal<Map.Entry<byte[], NavigableMap<Long, byte[]>>, byte[]> {
 
         private final EntryMetaData[] schema;
 
@@ -344,7 +346,7 @@ public class HBaseKeyColumnValueStore implements KeyColumnValueStore {
 
         @Override
         public Object getMetaData(Map.Entry<byte[], NavigableMap<Long, byte[]>> element, EntryMetaData meta) {
-            switch (meta) {
+            switch(meta) {
                 case TIMESTAMP:
                     return element.getValue().lastEntry().getKey();
                 default:

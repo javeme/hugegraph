@@ -71,14 +71,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LuceneIndex implements IndexProvider {
     private static final Logger log = LoggerFactory.getLogger(LuceneIndex.class);
 
+
     private static final String DOCID = "_____elementid";
     private static final String GEOID = "_____geo";
     private static final int MAX_STRING_FIELD_LEN = 256;
 
     private static final Version LUCENE_VERSION = Version.LUCENE_4_10_4;
-    private static final IndexFeatures LUCENE_FEATURES =
-            new IndexFeatures.Builder().supportedStringMappings(Mapping.TEXT, Mapping.STRING)
-                    .supportsCardinality(Cardinality.SINGLE).supportsNanoseconds().build();
+    private static final IndexFeatures LUCENE_FEATURES = new IndexFeatures.Builder().supportedStringMappings(Mapping.TEXT, Mapping.STRING).supportsCardinality(Cardinality.SINGLE).supportsNanoseconds().build();
 
     private static final int GEO_MAX_LEVELS = 11;
 
@@ -95,8 +94,7 @@ public class LuceneIndex implements IndexProvider {
     public LuceneIndex(Configuration config) {
         String dir = config.get(GraphDatabaseConfiguration.INDEX_DIRECTORY);
         File directory = new File(dir);
-        if (!directory.exists())
-            directory.mkdirs();
+        if (!directory.exists()) directory.mkdirs();
         if (!directory.exists() || !directory.isDirectory() || !directory.canWrite())
             throw new IllegalArgumentException("Cannot access or write to directory: " + dir);
         basePath = directory.getAbsolutePath();
@@ -108,8 +106,7 @@ public class LuceneIndex implements IndexProvider {
         String dir = basePath + File.separator + store;
         try {
             File path = new File(dir);
-            if (!path.exists())
-                path.mkdirs();
+            if (!path.exists()) path.mkdirs();
             if (!path.exists() || !path.isDirectory() || !path.canWrite())
                 throw new PermanentBackendException("Cannot access or write to directory: " + dir);
             log.debug("Opening store directory [{}]", path);
@@ -140,29 +137,25 @@ public class LuceneIndex implements IndexProvider {
         if (strategy == null) {
             synchronized (spatial) {
                 if (!spatial.containsKey(key)) {
-                    // SpatialPrefixTree grid = new GeohashPrefixTree(ctx, GEO_MAX_LEVELS);
-                    // strategy = new RecursivePrefixTreeStrategy(grid, key);
+//                    SpatialPrefixTree grid = new GeohashPrefixTree(ctx, GEO_MAX_LEVELS);
+//                    strategy = new RecursivePrefixTreeStrategy(grid, key);
                     strategy = new PointVectorStrategy(ctx, key);
                     spatial.put(key, strategy);
-                } else
-                    return spatial.get(key);
+                } else return spatial.get(key);
             }
         }
         return strategy;
     }
 
     @Override
-    public void register(String store, String key, KeyInformation information, BaseTransaction tx)
-            throws BackendException {
+    public void register(String store, String key, KeyInformation information, BaseTransaction tx) throws BackendException {
         Class<?> dataType = information.getDataType();
         Mapping map = Mapping.getMapping(information);
         Preconditions.checkArgument(map == Mapping.DEFAULT || AttributeUtil.isString(dataType),
-                "Specified illegal mapping [%s] for data type [%s]", map, dataType);
-    }
+                "Specified illegal mapping [%s] for data type [%s]", map, dataType);    }
 
     @Override
-    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
+    public void mutate(Map<String, Map<String, IndexMutation>> mutations, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         Transaction ltx = (Transaction) tx;
         writerLock.lock();
         try {
@@ -177,8 +170,7 @@ public class LuceneIndex implements IndexProvider {
         }
     }
 
-    private void mutateStores(Map.Entry<String, Map<String, IndexMutation>> stores,
-            KeyInformation.IndexRetriever informations) throws IOException, BackendException {
+    private void mutateStores(Map.Entry<String, Map<String, IndexMutation>> stores, KeyInformation.IndexRetriever informations) throws IOException, BackendException {
         IndexReader reader = null;
         try {
             String storename = stores.getKey();
@@ -203,8 +195,7 @@ public class LuceneIndex implements IndexProvider {
 
                 Preconditions.checkNotNull(doc);
                 for (IndexEntry del : mutation.getDeletions()) {
-                    Preconditions.checkArgument(!del.hasMetaData(),
-                            "Lucene index does not support indexing meta data: %s", del);
+                    Preconditions.checkArgument(!del.hasMetaData(), "Lucene index does not support indexing meta data: %s", del);
                     String key = del.field;
                     if (doc.getField(key) != null) {
                         if (log.isTraceEnabled())
@@ -217,7 +208,7 @@ public class LuceneIndex implements IndexProvider {
 
                 addToDocument(storename, docid, doc, mutation.getAdditions(), geofields, informations);
 
-                // write the old document to the index with the modifications
+                //write the old document to the index with the modifications
                 writer.updateDocument(new Term(DOCID, docid), doc);
             }
             writer.commit();
@@ -227,8 +218,7 @@ public class LuceneIndex implements IndexProvider {
     }
 
     @Override
-    public void restore(Map<String, Map<String, List<IndexEntry>>> documents,
-            KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+    public void restore(Map<String, Map<String, List<IndexEntry>>> documents, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         writerLock.lock();
         try {
             for (Map.Entry<String, Map<String, List<IndexEntry>>> stores : documents.entrySet()) {
@@ -252,7 +242,7 @@ public class LuceneIndex implements IndexProvider {
                     Pair<Document, Map<String, Shape>> docAndGeo = retrieveOrCreate(docID, searcher);
                     addToDocument(store, docID, docAndGeo.getKey(), content, docAndGeo.getValue(), informations);
 
-                    // write the old document to the index with the modifications
+                    //write the old document to the index with the modifications
                     writer.updateDocument(new Term(DOCID, docID), docAndGeo.getKey());
                 }
                 writer.commit();
@@ -265,8 +255,7 @@ public class LuceneIndex implements IndexProvider {
         }
     }
 
-    private Pair<Document, Map<String, Shape>> retrieveOrCreate(String docID, IndexSearcher searcher)
-            throws IOException {
+    private Pair<Document, Map<String, Shape>> retrieveOrCreate(String docID, IndexSearcher searcher) throws IOException {
         Document doc;
         TopDocs hits = searcher.search(new TermQuery(new Term(DOCID, docID)), 10);
         Map<String, Shape> geofields = Maps.newHashMap();
@@ -285,13 +274,12 @@ public class LuceneIndex implements IndexProvider {
                 log.trace("Updating existing document for [{}]", docID);
 
             int docId = hits.scoreDocs[0].doc;
-            // retrieve the old document
+            //retrieve the old document
             doc = searcher.doc(docId);
             for (IndexableField field : doc.getFields()) {
                 if (field.stringValue().startsWith(GEOID)) {
                     try {
-                        geofields.put(field.name(),
-                                ctx.readShapeFromWkt(field.stringValue().substring(GEOID.length())));
+                        geofields.put(field.name(), ctx.readShapeFromWkt(field.stringValue().substring(GEOID.length())));
                     } catch (java.text.ParseException e) {
                         throw new IllegalArgumentException("Geoshape was unparsable");
                     }
@@ -302,11 +290,15 @@ public class LuceneIndex implements IndexProvider {
         return new ImmutablePair<Document, Map<String, Shape>>(doc, geofields);
     }
 
-    private void addToDocument(String store, String docID, Document doc, List<IndexEntry> content,
-            Map<String, Shape> geofields, KeyInformation.IndexRetriever informations) {
+    private void addToDocument(String store,
+                               String docID,
+                               Document doc,
+                               List<IndexEntry> content,
+                               Map<String, Shape> geofields,
+                               KeyInformation.IndexRetriever informations) {
         Preconditions.checkNotNull(doc);
         for (IndexEntry e : content) {
-            Preconditions.checkArgument(!e.hasMetaData(), "Lucene index does not support indexing meta data: %s", e);
+            Preconditions.checkArgument(!e.hasMetaData(),"Lucene index does not support indexing meta data: %s",e);
             if (log.isTraceEnabled())
                 log.trace("Adding field [{}] on document [{}]", e.field, docID);
 
@@ -317,7 +309,7 @@ public class LuceneIndex implements IndexProvider {
                 Field field;
                 if (AttributeUtil.isWholeNumber((Number) e.value)) {
                     field = new LongField(e.field, ((Number) e.value).longValue(), Field.Store.YES);
-                } else { // double or float
+                } else { //double or float
                     field = new DoubleField(e.field, ((Number) e.value).doubleValue(), Field.Store.YES);
                 }
                 doc.add(field);
@@ -325,7 +317,7 @@ public class LuceneIndex implements IndexProvider {
                 String str = (String) e.value;
                 Mapping mapping = Mapping.getMapping(store, e.field, informations);
                 Field field;
-                switch (mapping) {
+                switch(mapping) {
                     case DEFAULT:
                     case TEXT:
                         field = new TextField(e.field, str, Field.Store.YES);
@@ -333,23 +325,22 @@ public class LuceneIndex implements IndexProvider {
                     case STRING:
                         field = new StringField(e.field, str, Field.Store.YES);
                         break;
-                    default:
-                        throw new IllegalArgumentException("Illegal mapping specified: " + mapping);
+                    default: throw new IllegalArgumentException("Illegal mapping specified: " + mapping);
                 }
                 doc.add(field);
             } else if (e.value instanceof Geoshape) {
                 Shape shape = ((Geoshape) e.value).convert2Spatial4j();
                 geofields.put(e.field, shape);
-                doc.add(new StoredField(e.field, GEOID + toWkt(shape)));
+                doc.add(new StoredField(e.field, GEOID +  toWkt(shape)));
 
             } else if (e.value instanceof Date) {
                 doc.add(new LongField(e.field, (((Date) e.value).getTime()), Field.Store.YES));
             } else if (e.value instanceof Instant) {
                 doc.add(new LongField(e.field, (((Instant) e.value).toEpochMilli()), Field.Store.YES));
             } else if (e.value instanceof Boolean) {
-                doc.add(new IntField(e.field, ((Boolean) e.value) ? 1 : 0, Field.Store.YES));
+                doc.add(new IntField(e.field, ((Boolean)e.value)? 1 : 0, Field.Store.YES));
             } else if (e.value instanceof UUID) {
-                // Solr stores UUIDs as strings, we we do the same.
+                //Solr stores UUIDs as strings, we we do the same.
                 Field field = new StringField(e.field, e.value.toString(), Field.Store.YES);
                 doc.add(field);
             } else {
@@ -367,9 +358,10 @@ public class LuceneIndex implements IndexProvider {
     }
 
     private String toWkt(Shape shape) {
-        if (shape instanceof Point) {
+        if(shape instanceof Point) {
             return "POINT(" + ((Point) shape).getX() + " " + ((Point) shape).getY() + ")";
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Only points are supported");
         }
     }
@@ -383,15 +375,11 @@ public class LuceneIndex implements IndexProvider {
                 IndexQuery.OrderEntry order = orders.get(i);
                 SortField.Type sortType = null;
                 Class datatype = order.getDatatype();
-                if (AttributeUtil.isString(datatype))
-                    sortType = SortField.Type.STRING;
-                else if (AttributeUtil.isWholeNumber(datatype))
-                    sortType = SortField.Type.LONG;
-                else if (AttributeUtil.isDecimal(datatype))
-                    sortType = SortField.Type.DOUBLE;
+                if (AttributeUtil.isString(datatype)) sortType = SortField.Type.STRING;
+                else if (AttributeUtil.isWholeNumber(datatype)) sortType = SortField.Type.LONG;
+                else if (AttributeUtil.isDecimal(datatype)) sortType = SortField.Type.DOUBLE;
                 else
-                    Preconditions.checkArgument(false, "Unsupported order specified on field [%s] with datatype [%s]",
-                            order.getKey(), datatype);
+                    Preconditions.checkArgument(false, "Unsupported order specified on field [%s] with datatype [%s]", order.getKey(), datatype);
 
                 fields[i] = new SortField(order.getKey(), sortType, order.getOrder() == Order.DESC);
             }
@@ -401,15 +389,13 @@ public class LuceneIndex implements IndexProvider {
     }
 
     @Override
-    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx)
-            throws BackendException {
-        // Construct query
-        SearchParams searchParams = convertQuery(query.getCondition(), informations.get(query.getStore()));
+    public List<String> query(IndexQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
+        //Construct query
+        SearchParams searchParams = convertQuery(query.getCondition(),informations.get(query.getStore()));
 
         try {
             IndexSearcher searcher = ((Transaction) tx).getSearcher(query.getStore());
-            if (searcher == null)
-                return ImmutableList.of(); // Index does not yet exist
+            if (searcher == null) return ImmutableList.of(); //Index does not yet exist
 
             Query q = searchParams.getQuery();
             if (null == q)
@@ -418,8 +404,7 @@ public class LuceneIndex implements IndexProvider {
             final Filter f = searchParams.getFilter();
 
             long time = System.currentTimeMillis();
-            TopDocs docs = searcher.search(q, f, query.hasLimit() ? query.getLimit() : Integer.MAX_VALUE - 1,
-                    getSortOrder(query));
+            TopDocs docs = searcher.search(q, f, query.hasLimit() ? query.getLimit() : Integer.MAX_VALUE - 1, getSortOrder(query));
             log.debug("Executed query [{}] and filter [{}] in {} ms", q, f, System.currentTimeMillis() - time);
             List<String> result = new ArrayList<String>(docs.scoreDocs.length);
             for (int i = 0; i < docs.scoreDocs.length; i++) {
@@ -434,39 +419,35 @@ public class LuceneIndex implements IndexProvider {
     private static final Filter numericFilter(String key, Cmp relation, Number value) {
         switch (relation) {
             case EQUAL:
-                return AttributeUtil.isWholeNumber(value)
-                        ? NumericRangeFilter.newLongRange(key, value.longValue(), value.longValue(), true, true)
-                        : NumericRangeFilter.newDoubleRange(key, value.doubleValue(), value.doubleValue(), true, true);
+                return AttributeUtil.isWholeNumber(value) ?
+                        NumericRangeFilter.newLongRange(key, value.longValue(), value.longValue(), true, true) :
+                        NumericRangeFilter.newDoubleRange(key, value.doubleValue(), value.doubleValue(), true, true);
             case NOT_EQUAL:
                 BooleanFilter q = new BooleanFilter();
                 if (AttributeUtil.isWholeNumber(value)) {
-                    q.add(NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, false),
-                            BooleanClause.Occur.SHOULD);
-                    q.add(NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, false, true),
-                            BooleanClause.Occur.SHOULD);
+                    q.add(NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, false), BooleanClause.Occur.SHOULD);
+                    q.add(NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, false, true), BooleanClause.Occur.SHOULD);
                 } else {
-                    q.add(NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, false),
-                            BooleanClause.Occur.SHOULD);
-                    q.add(NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, false, true),
-                            BooleanClause.Occur.SHOULD);
+                    q.add(NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, false), BooleanClause.Occur.SHOULD);
+                    q.add(NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, false, true), BooleanClause.Occur.SHOULD);
                 }
                 return q;
             case LESS_THAN:
-                return (AttributeUtil.isWholeNumber(value))
-                        ? NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, false)
-                        : NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, false);
+                return (AttributeUtil.isWholeNumber(value)) ?
+                        NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, false) :
+                        NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, false);
             case LESS_THAN_EQUAL:
-                return (AttributeUtil.isWholeNumber(value))
-                        ? NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, true)
-                        : NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, true);
+                return (AttributeUtil.isWholeNumber(value)) ?
+                        NumericRangeFilter.newLongRange(key, Long.MIN_VALUE, value.longValue(), true, true) :
+                        NumericRangeFilter.newDoubleRange(key, Double.MIN_VALUE, value.doubleValue(), true, true);
             case GREATER_THAN:
-                return (AttributeUtil.isWholeNumber(value))
-                        ? NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, false, true)
-                        : NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, false, true);
+                return (AttributeUtil.isWholeNumber(value)) ?
+                        NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, false, true) :
+                        NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, false, true);
             case GREATER_THAN_EQUAL:
-                return (AttributeUtil.isWholeNumber(value))
-                        ? NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, true, true)
-                        : NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, true, true);
+                return (AttributeUtil.isWholeNumber(value)) ?
+                        NumericRangeFilter.newLongRange(key, value.longValue(), Long.MAX_VALUE, true, true) :
+                        NumericRangeFilter.newDoubleRange(key, value.doubleValue(), Double.MAX_VALUE, true, true);
             default:
                 throw new IllegalArgumentException("Unexpected relation: " + relation);
         }
@@ -480,24 +461,22 @@ public class LuceneIndex implements IndexProvider {
             String key = atom.getKey();
             HugeGraphPredicate hugegraphPredicate = atom.getPredicate();
             if (value instanceof Number) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on numeric types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on numeric types: " + hugegraphPredicate);
                 Preconditions.checkArgument(value instanceof Number);
                 params.addFilter(numericFilter(key, (Cmp) hugegraphPredicate, (Number) value));
             } else if (value instanceof String) {
                 Mapping map = Mapping.getMapping(informations.get(key));
-                if ((map == Mapping.DEFAULT || map == Mapping.TEXT)
-                        && !hugegraphPredicate.toString().startsWith("CONTAINS"))
-                    throw new IllegalArgumentException(
-                            "Text mapped string values only support CONTAINS queries and not: " + hugegraphPredicate);
-                if (map == Mapping.STRING && hugegraphPredicate.toString().startsWith("CONTAINS"))
-                    throw new IllegalArgumentException(
-                            "String mapped string values do not support CONTAINS queries: " + hugegraphPredicate);
+                if ((map==Mapping.DEFAULT || map==Mapping.TEXT) && !hugegraphPredicate.toString().startsWith("CONTAINS"))
+                    throw new IllegalArgumentException("Text mapped string values only support CONTAINS queries and not: " + hugegraphPredicate);
+                if (map==Mapping.STRING && hugegraphPredicate.toString().startsWith("CONTAINS"))
+                    throw new IllegalArgumentException("String mapped string values do not support CONTAINS queries: " + hugegraphPredicate);
+
+
 
                 if (hugegraphPredicate == Text.CONTAINS) {
                     value = ((String) value).toLowerCase();
                     BooleanFilter b = new BooleanFilter();
-                    for (String term : Text.tokenize((String) value)) {
+                    for (String term : Text.tokenize((String)value)) {
                         b.add(new TermsFilter(new Term(key, term)), BooleanClause.Occur.MUST);
                     }
                     params.addFilter(b);
@@ -514,33 +493,28 @@ public class LuceneIndex implements IndexProvider {
                     RegexpQuery rq = new RegexpQuery(new Term(key, ".*" + (value) + ".*"));
                     params.addQuery(rq);
                 } else if (hugegraphPredicate == Cmp.EQUAL) {
-                    params.addFilter(new TermsFilter(new Term(key, (String) value)));
+                    params.addFilter(new TermsFilter(new Term(key,(String)value)));
                 } else if (hugegraphPredicate == Cmp.NOT_EQUAL) {
                     BooleanFilter q = new BooleanFilter();
                     q.add(new TermsFilter(new Term(key, (String) value)), BooleanClause.Occur.MUST_NOT);
                     params.addFilter(q);
                 } else
-                    throw new IllegalArgumentException(
-                            "Relation is not supported for string value: " + hugegraphPredicate);
+                    throw new IllegalArgumentException("Relation is not supported for string value: " + hugegraphPredicate);
             } else if (value instanceof Geoshape) {
-                Preconditions.checkArgument(hugegraphPredicate == Geo.WITHIN,
-                        "Relation is not supported for geo value: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate == Geo.WITHIN, "Relation is not supported for geo value: " + hugegraphPredicate);
                 Shape shape = ((Geoshape) value).convert2Spatial4j();
                 SpatialArgs args = new SpatialArgs(SpatialOperation.IsWithin, shape);
                 params.addFilter(getSpatialStrategy(key).makeFilter(args));
             } else if (value instanceof Date) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on date types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on date types: " + hugegraphPredicate);
                 params.addFilter(numericFilter(key, (Cmp) hugegraphPredicate, ((Date) value).getTime()));
             } else if (value instanceof Instant) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on instant types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on instant types: " + hugegraphPredicate);
                 params.addFilter(numericFilter(key, (Cmp) hugegraphPredicate, ((Instant) value).toEpochMilli()));
-            } else if (value instanceof Boolean) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on boolean types: " + hugegraphPredicate);
+            }else if (value instanceof Boolean) {
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on boolean types: " + hugegraphPredicate);
                 int intValue;
-                switch ((Cmp) hugegraphPredicate) {
+                switch ((Cmp)hugegraphPredicate) {
                     case EQUAL:
                         intValue = ((Boolean) value) ? 1 : 0;
                         params.addFilter(NumericRangeFilter.newIntRange(key, intValue, intValue, true, true));
@@ -554,8 +528,7 @@ public class LuceneIndex implements IndexProvider {
                 }
 
             } else if (value instanceof UUID) {
-                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp,
-                        "Relation not supported on UUID types: " + hugegraphPredicate);
+                Preconditions.checkArgument(hugegraphPredicate instanceof Cmp, "Relation not supported on UUID types: " + hugegraphPredicate);
                 if (hugegraphPredicate == Cmp.EQUAL) {
                     params.addFilter(new TermsFilter(new Term(key, value.toString())));
                 } else if (hugegraphPredicate == Cmp.NOT_EQUAL) {
@@ -563,8 +536,7 @@ public class LuceneIndex implements IndexProvider {
                     q.add(new TermsFilter(new Term(key, value.toString())), BooleanClause.Occur.MUST_NOT);
                     params.addFilter(q);
                 } else {
-                    throw new IllegalArgumentException(
-                            "Relation is not supported for UUID type: " + hugegraphPredicate);
+                    throw new IllegalArgumentException("Relation is not supported for UUID type: " + hugegraphPredicate);
                 }
 
             } else {
@@ -583,41 +555,35 @@ public class LuceneIndex implements IndexProvider {
                 SearchParams childParams = convertQuery(c, informations);
                 params.addParams(childParams, BooleanClause.Occur.SHOULD);
             }
-        } else
-            throw new IllegalArgumentException("Invalid condition: " + condition);
+        } else throw new IllegalArgumentException("Invalid condition: " + condition);
 
         return params;
     }
 
     @Override
-    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations,
-            BaseTransaction tx) throws BackendException {
+    public Iterable<RawQuery.Result<String>> query(RawQuery query, KeyInformation.IndexRetriever informations, BaseTransaction tx) throws BackendException {
         Query q;
         try {
-            q = new QueryParser("_all", analyzer).parse(query.getQuery());
+            q = new QueryParser("_all",analyzer).parse(query.getQuery());
         } catch (ParseException e) {
-            throw new PermanentBackendException("Could not parse raw query: " + query.getQuery(), e);
+            throw new PermanentBackendException("Could not parse raw query: "+query.getQuery(),e);
         }
 
         try {
             IndexSearcher searcher = ((Transaction) tx).getSearcher(query.getStore());
-            if (searcher == null)
-                return ImmutableList.of(); // Index does not yet exist
+            if (searcher == null) return ImmutableList.of(); //Index does not yet exist
 
             long time = System.currentTimeMillis();
-            // TODO: can we make offset more efficient in Lucene?
+            //TODO: can we make offset more efficient in Lucene?
             final int offset = query.getOffset();
             int adjustedLimit = query.hasLimit() ? query.getLimit() : Integer.MAX_VALUE - 1;
-            if (adjustedLimit < Integer.MAX_VALUE - 1 - offset)
-                adjustedLimit += offset;
-            else
-                adjustedLimit = Integer.MAX_VALUE - 1;
+            if (adjustedLimit < Integer.MAX_VALUE-1-offset) adjustedLimit+=offset;
+            else adjustedLimit = Integer.MAX_VALUE-1;
             TopDocs docs = searcher.search(q, adjustedLimit);
-            log.debug("Executed query [{}] in {} ms", q, System.currentTimeMillis() - time);
+            log.debug("Executed query [{}] in {} ms",q, System.currentTimeMillis() - time);
             List<RawQuery.Result<String>> result = new ArrayList<RawQuery.Result<String>>(docs.scoreDocs.length);
             for (int i = offset; i < docs.scoreDocs.length; i++) {
-                result.add(new RawQuery.Result<String>(
-                        searcher.doc(docs.scoreDocs[i].doc).getField(DOCID).stringValue(), docs.scoreDocs[i].score));
+                result.add(new RawQuery.Result<String>(searcher.doc(docs.scoreDocs[i].doc).getField(DOCID).stringValue(),docs.scoreDocs[i].score));
             }
             return result;
         } catch (IOException e) {
@@ -632,33 +598,25 @@ public class LuceneIndex implements IndexProvider {
 
     @Override
     public boolean supports(KeyInformation information, HugeGraphPredicate hugegraphPredicate) {
-        if (information.getCardinality() != Cardinality.SINGLE)
-            return false;
+        if (information.getCardinality()!= Cardinality.SINGLE) return false;
         Class<?> dataType = information.getDataType();
         Mapping mapping = Mapping.getMapping(information);
-        if (mapping != Mapping.DEFAULT && !AttributeUtil.isString(dataType))
-            return false;
+        if (mapping!=Mapping.DEFAULT && !AttributeUtil.isString(dataType)) return false;
 
         if (Number.class.isAssignableFrom(dataType)) {
-            if (hugegraphPredicate instanceof Cmp)
-                return true;
+            if (hugegraphPredicate instanceof Cmp) return true;
         } else if (dataType == Geoshape.class) {
             return hugegraphPredicate == Geo.WITHIN;
         } else if (AttributeUtil.isString(dataType)) {
-            switch (mapping) {
+            switch(mapping) {
                 case DEFAULT:
                 case TEXT:
-                    return hugegraphPredicate == Text.CONTAINS || hugegraphPredicate == Text.CONTAINS_PREFIX; // ||
-                                                                                                              // hugegraphPredicate
-                                                                                                              // ==
-                                                                                                              // Text.CONTAINS_REGEX;
+                    return hugegraphPredicate == Text.CONTAINS || hugegraphPredicate == Text.CONTAINS_PREFIX; // || hugegraphPredicate == Text.CONTAINS_REGEX;
                 case STRING:
-                    return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate == Cmp.NOT_EQUAL
-                            || hugegraphPredicate == Text.PREFIX || hugegraphPredicate == Text.REGEX;
+                    return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate==Cmp.NOT_EQUAL || hugegraphPredicate==Text.PREFIX || hugegraphPredicate==Text.REGEX;
             }
         } else if (dataType == Date.class || dataType == Instant.class) {
-            if (hugegraphPredicate instanceof Cmp)
-                return true;
+            if (hugegraphPredicate instanceof Cmp) return true;
         } else if (dataType == Boolean.class) {
             return hugegraphPredicate == Cmp.EQUAL || hugegraphPredicate == Cmp.NOT_EQUAL;
         } else if (dataType == UUID.class) {
@@ -669,25 +627,20 @@ public class LuceneIndex implements IndexProvider {
 
     @Override
     public boolean supports(KeyInformation information) {
-        if (information.getCardinality() != Cardinality.SINGLE)
-            return false;
+        if (information.getCardinality()!= Cardinality.SINGLE) return false;
         Class<?> dataType = information.getDataType();
         Mapping mapping = Mapping.getMapping(information);
-        if (Number.class.isAssignableFrom(dataType) || dataType == Geoshape.class || dataType == Date.class
-                || dataType == Instant.class || dataType == Boolean.class || dataType == UUID.class) {
-            if (mapping == Mapping.DEFAULT)
-                return true;
+        if (Number.class.isAssignableFrom(dataType) || dataType == Geoshape.class || dataType == Date.class || dataType == Instant.class || dataType == Boolean.class || dataType == UUID.class) {
+            if (mapping==Mapping.DEFAULT) return true;
         } else if (AttributeUtil.isString(dataType)) {
-            if (mapping == Mapping.DEFAULT || mapping == Mapping.STRING || mapping == Mapping.TEXT)
-                return true;
+            if (mapping==Mapping.DEFAULT || mapping==Mapping.STRING || mapping==Mapping.TEXT) return true;
         }
         return false;
     }
 
     @Override
     public String mapKey2Field(String key, KeyInformation information) {
-        Preconditions.checkArgument(!StringUtils.containsAny(key, new char[] { ' ' }), "Invalid key name provided: %s",
-                key);
+        Preconditions.checkArgument(!StringUtils.containsAny(key,new char[]{' '}),"Invalid key name provided: %s",key);
         return key;
     }
 
@@ -699,8 +652,7 @@ public class LuceneIndex implements IndexProvider {
     @Override
     public void close() throws BackendException {
         try {
-            for (IndexWriter w : writers.values())
-                w.close();
+            for (IndexWriter w : writers.values()) w.close();
         } catch (IOException e) {
             throw new PermanentBackendException("Could not close writers", e);
         }
@@ -747,6 +699,7 @@ public class LuceneIndex implements IndexProvider {
             searchers.clear();
         }
 
+
         @Override
         public void commit() throws BackendException {
             close();
@@ -760,8 +713,7 @@ public class LuceneIndex implements IndexProvider {
         private void close() throws BackendException {
             try {
                 for (IndexSearcher searcher : searchers.values()) {
-                    if (searcher != null)
-                        searcher.getIndexReader().close();
+                    if (searcher != null) searcher.getIndexReader().close();
                 }
             } catch (IOException e) {
                 throw new PermanentBackendException("Could not close searcher", e);
@@ -776,7 +728,8 @@ public class LuceneIndex implements IndexProvider {
 
     /**
      * Encapsulates a Lucene Query and Filter object pair that jointly express a HugeGraph
-     * {@link com.baidu.hugegraph.graphdb.query.Query} using Lucene's abstractions. This object's state is mutable.
+     * {@link com.baidu.hugegraph.graphdb.query.Query} using Lucene's abstractions.
+     * This object's state is mutable.
      */
     private static class SearchParams {
         private BooleanQuery q = new BooleanQuery();

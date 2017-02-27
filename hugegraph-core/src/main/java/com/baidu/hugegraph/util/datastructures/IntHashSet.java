@@ -38,14 +38,13 @@ public class IntHashSet extends IntIntHashMap implements IntSet {
     }
 
     public boolean add(int value) {
-        return super.put(value, defaultValue) == 0;
+        return super.put(value, defaultValue)==0;
     }
 
     public boolean addAll(int[] values) {
         boolean addedAll = true;
         for (int i = 0; i < values.length; i++) {
-            if (!add(values[i]))
-                addedAll = false;
+            if (!add(values[i])) addedAll = false;
         }
         return addedAll;
     }
@@ -58,11 +57,11 @@ public class IntHashSet extends IntIntHashMap implements IntSet {
         KeysContainer keys = keys();
         int[] all = new int[keys.size()];
         Iterator<IntCursor> iter = keys.iterator();
-        int pos = 0;
-        while (iter.hasNext())
-            all[pos++] = iter.next().value;
+        int pos=0;
+        while (iter.hasNext()) all[pos++]=iter.next().value;
         return all;
     }
+
 
     @Override
     public int size() {
@@ -76,14 +75,11 @@ public class IntHashSet extends IntIntHashMap implements IntSet {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (!(other instanceof IntSet))
-            return false;
+        if (this == other) return true;
+        else if (!(other instanceof IntSet)) return false;
         IntSet oth = (IntSet) other;
         for (int i = 0; i < values.length; i++) {
-            if (!oth.contains(values[i]))
-                return false;
+            if (!oth.contains(values[i])) return false;
         }
         return size() == oth.size();
     }

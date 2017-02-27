@@ -1,5 +1,5 @@
 ==============================================================
- JanusGraph: Distributed Graph Database
+ hugegraph: Distributed Graph Database
  Copyright 2012 and onwards Aurelius
 ==============================================================
 

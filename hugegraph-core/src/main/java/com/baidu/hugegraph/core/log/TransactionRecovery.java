@@ -17,9 +17,9 @@ package com.baidu.hugegraph.core.log;
 import com.baidu.hugegraph.core.HugeGraphException;
 
 /**
- * {@link TransactionRecovery} is a process that runs in the background and read's from the transaction write-ahead log
- * to determine which transactions have not been successfully persisted against all backends. It then attempts to
- * recover such transactions.
+ * {@link TransactionRecovery} is a process that runs in the background and read's from the transaction
+ * write-ahead log to determine which transactions have not been successfully persisted against all
+ * backends. It then attempts to recover such transactions.
  * <p/>
  * This process is started via {@link com.baidu.hugegraph.core.HugeGraphFactory#}
  *

@@ -36,6 +36,8 @@ public enum HashUtility {
         }
     };
 
+
     public abstract HashFunction get();
+
 
 }

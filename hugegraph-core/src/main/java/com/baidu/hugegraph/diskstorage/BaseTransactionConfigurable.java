@@ -14,9 +14,10 @@
 
 package com.baidu.hugegraph.diskstorage;
 
+
 /**
- * An extension to the {@link BaseTransaction} interface that exposes a configuration object of type
- * {@link BaseTransactionConfig} for this particular transaction.
+ * An extension to the {@link BaseTransaction} interface that exposes a
+ * configuration object of type {@link BaseTransactionConfig} for this particular transaction.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */

@@ -42,7 +42,7 @@ public class KVUtil {
 
         @Override
         public void close() {
-
+            
         }
 
         @Override
@@ -51,13 +51,11 @@ public class KVUtil {
         }
     };
 
-    public static EntryList getSlice(OrderedKeyValueStore store, StaticBuffer keyStart, StaticBuffer keyEnd,
-            StoreTransaction txh) throws BackendException {
-        return convert(store.getSlice(new KVQuery(keyStart, keyEnd), txh));
+    public static EntryList getSlice(OrderedKeyValueStore store, StaticBuffer keyStart, StaticBuffer keyEnd, StoreTransaction txh) throws BackendException {
+        return convert(store.getSlice(new KVQuery(keyStart,keyEnd), txh));
     }
 
-    public static EntryList getSlice(OrderedKeyValueStore store, StaticBuffer keyStart, StaticBuffer keyEnd, int limit,
-            StoreTransaction txh) throws BackendException {
+    public static EntryList getSlice(OrderedKeyValueStore store, StaticBuffer keyStart, StaticBuffer keyEnd, int limit, StoreTransaction txh) throws BackendException {
         return convert(store.getSlice(new KVQuery(keyStart, keyEnd, limit), txh));
     }
 
@@ -73,7 +71,7 @@ public class KVUtil {
         }
     }
 
-    private static enum KVEntryGetter implements StaticArrayEntry.GetColVal<KeyValueEntry, StaticBuffer> {
+    private static enum KVEntryGetter implements StaticArrayEntry.GetColVal<KeyValueEntry,StaticBuffer> {
         INSTANCE;
 
         @Override

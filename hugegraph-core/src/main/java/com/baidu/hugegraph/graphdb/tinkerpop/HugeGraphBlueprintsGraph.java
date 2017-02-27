@@ -39,13 +39,18 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
- * Blueprints specific implementation for {@link HugeGraph}. Handles thread-bound transactions.
+ * Blueprints specific implementation for {@link HugeGraph}.
+ * Handles thread-bound transactions.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
 
-    private static final Logger log = LoggerFactory.getLogger(HugeGraphBlueprintsGraph.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HugeGraphBlueprintsGraph.class);
+
+
+
 
     // ########## TRANSACTION HANDLING ###########################
 
@@ -62,20 +67,18 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
     public abstract HugeGraphTransaction newThreadBoundTransaction();
 
     private HugeGraphBlueprintsTransaction getAutoStartTx() {
-        if (txs == null)
-            throw new IllegalStateException("Graph has been closed");
+        if (txs == null) throw new IllegalStateException("Graph has been closed");
         tinkerpopTxContainer.readWrite();
 
         HugeGraphBlueprintsTransaction tx = txs.get();
-        Preconditions.checkState(tx != null,
-                "Invalid read-write behavior configured: " + "Should either open transaction or throw exception.");
+        Preconditions.checkState(tx!=null,"Invalid read-write behavior configured: " +
+                "Should either open transaction or throw exception.");
         return tx;
     }
 
     private HugeGraphBlueprintsTransaction startNewTx() {
         HugeGraphBlueprintsTransaction tx = txs.get();
-        if (tx != null && tx.isOpen())
-            throw Transaction.Exceptions.transactionAlreadyOpen();
+        if (tx!=null && tx.isOpen()) throw Transaction.Exceptions.transactionAlreadyOpen();
         tx = (HugeGraphBlueprintsTransaction) newThreadBoundTransaction();
         txs.set(tx);
         log.debug("Created new thread-bound transaction {}", tx);
@@ -85,6 +88,7 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
     public HugeGraphTransaction getCurrentThreadTx() {
         return getAutoStartTx();
     }
+
 
     @Override
     public synchronized void close() {
@@ -99,12 +103,12 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
     @Override
     public String toString() {
         GraphDatabaseConfiguration config = ((StandardHugeGraph) this).getConfiguration();
-        return StringFactory.graphString(this, config.getBackendDescription());
+        return StringFactory.graphString(this,config.getBackendDescription());
     }
 
     @Override
     public Variables variables() {
-        return new HugeGraphVariables(((StandardHugeGraph) this).getBackend().getUserConfiguration());
+        return new HugeGraphVariables(((StandardHugeGraph)this).getBackend().getUserConfiguration());
     }
 
     @Override
@@ -115,29 +119,28 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
 
     @Override
     public <I extends Io> I io(final Io.Builder<I> builder) {
-        return (I) builder.graph(this).onMapper(mapper -> mapper.addRegistry(HugeGraphIoRegistry.getInstance()))
-                .create();
+        return (I) builder.graph(this).onMapper(mapper ->  mapper.addRegistry(HugeGraphIoRegistry.getInstance())).create();
     }
 
     // ########## TRANSACTIONAL FORWARDING ###########################
 
     @Override
-    public HugeGraphVertex addVertex(Object...keyValues) {
+    public HugeGraphVertex addVertex(Object... keyValues) {
         return getAutoStartTx().addVertex(keyValues);
     }
 
-    // @Override
-    // public com.tinkerpop.gremlin.structure.Graph.Iterators iterators() {
-    // return getAutoStartTx().iterators();
-    // }
+//    @Override
+//    public com.tinkerpop.gremlin.structure.Graph.Iterators iterators() {
+//        return getAutoStartTx().iterators();
+//    }
 
     @Override
-    public Iterator<Vertex> vertices(Object...vertexIds) {
+    public Iterator<Vertex> vertices(Object... vertexIds) {
         return getAutoStartTx().vertices(vertexIds);
     }
 
     @Override
-    public Iterator<Edge> edges(Object...edgeIds) {
+    public Iterator<Edge> edges(Object... edgeIds) {
         return getAutoStartTx().edges(edgeIds);
     }
 
@@ -146,14 +149,14 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
         if (!graphComputerClass.equals(FulgoraGraphComputer.class)) {
             throw Graph.Exceptions.graphDoesNotSupportProvidedGraphComputer(graphComputerClass);
         } else {
-            return (C) compute();
+            return (C)compute();
         }
     }
 
     @Override
     public FulgoraGraphComputer compute() throws IllegalArgumentException {
-        StandardHugeGraph graph = (StandardHugeGraph) this;
-        return new FulgoraGraphComputer(graph, graph.getConfiguration().getConfiguration());
+        StandardHugeGraph graph = (StandardHugeGraph)this;
+        return new FulgoraGraphComputer(graph,graph.getConfiguration().getConfiguration());
     }
 
     @Override
@@ -168,12 +171,12 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
 
     @Override
     public HugeGraphIndexQuery indexQuery(String indexName, String query) {
-        return getAutoStartTx().indexQuery(indexName, query);
+        return getAutoStartTx().indexQuery(indexName,query);
     }
 
     @Override
     @Deprecated
-    public HugeGraphMultiVertexQuery multiQuery(HugeGraphVertex...vertices) {
+    public HugeGraphMultiVertexQuery multiQuery(HugeGraphVertex... vertices) {
         return getAutoStartTx().multiQuery(vertices);
     }
 
@@ -183,7 +186,8 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
         return getAutoStartTx().multiQuery(vertices);
     }
 
-    // Schema
+
+    //Schema
 
     @Override
     public PropertyKeyMaker makePropertyKey(String name) {
@@ -255,6 +259,8 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
         return getAutoStartTx().getOrCreateVertexLabel(name);
     }
 
+
+
     class GraphTransaction extends AbstractThreadLocalTransaction {
 
         public GraphTransaction() {
@@ -288,7 +294,7 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
                 return false;
             }
             HugeGraphBlueprintsTransaction tx = txs.get();
-            return tx != null && tx.isOpen();
+            return tx!=null && tx.isOpen();
         }
 
         @Override
@@ -298,8 +304,7 @@ public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
 
         void close(Transaction tx) {
             closeConsumerInternal.get().accept(tx);
-            Preconditions.checkState(!tx.isOpen(), "Invalid close behavior configured: Should close transaction. [%s]",
-                    closeConsumerInternal);
+            Preconditions.checkState(!tx.isOpen(),"Invalid close behavior configured: Should close transaction. [%s]", closeConsumerInternal);
         }
 
         @Override

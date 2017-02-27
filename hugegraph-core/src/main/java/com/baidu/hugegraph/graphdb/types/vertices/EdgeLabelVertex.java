@@ -38,7 +38,7 @@ public class EdgeLabelVertex extends RelationTypeVertex implements EdgeLabel {
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return getDefinition().getValue(TypeDefinitionCategory.UNIDIRECTIONAL, Direction.class) == dir;
+        return getDefinition().getValue(TypeDefinitionCategory.UNIDIRECTIONAL,Direction.class)==dir;
     }
 
     @Override

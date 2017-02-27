@@ -29,10 +29,10 @@ if [ -z "${SCRIPT_DEBUG:-}" ]; then
 fi
 
 # Process options
-MAIN_CLASS=org.janusgraph.tinkerpop.gremlin.Console
+MAIN_CLASS=com.baidu.hugegraph.tinkerpop.gremlin.Console
 while getopts "elv" opt; do
     case "$opt" in
-    e) MAIN_CLASS=org.janusgraph.tinkerpop.gremlin.ScriptExecutor
+    e) MAIN_CLASS=com.baidu.hugegraph.tinkerpop.gremlin.ScriptExecutor
        # Stop processing gremlin.sh arguments as soon as the -e switch 
        # is seen; everything following -e becomes arguments to the 
        # ScriptExecutor main class. This maintains compatibility with

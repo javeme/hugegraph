@@ -119,9 +119,7 @@ public class StandardStoreFeatures implements StoreFeatures {
     }
 
     @Override
-    public boolean supportsPersistence() {
-        return supportsPersist;
-    }
+    public boolean supportsPersistence() { return supportsPersist; }
 
     @Override
     public Configuration getKeyConsistentTxConfig() {
@@ -144,7 +142,8 @@ public class StandardStoreFeatures implements StoreFeatures {
     }
 
     @Override
-    public boolean supportsInterruption() {
+    public boolean supportsInterruption()
+    {
         return supportsInterruption;
     }
 
@@ -177,11 +176,11 @@ public class StandardStoreFeatures implements StoreFeatures {
         /**
          * Construct a Builder with everything disabled/unsupported/false/null.
          */
-        public Builder() {
-        }
+        public Builder() { }
 
         /**
-         * Construct a Builder whose default values exactly match the values on the supplied {@code template}.
+         * Construct a Builder whose default values exactly match the values on
+         * the supplied {@code template}.
          */
         public Builder(StoreFeatures template) {
             unorderedScan(template.hasUnorderedScan());
@@ -271,6 +270,7 @@ public class StandardStoreFeatures implements StoreFeatures {
             return this;
         }
 
+
         public Builder visibility(boolean b) {
             visibility = b;
             return this;
@@ -304,25 +304,33 @@ public class StandardStoreFeatures implements StoreFeatures {
             return this;
         }
 
-        public Builder supportsInterruption(boolean i) {
+        public Builder supportsInterruption(boolean i)
+        {
             supportsInterruption = i;
             return this;
         }
 
         public StandardStoreFeatures build() {
-            return new StandardStoreFeatures(unorderedScan, orderedScan, multiQuery, locking, batchMutation,
-                    localKeyPartition, keyOrdered, distributed, transactional, keyConsistent, timestamps,
-                    preferredTimestamps, cellLevelTTL, storeLevelTTL, visibility, supportsPersist,
-                    keyConsistentTxConfig, localKeyConsistentTxConfig, scanTxConfig, supportsInterruption);
+            return new StandardStoreFeatures(unorderedScan, orderedScan,
+                    multiQuery, locking, batchMutation, localKeyPartition,
+                    keyOrdered, distributed, transactional, keyConsistent,
+                    timestamps, preferredTimestamps, cellLevelTTL,
+                    storeLevelTTL, visibility, supportsPersist,
+                    keyConsistentTxConfig,
+                    localKeyConsistentTxConfig, scanTxConfig, supportsInterruption);
         }
     }
 
-    private StandardStoreFeatures(boolean unorderedScan, boolean orderedScan, boolean multiQuery, boolean locking,
-            boolean batchMutation, boolean localKeyPartition, boolean keyOrdered, boolean distributed,
-            boolean transactional, boolean keyConsistent, boolean timestamps, TimestampProviders preferredTimestamps,
-            boolean cellLevelTTL, boolean storeLevelTTL, boolean visibility, boolean supportsPersist,
-            Configuration keyConsistentTxConfig, Configuration localKeyConsistentTxConfig, Configuration scanTxConfig,
-            boolean supportsInterruption) {
+    private StandardStoreFeatures(boolean unorderedScan, boolean orderedScan,
+            boolean multiQuery, boolean locking, boolean batchMutation,
+            boolean localKeyPartition, boolean keyOrdered, boolean distributed,
+            boolean transactional, boolean keyConsistent,
+            boolean timestamps, TimestampProviders preferredTimestamps,
+            boolean cellLevelTTL, boolean storeLevelTTL,
+            boolean visibility, boolean supportsPersist,
+            Configuration keyConsistentTxConfig,
+            Configuration localKeyConsistentTxConfig,
+            Configuration scanTxConfig, boolean supportsInterruption) {
         this.unorderedScan = unorderedScan;
         this.orderedScan = orderedScan;
         this.multiQuery = multiQuery;

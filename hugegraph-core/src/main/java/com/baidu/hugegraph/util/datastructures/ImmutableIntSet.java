@@ -34,7 +34,7 @@ public class ImmutableIntSet implements IntSet {
     }
 
     public ImmutableIntSet(int value) {
-        this(new int[] { value });
+        this(new int[]{value});
     }
 
     @Override
@@ -50,8 +50,7 @@ public class ImmutableIntSet implements IntSet {
     @Override
     public boolean contains(int value) {
         for (int i = 0; i < values.length; i++) {
-            if (values[i] == value)
-                return true;
+            if (values[i] == value) return true;
         }
         return false;
     }
@@ -73,14 +72,11 @@ public class ImmutableIntSet implements IntSet {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (!(other instanceof IntSet))
-            return false;
+        if (this == other) return true;
+        else if (!(other instanceof IntSet)) return false;
         IntSet oth = (IntSet) other;
         for (int i = 0; i < values.length; i++) {
-            if (!oth.contains(values[i]))
-                return false;
+            if (!oth.contains(values[i])) return false;
         }
         return size() == oth.size();
     }

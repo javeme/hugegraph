@@ -28,12 +28,12 @@ import java.util.List;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class MultiKeySliceQuery extends BaseQuery implements BackendQuery<MultiKeySliceQuery> {
+public class MultiKeySliceQuery extends BaseQuery implements BackendQuery<MultiKeySliceQuery>  {
 
     private final List<KeySliceQuery> queries;
 
     public MultiKeySliceQuery(List<KeySliceQuery> queries) {
-        Preconditions.checkArgument(queries != null && !queries.isEmpty());
+        Preconditions.checkArgument(queries!=null && !queries.isEmpty());
         this.queries = queries;
     }
 
@@ -48,11 +48,10 @@ public class MultiKeySliceQuery extends BaseQuery implements BackendQuery<MultiK
         int total = 0;
         List<EntryList> result = new ArrayList<EntryList>(4);
         for (KeySliceQuery ksq : queries) {
-            EntryList next = tx.indexQuery(ksq.updateLimit(getLimit() - total));
+            EntryList next =tx.indexQuery(ksq.updateLimit(getLimit()-total));
             result.add(next);
-            total += next.size();
-            if (total >= getLimit())
-                break;
+            total+=next.size();
+            if (total>=getLimit()) break;
         }
         return result;
     }
@@ -64,19 +63,16 @@ public class MultiKeySliceQuery extends BaseQuery implements BackendQuery<MultiK
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (other == null)
-            return false;
-        else if (!getClass().isInstance(other))
-            return false;
+        if (this == other) return true;
+        else if (other == null) return false;
+        else if (!getClass().isInstance(other)) return false;
         MultiKeySliceQuery oth = (MultiKeySliceQuery) other;
-        return getLimit() == oth.getLimit() && queries.equals(oth.queries);
+        return getLimit()==oth.getLimit() && queries.equals(oth.queries);
     }
 
     @Override
     public String toString() {
-        return "multiKSQ[" + queries.size() + "]@" + getLimit();
+        return "multiKSQ["+queries.size()+"]@"+getLimit();
     }
 
 }

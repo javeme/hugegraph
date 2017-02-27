@@ -1,26 +1,26 @@
-Testing JanusGraph
+Testing hugegraph
 ==================
 
 ### Audience of this Document
 
-This page is written for developers familiar with Java, JanusGraph, and Maven who want information on how to run JanusGraph's test suite.
+This page is written for developers familiar with Java, hugegraph, and Maven who want information on how to run hugegraph's test suite.
 
 ### Overview
 
-JanusGraph runs all tests using JUnit.  To compile, package, and run the default test suite for JanusGraph, use the standard `mvn clean install` command.
+hugegraph runs all tests using JUnit.  To compile, package, and run the default test suite for hugegraph, use the standard `mvn clean install` command.
 
-JanusGraph has a specialty tests, disabled by default, intended to generate basic performance metrics or stress its cache structures under memory pressure.  The next section describes how JanusGraph's tests are internally categorized and the Maven options that enabled/disable test categories.
+hugegraph has a specialty tests, disabled by default, intended to generate basic performance metrics or stress its cache structures under memory pressure.  The next section describes how hugegraph's tests are internally categorized and the Maven options that enabled/disable test categories.
 
 ### Continuous Integration
 
-JanusGraph runs continuous integration via Travis; see the [dashboard](https://travis-ci.org/JanusGraph/janusgraph) for current status.
+hugegraph runs continuous integration via Travis; see the [dashboard](https://travis-ci.org/hugegraph/hugegraph) for current status.
 
 Travis sends emails on test failures and status transitions (to/from failure) to
-[janusgraph-ci@googlegroups.com](https://groups.google.com/forum/#!forum/janusgraph-ci) mailing list.
+[hugegraph-ci@googlegroups.com](https://groups.google.com/forum/#!forum/hugegraph-ci) mailing list.
 
 ### JUnit Test Categories
 
-All of JanusGraph's tests are written for JUnit.  JanusGraph's JUnit tests are annotated with the following [JUnit Categories](https://github.com/junit-team/junit/wiki/Categories):
+All of hugegraph's tests are written for JUnit.  hugegraph's JUnit tests are annotated with the following [JUnit Categories](https://github.com/junit-team/junit/wiki/Categories):
 
 
 | Category Name | Maven Property | Default | Comment |
@@ -31,7 +31,7 @@ All of JanusGraph's tests are written for JUnit.  JanusGraph's JUnit tests are a
 | UnorderedKeyStoreTests | test.skip.unordered | false (enabled) | Tests written for a storage backend that doesn't store data in key order |
 | (No&nbsp;category) | test.skip.default | false (enabled) | Tests without any Category annotations |
 
-**Category Name** above is a Java interface defined in the package [org.janusgraph.testcategory](janusgraph-test/src/main/org/janusgraph/testcategory).  These interfaces appear as arguments to the JUnit `@Category(...)` annotation, e.g. `@Category({MemoryTests.class})`.
+**Category Name** above is a Java interface defined in the package [com.baidu.hugegraph.testcategory](hugegraph-test/src/main/org/hugegraph/testcategory).  These interfaces appear as arguments to the JUnit `@Category(...)` annotation, e.g. `@Category({MemoryTests.class})`.
 
 **Maven Property** above is a boolean-valued pom.xml property that skips the associated test category when true and executes the associated test category when false.  The default values defined in pom.xml can be overridden on the command-line in the ordinary Maven way, e.g. `mvn -Dtest.skip.mem=false test`.
 

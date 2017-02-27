@@ -25,11 +25,10 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * Defines an {@link java.util.Iterator} over all {@link com.baidu.hugegraph.core.HugeGraphEdge}s connecting a provided
- * set of vertices.
+ * Defines an {@link java.util.Iterator} over all {@link com.baidu.hugegraph.core.HugeGraphEdge}s connecting a provided set of vertices.
  * <p/>
- * Given a set of vertices, one may be interested in all edges that are contained in the subgraph spanned by those
- * vertices. This iterator will return these edges.
+ * Given a set of vertices, one may be interested in all edges that are contained in the subgraph spanned
+ * by those vertices. This iterator will return these edges.
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
@@ -73,15 +72,14 @@ public class AllEdgesIterator implements Iterator<Edge> {
         HugeGraphEdge rel = null;
         while (rel == null) {
             if (currentEdges.hasNext()) {
-                rel = (HugeGraphEdge) currentEdges.next();
+                rel = (HugeGraphEdge)currentEdges.next();
                 if (vertices != null && !vertices.contains(rel.vertex(Direction.IN)))
                     rel = null;
             } else {
                 if (vertexIter.hasNext()) {
                     Vertex nextVertex = vertexIter.next();
                     currentEdges = nextVertex.edges(Direction.OUT);
-                } else
-                    break;
+                } else break;
             }
         }
         return rel;
@@ -94,8 +92,7 @@ public class AllEdgesIterator implements Iterator<Edge> {
 
     @Override
     public Edge next() {
-        if (next == null)
-            throw new NoSuchElementException();
+        if (next == null) throw new NoSuchElementException();
         Edge current = next;
         next = findNext();
         return current;

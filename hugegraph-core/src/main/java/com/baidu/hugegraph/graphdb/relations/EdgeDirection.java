@@ -17,16 +17,17 @@ package com.baidu.hugegraph.graphdb.relations;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * IMPORTANT: The byte values of the proper directions must be sequential, i.e. the byte values of proper and improper
- * directions may NOT be mixed. This is crucial IN the retrieval for proper edges where we make this assumption.
+ * IMPORTANT: The byte values of the proper directions must be sequential,
+ * i.e. the byte values of proper and improper directions may NOT be mixed.
+ * This is crucial IN the retrieval for proper edges where we make this assumption.
  *
  * @author Matthias Broecheler (me@matthiasb.com);
  */
 public class EdgeDirection {
-    public static final Direction[] PROPER_DIRS = { Direction.IN, Direction.OUT };
+    public static final Direction[] PROPER_DIRS = {Direction.IN, Direction.OUT};
 
     public static boolean impliedBy(Direction sub, Direction sup) {
-        return sup == sub || sup == Direction.BOTH;
+        return sup==sub || sup==Direction.BOTH;
     }
 
     public static Direction fromPosition(int pos) {
@@ -56,6 +57,6 @@ public class EdgeDirection {
     }
 
     public static boolean isProperDirection(Direction dir) {
-        return dir == Direction.IN || dir == Direction.OUT;
+        return dir==Direction.IN || dir==Direction.OUT;
     }
 }

@@ -1,4 +1,4 @@
-The JanusGraph project uses the following two licenses:
+The hugegraph project uses the following two licenses:
 
 * Apache Software License 2.0 (APACHE-2.0), the full terms of which can be found
   in the file APACHE-2.0.txt in the root of this repository, and included below
@@ -6,16 +6,16 @@ The JanusGraph project uses the following two licenses:
   which can be found in the file CC-BY-4.0.txt in the root of this repository,
   and included below
 
-The code of JanusGraph is under the APACHE-2.0 license.
+The code of hugegraph is under the APACHE-2.0 license.
 
-The documentation of JanusGraph is under a combination of licenses:
+The documentation of hugegraph is under a combination of licenses:
 
-* APACHE-2.0 license for all documentation contributed prior to the JanusGraph
+* APACHE-2.0 license for all documentation contributed prior to the hugegraph
   fork (27 Dec 2016), i.e., imported with the intial Titan fork
-* CC-BY-4.0 license for all documentation contributed on or after the JanusGraph
+* CC-BY-4.0 license for all documentation contributed on or after the hugegraph
   fork (27 Dec 2016)
 
-All new contributions to JanusGraph are accepted under the following licenses:
+All new contributions to hugegraph are accepted under the following licenses:
 
 * APACHE-2.0 license for code contributions, including code samples in docs
 * CC-BY-4.0 license for documentation contributions

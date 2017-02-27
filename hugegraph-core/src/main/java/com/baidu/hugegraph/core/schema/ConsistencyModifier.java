@@ -16,23 +16,21 @@ package com.baidu.hugegraph.core.schema;
 
 /**
  * Used to control HugeGraph's consistency behavior on eventually consistent or other non-transactional backend systems.
- * The consistency behavior can be defined for individual {@link HugeGraphSchemaElement}s which then applies to all
- * instances.
+ * The consistency behavior can be defined for individual {@link HugeGraphSchemaElement}s which then applies to all instances.
  * <p/>
- * Consistency modifiers are installed on schema elements via
- * {@link HugeGraphManagement#setConsistency(HugeGraphSchemaElement, ConsistencyModifier)} and can be read using
- * {@link HugeGraphManagement#getConsistency(HugeGraphSchemaElement)}.
+ * Consistency modifiers are installed on schema elements via {@link HugeGraphManagement#setConsistency(HugeGraphSchemaElement, ConsistencyModifier)}
+ * and can be read using {@link HugeGraphManagement#getConsistency(HugeGraphSchemaElement)}.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum ConsistencyModifier {
 
     /**
-     * Uses the default consistency model guaranteed by the enclosing transaction against the configured storage
-     * backend.
+     * Uses the default consistency model guaranteed by the enclosing transaction against the configured
+     * storage backend.
      * </p>
-     * What this means exactly, depends on the configuration of the storage backend as well as the (optional)
-     * configuration of the enclosing transaction.
+     * What this means exactly, depends on the configuration of the storage backend as well as the (optional) configuration
+     * of the enclosing transaction.
      */
     DEFAULT,
 
@@ -45,9 +43,10 @@ public enum ConsistencyModifier {
      */
     LOCK,
 
+
     /**
-     * Causes HugeGraph to delete and add a new edge/property instead of overwriting an existing one, hence avoiding
-     * potential concurrent write conflicts. This only applies to multi-edges and list-properties.
+     * Causes HugeGraph to delete and add a new edge/property instead of overwriting an existing one, hence avoiding potential
+     * concurrent write conflicts. This only applies to multi-edges and list-properties.
      * </p>
      * Note, that this potentially impacts how the data should be read.
      */

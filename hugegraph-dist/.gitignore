@@ -1,6 +1,6 @@
 # Eclipse junk; leading slash makes patterns non-recursive
 # Note that * also can't match slashes
-/janusgraph-*/.classpath
-/janusgraph-*/.project
-/janusgraph-*/.settings/
+/hugegraph-*/.classpath
+/hugegraph-*/.project
+/hugegraph-*/.settings/
 # End of Eclipse junk

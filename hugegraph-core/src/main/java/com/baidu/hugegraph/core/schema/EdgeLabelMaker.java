@@ -19,17 +19,16 @@ import com.baidu.hugegraph.core.Multiplicity;
 import com.baidu.hugegraph.core.PropertyKey;
 
 /**
- * Used to define new {@link com.baidu.hugegraph.core.EdgeLabel}s. An edge label is defined by its name,
- * {@link Multiplicity}, its directionality, and its signature - all of which can be specified in this builder.
+ * Used to define new {@link com.baidu.hugegraph.core.EdgeLabel}s.
+ * An edge label is defined by its name, {@link Multiplicity}, its directionality, and its signature - all of which
+ * can be specified in this builder.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface EdgeLabelMaker extends RelationTypeMaker {
 
     /**
-     * Sets the multiplicity of this label. The default multiplicity is
-     * {@link com.baidu.hugegraph.core.Multiplicity#MULTI}.
-     * 
+     * Sets the multiplicity of this label. The default multiplicity is {@link com.baidu.hugegraph.core.Multiplicity#MULTI}.
      * @return this EdgeLabelMaker
      * @see Multiplicity
      */
@@ -55,12 +54,13 @@ public interface EdgeLabelMaker extends RelationTypeMaker {
      */
     public EdgeLabelMaker unidirected();
 
+
     @Override
-    public EdgeLabelMaker signature(PropertyKey...types);
+    public EdgeLabelMaker signature(PropertyKey... types);
+
 
     /**
-     * Defines the {@link com.baidu.hugegraph.core.EdgeLabel} specified by this EdgeLabelMaker and returns the resulting
-     * label
+     * Defines the {@link com.baidu.hugegraph.core.EdgeLabel} specified by this EdgeLabelMaker and returns the resulting label
      *
      * @return the created {@link EdgeLabel}
      */

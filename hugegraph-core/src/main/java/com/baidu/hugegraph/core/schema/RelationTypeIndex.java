@@ -26,8 +26,8 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
  * {@link HugeGraphManagement#buildPropertyIndex(com.baidu.hugegraph.core.PropertyKey, String, com.baidu.hugegraph.graphdb.internal.Order, com.baidu.hugegraph.core.RelationType...)}
  * for property keys.
  * <p/>
- * This interface allows the inspection of already defined RelationTypeIndex'es. An existing index on a RelationType can
- * be retrieved via {@link HugeGraphManagement#getRelationIndex(com.baidu.hugegraph.core.RelationType, String)}.
+ * This interface allows the inspection of already defined RelationTypeIndex'es. An existing index on a RelationType
+ * can be retrieved via {@link HugeGraphManagement#getRelationIndex(com.baidu.hugegraph.core.RelationType, String)}.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -41,16 +41,15 @@ public interface RelationTypeIndex extends Index {
     public RelationType getType();
 
     /**
-     * Returns the sort order of this index. Index entries are sorted in this order and queries which use this sort
-     * order will be faster.
+     * Returns the sort order of this index. Index entries are sorted in this order and queries
+     * which use this sort order will be faster.
      *
      * @return
      */
     public Order getSortOrder();
 
     /**
-     * Returns the (composite) sort key for this index. The composite sort key is an ordered list of
-     * {@link RelationType}s
+     * Returns the (composite) sort key for this index. The composite sort key is an ordered list of {@link RelationType}s
      *
      * @return
      */
@@ -69,5 +68,6 @@ public interface RelationTypeIndex extends Index {
      * @return
      */
     public SchemaStatus getIndexStatus();
+
 
 }

@@ -52,15 +52,15 @@ public class IncidenceDirectionCondition<E extends HugeGraphRelation> extends Li
         if (this == other)
             return true;
 
-        if (other == null || !getClass().isInstance(other))
+        if (other==null || !getClass().isInstance(other))
             return false;
 
-        IncidenceDirectionCondition oth = (IncidenceDirectionCondition) other;
-        return direction == oth.direction && otherVertex.equals(oth.otherVertex);
+        IncidenceDirectionCondition oth = (IncidenceDirectionCondition)other;
+        return direction==oth.direction && otherVertex.equals(oth.otherVertex);
     }
 
     @Override
     public String toString() {
-        return "incidence[" + direction + "-" + otherVertex + "]";
+        return "incidence["+ direction + "-" + otherVertex + "]";
     }
 }

@@ -25,8 +25,8 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.StoreManager;
 public interface KeyValueStoreManager extends StoreManager {
 
     /**
-     * Opens a key-value database by the given name. If the database does not exist, it is created. If it has already
-     * been opened, the existing handle is returned.
+     * Opens a key-value database by the given name. If the database does not exist, it is
+     * created. If it has already been opened, the existing handle is returned.
      * <p/>
      *
      * @param name Name of database
@@ -35,5 +35,7 @@ public interface KeyValueStoreManager extends StoreManager {
      *
      */
     public KeyValueStore openDatabase(String name) throws BackendException;
+
+
 
 }

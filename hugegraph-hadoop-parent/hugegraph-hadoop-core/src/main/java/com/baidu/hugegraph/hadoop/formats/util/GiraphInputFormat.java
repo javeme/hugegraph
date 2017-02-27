@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,12 +43,14 @@ public abstract class GiraphInputFormat extends InputFormat<NullWritable, Vertex
 
             String className = SETUP_PACKAGE_PREFIX + hugegraphVersion + SETUP_CLASS_NAME;
 
-            HugeGraphHadoopSetup ts = ConfigurationUtil.instantiate(className, new Object[] { conf },
-                    new Class[] { Configuration.class });
+            HugeGraphHadoopSetup ts = ConfigurationUtil.instantiate(
+                    className, new Object[]{ conf }, new Class[]{ Configuration.class });
 
             return new HugeGraphVertexDeserializer(ts);
         });
     }
+
+
 
     public GiraphInputFormat(InputFormat<StaticBuffer, Iterable<Entry>> inputFormat) {
         this.inputFormat = inputFormat;
@@ -61,21 +63,20 @@ public abstract class GiraphInputFormat extends InputFormat<NullWritable, Vertex
     }
 
     @Override
-    public RecordReader<NullWritable, VertexWritable> createRecordReader(InputSplit split, TaskAttemptContext context)
-            throws IOException, InterruptedException {
+    public RecordReader<NullWritable, VertexWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
         return new GiraphRecordReader(refCounter, inputFormat.createRecordReader(split, context));
     }
 
     @Override
     public void setConf(final Configuration conf) {
-        ((Configurable) inputFormat).setConf(conf);
+        ((Configurable)inputFormat).setConf(conf);
 
         refCounter.setBuilderConfiguration(conf);
     }
 
     @Override
     public Configuration getConf() {
-        return ((Configurable) inputFormat).getConf();
+        return ((Configurable)inputFormat).getConf();
     }
 
     public static class RefCountedCloseable<T extends AutoCloseable> {

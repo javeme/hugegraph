@@ -54,21 +54,21 @@ import java.util.regex.Pattern;
 
 public class HugeGraphFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(HugeGraphFactory.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HugeGraphFactory.class);
 
     /**
      * Opens a {@link HugeGraph} database.
      * <p/>
      * If the argument points to a configuration file, the configuration file is loaded to configure the HugeGraph graph
-     * If the string argument is a configuration short-cut, then the short-cut is parsed and used to configure the
-     * returned HugeGraph graph.
+     * If the string argument is a configuration short-cut, then the short-cut is parsed and used to configure the returned HugeGraph graph.
      * <p />
-     * A configuration short-cut is of the form: [STORAGE_BACKEND_NAME]:[DIRECTORY_OR_HOST]
+     * A configuration short-cut is of the form:
+     * [STORAGE_BACKEND_NAME]:[DIRECTORY_OR_HOST]
      *
      * @param shortcutOrFile Configuration file name or configuration short-cut
      * @return HugeGraph graph database configured according to the provided configuration
-     * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/configuration.html">"Configuration" manual
-     *      chapter</a>
+     * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/configuration.html">"Configuration" manual chapter</a>
      * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/titan-config-ref.html">Configuration Reference</a>
      */
     public static HugeGraph open(String shortcutOrFile) {
@@ -80,8 +80,7 @@ public class HugeGraphFactory {
      *
      * @param configuration Configuration for the graph database
      * @return HugeGraph graph database
-     * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/configuration.html">"Configuration" manual
-     *      chapter</a>
+     * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/configuration.html">"Configuration" manual chapter</a>
      * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/titan-config-ref.html">Configuration Reference</a>
      */
     public static HugeGraph open(Configuration configuration) {
@@ -120,7 +119,7 @@ public class HugeGraphFactory {
         return new Builder();
     }
 
-    // --------------------- BUILDER -------------------------------------------
+    //--------------------- BUILDER -------------------------------------------
 
     public static class Builder {
 
@@ -153,6 +152,7 @@ public class HugeGraphFactory {
             return HugeGraphFactory.open(mc);
         }
 
+
     }
 
     /**
@@ -163,7 +163,7 @@ public class HugeGraphFactory {
      * @return
      */
     public static LogProcessorFramework openTransactionLog(HugeGraph graph) {
-        return new StandardLogProcessorFramework((StandardHugeGraph) graph);
+        return new StandardLogProcessorFramework((StandardHugeGraph)graph);
     }
 
     /**
@@ -175,44 +175,36 @@ public class HugeGraphFactory {
      * @return
      */
     public static TransactionRecovery startTransactionRecovery(HugeGraph graph, Instant start) {
-        return new StandardTransactionLogProcessor((StandardHugeGraph) graph, start);
+        return new StandardTransactionLogProcessor((StandardHugeGraph)graph, start);
     }
 
-    // ###################################
-    // HELPER METHODS
-    // ###################################
+    //###################################
+    //          HELPER METHODS
+    //###################################
 
     private static ReadConfiguration getLocalConfiguration(String shortcutOrFile) {
         File file = new File(shortcutOrFile);
-        if (file.exists())
-            return getLocalConfiguration(file);
+        if (file.exists()) return getLocalConfiguration(file);
         else {
             int pos = shortcutOrFile.indexOf(':');
-            if (pos < 0)
-                pos = shortcutOrFile.length();
-            String backend = shortcutOrFile.substring(0, pos);
-            Preconditions.checkArgument(StandardStoreManager.getAllManagerClasses().containsKey(backend.toLowerCase()),
-                    "Backend shorthand unknown: %s", backend);
+            if (pos<0) pos = shortcutOrFile.length();
+            String backend = shortcutOrFile.substring(0,pos);
+            Preconditions.checkArgument(StandardStoreManager.getAllManagerClasses().containsKey(backend.toLowerCase()), "Backend shorthand unknown: %s", backend);
             String secondArg = null;
-            if (pos + 1 < shortcutOrFile.length())
-                secondArg = shortcutOrFile.substring(pos + 1).trim();
+            if (pos+1<shortcutOrFile.length()) secondArg = shortcutOrFile.substring(pos + 1).trim();
             BaseConfiguration config = new BaseConfiguration();
-            ModifiableConfiguration writeConfig = new ModifiableConfiguration(ROOT_NS, new CommonsConfiguration(config),
-                    BasicConfiguration.Restriction.NONE);
-            writeConfig.set(STORAGE_BACKEND, backend);
+            ModifiableConfiguration writeConfig = new ModifiableConfiguration(ROOT_NS,new CommonsConfiguration(config), BasicConfiguration.Restriction.NONE);
+            writeConfig.set(STORAGE_BACKEND,backend);
             ConfigOption option = Backend.getOptionForShorthand(backend);
-            if (option == null) {
-                Preconditions.checkArgument(secondArg == null);
-            } else if (option == STORAGE_DIRECTORY || option == STORAGE_CONF_FILE) {
-                Preconditions.checkArgument(StringUtils.isNotBlank(secondArg),
-                        "Need to provide additional argument to initialize storage backend");
-                writeConfig.set(option, getAbsolutePath(secondArg));
-            } else if (option == STORAGE_HOSTS) {
-                Preconditions.checkArgument(StringUtils.isNotBlank(secondArg),
-                        "Need to provide additional argument to initialize storage backend");
-                writeConfig.set(option, new String[] { secondArg });
-            } else
-                throw new IllegalArgumentException("Invalid configuration option for backend " + option);
+            if (option==null) {
+                Preconditions.checkArgument(secondArg==null);
+            } else if (option==STORAGE_DIRECTORY || option==STORAGE_CONF_FILE) {
+                Preconditions.checkArgument(StringUtils.isNotBlank(secondArg),"Need to provide additional argument to initialize storage backend");
+                writeConfig.set(option,getAbsolutePath(secondArg));
+            } else if (option==STORAGE_HOSTS) {
+                Preconditions.checkArgument(StringUtils.isNotBlank(secondArg),"Need to provide additional argument to initialize storage backend");
+                writeConfig.set(option,new String[]{secondArg});
+            } else throw new IllegalArgumentException("Invalid configuration option for backend "+option);
             return new CommonsConfiguration(config);
         }
     }
@@ -222,10 +214,13 @@ public class HugeGraphFactory {
      * <p/>
      * <ol>
      * <li>Load the file contents into a {@link org.apache.commons.configuration.PropertiesConfiguration}</li>
-     * <li>For each key that points to a configuration object that is either a directory or local file, check whether
-     * the associated value is a non-null, non-absolute path. If so, then prepend the absolute path of the parent
-     * directory of the provided configuration {@code file}. This has the effect of making non-absolute backend paths
-     * relative to the config file's directory rather than the JVM's working directory.
+     * <li>For each key that points to a configuration object that is either a directory
+     * or local file, check
+     * whether the associated value is a non-null, non-absolute path. If so,
+     * then prepend the absolute path of the parent directory of the provided configuration {@code file}.
+     * This has the effect of making non-absolute backend
+     * paths relative to the config file's directory rather than the JVM's
+     * working directory.
      * <li>Return the {@link ReadConfiguration} for the prepared configuration file</li>
      * </ol>
      * <p/>
@@ -245,8 +240,9 @@ public class HugeGraphFactory {
 
             if (null == tmpParent) {
                 /*
-                 * null usually means we were given a HugeGraph config file path string like "foo.properties" that
-                 * refers to the current working directory of the process.
+                 * null usually means we were given a HugeGraph config file path
+                 * string like "foo.properties" that refers to the current
+                 * working directory of the process.
                  */
                 configParent = new File(System.getProperty("user.dir"));
             } else {
@@ -256,13 +252,16 @@ public class HugeGraphFactory {
             Preconditions.checkNotNull(configParent);
             Preconditions.checkArgument(configParent.isDirectory());
 
-            // TODO this mangling logic is a relic from the hardcoded string days; it should be deleted and rewritten as
-            // a setting on ConfigOption
-            final Pattern p = Pattern.compile("(" + Pattern.quote(STORAGE_NS.getName()) + "\\..*" + "("
-                    + Pattern.quote(STORAGE_DIRECTORY.getName()) + "|" + Pattern.quote(STORAGE_CONF_FILE.getName())
-                    + ")" + "|" + Pattern.quote(INDEX_NS.getName()) + "\\..*" + "("
-                    + Pattern.quote(INDEX_DIRECTORY.getName()) + "|" + Pattern.quote(INDEX_CONF_FILE.getName()) + ")"
-                    + ")");
+            // TODO this mangling logic is a relic from the hardcoded string days; it should be deleted and rewritten as a setting on ConfigOption
+            final Pattern p = Pattern.compile("(" +
+                    Pattern.quote(STORAGE_NS.getName()) + "\\..*" +
+                            "(" + Pattern.quote(STORAGE_DIRECTORY.getName()) + "|" +
+                                  Pattern.quote(STORAGE_CONF_FILE.getName()) + ")"
+                    + "|" +
+                    Pattern.quote(INDEX_NS.getName()) + "\\..*" +
+                            "(" + Pattern.quote(INDEX_DIRECTORY.getName()) + "|" +
+                                  Pattern.quote(INDEX_CONF_FILE.getName()) +  ")"
+            + ")");
 
             final Iterator<String> keysToMangle = Iterators.filter(configuration.getKeys(), new Predicate<String>() {
                 @Override
@@ -277,9 +276,8 @@ public class HugeGraphFactory {
                 String k = keysToMangle.next();
                 Preconditions.checkNotNull(k);
                 String s = configuration.getString(k);
-                Preconditions.checkArgument(StringUtils.isNotBlank(s),
-                        "Invalid Configuration: key %s has null empty value", k);
-                configuration.setProperty(k, getAbsolutePath(configParent, s));
+                Preconditions.checkArgument(StringUtils.isNotBlank(s),"Invalid Configuration: key %s has null empty value",k);
+                configuration.setProperty(k,getAbsolutePath(configParent,s));
             }
             return new CommonsConfiguration(configuration);
         } catch (ConfigurationException e) {

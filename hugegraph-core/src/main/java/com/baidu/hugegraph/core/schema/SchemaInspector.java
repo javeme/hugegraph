@@ -24,10 +24,10 @@ import com.baidu.hugegraph.core.VertexLabel;
  */
 public interface SchemaInspector {
 
-    /*
-     * --------------------------------------------------------------- Schema
-     * ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Schema
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Checks whether a type with the specified name exists.
@@ -38,7 +38,8 @@ public interface SchemaInspector {
     public boolean containsRelationType(String name);
 
     /**
-     * Returns the type with the given name. Note, that type names must be unique.
+     * Returns the type with the given name.
+     * Note, that type names must be unique.
      *
      * @param name name of the type to return
      * @return The type with the given name, or null if such does not exist
@@ -60,8 +61,8 @@ public interface SchemaInspector {
      *
      * @param name name of the property key to return
      * @return the property key with the given name
-     * @throws IllegalArgumentException if a property key with the given name does not exist or if the type with the
-     *             given name is not a property key
+     * @throws IllegalArgumentException if a property key with the given name does not exist or if the
+     *                                  type with the given name is not a property key
      * @see PropertyKey
      */
     public PropertyKey getOrCreatePropertyKey(String name);
@@ -88,15 +89,14 @@ public interface SchemaInspector {
      *
      * @param name name of the edge label to return
      * @return the edge label with the given name
-     * @throws IllegalArgumentException if an edge label with the given name does not exist or if the type with the
-     *             given name is not an edge label
+     * @throws IllegalArgumentException if an edge label with the given name does not exist or if the
+     *                                  type with the given name is not an edge label
      * @see EdgeLabel
      */
     public EdgeLabel getOrCreateEdgeLabel(String name);
 
     /**
      * Returns the edge label with the given name. If it does not exist, NULL is returned
-     * 
      * @param name
      * @return
      */
@@ -128,5 +128,6 @@ public interface SchemaInspector {
      * @return
      */
     public VertexLabel getOrCreateVertexLabel(String name);
+
 
 }

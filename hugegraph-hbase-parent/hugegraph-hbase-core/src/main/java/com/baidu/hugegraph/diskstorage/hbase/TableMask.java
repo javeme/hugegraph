@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,10 +30,11 @@ import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Scan;
 
 /**
- * This interface hides ABI/API breaking changes that HBase has made to its Table/HTableInterface over the course of
- * development from 0.94 to 1.0 and beyond.
+ * This interface hides ABI/API breaking changes that HBase has made to its Table/HTableInterface over the course
+ * of development from 0.94 to 1.0 and beyond.
  */
-public interface TableMask extends Closeable {
+public interface TableMask extends Closeable
+{
 
     ResultScanner getScanner(Scan filter) throws IOException;
 

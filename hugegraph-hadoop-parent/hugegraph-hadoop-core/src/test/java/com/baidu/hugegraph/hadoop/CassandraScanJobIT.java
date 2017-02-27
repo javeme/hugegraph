@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package com.baidu.hugegraph.hadoop;
+
 
 import com.baidu.hugegraph.CassandraStorageSetup;
 import com.baidu.hugegraph.core.HugeGraphVertex;
@@ -49,21 +50,20 @@ public class CassandraScanJobIT extends HugeGraphBaseTest {
     private static final Logger log = LoggerFactory.getLogger(CassandraScanJobIT.class);
 
     @Test
-    public void testSimpleScan() throws InterruptedException, ExecutionException, IOException, BackendException {
+    public void testSimpleScan()
+            throws InterruptedException, ExecutionException, IOException, BackendException {
 
         int keys = 1000;
         int cols = 40;
 
         String[][] values = KeyValueStoreUtil.generateData(keys, cols);
-        // Make it only half the number of columns for every 2nd key
+        //Make it only half the number of columns for every 2nd key
         for (int i = 0; i < values.length; i++) {
-            if (i % 2 == 0)
-                values[i] = Arrays.copyOf(values[i], cols / 2);
+            if (i%2==0) values[i]= Arrays.copyOf(values[i], cols / 2);
         }
         log.debug("Loading values: " + keys + "x" + cols);
 
-        KeyColumnValueStoreManager mgr =
-                new CassandraThriftStoreManager(GraphDatabaseConfiguration.buildGraphConfiguration());
+        KeyColumnValueStoreManager mgr = new CassandraThriftStoreManager(GraphDatabaseConfiguration.buildGraphConfiguration());
         KeyColumnValueStore store = mgr.openDatabase("edgestore");
         StoreTransaction tx = mgr.beginTransaction(StandardBaseTransactionConfig.of(TimestampProviders.MICRO));
         KeyColumnValueStoreUtil.loadValues(store, tx, values);
@@ -99,10 +99,8 @@ public class CassandraScanJobIT extends HugeGraphBaseTest {
         graph.tx().commit();
 
         org.apache.hadoop.conf.Configuration c = new org.apache.hadoop.conf.Configuration();
-        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "."
-                + "storage.cassandra.keyspace", getClass().getSimpleName());
-        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.backend",
-                "cassandrathrift");
+        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.cassandra.keyspace", getClass().getSimpleName());
+        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.backend", "cassandrathrift");
         c.set("cassandra.input.partitioner.class", "org.apache.cassandra.dht.Murmur3Partitioner");
 
         Job job = getVertexJobWithDefaultMapper(c);
@@ -129,10 +127,8 @@ public class CassandraScanJobIT extends HugeGraphBaseTest {
         graph.tx().commit();
 
         org.apache.hadoop.conf.Configuration c = new org.apache.hadoop.conf.Configuration();
-        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "."
-                + "storage.cassandra.keyspace", getClass().getSimpleName());
-        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.backend",
-                "cassandrathrift");
+        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.cassandra.keyspace", getClass().getSimpleName());
+        c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + "." + "storage.backend", "cassandrathrift");
         c.set(ConfigElement.getPath(HugeGraphHadoopConfiguration.FILTER_PARTITIONED_VERTICES), "true");
         c.set("cassandra.input.partitioner.class", "org.apache.cassandra.dht.Murmur3Partitioner");
 
@@ -166,17 +162,17 @@ public class CassandraScanJobIT extends HugeGraphBaseTest {
         return mc.getConfiguration();
     }
 
-    // public static class NoopScanJob implements ScanJob {
-    //
-    // @Override
-    // public void process(StaticBuffer key, Map<SliceQuery, EntryList> entries, ScanMetrics metrics) {
-    // // do nothing
-    // }
-    //
-    // @Override
-    // public List<SliceQuery> getQueries() {
-    // int len = 4;
-    // return ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(len), BufferUtil.oneBuffer(len)));
-    // }
-    // }
+//    public static class NoopScanJob implements ScanJob {
+//
+//        @Override
+//        public void process(StaticBuffer key, Map<SliceQuery, EntryList> entries, ScanMetrics metrics) {
+//            // do nothing
+//        }
+//
+//        @Override
+//        public List<SliceQuery> getQueries() {
+//            int len = 4;
+//            return ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(len), BufferUtil.oneBuffer(len)));
+//        }
+//    }
 }

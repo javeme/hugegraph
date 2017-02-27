@@ -34,14 +34,13 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 /**
- * This is an optimization of specifically for {@link VertexCentricQuery} that addresses the special but common case
- * that the query is simple (i.e. comprised of only one sub-query and that query is fitted, i.e. does not require in
- * memory filtering). Under these assumptions we can remove a lot of the steps in
- * {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}: merging of result sets, in-memory filtering and the object
- * instantiation required for in-memory filtering.
+ * This is an optimization of specifically for {@link VertexCentricQuery} that addresses the special but
+ * common case that the query is simple (i.e. comprised of only one sub-query and that query is fitted, i.e. does not require
+ * in memory filtering). Under these assumptions we can remove a lot of the steps in {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}:
+ * merging of result sets, in-memory filtering and the object instantiation required for in-memory filtering.
  * </p>
- * With those complexities removed, the query processor can be much simpler which makes it a lot faster and less memory
- * intense.
+ * With those complexities removed, the query processor can be much simpler which makes it a lot faster and less
+ * memory intense.
  * </p>
  * IMPORTANT: This Iterable is not thread-safe.
  *
@@ -59,22 +58,21 @@ public class SimpleVertexQueryProcessor implements Iterable<Entry> {
 
     public SimpleVertexQueryProcessor(VertexCentricQuery query, StandardHugeGraphTx tx) {
         Preconditions.checkArgument(query.isSimple());
-        this.query = query;
-        this.tx = tx;
+        this.query=query;
+        this.tx=tx;
         BackendQueryHolder<SliceQuery> bqh = query.getSubQuery(0);
-        this.sliceQuery = bqh.getBackendQuery();
-        this.profiler = bqh.getProfiler();
-        this.vertex = query.getVertex();
-        this.edgeSerializer = tx.getEdgeSerializer();
+        this.sliceQuery=bqh.getBackendQuery();
+        this.profiler=bqh.getProfiler();
+        this.vertex=query.getVertex();
+        this.edgeSerializer=tx.getEdgeSerializer();
     }
 
     @Override
     public Iterator<Entry> iterator() {
         Iterator<Entry> iter;
-        // If there is a limit we need to wrap the basic iterator in a LimitAdjustingIterator which ensures the right
-        // number
-        // of elements is returned. Otherwise we just return the basic iterator.
-        if (sliceQuery.hasLimit() && sliceQuery.getLimit() != query.getLimit()) {
+        //If there is a limit we need to wrap the basic iterator in a LimitAdjustingIterator which ensures the right number
+        //of elements is returned. Otherwise we just return the basic iterator.
+        if (sliceQuery.hasLimit() && sliceQuery.getLimit()!=query.getLimit()) {
             iter = new LimitAdjustingIterator();
         } else {
             iter = getBasicIterator();
@@ -92,28 +90,26 @@ public class SimpleVertexQueryProcessor implements Iterable<Entry> {
     }
 
     /**
-     * Returns the list of adjacent vertex ids for this query. By reading those ids from the entries directly (without
-     * creating objects) we get much better performance.
+     * Returns the list of adjacent vertex ids for this query. By reading those ids
+     * from the entries directly (without creating objects) we get much better performance.
      *
      * @return
      */
     public VertexList vertexIds() {
         LongArrayList list = new LongArrayList();
         long previousId = 0;
-        for (Long id : Iterables.transform(this, new Function<Entry, Long>() {
+        for (Long id : Iterables.transform(this,new Function<Entry, Long>() {
             @Nullable
             @Override
             public Long apply(@Nullable Entry entry) {
-                return edgeSerializer.readRelation(entry, true, tx).getOtherVertexId();
+                return edgeSerializer.readRelation(entry,true,tx).getOtherVertexId();
             }
         })) {
             list.add(id);
-            if (id >= previousId && previousId >= 0)
-                previousId = id;
-            else
-                previousId = -1;
+            if (id>=previousId && previousId>=0) previousId=id;
+            else previousId=-1;
         }
-        return new VertexLongList(tx, list, previousId >= 0);
+        return new VertexLongList(tx,list,previousId>=0);
     }
 
     /**
@@ -125,25 +121,27 @@ public class SimpleVertexQueryProcessor implements Iterable<Entry> {
         EntryList result = vertex.loadRelations(sliceQuery, new Retriever<SliceQuery, EntryList>() {
             @Override
             public EntryList get(SliceQuery query) {
-                return QueryProfiler.profile(profiler, query,
-                        q -> tx.getGraph().edgeQuery(vertex.longId(), q, tx.getTxHandle()));
+                return QueryProfiler.profile(profiler,query, q -> tx.getGraph().edgeQuery(vertex.longId(), q, tx.getTxHandle()));
             }
         });
         return result.iterator();
     }
 
+
     private final class LimitAdjustingIterator extends com.baidu.hugegraph.graphdb.query.LimitAdjustingIterator<Entry> {
 
         private LimitAdjustingIterator() {
-            super(query.getLimit(), sliceQuery.getLimit());
+            super(query.getLimit(),sliceQuery.getLimit());
         }
 
         @Override
         public Iterator<Entry> getNewIterator(int newLimit) {
-            if (newLimit > sliceQuery.getLimit())
+            if (newLimit>sliceQuery.getLimit())
                 sliceQuery = sliceQuery.updateLimit(newLimit);
             return getBasicIterator();
         }
     }
+
+
 
 }

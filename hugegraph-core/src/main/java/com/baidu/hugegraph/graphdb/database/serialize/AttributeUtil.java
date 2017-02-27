@@ -26,6 +26,7 @@ public class AttributeUtil {
 
     private static final Logger log = LoggerFactory.getLogger(AttributeUtil.class);
 
+
     public static final boolean isWholeNumber(Number n) {
         return isWholeNumber(n.getClass());
     }
@@ -35,8 +36,8 @@ public class AttributeUtil {
     }
 
     public static final boolean isWholeNumber(Class<?> clazz) {
-        return clazz.equals(Long.class) || clazz.equals(Integer.class) || clazz.equals(Short.class)
-                || clazz.equals(Byte.class);
+        return clazz.equals(Long.class) || clazz.equals(Integer.class) ||
+                clazz.equals(Short.class) || clazz.equals(Byte.class);
     }
 
     public static final boolean isDecimal(Class<?> clazz) {
@@ -52,41 +53,37 @@ public class AttributeUtil {
     }
 
     /**
-     * Compares the two elements like {@link java.util.Comparator#compare(Object, Object)} but returns null in case the
-     * two elements are not comparable.
+     * Compares the two elements like {@link java.util.Comparator#compare(Object, Object)} but returns
+     * null in case the two elements are not comparable.
      *
      * @param a
      * @param b
      * @return
      */
     public static final Integer compare(Object a, Object b) {
-        if (a == b)
-            return 0;
-        if (a == null || b == null)
-            return null;
-        assert a != null && b != null;
+        if (a==b) return 0;
+        if (a==null || b==null) return null;
+        assert a!=null && b!=null;
         if (a instanceof Number && b instanceof Number) {
-            Number an = (Number) a;
-            Number bn = (Number) b;
+            Number an = (Number)a;
+            Number bn = (Number)b;
             if (Double.isNaN(an.doubleValue()) || Double.isNaN(bn.doubleValue())) {
-                if (Double.isNaN(an.doubleValue()) && Double.isNaN(bn.doubleValue()))
-                    return 0;
-                else
-                    return null;
+                if (Double.isNaN(an.doubleValue()) && Double.isNaN(bn.doubleValue())) return 0;
+                else return null;
             } else {
-                if (an.doubleValue() == bn.doubleValue()) {
+                if (an.doubleValue()==bn.doubleValue()) {
                     // Long.compare(long,long) is only available since Java 1.7
-                    // return Long.compare(an.longValue(),bn.longValue());
+                    //return Long.compare(an.longValue(),bn.longValue());
                     return Long.valueOf(an.longValue()).compareTo(Long.valueOf(bn.longValue()));
                 } else {
-                    return Double.compare(an.doubleValue(), bn.doubleValue());
+                    return Double.compare(an.doubleValue(),bn.doubleValue());
                 }
             }
         } else {
             try {
-                return ((Comparable) a).compareTo(b);
+                return ((Comparable)a).compareTo(b);
             } catch (Throwable e) {
-                log.debug("Could not compare elements: {} - {}", a, b);
+                log.debug("Could not compare elements: {} - {}",a,b);
                 return null;
             }
         }

@@ -45,12 +45,10 @@ import java.util.Map;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
-        implements HasStepFolder<Vertex, E>, Profiling, MultiQueriable<Vertex, E> {
+public class HugeGraphVertexStep<E extends Element> extends VertexStep<E> implements HasStepFolder<Vertex, E>, Profiling, MultiQueriable<Vertex,E> {
 
     public HugeGraphVertexStep(VertexStep<E> originalStep) {
-        super(originalStep.getTraversal(), originalStep.getReturnClass(), originalStep.getDirection(),
-                originalStep.getEdgeLabels());
+        super(originalStep.getTraversal(), originalStep.getReturnClass(), originalStep.getDirection(), originalStep.getEdgeLabels());
         originalStep.getLabels().forEach(this::addLabel);
         this.hasContainers = new ArrayList<>();
         this.limit = Query.NO_LIMIT;
@@ -70,13 +68,10 @@ public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
         query.labels(getEdgeLabels());
         query.direction(getDirection());
         for (HasContainer condition : hasContainers) {
-            query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()),
-                    condition.getValue());
+            query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()), condition.getValue());
         }
-        for (OrderEntry order : orders)
-            query.orderBy(order.key, order.order);
-        if (limit != BaseQuery.NO_LIMIT)
-            query.limit(limit);
+        for (OrderEntry order : orders) query.orderBy(order.key, order.order);
+        if (limit != BaseQuery.NO_LIMIT) query.limit(limit);
         ((BasicVertexCentricQueryBuilder) query).profiler(queryProfiler);
         return query;
     }
@@ -86,8 +81,7 @@ public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
         assert !initialized;
         initialized = true;
         if (useMultiQuery) {
-            if (!starts.hasNext())
-                throw FastNoSuchElementException.instance();
+            if (!starts.hasNext()) throw FastNoSuchElementException.instance();
             HugeGraphMultiVertexQuery mquery = HugeGraphTraversalUtil.getTx(traversal).multiQuery();
             List<Traverser.Admin<Vertex>> vertices = new ArrayList<>();
             starts.forEachRemaining(v -> {
@@ -104,8 +98,7 @@ public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
 
     @Override
     protected Traverser.Admin<E> processNextStart() {
-        if (!initialized)
-            initialize();
+        if (!initialized) initialize();
         return super.processNextStart();
     }
 
@@ -116,8 +109,7 @@ public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
             return (Iterator<E>) multiQueryResults.get(traverser.get()).iterator();
         } else {
             HugeGraphVertexQuery query = makeQuery((HugeGraphTraversalUtil.getHugeGraphVertex(traverser)).query());
-            return (Vertex.class.isAssignableFrom(getReturnClass())) ? query.vertices().iterator()
-                    : query.edges().iterator();
+            return (Vertex.class.isAssignableFrom(getReturnClass())) ? query.vertices().iterator() : query.edges().iterator();
         }
     }
 
@@ -135,12 +127,13 @@ public class HugeGraphVertexStep<E extends Element> extends VertexStep<E>
     }
 
     /*
-     * ===== HOLDER =====
+    ===== HOLDER =====
      */
 
     private final List<HasContainer> hasContainers;
     private int limit = BaseQuery.NO_LIMIT;
     private List<OrderEntry> orders = new ArrayList<>();
+
 
     @Override
     public void addAll(Iterable<HasContainer> has) {

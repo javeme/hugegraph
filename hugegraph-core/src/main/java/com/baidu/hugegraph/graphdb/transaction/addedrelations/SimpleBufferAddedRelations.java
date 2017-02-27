@@ -44,13 +44,10 @@ public class SimpleBufferAddedRelations implements AddedRelationsContainer {
 
     @Override
     public boolean remove(InternalRelation relation) {
-        if (added.isEmpty())
-            return false;
-        if (deleted == null)
-            deleted = new ArrayList<InternalRelation>(INITIAL_DELETED_SIZE);
+        if (added.isEmpty()) return false;
+        if (deleted==null) deleted = new ArrayList<InternalRelation>(INITIAL_DELETED_SIZE);
         boolean del = deleted.add(relation);
-        if (deleted.size() > MAX_DELETED_SIZE)
-            cleanup();
+        if (deleted.size()>MAX_DELETED_SIZE) cleanup();
         return del;
     }
 
@@ -61,16 +58,14 @@ public class SimpleBufferAddedRelations implements AddedRelationsContainer {
     }
 
     private void cleanup() {
-        if (deleted == null || deleted.isEmpty())
-            return;
+        if (deleted==null || deleted.isEmpty()) return;
         Set<InternalRelation> deletedSet = new HashSet<InternalRelation>(deleted);
-        deleted = null;
-        List<InternalRelation> newadded = new ArrayList<InternalRelation>(added.size() - deletedSet.size() / 2);
+        deleted=null;
+        List<InternalRelation> newadded = new ArrayList<InternalRelation>(added.size()-deletedSet.size()/2);
         for (InternalRelation r : added) {
-            if (!deletedSet.contains(r))
-                newadded.add(r);
+            if (!deletedSet.contains(r)) newadded.add(r);
         }
-        added = newadded;
+        added=newadded;
     }
 
     @Override
@@ -78,8 +73,7 @@ public class SimpleBufferAddedRelations implements AddedRelationsContainer {
         cleanup();
         List<InternalRelation> result = new ArrayList<InternalRelation>();
         for (InternalRelation r : added) {
-            if (filter.apply(r))
-                result.add(r);
+            if (filter.apply(r)) result.add(r);
         }
         return result;
     }

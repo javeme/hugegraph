@@ -25,16 +25,14 @@ public class Maps {
 
     public final static <K, V> V putIfAbsent(ConcurrentMap<K, V> map, K key, Factory<V> factory) {
         V res = map.get(key);
-        if (res != null)
-            return res;
+        if (res != null) return res;
         else {
             V newobj = factory.create();
             res = map.putIfAbsent(key, newobj);
-            if (res == null)
-                return newobj;
-            else
-                return res;
+            if (res == null) return newobj;
+            else return res;
         }
     }
+
 
 }

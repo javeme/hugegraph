@@ -25,7 +25,7 @@ public class TClass1Serializer implements AttributeSerializer<TClass1> {
 
     @Override
     public TClass1 read(ScanBuffer buffer) {
-        return new TClass1(buffer.getLong(), buffer.getFloat());
+        return new TClass1(buffer.getLong(),buffer.getFloat());
     }
 
     @Override

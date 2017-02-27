@@ -29,22 +29,22 @@ import java.util.Map;
 public class InMemoryHugeGraphIoTest extends HugeGraphIoTest {
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
+        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
         return config.getConfiguration();
     }
 
     @Override
-    public void clopen(Object...settings) {
-        if (settings != null && settings.length > 0) {
-            if (graph != null && graph.isOpen()) {
-                Preconditions.checkArgument(!graph.vertices().hasNext() && !graph.edges().hasNext(),
-                        "Graph cannot be re-initialized for InMemory since that would delete all data");
+    public void clopen(Object... settings) {
+        if (settings!=null && settings.length>0) {
+            if (graph!=null && graph.isOpen()) {
+                Preconditions.checkArgument(!graph.vertices().hasNext() &&
+                        !graph.edges().hasNext(),"Graph cannot be re-initialized for InMemory since that would delete all data");
                 graph.close();
             }
-            Map<HugeGraphBaseTest.TestConfigOption, Object> options = validateConfigOptions(settings);
+            Map<HugeGraphBaseTest.TestConfigOption,Object> options = validateConfigOptions(settings);
             ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-            config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
-            for (Map.Entry<HugeGraphBaseTest.TestConfigOption, Object> option : options.entrySet()) {
+            config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
+            for (Map.Entry<HugeGraphBaseTest.TestConfigOption,Object> option : options.entrySet()) {
                 config.set(option.getKey().option, option.getValue(), option.getKey().umbrella);
             }
             open(config.getConfiguration());

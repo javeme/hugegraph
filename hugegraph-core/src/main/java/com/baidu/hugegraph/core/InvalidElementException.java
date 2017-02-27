@@ -30,7 +30,7 @@ public class InvalidElementException extends HugeGraphException {
     private final HugeGraphElement element;
 
     /**
-     * @param msg Exception message
+     * @param msg     Exception message
      * @param element The invalid element causing the exception
      */
     public InvalidElementException(String msg, HugeGraphElement element) {
@@ -53,8 +53,8 @@ public class InvalidElementException extends HugeGraphException {
     }
 
     public static IllegalStateException removedException(HugeGraphElement element) {
-        Class elementClass = Vertex.class.isAssignableFrom(element.getClass()) ? Vertex.class
-                : (Edge.class.isAssignableFrom(element.getClass()) ? Edge.class : VertexProperty.class);
+        Class elementClass = Vertex.class.isAssignableFrom(element.getClass())?Vertex.class:
+                (Edge.class.isAssignableFrom(element.getClass())?Edge.class:VertexProperty.class);
         return Element.Exceptions.elementAlreadyRemoved(elementClass, element.id());
     }
 

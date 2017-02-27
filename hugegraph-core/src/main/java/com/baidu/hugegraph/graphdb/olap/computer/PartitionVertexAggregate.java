@@ -25,26 +25,28 @@ import java.util.Map;
  */
 public class PartitionVertexAggregate<M> extends VertexState<M> {
 
-    public PartitionVertexAggregate(Map<MessageScope, Integer> scopeMap) {
+    public PartitionVertexAggregate(Map<MessageScope,Integer> scopeMap) {
         super(Collections.EMPTY_MAP);
 
     }
 
     public synchronized void setLoadedProperties(EntryList props) {
-        assert properties == null;
+        assert properties==null;
         properties = props;
     }
 
     public EntryList getLoadedProperties() {
-        return (EntryList) properties;
+        return (EntryList)properties;
     }
 
-    public <V> void setProperty(String key, V value, Map<String, Integer> keyMap) {
+    public<V> void setProperty(String key, V value, Map<String,Integer> keyMap) {
         throw new UnsupportedOperationException();
     }
 
-    public <V> V getProperty(String key, Map<String, Integer> keyMap) {
+    public<V> V getProperty(String key, Map<String,Integer> keyMap) {
         throw new UnsupportedOperationException();
     }
+
+
 
 }

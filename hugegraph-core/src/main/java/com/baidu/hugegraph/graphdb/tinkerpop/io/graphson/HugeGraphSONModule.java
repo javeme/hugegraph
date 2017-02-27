@@ -41,13 +41,11 @@ public class HugeGraphSONModule extends TinkerPopJacksonModule {
 
     private static final String TYPE_NAMESPACE = "hugegraph";
 
-    private static final Map<Class, String> TYPE_DEFINITIONS =
-            Collections.unmodifiableMap(new LinkedHashMap<Class, String>() {
-                {
-                    put(RelationIdentifier.class, "RelationIdentifier");
-                    put(Geoshape.class, "Geoshape");
-                }
-            });
+    private static final Map<Class, String> TYPE_DEFINITIONS = Collections.unmodifiableMap(
+            new LinkedHashMap<Class, String>() {{
+                put(RelationIdentifier.class, "RelationIdentifier");
+                put(Geoshape.class, "Geoshape");
+            }});
 
     private HugeGraphSONModule() {
         super("hugegraph");
@@ -82,14 +80,13 @@ public class HugeGraphSONModule extends TinkerPopJacksonModule {
 
         @Override
         public void serialize(final RelationIdentifier relationIdentifier, final JsonGenerator jsonGenerator,
-                final SerializerProvider serializerProvider) throws IOException, JsonGenerationException {
+                              final SerializerProvider serializerProvider) throws IOException, JsonGenerationException {
             jsonGenerator.writeString(relationIdentifier.toString());
         }
 
         @Override
         public void serializeWithType(final RelationIdentifier relationIdentifier, final JsonGenerator jsonGenerator,
-                final SerializerProvider serializerProvider, final TypeSerializer typeSerializer)
-                throws IOException, JsonProcessingException {
+                                      final SerializerProvider serializerProvider, final TypeSerializer typeSerializer) throws IOException, JsonProcessingException {
             typeSerializer.writeTypePrefixForScalar(relationIdentifier, jsonGenerator);
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(GraphSONTokens.VALUE, relationIdentifier.toString());
@@ -105,8 +102,7 @@ public class HugeGraphSONModule extends TinkerPopJacksonModule {
         }
 
         @Override
-        public RelationIdentifier deserialize(final JsonParser jsonParser,
-                final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        public RelationIdentifier deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
             jsonParser.nextToken();
             final Map<String, Object> mapData = deserializationContext.readValue(jsonParser, Map.class);
             return RelationIdentifier.parse((String) mapData.get(GraphSONTokens.VALUE));

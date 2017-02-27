@@ -27,7 +27,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A factory compatible with Apache commons-pool for Cassandra Thrift API connections.
+ * A factory compatible with Apache commons-pool for Cassandra Thrift API
+ * connections.
  *
  * @author Dan LaRocque <dalaro@hopcount.org>
  */
@@ -70,7 +71,8 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
     }
 
     /**
-     * Create a Cassandra-Thrift connection, but do not attempt to set a keyspace on the connection.
+     * Create a Cassandra-Thrift connection, but do not attempt to
+     * set a keyspace on the connection.
      *
      * @return A CTConnection ready to talk to a Cassandra cluster
      * @throws TTransportException on any Thrift transport failure
@@ -80,16 +82,13 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
 
         String hostname = cfg.getRandomHost();
 
-        log.debug("Creating TSocket({}, {}, {}, {}, {})", hostname, cfg.port, cfg.username, cfg.password,
-                cfg.timeoutMS);
+        log.debug("Creating TSocket({}, {}, {}, {}, {})", hostname, cfg.port, cfg.username, cfg.password, cfg.timeoutMS);
 
         TSocket socket;
         if (null != cfg.sslTruststoreLocation && !cfg.sslTruststoreLocation.isEmpty()) {
-            TSSLTransportFactory.TSSLTransportParameters params = new TSSLTransportFactory.TSSLTransportParameters() {
-                {
-                    setTrustStore(cfg.sslTruststoreLocation, cfg.sslTruststorePassword);
-                }
-            };
+            TSSLTransportFactory.TSSLTransportParameters params = new TSSLTransportFactory.TSSLTransportParameters() {{
+               setTrustStore(cfg.sslTruststoreLocation, cfg.sslTruststorePassword);
+            }};
             socket = TSSLTransportFactory.getClientSocket(hostname, cfg.port, cfg.timeoutMS, params);
         } else {
             socket = new TSocket(hostname, cfg.port, cfg.timeoutMS);
@@ -104,12 +103,10 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
         }
 
         if (cfg.username != null) {
-            Map<String, String> credentials = new HashMap<String, String>() {
-                {
-                    put(IAuthenticator.USERNAME_KEY, cfg.username);
-                    put(IAuthenticator.PASSWORD_KEY, cfg.password);
-                }
-            };
+            Map<String, String> credentials = new HashMap<String, String>() {{
+                put(IAuthenticator.USERNAME_KEY, cfg.username);
+                put(IAuthenticator.PASSWORD_KEY, cfg.password);
+            }};
 
             try {
                 client.login(new AuthenticationRequest(credentials));
@@ -134,8 +131,8 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
             if (isSameConfig) {
                 log.trace("Validated {} by configuration {}", c, curCfg);
             } else {
-                log.trace("Rejected {}; current config is {}; rejected connection config is {}", c, curCfg,
-                        c.getConfig());
+                log.trace("Rejected {}; current config is {}; rejected connection config is {}",
+                          c, curCfg, c.getConfig());
             }
         }
 
@@ -209,6 +206,7 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
             return new CTConnectionFactory(this);
         }
 
+
         public void checkIfAlreadyBuilt() {
             if (isBuilt)
                 throw new IllegalStateException("Can't accept modifications when used with built factory.");
@@ -216,9 +214,11 @@ public class CTConnectionFactory implements KeyedPoolableObjectFactory<String, C
 
         @Override
         public String toString() {
-            return "Config[hostnames=" + StringUtils.join(hostnames, ',') + ", port=" + port + ", timeoutMS="
-                    + timeoutMS + ", frameSize=" + frameSize + "]";
+            return "Config[hostnames=" + StringUtils.join(hostnames, ',') + ", port=" + port
+                    + ", timeoutMS=" + timeoutMS + ", frameSize=" + frameSize
+                    + "]";
         }
     }
 
 }
+

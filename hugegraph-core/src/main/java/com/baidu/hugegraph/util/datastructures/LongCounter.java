@@ -25,6 +25,7 @@ public class LongCounter implements Serializable {
 
     private static final long serialVersionUID = -880751358315110930L;
 
+
     private long count;
 
     public LongCounter(long initial) {

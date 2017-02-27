@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,8 +46,8 @@ public class HBaseHadoopScanRunner extends AbstractHadoopScanRunner<HBaseHadoopS
 
     public ScanMetrics run() throws InterruptedException, IOException, ClassNotFoundException {
 
-        org.apache.hadoop.conf.Configuration hadoopConf =
-                null != baseHadoopConf ? baseHadoopConf : new org.apache.hadoop.conf.Configuration();
+        org.apache.hadoop.conf.Configuration hadoopConf = null != baseHadoopConf ?
+                baseHadoopConf : new org.apache.hadoop.conf.Configuration();
 
         if (null != hugegraphConf) {
             String prefix = ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + ".";
@@ -59,11 +59,9 @@ public class HBaseHadoopScanRunner extends AbstractHadoopScanRunner<HBaseHadoopS
         Preconditions.checkNotNull(hadoopConf);
 
         if (null != scanJob) {
-            return HadoopScanRunner.runScanJob(scanJob, scanJobConf, scanJobConfRoot, hadoopConf,
-                    HBaseBinaryInputFormat.class);
+            return HadoopScanRunner.runScanJob(scanJob, scanJobConf, scanJobConfRoot, hadoopConf, HBaseBinaryInputFormat.class);
         } else {
-            return HadoopScanRunner.runVertexScanJob(vertexScanJob, scanJobConf, scanJobConfRoot, hadoopConf,
-                    HBaseBinaryInputFormat.class);
+            return HadoopScanRunner.runVertexScanJob(vertexScanJob, scanJobConf, scanJobConfRoot, hadoopConf, HBaseBinaryInputFormat.class);
         }
     }
 }

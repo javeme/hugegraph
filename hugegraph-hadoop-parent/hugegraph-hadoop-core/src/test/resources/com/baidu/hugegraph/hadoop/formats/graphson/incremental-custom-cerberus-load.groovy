@@ -1,6 +1,8 @@
-import com.baidu.hugegraph.core.HugeGraphVertexProperty
+package com.baidu.hugegraph.hadoop.formats.graphson
 
-def HugeGraphVertex getOrCreateVertex(faunusVertex, graph, context, log) {
+import com.baidu.hugegraph.core.hugegraphVertexProperty
+
+def hugegraphVertex getOrCreateVertex(faunusVertex, graph, context, log) {
     String uniqueKey = "name";
     Object uniqueValue = faunusVertex.value(uniqueKey);
     Vertex hugegraphVertex;
@@ -24,7 +26,7 @@ def void getOrCreateVertexProperty(faunusProperty, vertex, graph, context, log) 
     if (pkey.cardinality().equals(com.baidu.hugegraph.core.Cardinality.SINGLE)) {
         vertex.property(pkey.name(), faunusProperty.value());
     } else {
-        Iterator<HugeGraphVertexProperty> itty = vertex.getProperties(pkey.name()).iterator();
+        Iterator<hugegraphVertexProperty> itty = vertex.getProperties(pkey.name()).iterator();
         if (!itty.hasNext()) {
             vertex.property(pkey.name(), faunusProperty.value());
         }

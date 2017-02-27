@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public abstract class AbstractIndexManagementIT extends HugeGraphBaseTest {
         graph.tx().commit();
 
         // Block until the SchemaStatus transitions to DISABLED
-        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "name").status(SchemaStatus.DISABLED).call()
-                .getSucceeded());
+        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "name")
+                .status(SchemaStatus.DISABLED).call().getSucceeded());
 
         // Remove index
         MapReduceIndexManagement mri = new MapReduceIndexManagement(graph);
@@ -119,8 +119,8 @@ public abstract class AbstractIndexManagementIT extends HugeGraphBaseTest {
         graph.tx().commit();
 
         // Block until the SchemaStatus transitions to REGISTERED
-        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "verticesByAge").status(SchemaStatus.REGISTERED).call()
-                .getSucceeded());
+        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "verticesByAge")
+                .status(SchemaStatus.REGISTERED).call().getSucceeded());
 
         m = graph.openManagement();
         HugeGraphIndex index = m.getGraphIndex("verticesByAge");
@@ -129,8 +129,8 @@ public abstract class AbstractIndexManagementIT extends HugeGraphBaseTest {
         graph.tx().commit();
 
         // Block until the SchemaStatus transitions to ENABLED
-        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "verticesByAge").status(SchemaStatus.ENABLED).call()
-                .getSucceeded());
+        assertTrue(ManagementSystem.awaitGraphIndexStatus(graph, "verticesByAge")
+                .status(SchemaStatus.ENABLED).call().getSucceeded());
 
         // Run a query that hits the index but erroneously returns nothing because we haven't repaired yet
         assertFalse(graph.query().has("age", 10000).vertices().iterator().hasNext());
@@ -183,7 +183,7 @@ public abstract class AbstractIndexManagementIT extends HugeGraphBaseTest {
                 .status(SchemaStatus.ENABLED).call().getSucceeded());
 
         // Run a query that hits the index but erroneously returns nothing because we haven't repaired yet
-        // assertFalse(graph.query().has("reason", "no fear of death").edges().iterator().hasNext());
+        //assertFalse(graph.query().has("reason", "no fear of death").edges().iterator().hasNext());
 
         // Repair
         MapReduceIndexManagement mri = new MapReduceIndexManagement(graph);

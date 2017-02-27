@@ -34,7 +34,7 @@ public class CassandraTransaction extends AbstractStoreTransaction {
 
     public CassandraTransaction(BaseTransactionConfig c) {
         super(c);
-        read = CLevel.parse(getConfiguration().getCustomOption(CASSANDRA_READ_CONSISTENCY));
+        read =  CLevel.parse(getConfiguration().getCustomOption(CASSANDRA_READ_CONSISTENCY));
         write = CLevel.parse(getConfiguration().getCustomOption(CASSANDRA_WRITE_CONSISTENCY));
         log.debug("Created {}", this.toString());
     }
@@ -49,8 +49,7 @@ public class CassandraTransaction extends AbstractStoreTransaction {
 
     public static CassandraTransaction getTx(StoreTransaction txh) {
         Preconditions.checkArgument(txh != null);
-        Preconditions.checkArgument(txh instanceof CassandraTransaction, "Unexpected transaction type %s",
-                txh.getClass().getName());
+        Preconditions.checkArgument(txh instanceof CassandraTransaction, "Unexpected transaction type %s", txh.getClass().getName());
         return (CassandraTransaction) txh;
     }
 

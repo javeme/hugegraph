@@ -27,19 +27,21 @@ import java.time.Duration;
 
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID;
 
+
 /**
- * Base Class for {@link IDAuthority} implementations. Handles common aspects such as maintaining the
- * {@link IDBlockSizer} and shared configuration options
+ * Base Class for {@link IDAuthority} implementations.
+ * Handles common aspects such as maintaining the {@link IDBlockSizer} and shared configuration options
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class AbstractIDAuthority implements IDAuthority {
 
-    /*
-     * This value can't be changed without either corrupting existing ID allocations or taking some additional action to
-     * prevent such corruption.
-     */
+    /* This value can't be changed without either
+      * corrupting existing ID allocations or taking
+      * some additional action to prevent such
+      * corruption.
+      */
     protected static final long BASE_ID = 1;
 
     protected final Duration idApplicationWaitMS;
@@ -59,7 +61,8 @@ public abstract class AbstractIDAuthority implements IDAuthority {
 
         this.isActive = false;
 
-        this.idApplicationWaitMS = config.get(GraphDatabaseConfiguration.IDAUTHORITY_WAIT);
+        this.idApplicationWaitMS =
+                config.get(GraphDatabaseConfiguration.IDAUTHORITY_WAIT);
 
         this.metricsPrefix = GraphDatabaseConfiguration.getSystemMetricsPrefix();
     }
@@ -67,8 +70,7 @@ public abstract class AbstractIDAuthority implements IDAuthority {
     @Override
     public synchronized void setIDBlockSizer(IDBlockSizer sizer) {
         Preconditions.checkNotNull(sizer);
-        if (isActive)
-            throw new IllegalStateException("IDBlockSizer cannot be changed after IDAuthority is in use");
+        if (isActive) throw new IllegalStateException("IDBlockSizer cannot be changed after IDAuthority is in use");
         this.blockSizer = sizer;
     }
 
@@ -79,7 +81,6 @@ public abstract class AbstractIDAuthority implements IDAuthority {
 
     /**
      * Returns a byte buffer representation for the given partition id
-     * 
      * @param partition
      * @return
      */
@@ -89,7 +90,6 @@ public abstract class AbstractIDAuthority implements IDAuthority {
 
     /**
      * Returns the block size of the specified partition as determined by the configured {@link IDBlockSizer}.
-     * 
      * @param idNamespace
      * @return
      */
@@ -97,10 +97,9 @@ public abstract class AbstractIDAuthority implements IDAuthority {
         Preconditions.checkArgument(blockSizer != null, "Blocksizer has not yet been initialized");
         isActive = true;
         long blockSize = blockSizer.getBlockSize(idNamespace);
-        Preconditions.checkArgument(blockSize > 0, "Invalid block size: %s", blockSize);
-        Preconditions.checkArgument(blockSize < getIdUpperBound(idNamespace),
-                "Block size [%s] cannot be larger than upper bound [%s] for partition [%s]", blockSize,
-                getIdUpperBound(idNamespace), idNamespace);
+        Preconditions.checkArgument(blockSize>0,"Invalid block size: %s",blockSize);
+        Preconditions.checkArgument(blockSize<getIdUpperBound(idNamespace),
+                "Block size [%s] cannot be larger than upper bound [%s] for partition [%s]",blockSize,getIdUpperBound(idNamespace),idNamespace);
         return blockSize;
     }
 
@@ -108,7 +107,7 @@ public abstract class AbstractIDAuthority implements IDAuthority {
         Preconditions.checkArgument(blockSizer != null, "Blocksizer has not yet been initialized");
         isActive = true;
         long upperBound = blockSizer.getIdUpperBound(idNamespace);
-        Preconditions.checkArgument(upperBound > 0, "Invalid upper bound: %s", upperBound);
+        Preconditions.checkArgument(upperBound>0,"Invalid upper bound: %s",upperBound);
         return upperBound;
     }
 

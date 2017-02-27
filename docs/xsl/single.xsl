@@ -31,7 +31,7 @@
   </xsl:param>
   
   <xsl:template name="user.head.content">
-    <xsl:call-template name="janusgraph.head"/>
+    <xsl:call-template name="hugegraph.head"/>
   </xsl:template>
   
   <xsl:template match="*" mode="process.root">
@@ -59,7 +59,7 @@
         </xsl:call-template>
       </head>
   
-      <xsl:call-template name="janusgraph.body">
+      <xsl:call-template name="hugegraph.body">
         <xsl:with-param name="maincontent" select="$content"/>
       </xsl:call-template>
     </html>

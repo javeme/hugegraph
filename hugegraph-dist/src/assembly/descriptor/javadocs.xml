@@ -1,5 +1,5 @@
 <assembly>
-    <id>janusgraph-core-javadocs</id>
+    <id>hugegraph-core-javadocs</id>
     <baseDirectory>/</baseDirectory>
 
     <formats>
@@ -12,7 +12,7 @@
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>${project.groupId}:janusgraph-core:jar:javadoc:${project.version}</include>
+                <include>${project.groupId}:hugegraph-core:jar:javadoc:${project.version}</include>
             </includes>
         </dependencySet>
     </dependencySets>

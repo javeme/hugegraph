@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.baidu.hugegraph.core;
+
 
 /**
  * PropertyKey is an extension of {@link RelationType} for properties. Each property in HugeGraph has a key.
@@ -21,7 +23,8 @@ package com.baidu.hugegraph.core;
  * <ul>
  * <li><strong>Data Type:</strong> The data type of the value for a given property of this key</li>
  * <li><strong>Cardinality:</strong> The cardinality of the set of properties that may be associated with a single
- * vertex through a particular key.</li>
+ * vertex through a particular key.
+ * </li>
  * </ul>
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com)
@@ -30,8 +33,8 @@ package com.baidu.hugegraph.core;
 public interface PropertyKey extends RelationType {
 
     /**
-     * Returns the data type for this property key. The values of all properties of this type must be an instance of
-     * this data type.
+     * Returns the data type for this property key.
+     * The values of all properties of this type must be an instance of this data type.
      *
      * @return Data type for this property key.
      */
@@ -39,7 +42,6 @@ public interface PropertyKey extends RelationType {
 
     /**
      * The {@link Cardinality} of this property key.
-     * 
      * @return
      */
     public Cardinality cardinality();

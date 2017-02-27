@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -85,13 +85,11 @@ public class HBaseStorageSetup {
                 // All HBase 1.x maps to 10
                 majorDotMinor = "1.0";
             }
-            String result = String.format("%s%shugegraph-hbase-%s/%s/", HBASE_PARENT_DIR, File.separator,
-                    majorDotMinor.replace(".", ""), lastSubdir);
+            String result = String.format("%s%shugegraph-hbase-%s/%s/", HBASE_PARENT_DIR, File.separator, majorDotMinor.replace(".", ""), lastSubdir);
             log.debug("Built {} path for HBase version {}: {}", lastSubdir, hv, result);
             return result;
         } else {
-            throw new RuntimeException("Unsupported HBase test version " + hv + " does not match pattern "
-                    + HBASE_SUPPORTED_VERSION_PATTERN);
+            throw new RuntimeException("Unsupported HBase test version " + hv + " does not match pattern " + HBASE_SUPPORTED_VERSION_PATTERN);
         }
     }
 
@@ -102,14 +100,13 @@ public class HBaseStorageSetup {
     public static ModifiableConfiguration getHBaseConfiguration(String tableName) {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
         config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "hbase");
-        if (!StringUtils.isEmpty(tableName))
-            config.set(HBaseStoreManager.HBASE_TABLE, tableName);
+        if (!StringUtils.isEmpty(tableName)) config.set(HBaseStoreManager.HBASE_TABLE,tableName);
         config.set(GraphDatabaseConfiguration.TIMESTAMP_PROVIDER, HBaseStoreManager.PREFERRED_TIMESTAMPS);
         config.set(SimpleBulkPlacementStrategy.CONCURRENT_PARTITIONS, 1);
-        // config.set(GraphDatabaseConfiguration.STORAGE_NS.getName()+"."+HBaseStoreManager.HBASE_CONFIGURATION_NAMESPACE+
-        // ".hbase.zookeeper.quorum","localhost");
-        // config.set(GraphDatabaseConfiguration.STORAGE_NS.getName()+"."+HBaseStoreManager.HBASE_CONFIGURATION_NAMESPACE+
-        // "hbase.zookeeper.property.clientPort",2181);
+//        config.set(GraphDatabaseConfiguration.STORAGE_NS.getName()+"."+HBaseStoreManager.HBASE_CONFIGURATION_NAMESPACE+
+//                    ".hbase.zookeeper.quorum","localhost");
+//        config.set(GraphDatabaseConfiguration.STORAGE_NS.getName()+"."+HBaseStoreManager.HBASE_CONFIGURATION_NAMESPACE+
+//                "hbase.zookeeper.property.clientPort",2181);
         return config;
     }
 
@@ -121,8 +118,10 @@ public class HBaseStorageSetup {
      * Starts the HBase version described by {@link #HBASE_TARGET_VERSION}
      *
      * @return a status object describing a successfully-started HBase daemon
-     * @throws IOException passed-through
-     * @throws RuntimeException if starting HBase fails for any other reason
+     * @throws IOException
+     *             passed-through
+     * @throws RuntimeException
+     *             if starting HBase fails for any other reason
      */
     public synchronized static HBaseStatus startHBase() throws IOException {
         if (HBASE != null) {
@@ -148,7 +147,8 @@ public class HBaseStorageSetup {
     }
 
     /**
-     * Check whether {@link #HBASE_STAT_FILE} describes an HBase daemon. If so, kill it. Otherwise, do nothing.
+     * Check whether {@link #HBASE_STAT_FILE} describes an HBase daemon. If so,
+     * kill it. Otherwise, do nothing.
      */
     public synchronized static void killIfRunning() {
         HBaseStatus stat = HBaseStatus.read(HBASE_STAT_FILE);
@@ -206,9 +206,11 @@ public class HBaseStorageSetup {
     }
 
     /**
-     * Register a shutdown hook with the JVM that attempts to kill the external HBase daemon
+     * Register a shutdown hook with the JVM that attempts to kill the external
+     * HBase daemon
      *
-     * @param stat the HBase daemon to kill
+     * @param stat
+     *            the HBase daemon to kill
      */
     private static void registerKillerHook(final HBaseStatus stat) {
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -219,10 +221,11 @@ public class HBaseStorageSetup {
     }
 
     /**
-     * Runs the {@code hbase-daemon.sh stop master} script corresponding to the HBase version described by the
-     * parameter.
+     * Runs the {@code hbase-daemon.sh stop master} script corresponding to the
+     * HBase version described by the parameter.
      *
-     * @param stat the running HBase daemon to stop
+     * @param stat
+     *            the running HBase daemon to stop
      */
     private synchronized static void shutdownHBase(HBaseStatus stat) {
 
@@ -241,15 +244,17 @@ public class HBaseStorageSetup {
     }
 
     /**
-     * Run the parameter as an external process. Returns if the command starts without throwing an exception and returns
-     * exit status 0. Throws an exception if there's any problem invoking the command or if it does not return zero exit
-     * status.
+     * Run the parameter as an external process. Returns if the command starts
+     * without throwing an exception and returns exit status 0. Throws an
+     * exception if there's any problem invoking the command or if it does not
+     * return zero exit status.
      *
      * Blocks indefinitely while waiting for the command to complete.
      *
-     * @param argv passed directly to {@link ProcessBuilder}'s constructor
+     * @param argv
+     *            passed directly to {@link ProcessBuilder}'s constructor
      */
-    private static void runCommand(String...argv) {
+    private static void runCommand(String... argv) {
 
         final String cmd = Joiner.on(" ").join(argv);
         log.info("Executing {}", cmd);
@@ -285,12 +290,14 @@ public class HBaseStorageSetup {
     }
 
     /*
-     * This could be retired in favor of ProcessBuilder.Redirect when we move to source level 1.7.
+     * This could be retired in favor of ProcessBuilder.Redirect when we move to
+     * source level 1.7.
      */
     private static class StreamLogger extends Thread {
 
         private final BufferedReader reader;
-        private static final Logger log = LoggerFactory.getLogger(StreamLogger.class);
+        private static final Logger log =
+                LoggerFactory.getLogger(StreamLogger.class);
 
         private StreamLogger(InputStream is) {
             this.reader = new BufferedReader(new InputStreamReader(is));
