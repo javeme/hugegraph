@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class NoKCVSCache extends KCVSCache {
 
+
     public NoKCVSCache(KeyColumnValueStore store) {
         super(store, null);
     }

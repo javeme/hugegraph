@@ -19,9 +19,8 @@ import com.google.common.util.concurrent.AbstractFuture;
 import com.baidu.hugegraph.diskstorage.log.Message;
 
 /**
- * Implementation of a {@link java.util.concurrent.Future} for {@link Message}s that are being added to the
- * {@link com.baidu.hugegraph.diskstorage.log.Log} via
- * {@link com.baidu.hugegraph.diskstorage.log.Log#add(com.baidu.hugegraph.diskstorage.StaticBuffer)}.
+ * Implementation of a {@link java.util.concurrent.Future} for {@link Message}s that
+ * are being added to the {@link com.baidu.hugegraph.diskstorage.log.Log} via {@link com.baidu.hugegraph.diskstorage.log.Log#add(com.baidu.hugegraph.diskstorage.StaticBuffer)}.
  *
  * This class can be used by {@link com.baidu.hugegraph.diskstorage.log.Log} implementations to wrap messages.
  *
@@ -38,7 +37,6 @@ public class FutureMessage<M extends Message> extends AbstractFuture<Message> {
 
     /**
      * Returns the actual message that was added to the log
-     * 
      * @return
      */
     public M getMessage() {
@@ -46,17 +44,16 @@ public class FutureMessage<M extends Message> extends AbstractFuture<Message> {
     }
 
     /**
-     * This method should be called by {@link com.baidu.hugegraph.diskstorage.log.Log} implementations when the message
-     * was successfully added to the log.
+     * This method should be called by {@link com.baidu.hugegraph.diskstorage.log.Log} implementations when the message was successfully
+     * added to the log.
      */
     public void delivered() {
         super.set(message);
     }
 
     /**
-     * This method should be called by {@Link Log} implementations when the message could not be added to the log with
-     * the respective exception object.
-     * 
+     * This method should be called by {@Link Log} implementations when the message could not be added to the log
+     * with the respective exception object.
      * @param exception
      */
     public void failed(Throwable exception) {

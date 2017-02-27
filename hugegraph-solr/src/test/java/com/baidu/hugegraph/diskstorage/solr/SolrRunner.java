@@ -25,10 +25,9 @@ import java.io.File;
 public class SolrRunner {
 
     protected static final int NUM_SERVERS = 1;
-    protected static final String[] COLLECTIONS =
-            new String[] { "store1", "store2", "vertex", "edge", "namev", "namee", "composite", "psearch", "esearch",
-                    "vsearch", "mi", "mixed", "index1", "index2", "index3", "ecategory", "vcategory", "pcategory",
-                    "theIndex", "vertices", "edges", "booleanIndex", "dateIndex", "instantIndex", "uuidIndex" };
+    protected static final String[] COLLECTIONS = new String[] { "store1", "store2", "vertex", "edge", "namev", "namee",
+            "composite", "psearch", "esearch", "vsearch", "mi", "mixed", "index1", "index2", "index3",
+            "ecategory", "vcategory", "pcategory", "theIndex", "vertices", "edges", "booleanIndex", "dateIndex", "instantIndex", "uuidIndex" };
 
     protected static final String[] KEY_FIELDS = new String[0];
 
@@ -42,6 +41,7 @@ public class SolrRunner {
         String solrHome = userDir.contains("hugegraph-solr")
                 ? Joiner.on(File.separator).join(userDir, "target", "test-classes", "solr")
                 : Joiner.on(File.separator).join(userDir, "hugegraph-solr", "target", "test-classes", "solr");
+
 
         File templateDirectory = new File(solrHome + File.separator + TEMPLATE_DIRECTORY);
         assert templateDirectory.exists();
@@ -78,5 +78,6 @@ public class SolrRunner {
                 (SolrDispatchFilter) miniSolrCloudCluster.getJettySolrRunners().get(0).getDispatchFilter().getFilter();
         return dispatchFilter.getCores().getZkController();
     }
+
 
 }

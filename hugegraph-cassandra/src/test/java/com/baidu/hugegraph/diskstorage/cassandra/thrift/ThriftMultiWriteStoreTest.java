@@ -30,7 +30,6 @@ public class ThriftMultiWriteStoreTest extends MultiWriteKeyColumnValueStoreTest
 
     @Override
     public KeyColumnValueStoreManager openStorageManager() throws BackendException {
-        return new CassandraThriftStoreManager(
-                CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
+        return new CassandraThriftStoreManager(CassandraStorageSetup.getCassandraThriftConfiguration(this.getClass().getSimpleName()));
     }
 }

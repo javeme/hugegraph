@@ -23,23 +23,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * A store for {@code LockStatus} objects. Thread-safe so long as the method calls with any given
- * {@code StoreTransaction} are serial. Put another way, thread-safety is only broken by concurrently calling this
- * class's methods with the same {@code StoreTransaction} instance in the arguments to each concurrent call.
+ * A store for {@code LockStatus} objects. Thread-safe so long as the method
+ * calls with any given {@code StoreTransaction} are serial. Put another way,
+ * thread-safety is only broken by concurrently calling this class's methods
+ * with the same {@code StoreTransaction} instance in the arguments to each
+ * concurrent call.
  * 
  * @see AbstractLocker
- * @param <S> The {@link LockStatus} type.
+ * @param <S>
+ *            The {@link LockStatus} type.
  */
 public class LockerState<S> {
 
     /**
-     * Locks taken in the LocalLockMediator and written to the store (but not necessarily checked)
+     * Locks taken in the LocalLockMediator and written to the store (but not
+     * necessarily checked)
      */
     private final ConcurrentMap<StoreTransaction, Map<KeyColumn, S>> locks;
 
     public LockerState() {
         // TODO this wild guess at the concurrency level should not be hardcoded
-        this(new MapMaker().concurrencyLevel(8).weakKeys().<StoreTransaction, Map<KeyColumn, S>> makeMap());
+        this(new MapMaker().concurrencyLevel(8).weakKeys()
+                .<StoreTransaction, Map<KeyColumn, S>> makeMap());
     }
 
     public LockerState(ConcurrentMap<StoreTransaction, Map<KeyColumn, S>> locks) {

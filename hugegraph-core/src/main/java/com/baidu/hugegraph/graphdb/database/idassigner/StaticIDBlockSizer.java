@@ -28,7 +28,7 @@ public class StaticIDBlockSizer implements IDBlockSizer {
     public StaticIDBlockSizer(long blockSize, long blockSizeLimit) {
         Preconditions.checkArgument(blockSize > 0);
         Preconditions.checkArgument(blockSizeLimit > 0);
-        Preconditions.checkArgument(blockSizeLimit > blockSize, "%s vs %s", blockSizeLimit, blockSize);
+        Preconditions.checkArgument(blockSizeLimit > blockSize,"%s vs %s",blockSizeLimit,blockSize);
         this.blockSize = blockSize;
         this.blockSizeLimit = blockSizeLimit;
     }

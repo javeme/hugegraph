@@ -40,7 +40,8 @@ import java.util.Set;
 
 public class ShortestDistanceVertexProgram extends StaticVertexProgram<Long> {
 
-    private static final Logger log = LoggerFactory.getLogger(ShortestDistanceVertexProgram.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ShortestDistanceVertexProgram.class);
 
     private MessageScope.Local<Long> incidentMessageScope;
 
@@ -53,8 +54,7 @@ public class ShortestDistanceVertexProgram extends StaticVertexProgram<Long> {
     private long seed;
     private String weightProperty;
 
-    private static final Set<VertexComputeKey> COMPUTE_KEYS =
-            new HashSet<>(Arrays.asList(VertexComputeKey.of(DISTANCE, false)));
+    private static final Set<VertexComputeKey> COMPUTE_KEYS = new HashSet<>(Arrays.asList(VertexComputeKey.of(DISTANCE, false)));
 
     private ShortestDistanceVertexProgram() {
 
@@ -65,8 +65,7 @@ public class ShortestDistanceVertexProgram extends StaticVertexProgram<Long> {
         maxDepth = configuration.getInt(MAX_DEPTH);
         seed = configuration.getLong(SEED);
         weightProperty = configuration.getString(WEIGHT_PROPERTY, "distance");
-        incidentMessageScope =
-                MessageScope.Local.of(__::inE, (msg, edge) -> msg + edge.<Integer> value(weightProperty));
+        incidentMessageScope = MessageScope.Local.of(__::inE, (msg, edge) -> msg + edge.<Integer>value(weightProperty));
         log.debug("Loaded maxDepth={}", maxDepth);
     }
 
@@ -130,7 +129,8 @@ public class ShortestDistanceVertexProgram extends StaticVertexProgram<Long> {
 
             VertexProperty<Long> currentShortestVP = vertex.property(DISTANCE);
 
-            if (!currentShortestVP.isPresent() || currentShortestVP.value() > shortestDistanceSeenOnThisIteration) {
+            if (!currentShortestVP.isPresent() ||
+                    currentShortestVP.value() > shortestDistanceSeenOnThisIteration) {
                 // First/shortest distance seen by this vertex: store it and forward to neighbors
                 vertex.property(VertexProperty.Cardinality.single, DISTANCE, shortestDistanceSeenOnThisIteration);
                 messenger.sendMessage(incidentMessageScope, shortestDistanceSeenOnThisIteration);

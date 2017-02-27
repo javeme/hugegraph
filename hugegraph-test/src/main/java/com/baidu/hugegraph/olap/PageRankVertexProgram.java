@@ -45,6 +45,7 @@ import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils;
  */
 public class PageRankVertexProgram extends StaticVertexProgram<Double> {
 
+
     public static final String PAGE_RANK = "hugegraph.pageRank.pageRank";
     public static final String OUTGOING_EDGE_COUNT = "hugegraph.pageRank.edgeCount";
 
@@ -59,8 +60,7 @@ public class PageRankVertexProgram extends StaticVertexProgram<Double> {
     private MessageScope.Local<Double> outE = MessageScope.Local.of(__::outE);
     private MessageScope.Local<Double> inE = MessageScope.Local.of(__::inE);
 
-    private static final Set<VertexComputeKey> COMPUTE_KEYS =
-            ImmutableSet.of(VertexComputeKey.of(PAGE_RANK, false), VertexComputeKey.of(OUTGOING_EDGE_COUNT, false));
+    private static final Set<VertexComputeKey> COMPUTE_KEYS = ImmutableSet.of(VertexComputeKey.of(PAGE_RANK, false), VertexComputeKey.of(OUTGOING_EDGE_COUNT, false));
 
     @Override
     public void loadState(final Graph graph, final Configuration configuration) {
@@ -98,9 +98,9 @@ public class PageRankVertexProgram extends StaticVertexProgram<Double> {
             messenger.sendMessage(outE, initialPageRank / edgeCount);
         } else {
             double newPageRank = IteratorUtils.stream(messenger.receiveMessages()).reduce(0D, (a, b) -> a + b);
-            newPageRank = (dampingFactor * newPageRank) + ((1D - dampingFactor) / vertexCount);
+            newPageRank =  (dampingFactor * newPageRank) + ((1D - dampingFactor) / vertexCount);
             vertex.property(VertexProperty.Cardinality.single, PAGE_RANK, newPageRank);
-            messenger.sendMessage(outE, newPageRank / vertex.<Double> value(OUTGOING_EDGE_COUNT));
+            messenger.sendMessage(outE, newPageRank / vertex.<Double>value(OUTGOING_EDGE_COUNT));
         }
     }
 

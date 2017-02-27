@@ -68,12 +68,11 @@ public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
 
     protected IndexRemoveJob(IndexRemoveJob copy) {
         super(copy);
-        if (copy.graph.isProvided())
-            this.graph.setGraph(copy.graph.get());
+        if (copy.graph.isProvided()) this.graph.setGraph(copy.graph.get());
     }
 
     public IndexRemoveJob(final HugeGraph graph, final String indexName, final String indexType) {
-        super(indexName, indexType);
+        super(indexName,indexType);
         this.graph.setGraph(graph);
     }
 
@@ -99,39 +98,35 @@ public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
     @Override
     protected void validateIndexStatus() {
         if (index instanceof RelationTypeIndex) {
-            // Nothing specific to be done
+            //Nothing specific to be done
         } else if (index instanceof HugeGraphIndex) {
-            HugeGraphIndex gindex = (HugeGraphIndex) index;
+            HugeGraphIndex gindex = (HugeGraphIndex)index;
             if (gindex.isMixedIndex())
-                throw new UnsupportedOperationException("Cannot remove mixed indexes through HugeGraph. This can "
-                        + "only be accomplished in the indexing system directly.");
-            CompositeIndexType indexType = (CompositeIndexType) mgmt.getSchemaVertex(index).asIndexType();
+                throw new UnsupportedOperationException("Cannot remove mixed indexes through HugeGraph. This can " +
+                        "only be accomplished in the indexing system directly.");
+            CompositeIndexType indexType = (CompositeIndexType)mgmt.getSchemaVertex(index).asIndexType();
             graphIndexId = indexType.getID();
-        } else
-            throw new UnsupportedOperationException("Unsupported index found: " + index);
+        } else throw new UnsupportedOperationException("Unsupported index found: "+index);
 
-        // Must be a relation type index or a composite graph index
+        //Must be a relation type index or a composite graph index
         HugeGraphSchemaVertex schemaVertex = mgmt.getSchemaVertex(index);
         SchemaStatus actualStatus = schemaVertex.getStatus();
-        Preconditions.checkArgument(actualStatus == SchemaStatus.DISABLED,
-                "The index [%s] must be disabled before it can be removed", indexName);
+        Preconditions.checkArgument(actualStatus==SchemaStatus.DISABLED,"The index [%s] must be disabled before it can be removed",indexName);
     }
 
     @Override
     public void process(StaticBuffer key, Map<SliceQuery, EntryList> entries, ScanMetrics metrics) {
-        // The queries are already tailored enough => everything should be removed
+        //The queries are already tailored enough => everything should be removed
         try {
             BackendTransaction mutator = writeTx.getTxHandle();
             final List<Entry> deletions;
-            if (entries.size() == 1)
-                deletions = Iterables.getOnlyElement(entries.values());
+            if (entries.size()==1) deletions = Iterables.getOnlyElement(entries.values());
             else {
-                int size =
-                        IteratorUtils.stream(entries.values().iterator()).map(e -> e.size()).reduce(0, (x, y) -> x + y);
+                int size = IteratorUtils.stream(entries.values().iterator()).map( e -> e.size()).reduce(0, (x,y) -> x+y);
                 deletions = new ArrayList<>(size);
                 entries.values().forEach(e -> deletions.addAll(e));
             }
-            metrics.incrementCustom(DELETED_RECORDS_COUNT, deletions.size());
+            metrics.incrementCustom(DELETED_RECORDS_COUNT,deletions.size());
             if (isRelationTypeIndex()) {
                 mutator.mutateEdges(key, KCVSCache.NO_ADDITIONS, deletions);
             } else {
@@ -148,18 +143,16 @@ public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
     @Override
     public List<SliceQuery> getQueries() {
         if (isGlobalGraphIndex()) {
-            // Everything
+            //Everything
             return ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)));
         } else {
-            RelationTypeIndexWrapper wrapper = (RelationTypeIndexWrapper) index;
+            RelationTypeIndexWrapper wrapper = (RelationTypeIndexWrapper)index;
             InternalRelationType wrappedType = wrapper.getWrappedType();
-            Direction direction = null;
-            for (Direction dir : Direction.values())
-                if (wrappedType.isUnidirected(dir))
-                    direction = dir;
-            assert direction != null;
+            Direction direction=null;
+            for (Direction dir : Direction.values()) if (wrappedType.isUnidirected(dir)) direction=dir;
+            assert direction!=null;
 
-            StandardHugeGraphTx tx = (StandardHugeGraphTx) graph.get().buildTransaction().readOnly().start();
+            StandardHugeGraphTx tx = (StandardHugeGraphTx)graph.get().buildTransaction().readOnly().start();
             try {
                 QueryContainer qc = new QueryContainer(tx);
                 qc.addQuery().type(wrappedType).direction(direction).relations();
@@ -173,7 +166,7 @@ public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
     @Override
     public Predicate<StaticBuffer> getKeyFilter() {
         if (isGlobalGraphIndex()) {
-            assert graphIndexId > 0;
+            assert graphIndexId>0;
             return (k -> {
                 try {
                     return indexSerializer.getIndexIdFromKey(k) == graphIndexId;
@@ -185,10 +178,8 @@ public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
         } else {
             return buffer -> {
                 long vertexId = idManager.getKeyID(buffer);
-                if (IDManager.VertexIDType.Invisible.is(vertexId))
-                    return false;
-                else
-                    return true;
+                if (IDManager.VertexIDType.Invisible.is(vertexId)) return false;
+                else return true;
             };
         }
     }

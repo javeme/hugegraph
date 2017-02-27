@@ -32,10 +32,8 @@ public class KeyColumn {
     }
 
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (!getClass().isInstance(other))
-            return false;
+        if (this == other) return true;
+        else if (!getClass().isInstance(other)) return false;
         KeyColumn oth = (KeyColumn) other;
         return key == oth.key && column == oth.column;
     }

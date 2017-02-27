@@ -35,7 +35,9 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
     private int size;
     private int numberOfCompactions;
 
+
     private boolean isIterating;
+
 
     public RandomRemovalList() {
         this(10);
@@ -58,16 +60,14 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
     @Override
     public boolean add(T obj) {
         Preconditions.checkNotNull(obj, "Random Removal lists only contain non-null elements");
-        Preconditions.checkArgument(!isIterating,
-                "Cannot add to a random removal list while it is being iterated over");
+        Preconditions.checkArgument(!isIterating, "Cannot add to a random removal list while it is being iterated over");
         size++;
         return list.add(obj);
     }
 
     public T getRandom() {
         assert size >= 0;
-        if (size == 0)
-            throw new NoSuchElementException("List is empty");
+        if (size == 0) throw new NoSuchElementException("List is empty");
         int numTries = 0;
         T element = null;
         int pos = -1;
@@ -81,11 +81,10 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
             size--;
             return element;
         } else {
-            // Compact list
+            //Compact list
             List<T> newlist = new ArrayList<T>((int) Math.ceil(fillFactor * size));
             for (T obj : list) {
-                if (obj != null)
-                    newlist.add(obj);
+                if (obj != null) newlist.add(obj);
             }
             list = newlist;
             numberOfCompactions++;
@@ -113,11 +112,11 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
     public boolean addAll(Collection<? extends T> c) {
         boolean ret = true;
         for (T obj : c) {
-            if (!add(obj))
-                ret = false;
+            if (!add(obj)) ret = false;
         }
         return ret;
     }
+
 
     @Override
     public void clear() {
@@ -128,8 +127,7 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
 
     @Override
     public boolean contains(Object o) {
-        if (o == null)
-            return false;
+        if (o == null) return false;
         return list.contains(o);
     }
 
@@ -137,8 +135,7 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
     public boolean containsAll(Collection<?> c) {
         boolean ret = true;
         for (Object obj : c) {
-            if (!contains(obj))
-                ret = false;
+            if (!contains(obj)) ret = false;
         }
         return ret;
     }
@@ -189,5 +186,6 @@ public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
     public <E> E[] toArray(E[] a) {
         throw new UnsupportedOperationException();
     }
+
 
 }

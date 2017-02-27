@@ -20,7 +20,8 @@ import com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public enum ModifierType {
-    CONSISTENCY(TypeDefinitionCategory.CONSISTENCY_LEVEL), TTL(TypeDefinitionCategory.TTL);
+    CONSISTENCY(TypeDefinitionCategory.CONSISTENCY_LEVEL),
+    TTL(TypeDefinitionCategory.TTL);
 
     private final TypeDefinitionCategory category;
 

@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ import java.io.IOException;
 import org.apache.hadoop.mapreduce.Job;
 
 /**
- * Configures a Job a mapreduce jar and/or additional classpath elements hosted in the Hadoop DistributedCache.
+ * Configures a Job a mapreduce jar and/or additional classpath elements hosted
+ * in the Hadoop DistributedCache.
  */
 public interface JobClasspathConfigurer {
 

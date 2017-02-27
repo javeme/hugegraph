@@ -30,7 +30,8 @@ public class ElasticsearchRunner extends DaemonRunner<ElasticsearchStatus> {
 
     private final String homedir;
 
-    private static final Logger log = LoggerFactory.getLogger(ElasticsearchRunner.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ElasticsearchRunner.class);
 
     public static final String ES_PID_FILE = "/tmp/hugegraph-test-es.pid";
     private String configFile = "elasticsearch.yml";
@@ -47,6 +48,7 @@ public class ElasticsearchRunner extends DaemonRunner<ElasticsearchStatus> {
         this(esHome);
         this.configFile = configFile;
     }
+
 
     @Override
     protected String getDaemonShortName() {
@@ -89,8 +91,7 @@ public class ElasticsearchRunner extends DaemonRunner<ElasticsearchStatus> {
             FileUtils.deleteDirectory(logs);
         }
 
-        runCommand(homedir + File.separator + "bin/elasticsearch", "-d", "-p", ES_PID_FILE,
-                "-Des.config=" + homedir + File.separator + "config" + File.separator + configFile);
+        runCommand(homedir + File.separator + "bin/elasticsearch", "-d", "-p", ES_PID_FILE, "-Des.config=" + homedir + File.separator + "config" + File.separator + configFile);
         try {
             watchLog(" started", 60L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -110,8 +111,8 @@ public class ElasticsearchRunner extends DaemonRunner<ElasticsearchStatus> {
         long durationMS = TimeUnit.MILLISECONDS.convert(duration, unit);
         long elapsedMS;
 
-        File logFile = new File(homedir + File.separator + "target" + File.separator + "es-logs" + File.separator
-                + "elasticsearch.log");
+        File logFile = new File(homedir + File.separator + "target" + File.separator
+                + "es-logs" + File.separator + "elasticsearch.log");
 
         log.info("Watching ES logfile {} for {} token", logFile, suffix);
 

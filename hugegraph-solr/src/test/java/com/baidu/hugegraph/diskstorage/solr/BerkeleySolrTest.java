@@ -28,11 +28,11 @@ public class BerkeleySolrTest extends SolrHugeGraphIndexTest {
     @Override
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = getBerkeleyJEConfiguration();
-        // Add index
-        config.set(INDEX_BACKEND, "solr", INDEX);
+        //Add index
+        config.set(INDEX_BACKEND,"solr",INDEX);
         config.set(SolrIndex.ZOOKEEPER_URL, SolrRunner.getMiniCluster().getZkServer().getZkAddress(), INDEX);
         config.set(SolrIndex.WAIT_SEARCHER, true, INDEX);
-        // TODO: set SOLR specific config options
+        //TODO: set SOLR specific config options
         return config.getConfiguration();
     }
 

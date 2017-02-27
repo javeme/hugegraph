@@ -26,7 +26,7 @@ import com.baidu.hugegraph.testcategory.PerformanceTests;
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
-@Category({ PerformanceTests.class })
+@Category({PerformanceTests.class})
 public class EmbeddedGraphConcurrentTest extends HugeGraphConcurrentTest {
 
     @BeforeClass

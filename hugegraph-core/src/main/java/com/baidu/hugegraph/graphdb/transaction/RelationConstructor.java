@@ -41,8 +41,7 @@ public class RelationConstructor {
         return tx.getEdgeSerializer().readRelation(data, false, tx);
     }
 
-    public static Iterable<HugeGraphRelation> readRelation(final InternalVertex vertex, final Iterable<Entry> data,
-            final StandardHugeGraphTx tx) {
+    public static Iterable<HugeGraphRelation> readRelation(final InternalVertex vertex, final Iterable<Entry> data, final StandardHugeGraphTx tx) {
         return new Iterable<HugeGraphRelation>() {
             @Override
             public Iterator<HugeGraphRelation> iterator() {
@@ -58,13 +57,13 @@ public class RelationConstructor {
 
                     @Override
                     public HugeGraphRelation next() {
-                        current = readRelation(vertex, iter.next(), tx);
+                        current = readRelation(vertex,iter.next(),tx);
                         return current;
                     }
 
                     @Override
                     public void remove() {
-                        Preconditions.checkState(current != null);
+                        Preconditions.checkState(current!=null);
                         current.remove();
                     }
                 };
@@ -72,22 +71,22 @@ public class RelationConstructor {
         };
     }
 
-    public static InternalRelation readRelation(final InternalVertex vertex, final Entry data,
-            final StandardHugeGraphTx tx) {
+    public static InternalRelation readRelation(final InternalVertex vertex, final Entry data, final StandardHugeGraphTx tx) {
         RelationCache relation = tx.getEdgeSerializer().readRelation(data, true, tx);
-        return readRelation(vertex, relation, data, tx, tx);
+        return readRelation(vertex,relation,data,tx,tx);
     }
 
     public static InternalRelation readRelation(final InternalVertex vertex, final Entry data,
-            final EdgeSerializer serializer, final TypeInspector types, final VertexFactory vertexFac) {
+                                                final EdgeSerializer serializer, final TypeInspector types,
+                                                final VertexFactory vertexFac) {
         RelationCache relation = serializer.readRelation(data, true, types);
-        return readRelation(vertex, relation, data, types, vertexFac);
+        return readRelation(vertex,relation,data,types,vertexFac);
     }
+
 
     private static InternalRelation readRelation(final InternalVertex vertex, final RelationCache relation,
-            final Entry data, final TypeInspector types, final VertexFactory vertexFac) {
-        InternalRelationType type =
-                TypeUtil.getBaseType((InternalRelationType) types.getExistingRelationType(relation.typeId));
+                                         final Entry data, final TypeInspector types, final VertexFactory vertexFac) {
+        InternalRelationType type = TypeUtil.getBaseType((InternalRelationType) types.getExistingRelationType(relation.typeId));
 
         if (type.isPropertyKey()) {
             assert relation.direction == Direction.OUT;

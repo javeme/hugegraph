@@ -33,12 +33,11 @@ public class TP3ProfileWrapper implements QueryProfiler {
 
     @Override
     public QueryProfiler addNested(String groupName) {
-        // Flatten out AND/OR nesting
-        if (groupName.equals(AND_QUERY) || groupName.equals(OR_QUERY))
-            return this;
+        //Flatten out AND/OR nesting
+        if (groupName.equals(AND_QUERY) || groupName.equals(OR_QUERY)) return this;
 
         int nextId = (subMetricCounter++);
-        MutableMetrics nested = new MutableMetrics(metrics.getId() + "." + groupName + "_" + nextId, groupName);
+        MutableMetrics nested = new MutableMetrics(metrics.getId()+"."+groupName+"_"+nextId,groupName);
         metrics.addNested(nested);
         return new TP3ProfileWrapper(nested);
     }
@@ -46,9 +45,8 @@ public class TP3ProfileWrapper implements QueryProfiler {
     @Override
     public QueryProfiler setAnnotation(String key, Object value) {
         Preconditions.checkArgument(key != null && value != null, "Key and value must be not null");
-        if (!(value instanceof String) && !(value instanceof Number))
-            value = value.toString();
-        metrics.setAnnotation(key, value);
+        if (!(value instanceof String) && !(value instanceof Number)) value = value.toString();
+        metrics.setAnnotation(key,value);
         return this;
     }
 
@@ -64,6 +62,6 @@ public class TP3ProfileWrapper implements QueryProfiler {
 
     @Override
     public void setResultSize(long size) {
-        metrics.incrementCount(TraversalMetrics.ELEMENT_COUNT_ID, size);
+        metrics.incrementCount(TraversalMetrics.ELEMENT_COUNT_ID,size);
     }
 }

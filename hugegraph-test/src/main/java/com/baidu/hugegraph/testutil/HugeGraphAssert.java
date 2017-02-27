@@ -33,41 +33,31 @@ public class HugeGraphAssert {
         org.junit.Assert.assertEquals(expected, size(object));
     }
 
-    public static <V extends Element> void assertEmpty(Object object) {
+    public static<V extends Element> void assertEmpty(Object object) {
         org.junit.Assert.assertTrue(isEmpty(object));
     }
 
-    public static <V extends Element> void assertNotEmpty(Object object) {
+    public static<V extends Element> void assertNotEmpty(Object object) {
         org.junit.Assert.assertFalse(isEmpty(object));
     }
 
     public static int size(Object obj) {
         Preconditions.checkArgument(obj != null);
-        if (obj instanceof Traversal)
-            return size(((Traversal) obj).toList());
-        else if (obj instanceof Collection)
-            return ((Collection) obj).size();
-        else if (obj instanceof Iterable)
-            return Iterables.size((Iterable) obj);
-        else if (obj instanceof Iterator)
-            return Iterators.size((Iterator) obj);
-        else if (obj.getClass().isArray())
-            return Array.getLength(obj);
+        if (obj instanceof Traversal) return size(((Traversal) obj).toList());
+        else if (obj instanceof Collection) return ((Collection)obj).size();
+        else if (obj instanceof Iterable) return Iterables.size((Iterable) obj);
+        else if (obj instanceof Iterator) return Iterators.size((Iterator)obj);
+        else if (obj.getClass().isArray()) return Array.getLength(obj);
         throw new IllegalArgumentException("Cannot determine size of: " + obj);
     }
 
     public static boolean isEmpty(Object obj) {
         Preconditions.checkArgument(obj != null);
-        if (obj instanceof Traversal)
-            return !((Traversal) obj).hasNext();
-        else if (obj instanceof Collection)
-            return ((Collection) obj).isEmpty();
-        else if (obj instanceof Iterable)
-            return Iterables.isEmpty((Iterable) obj);
-        else if (obj instanceof Iterator)
-            return !((Iterator) obj).hasNext();
-        else if (obj.getClass().isArray())
-            return Array.getLength(obj) == 0;
+        if (obj instanceof Traversal) return !((Traversal) obj).hasNext();
+        else if (obj instanceof Collection) return ((Collection)obj).isEmpty();
+        else if (obj instanceof Iterable) return Iterables.isEmpty((Iterable)obj);
+        else if (obj instanceof Iterator) return !((Iterator)obj).hasNext();
+        else if (obj.getClass().isArray()) return Array.getLength(obj)==0;
         throw new IllegalArgumentException("Cannot determine size of: " + obj);
     }
 

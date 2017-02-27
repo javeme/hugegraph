@@ -20,6 +20,9 @@ package com.baidu.hugegraph.diskstorage.configuration;
 public interface SystemConfiguration extends Configuration {
 
     @Override
-    public SystemConfiguration restrictTo(final String...umbrellaElements);
+    public SystemConfiguration restrictTo(final String... umbrellaElements);
+
+
+
 
 }

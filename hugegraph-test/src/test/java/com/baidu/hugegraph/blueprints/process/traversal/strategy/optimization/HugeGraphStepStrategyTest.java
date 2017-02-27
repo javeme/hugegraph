@@ -78,8 +78,7 @@ public class HugeGraphStepStrategyTest extends AbstractGremlinProcessTest {
         assertEquals(HugeGraphStep.class, traversal.getSteps().get(2).getClass());
         assertEquals(1, ((HugeGraphStep) traversal.getSteps().get(2)).getHasContainers().size());
         assertEquals("name", ((HugeGraphStep<?, ?>) traversal.getSteps().get(2)).getHasContainers().get(0).getKey());
-        assertEquals("daniel",
-                ((HugeGraphStep<?, ?>) traversal.getSteps().get(2)).getHasContainers().get(0).getValue());
+        assertEquals("daniel", ((HugeGraphStep<?,?>) traversal.getSteps().get(2)).getHasContainers().get(0).getValue());
         assertEquals(HugeGraphStep.class, traversal.getEndStep().getClass());
     }
 

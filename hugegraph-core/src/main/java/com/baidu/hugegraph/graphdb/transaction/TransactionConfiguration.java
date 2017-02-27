@@ -37,13 +37,15 @@ public interface TransactionConfiguration extends BaseTransactionConfig {
      */
     public boolean hasAssignIDsImmediately();
 
+
     /**
-     * Whether the incident relation data on vertices is being externally pre-loaded. This causes the transaction to
-     * only return stub vertices and leave any data loading up to the caller.
-     * 
+     * Whether the incident relation data on vertices is being externally pre-loaded.
+     * This causes the transaction to only return stub vertices and leave any data loading
+     * up to the caller.
      * @return
      */
     public boolean hasPreloadedData();
+
 
     /**
      * Whether this transaction should be optimized for batch-loading, i.e. ingestion of lots of data.
@@ -54,17 +56,18 @@ public interface TransactionConfiguration extends BaseTransactionConfig {
 
     /**
      * Whether the graph transaction is configured to verify that a vertex with the id GIVEN BY THE USER actually exists
-     * in the database or not. In other words, it is verified that user provided vertex ids (through public APIs)
-     * actually exist.
+     * in the database or not.
+     * In other words, it is verified that user provided vertex ids (through public APIs) actually exist.
      *
      * @return True, if vertex existence is verified, else false
      */
     public boolean hasVerifyExternalVertexExistence();
 
     /**
-     * Whether the graph transaction is configured to verify that a vertex with the id actually exists in the database
-     * or not on every retrieval. In other words, it is always verified that a vertex for a given id exists, even if
-     * that id is retrieved internally (through private APIs).
+     * Whether the graph transaction is configured to verify that a vertex with the id actually exists
+     * in the database or not on every retrieval.
+     * In other words, it is always verified that a vertex for a given id exists, even if that id is retrieved internally
+     * (through private APIs).
      * <p/>
      * Hence, this is a defensive setting against data degradation, where edges and/or index entries might point to no
      * longer existing vertices. Use this setting with caution as it introduces additional overhead entailed by checking
@@ -96,33 +99,33 @@ public interface TransactionConfiguration extends BaseTransactionConfig {
     public boolean hasVerifyUniqueness();
 
     /**
-     * Whether this transaction loads all properties on a vertex when a single property is requested. This can be highly
-     * beneficial when additional properties are requested on the same vertex at a later time. For vertices with very
-     * many properties this might increase latencies of property fetching.
+     * Whether this transaction loads all properties on a vertex when a single property is requested. This can be highly beneficial
+     * when additional properties are requested on the same vertex at a later time. For vertices with very many properties
+     * this might increase latencies of property fetching.
      *
      * @return True, if this transaction pre-fetches all properties
      */
     public boolean hasPropertyPrefetching();
 
     /**
-     * Whether this transaction is only accessed by a single thread. If so, then certain data structures may be
-     * optimized for single threaded access since locking can be avoided.
+     * Whether this transaction is only accessed by a single thread.
+     * If so, then certain data structures may be optimized for single threaded access since locking can be avoided.
      *
      * @return
      */
     public boolean isSingleThreaded();
 
     /**
-     * Whether this transaction is bound to a running thread. If so, then elements in this transaction can expand their
-     * life cycle to the next transaction in the thread.
+     * Whether this transaction is bound to a running thread.
+     * If so, then elements in this transaction can expand their life cycle to the next transaction in the thread.
      *
      * @return
      */
     public boolean isThreadBound();
 
     /**
-     * The maximum number of recently-used vertices to cache in this transaction. The recently-used vertex cache can
-     * include both clean and dirty vertices.
+     * The maximum number of recently-used vertices to cache in this transaction.
+     * The recently-used vertex cache can include both clean and dirty vertices.
      *
      * @return
      */
@@ -143,24 +146,25 @@ public interface TransactionConfiguration extends BaseTransactionConfig {
     public long getIndexCacheWeight();
 
     /**
-     * The name of the log to be used for logging the mutations in this transaction. If the identifier is NULL the
-     * mutations will not be logged.
+     * The name of the log to be used for logging the mutations in this transaction.
+     * If the identifier is NULL the mutations will not be logged.
      *
      * @return
      */
     public String getLogIdentifier();
 
+
     /**
-     * Whether this transaction should throw an exception when a graph query is issued that cannot be answered with any
-     * existing index but instead requires a full graph-scan.
-     * 
+     * Whether this transaction should throw an exception when a graph query is issued that cannot be answered
+     * with any existing index but instead requires a full graph-scan.
      * @return
      */
     public boolean hasForceIndexUsage();
 
+
     /**
-     * Querying of partitioned vertices is restricted to the partitions returned by this method. If the return value has
-     * length 0 all partitions are queried (i.e. unrestricted).
+     * Querying of partitioned vertices is restricted to the partitions returned by this
+     * method. If the return value has length 0 all partitions are queried (i.e. unrestricted).
      *
      * @return
      */

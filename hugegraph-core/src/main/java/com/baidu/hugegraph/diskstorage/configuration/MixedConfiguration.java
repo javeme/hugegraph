@@ -38,48 +38,46 @@ public class MixedConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    public boolean has(ConfigOption option, String...umbrellaElements) {
-        String key = super.getPath(option, umbrellaElements);
-        if (option.isLocal() && local.get(key, option.getDatatype()) != null)
-            return true;
-        if (option.isGlobal() && global.get(key, option.getDatatype()) != null)
-            return true;
+    public boolean has(ConfigOption option, String... umbrellaElements) {
+        String key = super.getPath(option,umbrellaElements);
+        if (option.isLocal() && local.get(key,option.getDatatype())!=null) return true;
+        if (option.isGlobal() && global.get(key,option.getDatatype())!=null) return true;
         return false;
     }
 
     @Override
-    public <O> O get(ConfigOption<O> option, String...umbrellaElements) {
-        String key = super.getPath(option, umbrellaElements);
+    public<O> O get(ConfigOption<O> option, String... umbrellaElements) {
+        String key = super.getPath(option,umbrellaElements);
         Object result = null;
         if (option.isLocal()) {
-            result = local.get(key, option.getDatatype());
+            result = local.get(key,option.getDatatype());
         }
-        if (result == null && option.isGlobal()) {
-            result = global.get(key, option.getDatatype());
+        if (result==null && option.isGlobal()) {
+            result = global.get(key,option.getDatatype());
         }
         return option.get(result);
     }
 
     @Override
-    public Set<String> getContainedNamespaces(ConfigNamespace umbrella, String...umbrellaElements) {
+    public Set<String> getContainedNamespaces(ConfigNamespace umbrella, String... umbrellaElements) {
         Set<String> result = Sets.newHashSet();
-        for (ReadConfiguration config : new ReadConfiguration[] { global, local }) {
-            result.addAll(super.getContainedNamespaces(config, umbrella, umbrellaElements));
+        for (ReadConfiguration config : new ReadConfiguration[]{global,local}) {
+            result.addAll(super.getContainedNamespaces(config,umbrella,umbrellaElements));
         }
         return result;
     }
 
-    public Map<String, Object> getSubset(ConfigNamespace umbrella, String...umbrellaElements) {
-        Map<String, Object> result = Maps.newHashMap();
-        for (ReadConfiguration config : new ReadConfiguration[] { global, local }) {
-            result.putAll(super.getSubset(config, umbrella, umbrellaElements));
+    public Map<String,Object> getSubset(ConfigNamespace umbrella, String... umbrellaElements) {
+        Map<String,Object> result = Maps.newHashMap();
+        for (ReadConfiguration config : new ReadConfiguration[]{global,local}) {
+            result.putAll(super.getSubset(config,umbrella,umbrellaElements));
         }
         return result;
     }
 
     @Override
-    public Configuration restrictTo(String...umbrellaElements) {
-        return restrictTo(this, umbrellaElements);
+    public Configuration restrictTo(String... umbrellaElements) {
+        return restrictTo(this,umbrellaElements);
     }
 
     @Override

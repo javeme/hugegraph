@@ -16,8 +16,7 @@ package com.baidu.hugegraph.diskstorage;
 
 /**
  * Represents a block of ids. {@link #numIds()} return how many ids are in this block and {@link #getId(long)} retrieves
- * the id at the given position, where the position must be smaller than the number of ids in this block (similar to
- * array access).
+ * the id at the given position, where the position must be smaller than the number of ids in this block (similar to array access).
  * </p>
  * Any IDBlock implementation must be completely thread-safe.
  *

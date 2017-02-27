@@ -39,32 +39,27 @@ import java.util.List;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class HugeGraphStep<S, E extends Element> extends GraphStep<S, E>
-        implements HasStepFolder<S, E>, Profiling, HasContainerHolder {
+public class HugeGraphStep<S, E extends Element> extends GraphStep<S, E> implements HasStepFolder<S, E>, Profiling, HasContainerHolder {
 
     private final List<HasContainer> hasContainers = new ArrayList<>();
     private int limit = BaseQuery.NO_LIMIT;
     private List<OrderEntry> orders = new ArrayList<>();
     private QueryProfiler queryProfiler = QueryProfiler.NO_OP;
 
+
     public HugeGraphStep(final GraphStep<S, E> originalStep) {
-        super(originalStep.getTraversal(), originalStep.getReturnClass(), originalStep.isStartStep(),
-                originalStep.getIds());
+        super(originalStep.getTraversal(), originalStep.getReturnClass(), originalStep.isStartStep(), originalStep.getIds());
         originalStep.getLabels().forEach(this::addLabel);
         this.setIteratorSupplier(() -> {
             HugeGraphTransaction tx = HugeGraphTraversalUtil.getTx(traversal);
             HugeGraphQuery query = tx.query();
             for (HasContainer condition : hasContainers) {
-                query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()),
-                        condition.getValue());
+                query.has(condition.getKey(), HugeGraphPredicate.Converter.convert(condition.getBiPredicate()), condition.getValue());
             }
-            for (OrderEntry order : orders)
-                query.orderBy(order.key, order.order);
-            if (limit != BaseQuery.NO_LIMIT)
-                query.limit(limit);
+            for (OrderEntry order : orders) query.orderBy(order.key, order.order);
+            if (limit != BaseQuery.NO_LIMIT) query.limit(limit);
             ((GraphCentricQueryBuilder) query).profiler(queryProfiler);
-            return Vertex.class.isAssignableFrom(this.returnClass) ? query.vertices().iterator()
-                    : query.edges().iterator();
+            return Vertex.class.isAssignableFrom(this.returnClass) ? query.vertices().iterator() : query.edges().iterator();
         });
     }
 
@@ -108,3 +103,4 @@ public class HugeGraphStep<S, E extends Element> extends GraphStep<S, E>
         this.addAll(Collections.singleton(hasContainer));
     }
 }
+

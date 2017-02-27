@@ -25,6 +25,7 @@ public class SchemaElementDefinition {
     private final String name;
     private final long id;
 
+
     public SchemaElementDefinition(String name, long id) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name));
         this.name = name;
@@ -39,6 +40,7 @@ public class SchemaElementDefinition {
         return id;
     }
 
+
     @Override
     public int hashCode() {
         return name.hashCode();
@@ -46,11 +48,9 @@ public class SchemaElementDefinition {
 
     @Override
     public boolean equals(Object oth) {
-        if (this == oth)
-            return true;
-        else if (oth == null || !getClass().isInstance(oth))
-            return false;
-        return name.equals(((SchemaElementDefinition) oth).name);
+        if (this==oth) return true;
+        else if (oth==null || !getClass().isInstance(oth)) return false;
+        return name.equals(((SchemaElementDefinition)oth).name);
     }
 
     @Override

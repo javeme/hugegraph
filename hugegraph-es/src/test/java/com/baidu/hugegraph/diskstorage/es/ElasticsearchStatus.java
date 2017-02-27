@@ -23,7 +23,8 @@ import java.io.*;
 
 public class ElasticsearchStatus {
 
-    private static final Logger log = LoggerFactory.getLogger(ElasticsearchStatus.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ElasticsearchStatus.class);
 
     private final File file;
     private final int pid;

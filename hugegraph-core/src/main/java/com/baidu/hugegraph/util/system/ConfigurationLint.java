@@ -30,7 +30,8 @@ import java.util.*;
 
 public class ConfigurationLint {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationLint.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ConfigurationLint.class);
 
     public static void main(String args[]) throws IOException {
         if (1 != args.length) {
@@ -62,8 +63,8 @@ public class ConfigurationLint {
             throw new IOException(e);
         }
 
-        // new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,
-        // , BasicConfiguration.Restriction.NONE);
+//        new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,
+//                , BasicConfiguration.Restriction.NONE);
 
         Iterator<String> iter = apc.getKeys();
 
@@ -88,8 +89,8 @@ public class ConfigurationLint {
                     opt = (ConfigOption<?>) pid.element;
                 } catch (RuntimeException re) {
                     // This shouldn't happen given the preceding check, but catch it anyway
-                    log.warn("Config key {} maps to the element {}, but it could not be cast to an option", key,
-                            pid.element, re);
+                    log.warn("Config key {} maps to the element {}, but it could not be cast to an option",
+                            key, pid.element, re);
                     continue;
                 }
                 try {
@@ -97,14 +98,15 @@ public class ConfigurationLint {
                     opt.verify(o);
                     keysVerified++;
                 } catch (RuntimeException re) {
-                    log.warn("Config key {} is recognized, but its value {} could not be validated", key,
-                            value /* , re */);
+                    log.warn("Config key {} is recognized, but its value {} could not be validated",
+                            key, value /*, re*/);
                     log.debug("Validation exception on {}={} follows", key, value, re);
                 }
             } catch (RuntimeException re) {
                 log.warn("Unknown config key {}", key);
             }
         }
+
 
         return new Status(totalKeys, totalKeys - keysVerified);
     }
@@ -130,9 +132,7 @@ public class ConfigurationLint {
             if (0 == errors) {
                 return String.format("[ConfigurationLint.Status: OK: %d settings validated]", total);
             } else {
-                return String.format(
-                        "[ConfigurationLint.Status: WARNING: %d settings failed to validate out of %d total]", errors,
-                        total);
+                return String.format("[ConfigurationLint.Status: WARNING: %d settings failed to validate out of %d total]", errors, total);
             }
         }
     }

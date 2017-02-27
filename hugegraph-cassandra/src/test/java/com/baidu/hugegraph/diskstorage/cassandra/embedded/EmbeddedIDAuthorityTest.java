@@ -28,7 +28,6 @@ public class EmbeddedIDAuthorityTest extends IDAuthorityTest {
 
     @Override
     public KeyColumnValueStoreManager openStorageManager() throws BackendException {
-        return new CassandraEmbeddedStoreManager(
-                CassandraStorageSetup.getEmbeddedConfiguration(getClass().getSimpleName()));
+        return new CassandraEmbeddedStoreManager(CassandraStorageSetup.getEmbeddedConfiguration(getClass().getSimpleName()));
     }
 }

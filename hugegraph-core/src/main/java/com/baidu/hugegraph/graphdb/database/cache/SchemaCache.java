@@ -19,15 +19,14 @@ import com.baidu.hugegraph.graphdb.types.system.BaseRelationType;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * This interface defines the methods that a SchemaCache must implement. A SchemaCache is maintained by the HugeGraph
- * graph database in order to make the frequent lookups of schema vertices and their attributes more efficient through a
- * dedicated caching layer. Schema vertices are type vertices and related vertices.
+ * This interface defines the methods that a SchemaCache must implement. A SchemaCache is maintained by the HugeGraph graph
+ * database in order to make the frequent lookups of schema vertices and their attributes more efficient through a dedicated
+ * caching layer. Schema vertices are type vertices and related vertices.
  *
  * The SchemaCache speeds up two types of lookups:
  * <ul>
- * <li>Retrieving a type by its name (index lookup)</li>
- * <li>Retrieving the relations of a schema vertex for predefined
- * {@link com.baidu.hugegraph.graphdb.types.system.SystemRelationType}s</li>
+ *     <li>Retrieving a type by its name (index lookup)</li>
+ *     <li>Retrieving the relations of a schema vertex for predefined {@link com.baidu.hugegraph.graphdb.types.system.SystemRelationType}s</li>
  * </ul>
  *
  * @author Matthias Broecheler (me@matthiasb.com)

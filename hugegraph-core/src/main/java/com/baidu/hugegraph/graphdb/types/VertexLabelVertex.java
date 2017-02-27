@@ -23,6 +23,7 @@ import com.baidu.hugegraph.graphdb.types.vertices.HugeGraphSchemaVertex;
  */
 public class VertexLabelVertex extends HugeGraphSchemaVertex implements InternalVertexLabel {
 
+
     public VertexLabelVertex(StandardHugeGraphTx tx, long id, byte lifecycle) {
         super(tx, id, lifecycle);
     }

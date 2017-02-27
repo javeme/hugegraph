@@ -27,8 +27,8 @@ import java.util.Map;
 public interface OrderedKeyValueStoreManager extends KeyValueStoreManager {
 
     /**
-     * Opens an ordered database by the given name. If the database does not exist, it is created. If it has already
-     * been opened, the existing handle is returned.
+     * Opens an ordered database by the given name. If the database does not exist, it is
+     * created. If it has already been opened, the existing handle is returned.
      * <p/>
      *
      * @param name Name of database
@@ -38,6 +38,7 @@ public interface OrderedKeyValueStoreManager extends KeyValueStoreManager {
      */
     @Override
     public OrderedKeyValueStore openDatabase(String name) throws BackendException;
+
 
     /**
      * Executes multiple mutations at once. Each store (identified by a string name) in the mutations map is associated

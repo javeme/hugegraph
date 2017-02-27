@@ -25,4 +25,5 @@ public interface InternalVertexLabel extends VertexLabel {
 
     public int getTTL();
 
+
 }

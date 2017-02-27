@@ -32,8 +32,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A id placement strategy that assigns all vertices created in a transaction to the same partition id. The partition id
- * is selected randomly from a set of partition ids that are retrieved upon initialization.
+ * A id placement strategy that assigns all vertices created in a transaction
+ * to the same partition id. The partition id is selected randomly from a set
+ * of partition ids that are retrieved upon initialization.
  *
  * The number of partition ids to choose from is configurable.
  *
@@ -42,11 +43,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @PreInitializeConfigOptions
 public class SimpleBulkPlacementStrategy implements IDPlacementStrategy {
 
-    private static final Logger log = LoggerFactory.getLogger(SimpleBulkPlacementStrategy.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(SimpleBulkPlacementStrategy.class);
 
-    public static final ConfigOption<Integer> CONCURRENT_PARTITIONS =
-            new ConfigOption<Integer>(GraphDatabaseConfiguration.IDS_NS, "num-partitions",
-                    "Number of partition block to allocate for placement of vertices", ConfigOption.Type.MASKABLE, 10);
+    public static final ConfigOption<Integer> CONCURRENT_PARTITIONS = new ConfigOption<Integer>(GraphDatabaseConfiguration.IDS_NS,
+            "num-partitions","Number of partition block to allocate for placement of vertices", ConfigOption.Type.MASKABLE,10);
 
     public static final int PARTITION_FINDING_ATTEMPTS = 1000;
 
@@ -59,7 +60,7 @@ public class SimpleBulkPlacementStrategy implements IDPlacementStrategy {
     public SimpleBulkPlacementStrategy(int concurrentPartitions) {
         Preconditions.checkArgument(concurrentPartitions > 0);
         currentPartitions = new int[concurrentPartitions];
-        exhaustedPartitions = Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
+        exhaustedPartitions = Collections.newSetFromMap(new ConcurrentHashMap<Integer,Boolean>());
     }
 
     public SimpleBulkPlacementStrategy(Configuration config) {
@@ -71,23 +72,20 @@ public class SimpleBulkPlacementStrategy implements IDPlacementStrategy {
     }
 
     private final void updateElement(int index) {
-        Preconditions.checkArgument(localPartitionIdRanges != null && !localPartitionIdRanges.isEmpty(),
-                "Local partition id ranges have not been initialized");
+        Preconditions.checkArgument(localPartitionIdRanges!=null && !localPartitionIdRanges.isEmpty(),"Local partition id ranges have not been initialized");
         int newPartition;
         int attempts = 0;
         do {
             attempts++;
             newPartition = localPartitionIdRanges.get(random.nextInt(localPartitionIdRanges.size())).getRandomID();
-            if (attempts > PARTITION_FINDING_ATTEMPTS)
-                throw new IDPoolExhaustedException("Could not find non-exhausted partition");
+            if (attempts>PARTITION_FINDING_ATTEMPTS) throw new IDPoolExhaustedException("Could not find non-exhausted partition");
         } while (exhaustedPartitions.contains(newPartition));
         currentPartitions[index] = newPartition;
-        log.debug("Setting partition at index [{}] to: {}", index, newPartition);
+        log.debug("Setting partition at index [{}] to: {}",index,newPartition);
     }
 
     @Override
-    public void injectIDManager(IDManager idManager) {
-    } // We don't need the IDManager here
+    public void injectIDManager(IDManager idManager) {} //We don't need the IDManager here
 
     @Override
     public int getPartition(InternalElement element) {
@@ -109,8 +107,8 @@ public class SimpleBulkPlacementStrategy implements IDPlacementStrategy {
 
     @Override
     public void setLocalPartitionBounds(List<PartitionIDRange> localPartitionIdRanges) {
-        Preconditions.checkArgument(localPartitionIdRanges != null && !localPartitionIdRanges.isEmpty());
-        this.localPartitionIdRanges = Lists.newArrayList(localPartitionIdRanges); // copy
+        Preconditions.checkArgument(localPartitionIdRanges!=null && !localPartitionIdRanges.isEmpty());
+        this.localPartitionIdRanges = Lists.newArrayList(localPartitionIdRanges); //copy
         for (int i = 0; i < currentPartitions.length; i++) {
             updateElement(i);
         }

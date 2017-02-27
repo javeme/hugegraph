@@ -26,21 +26,19 @@ import java.util.Map;
 public class ConfigNamespace extends ConfigElement {
 
     private final boolean isUmbrella;
-    private final Map<String, ConfigElement> children = Maps.newHashMap();
+    private final Map<String,ConfigElement> children = Maps.newHashMap();
 
     public ConfigNamespace(ConfigNamespace parent, String name, String description, boolean isUmbrella) {
-        super(parent, name, description);
-        this.isUmbrella = isUmbrella;
+        super(parent,name,description);
+        this.isUmbrella=isUmbrella;
     }
 
     public ConfigNamespace(ConfigNamespace parent, String name, String description) {
-        this(parent, name, description, false);
+        this(parent,name,description,false);
     }
 
     /**
-     * Wether this namespace is an umbrella namespace, that is, is expects immediate sub-namespaces which are user
-     * defined.
-     * 
+     * Wether this namespace is an umbrella namespace, that is, is expects immediate sub-namespaces which are user defined.
      * @return
      */
     public boolean isUmbrella() {
@@ -49,14 +47,11 @@ public class ConfigNamespace extends ConfigElement {
 
     /**
      * Whether this namespace or any parent namespace is an umbrella namespace.
-     * 
      * @return
      */
     public boolean hasUmbrella() {
-        if (isUmbrella())
-            return true;
-        if (isRoot())
-            return false;
+        if (isUmbrella()) return true;
+        if (isRoot()) return false;
         return getNamespace().hasUmbrella();
     }
 
@@ -67,12 +62,10 @@ public class ConfigNamespace extends ConfigElement {
 
     void registerChild(ConfigElement element) {
         Preconditions.checkNotNull(element);
-        Preconditions.checkArgument(element.getNamespace() == this,
-                "Configuration element registered with wrong namespace");
+        Preconditions.checkArgument(element.getNamespace()==this,"Configuration element registered with wrong namespace");
         Preconditions.checkArgument(!children.containsKey(element.getName()),
-                "A configuration element with the same name has already been added to this namespace: %s",
-                element.getName());
-        children.put(element.getName(), element);
+                "A configuration element with the same name has already been added to this namespace: %s",element.getName());
+        children.put(element.getName(),element);
     }
 
     public Iterable<ConfigElement> getChildren() {

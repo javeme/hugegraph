@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.graphdb.database.management;
 
+
 import com.baidu.hugegraph.core.schema.SchemaStatus;
 
 import java.time.Duration;
@@ -28,7 +29,8 @@ public class GraphIndexStatusReport {
     private final Duration elapsed;
 
     public GraphIndexStatusReport(boolean success, String indexName, SchemaStatus targetStatus,
-            Map<String, SchemaStatus> notConverged, Map<String, SchemaStatus> converged, Duration elapsed) {
+                   Map<String, SchemaStatus> notConverged,
+                   Map<String, SchemaStatus> converged, Duration elapsed) {
         this.success = success;
         this.indexName = indexName;
         this.targetStatus = targetStatus;
@@ -63,8 +65,13 @@ public class GraphIndexStatusReport {
 
     @Override
     public String toString() {
-        return "GraphIndexStatusReport[" + "success=" + success + ", indexName='" + indexName + '\'' + ", targetStatus="
-                + targetStatus + ", notConverged=" + notConverged + ", converged=" + converged + ", elapsed=" + elapsed
-                + ']';
+        return "GraphIndexStatusReport[" +
+                "success=" + success +
+                ", indexName='" + indexName + '\'' +
+                ", targetStatus=" + targetStatus +
+                ", notConverged=" + notConverged +
+                ", converged=" + converged +
+                ", elapsed=" + elapsed +
+                ']';
     }
 }

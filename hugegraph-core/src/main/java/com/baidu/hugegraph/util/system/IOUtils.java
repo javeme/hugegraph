@@ -43,8 +43,7 @@ public class IOUtils {
                 }
             }
         }
-        if (includeDir)
-            success = path.delete() && success;
+        if (includeDir) success = path.delete() && success;
         return success;
     }
 

@@ -46,7 +46,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ManagementLogger implements MessageReader {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagementLogger.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ManagementLogger.class);
 
     private static final Duration SLEEP_INTERVAL = Duration.ofMillis(100L);
     private static final Duration MAX_WAIT_TIME = Duration.ofSeconds(60L);
@@ -61,8 +62,7 @@ public class ManagementLogger implements MessageReader {
     private final TimestampProvider times;
 
     private final AtomicInteger evictionTriggerCounter = new AtomicInteger(0);
-    private final ConcurrentMap<Long, EvictionTrigger> evictionTriggerMap =
-            new ConcurrentHashMap<Long, EvictionTrigger>();
+    private final ConcurrentMap<Long,EvictionTrigger> evictionTriggerMap = new ConcurrentHashMap<Long,EvictionTrigger>();
 
     public ManagementLogger(StandardHugeGraph graph, Log sysLog, SchemaCache schemaCache, TimestampProvider times) {
         this.graph = graph;
@@ -79,45 +79,44 @@ public class ManagementLogger implements MessageReader {
         Serializer serializer = graph.getDataSerializer();
         MgmtLogType logType = serializer.readObjectNotNull(in, MgmtLogType.class);
         Preconditions.checkNotNull(logType);
-        if (logType == MgmtLogType.CACHED_TYPE_EVICTION) {
-            long evictionId = VariableLong.readPositive(in);
-            long numEvictions = VariableLong.readPositive(in);
-            for (int i = 0; i < numEvictions; i++) {
-                long typeId = VariableLong.readPositive(in);
-                schemaCache.expireSchemaElement(typeId);
-            }
-            Thread ack = new Thread(new SendAckOnTxClose(evictionId, senderId, graph.getOpenTransactions()));
-            ack.setDaemon(true);
-            ack.start();
+        if (logType==MgmtLogType.CACHED_TYPE_EVICTION) {
+                long evictionId = VariableLong.readPositive(in);
+                long numEvictions = VariableLong.readPositive(in);
+                for (int i = 0; i < numEvictions; i++) {
+                    long typeId = VariableLong.readPositive(in);
+                    schemaCache.expireSchemaElement(typeId);
+                }
+                Thread ack = new Thread(new SendAckOnTxClose(evictionId,senderId,graph.getOpenTransactions()));
+                ack.setDaemon(true);
+                ack.start();
         } else if (logType == MgmtLogType.CACHED_TYPE_EVICTION_ACK) {
-            String receiverId = serializer.readObjectNotNull(in, String.class);
-            long evictionId = VariableLong.readPositive(in);
-            if (receiverId.equals(graph.getConfiguration().getUniqueGraphId())) {
-                // Acknowledgements targeted at this instance
-                EvictionTrigger evictTrigger = evictionTriggerMap.get(evictionId);
-                if (evictTrigger != null) {
-                    evictTrigger.receivedAcknowledgement(senderId);
-                } else
-                    log.error("Could not find eviction trigger for {} from {}", evictionId, senderId);
-            }
+                String receiverId = serializer.readObjectNotNull(in,String.class);
+                long evictionId = VariableLong.readPositive(in);
+                if (receiverId.equals(graph.getConfiguration().getUniqueGraphId())) {
+                    //Acknowledgements targeted at this instance
+                    EvictionTrigger evictTrigger = evictionTriggerMap.get(evictionId);
+                    if (evictTrigger!=null) {
+                        evictTrigger.receivedAcknowledgement(senderId);
+                    } else log.error("Could not find eviction trigger for {} from {}",evictionId,senderId);
+                }
 
-        } else
-            assert logType == MgmtLogType.CONFIG_MUTATION;
+        } else assert logType == MgmtLogType.CONFIG_MUTATION;
 
     }
 
-    public void sendCacheEviction(Set<HugeGraphSchemaVertex> updatedTypes, Set<Callable<Boolean>> updatedTypeTriggers,
-            Set<String> openInstances) {
+    public void sendCacheEviction(Set<HugeGraphSchemaVertex> updatedTypes,
+                                             Set<Callable<Boolean>> updatedTypeTriggers,
+                                             Set<String> openInstances) {
         Preconditions.checkArgument(!openInstances.isEmpty());
         long evictionId = evictionTriggerCounter.incrementAndGet();
-        evictionTriggerMap.put(evictionId, new EvictionTrigger(evictionId, updatedTypeTriggers, openInstances));
+        evictionTriggerMap.put(evictionId,new EvictionTrigger(evictionId,updatedTypeTriggers,openInstances));
         DataOutput out = graph.getDataSerializer().getDataOutput(128);
         out.writeObjectNotNull(MgmtLogType.CACHED_TYPE_EVICTION);
-        VariableLong.writePositive(out, evictionId);
-        VariableLong.writePositive(out, updatedTypes.size());
+        VariableLong.writePositive(out,evictionId);
+        VariableLong.writePositive(out,updatedTypes.size());
         for (HugeGraphSchemaVertex type : updatedTypes) {
             assert type.hasId();
-            VariableLong.writePositive(out, type.longId());
+            VariableLong.writePositive(out,type.longId());
         }
         sysLog.add(out.getStaticBuffer());
     }
@@ -129,8 +128,7 @@ public class ManagementLogger implements MessageReader {
         final ImmutableSet<String> openInstances;
         final AtomicInteger ackCounter;
 
-        private EvictionTrigger(long evictionId, Set<Callable<Boolean>> updatedTypeTriggers,
-                Set<String> openInstances) {
+        private EvictionTrigger(long evictionId, Set<Callable<Boolean>> updatedTypeTriggers, Set<String> openInstances) {
             this.evictionId = evictionId;
             this.updatedTypeTriggers = updatedTypeTriggers;
             this.openInstances = ImmutableSet.copyOf(openInstances);
@@ -140,21 +138,19 @@ public class ManagementLogger implements MessageReader {
         void receivedAcknowledgement(String senderId) {
             if (openInstances.contains(senderId)) {
                 int countdown = ackCounter.decrementAndGet();
-                log.debug(
-                        "Received acknowledgement for eviction [{}] from senderID={} ({} more acks still outstanding)",
+                log.debug("Received acknowledgement for eviction [{}] from senderID={} ({} more acks still outstanding)",
                         evictionId, senderId, countdown);
-                if (countdown == 0) { // Trigger actions
+                if (countdown==0) { //Trigger actions
                     for (Callable<Boolean> trigger : updatedTypeTriggers) {
                         try {
                             boolean success = trigger.call();
                             assert success;
                         } catch (Throwable e) {
-                            log.error("Could not execute trigger [" + trigger.toString() + "] for eviction ["
-                                    + evictionId + "]", e);
+                            log.error("Could not execute trigger ["+trigger.toString()+"] for eviction ["+evictionId+"]",e);
                         }
                     }
-                    log.info("Received all acknowledgements for eviction [{}]", evictionId);
-                    evictionTriggerMap.remove(evictionId, this);
+                    log.info("Received all acknowledgements for eviction [{}]",evictionId);
+                    evictionTriggerMap.remove(evictionId,this);
                 }
             }
         }
@@ -174,7 +170,7 @@ public class ManagementLogger implements MessageReader {
 
         @Override
         public void run() {
-            // long startTime = Timestamps.MICRO.getTime();
+//            long startTime = Timestamps.MICRO.getTime();
             Timer t = times.getTimer().start();
             while (true) {
                 boolean txStillOpen = false;
@@ -187,42 +183,37 @@ public class ManagementLogger implements MessageReader {
                     }
                 }
                 if (!txStillOpen) {
-                    // Send ack and finish up
+                    //Send ack and finish up
                     DataOutput out = graph.getDataSerializer().getDataOutput(64);
                     out.writeObjectNotNull(MgmtLogType.CACHED_TYPE_EVICTION_ACK);
                     out.writeObjectNotNull(originId);
-                    VariableLong.writePositive(out, evictionId);
+                    VariableLong.writePositive(out,evictionId);
                     try {
                         sysLog.add(out.getStaticBuffer());
-                        log.debug("Sent {}: evictionID={} originID={}", MgmtLogType.CACHED_TYPE_EVICTION_ACK,
-                                evictionId, originId);
+                        log.debug("Sent {}: evictionID={} originID={}", MgmtLogType.CACHED_TYPE_EVICTION_ACK, evictionId, originId);
                     } catch (ResourceUnavailableException e) {
-                        // During shutdown, this event may be triggered but the log is already closed. The failure to
-                        // send the acknowledgement
-                        // can then be ignored
-                        log.warn("System log has already shut down. Did not sent {}: evictionID={} originID={}",
-                                MgmtLogType.CACHED_TYPE_EVICTION_ACK, evictionId, originId);
+                        //During shutdown, this event may be triggered but the log is already closed. The failure to send the acknowledgement
+                        //can then be ignored
+                        log.warn("System log has already shut down. Did not sent {}: evictionID={} originID={}",MgmtLogType.CACHED_TYPE_EVICTION_ACK,evictionId,originId);
                     }
                     break;
                 }
                 if (MAX_WAIT_TIME.compareTo(t.elapsed()) < 0) {
-                    // Break out if waited too long
-                    log.error(
-                            "Evicted [{}] from cache but waiting too long for transactions to close. Stale transaction alert on: {}",
-                            getId(), openTx);
+                    //Break out if waited too long
+                    log.error("Evicted [{}] from cache but waiting too long for transactions to close. Stale transaction alert on: {}",getId(),openTx);
                     break;
                 }
                 try {
                     times.sleepPast(times.getTime().plus(SLEEP_INTERVAL));
                 } catch (InterruptedException e) {
-                    log.error("Interrupted eviction ack thread for " + getId(), e);
+                    log.error("Interrupted eviction ack thread for "+getId(),e);
                     break;
                 }
             }
         }
 
         public String getId() {
-            return evictionId + "@" + originId;
+            return evictionId+"@"+originId;
         }
     }
 

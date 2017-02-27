@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.baidu.hugegraph.core;
 
 import com.baidu.hugegraph.graphdb.query.HugeGraphPredicate;
@@ -22,15 +23,17 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 /**
  * BaseVertexQuery constructs and executes a query over incident edges or properties from the perspective of a vertex.
  * <p/>
- * A VertexQuery extends Blueprint's {@link com.tinkerpop.gremlin.structure.Query} by some HugeGraph specific
- * convenience methods for querying for incident edges or properties. Using VertexQuery proceeds in two steps: 1) Define
- * the query by specifying what to retrieve and 2) execute the query for the elements to retrieve.
+ * A VertexQuery extends Blueprint's {@link org.apache.tinkerpop.gremlin.structure.Query} by some HugeGraph specific
+ * convenience methods
+ * for querying for incident edges or properties.
+ * Using VertexQuery proceeds in two steps:
+ * 1) Define the query by specifying what to retrieve and
+ * 2) execute the query for the elements to retrieve.
  * <p />
- * This is the base interface for the specific implementations of a VertexQuery. Calling
- * {@link com.baidu.hugegraph.core.HugeGraphVertex#query()} returns a {@link HugeGraphVertexQuery} for querying a single
- * vertex. Calling {@link HugeGraphTransaction#multiQuery(java.util.Collection)} returns a
- * {@link HugeGraphMultiVertexQuery} to execute the same query against multiple vertices at the same time which is
- * typically faster.
+ * This is the base interface for the specific implementations of a VertexQuery. Calling {@link com.baidu.hugegraph.core.HugeGraphVertex#query()}
+ * returns a {@link HugeGraphVertexQuery} for querying a single vertex.
+ * Calling {@link HugeGraphTransaction#multiQuery(java.util.Collection)} returns a {@link HugeGraphMultiVertexQuery} to execute
+ * the same query against multiple vertices at the same time which is typically faster.
  *
  * @see HugeGraphVertexQuery
  * @see HugeGraphMultiVertexQuery
@@ -38,10 +41,10 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
  */
 public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
 
-    /*
-     * --------------------------------------------------------------- Query Specification
-     * ---------------------------------------------------------------
-     */
+    /* ---------------------------------------------------------------
+    * Query Specification
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Restricts this query to only those edges that point to the given vertex.
@@ -52,43 +55,44 @@ public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
     public Q adjacent(Vertex vertex);
 
     /**
-     * Query for only those relations matching one of the given relation types. By default, a query includes all
-     * relations in the result set.
+     * Query for only those relations matching one of the given relation types.
+     * By default, a query includes all relations in the result set.
      *
      * @param type relation types to query for
      * @return this query
      */
-    public Q types(String...type);
+    public Q types(String... type);
 
     /**
-     * Query for only those relations matching one of the given relation types. By default, a query includes all
-     * relations in the result set.
+     * Query for only those relations matching one of the given relation types.
+     * By default, a query includes all relations in the result set.
      *
      * @param type relation types to query for
      * @return this query
      */
-    public Q types(RelationType...type);
+    public Q types(RelationType... type);
 
     /**
-     * Query for only those edges matching one of the given edge labels. By default, an edge query includes all edges in
-     * the result set.
+     * Query for only those edges matching one of the given edge labels.
+     * By default, an edge query includes all edges in the result set.
      *
      * @param labels edge labels to query for
      * @return this query
      */
-    public Q labels(String...labels);
+    public Q labels(String... labels);
 
     /**
-     * Query for only those properties having one of the given property keys. By default, a query includes all
-     * properties in the result set.
+     * Query for only those properties having one of the given property keys.
+     * By default, a query includes all properties in the result set.
      *
      * @param keys property keys to query for
      * @return this query
      */
-    public Q keys(String...keys);
+    public Q keys(String... keys);
 
     /**
-     * Query only for relations in the given direction. By default, both directions are queried.
+     * Query only for relations in the given direction.
+     * By default, both directions are queried.
      *
      * @param d Direction to query for
      * @return this query
@@ -98,13 +102,13 @@ public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
     /**
      * Query only for edges or properties that have an incident property or unidirected edge matching the given value.
      * <p/>
-     * If type is a property key, then the query is restricted to edges or properties having an incident property
-     * matching this key-value pair. If type is an edge label, then it is expected that this label is unidirected
-     * ({@link EdgeLabel#isUnidirected()} and the query is restricted to edges or properties having an incident
-     * unidirectional edge pointing to the value which is expected to be a
-     * {@link com.baidu.hugegraph.core.HugeGraphVertex}.
+     * If type is a property key, then the query is restricted to edges or properties having an incident property matching
+     * this key-value pair.
+     * If type is an edge label, then it is expected that this label is unidirected ({@link EdgeLabel#isUnidirected()}
+     * and the query is restricted to edges or properties having an incident unidirectional edge pointing to the value which is
+     * expected to be a {@link com.baidu.hugegraph.core.HugeGraphVertex}.
      *
-     * @param type HugeGraphType name
+     * @param type  HugeGraphType name
      * @param value Value for the property of the given key to match, or vertex to point unidirectional edge to
      * @return this query
      */
@@ -127,8 +131,8 @@ public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
     public Q hasNot(String key);
 
     /**
-     * Identical to {@link #has(String, Object)} but negates the condition, i.e. matches those edges or properties that
-     * DO NOT satisfy this property condition.
+     * Identical to {@link #has(String, Object)} but negates the condition, i.e. matches those edges or properties
+     * that DO NOT satisfy this property condition.
      *
      * @param key
      * @param value
@@ -139,12 +143,12 @@ public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
     public Q has(String key, HugeGraphPredicate predicate, Object value);
 
     /**
-     * Query for those edges or properties that have a property for the given key whose values lies in the interval by
-     * [start,end).
+     * Query for those edges or properties that have a property for the given key
+     * whose values lies in the interval by [start,end).
      *
-     * @param key property key
+     * @param key   property key
      * @param start value defining the start of the interval (inclusive)
-     * @param end value defining the end of the interval (exclusive)
+     * @param end   value defining the end of the interval (exclusive)
      * @return this query
      */
     public <T extends Comparable<?>> Q interval(String key, T start, T end);
@@ -160,17 +164,19 @@ public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
      */
     public Q limit(int limit);
 
+
     /**
-     * Orders the relation results of this query according to their property for the given key in the given order
-     * (increasing/decreasing).
+     * Orders the relation results of this query according
+     * to their property for the given key in the given order (increasing/decreasing).
      * </p>
-     * Note, that the ordering always applies to the incident relations (edges/properties) and NOT to the adjacent
-     * vertices even if only vertices are being returned.
+     * Note, that the ordering always applies to the incident relations (edges/properties) and NOT
+     * to the adjacent vertices even if only vertices are being returned.
      *
-     * @param key The key of the properties on which to order
+     * @param key   The key of the properties on which to order
      * @param order the ordering direction
      * @return
      */
     public Q orderBy(String key, Order order);
+
 
 }

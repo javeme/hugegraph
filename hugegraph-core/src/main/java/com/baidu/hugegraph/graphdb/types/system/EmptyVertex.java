@@ -34,10 +34,10 @@ public class EmptyVertex implements InternalVertex {
 
     private static final String errorName = "Empty vertex";
 
-    /*
-     * --------------------------------------------------------------- HugeGraphRelation Iteration/Access
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+     * HugeGraphRelation Iteration/Access
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
     public VertexCentricQueryBuilder query() {
@@ -81,44 +81,42 @@ public class EmptyVertex implements InternalVertex {
 
     @Override
     public <O> O valueOrNull(PropertyKey key) {
-        if (key instanceof ImplicitKey)
-            return ((ImplicitKey) key).computeProperty(this);
+        if (key instanceof ImplicitKey) return ((ImplicitKey)key).computeProperty(this);
         return null;
     }
 
     @Override
     public <O> O value(String key) {
-        if (!tx().containsPropertyKey(key))
-            throw Property.Exceptions.propertyDoesNotExist(this, key);
+        if (!tx().containsPropertyKey(key)) throw Property.Exceptions.propertyDoesNotExist(this,key);
         O val = valueOrNull(tx().getPropertyKey(key));
-        if (val == null)
-            throw Property.Exceptions.propertyDoesNotExist(this, key);
+        if (val==null) throw Property.Exceptions.propertyDoesNotExist(this,key);
         return val;
     }
 
-    /*
-     * --------------------------------------------------------------- Convenience Methods for HugeGraphElement Creation
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+	 * Convenience Methods for HugeGraphElement Creation
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
-    public <V> HugeGraphVertexProperty<V> property(String key, V value, Object...keyValues) {
+    public <V> HugeGraphVertexProperty<V> property(String key, V value, Object...
+            keyValues) {
         throw new UnsupportedOperationException(errorName + " do not support incident properties");
     }
 
     @Override
-    public <V> HugeGraphVertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value,
-            Object...keyValues) {
+    public <V> HugeGraphVertexProperty<V> property(VertexProperty.Cardinality cardinality, String key, V value, Object...
+            keyValues) {
         throw new UnsupportedOperationException(errorName + " do not support incident properties");
     }
 
     @Override
-    public Iterator<Edge> edges(Direction direction, String...edgeLabels) {
+    public Iterator<Edge> edges(Direction direction, String... edgeLabels) {
         return Iterators.emptyIterator();
     }
 
     @Override
-    public Iterator<Vertex> vertices(Direction direction, String...edgeLabels) {
+    public Iterator<Vertex> vertices(Direction direction, String... edgeLabels) {
         return Iterators.emptyIterator();
     }
 
@@ -133,14 +131,14 @@ public class EmptyVertex implements InternalVertex {
     }
 
     @Override
-    public HugeGraphEdge addEdge(String s, Vertex vertex, Object...keyValues) {
+    public HugeGraphEdge addEdge(String s, Vertex vertex, Object... keyValues) {
         throw new UnsupportedOperationException(errorName + " do not support incident edges");
     }
 
-    /*
-     * --------------------------------------------------------------- In Memory HugeGraphElement
-     * ---------------------------------------------------------------
-     */
+	/* ---------------------------------------------------------------
+	 * In Memory HugeGraphElement
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
     public long longId() {
@@ -163,7 +161,7 @@ public class EmptyVertex implements InternalVertex {
     }
 
     @Override
-    public <V> Iterator<VertexProperty<V>> properties(String...propertyKeys) {
+    public <V> Iterator<VertexProperty<V>> properties(String... propertyKeys) {
         return Iterators.emptyIterator();
     }
 

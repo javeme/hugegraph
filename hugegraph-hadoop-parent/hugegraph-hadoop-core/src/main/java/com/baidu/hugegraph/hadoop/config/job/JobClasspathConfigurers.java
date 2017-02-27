@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import static com.baidu.hugegraph.hadoop.compat.HadoopCompatLoader.DEFAULT_COMPA
  */
 public class JobClasspathConfigurers {
 
-    private static final Logger log = LoggerFactory.getLogger(JobClasspathConfigurers.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(JobClasspathConfigurers.class);
 
     private static final ImmutableList<String> POSSIBLE_MAPRED_JAR_DIRS;
 
@@ -61,7 +62,7 @@ public class JobClasspathConfigurers {
             }
         }
 
-        // No job jar so far? Propagate all jars on our classpath to the distributed cache.
+        // No job jar so far?  Propagate all jars on our classpath to the distributed cache.
         log.info("Uploading jars on classpath DistributedCache in lieu of a mapred job jar");
         return DEFAULT_COMPAT.newDistCacheConfigurer();
     }

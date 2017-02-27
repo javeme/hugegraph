@@ -33,6 +33,7 @@ public class RelationCacheTest {
 
     private static final Random random = new Random();
 
+
     @Test
     public void testMap() {
         int len = 100;
@@ -87,5 +88,6 @@ public class RelationCacheTest {
             }
         }
     }
+
 
 }

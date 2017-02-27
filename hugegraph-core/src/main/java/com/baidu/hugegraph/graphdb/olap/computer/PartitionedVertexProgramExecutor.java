@@ -35,7 +35,8 @@ import java.util.Map;
  */
 public class PartitionedVertexProgramExecutor<M> {
 
-    private static final Logger log = LoggerFactory.getLogger(PartitionedVertexProgramExecutor.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(PartitionedVertexProgramExecutor.class);
 
     private final StandardHugeGraph graph;
     private final IDManager idManager;
@@ -43,13 +44,14 @@ public class PartitionedVertexProgramExecutor<M> {
     private final FulgoraVertexMemory<M> vertexMemory;
     private final VertexProgram<M> vertexProgram;
 
+
     public static final String GHOTST_PARTITION_VERTEX = "partition-ghost";
     public static final String PARTITION_VERTEX_POSTSUCCESS = "partition-success";
     public static final String PARTITION_VERTEX_POSTFAIL = "partition-fail";
 
     public PartitionedVertexProgramExecutor(StandardHugeGraph graph, FulgoraMemory memory,
-            FulgoraVertexMemory vertexMemory, VertexProgram<M> vertexProgram) {
-        this.graph = graph;
+                                 FulgoraVertexMemory vertexMemory, VertexProgram<M> vertexProgram) {
+        this.graph=graph;
         this.idManager = graph.getIDManager();
         this.memory = memory;
         this.vertexMemory = vertexMemory;
@@ -57,26 +59,24 @@ public class PartitionedVertexProgramExecutor<M> {
     }
 
     public void run(int numThreads, ScanMetrics metrics) {
-        StandardHugeGraphTx tx = null;
-        Map<Long, EntryList> pVertexAggregates = vertexMemory.retrievePartitionAggregates();
-        if (pVertexAggregates.isEmpty())
-            return; // Nothing to do here
+        StandardHugeGraphTx tx=null;
+        Map<Long,EntryList> pVertexAggregates = vertexMemory.retrievePartitionAggregates();
+        if (pVertexAggregates.isEmpty()) return; //Nothing to do here
 
         try (WorkerPool workers = new WorkerPool(numThreads)) {
             tx = VertexJobConverter.startTransaction(graph);
-            for (Map.Entry<Long, EntryList> pvertices : pVertexAggregates.entrySet()) {
-                if (pvertices.getValue() == null) {
+            for (Map.Entry<Long,EntryList> pvertices : pVertexAggregates.entrySet()) {
+                if (pvertices.getValue()==null) {
                     metrics.incrementCustom(GHOTST_PARTITION_VERTEX);
                     continue;
                 }
-                workers.submit(new PartitionedVertexProcessor(pvertices.getKey(), pvertices.getValue(), tx, metrics));
+                workers.submit(new PartitionedVertexProcessor(pvertices.getKey(),pvertices.getValue(),tx,metrics));
             }
         } catch (Throwable ex) {
             log.error("Could not post-process partitioned vertices", ex);
             metrics.incrementCustom(PARTITION_VERTEX_POSTFAIL);
         } finally {
-            if (tx != null && tx.isOpen())
-                tx.rollback();
+            if (tx!=null && tx.isOpen()) tx.rollback();
         }
     }
 
@@ -87,11 +87,9 @@ public class PartitionedVertexProgramExecutor<M> {
         private final StandardHugeGraphTx tx;
         private final ScanMetrics metrics;
 
-        private PartitionedVertexProcessor(long vertexId, EntryList preloaded, StandardHugeGraphTx tx,
-                ScanMetrics metrics) {
-            Preconditions
-                    .checkArgument(idManager.isPartitionedVertex(vertexId) && idManager.isCanonicalVertexId(vertexId));
-            assert preloaded != null;
+        private PartitionedVertexProcessor(long vertexId, EntryList preloaded, StandardHugeGraphTx tx, ScanMetrics metrics) {
+            Preconditions.checkArgument(idManager.isPartitionedVertex(vertexId) && idManager.isCanonicalVertexId(vertexId));
+            assert preloaded!=null;
             this.vertexId = vertexId;
             this.preloaded = preloaded;
             this.tx = tx;
@@ -104,16 +102,16 @@ public class PartitionedVertexProgramExecutor<M> {
                 HugeGraphVertex vertex = tx.getInternalVertex(vertexId);
                 Preconditions.checkArgument(vertex instanceof PreloadedVertex,
                         "The bounding transaction is not configured correctly");
-                PreloadedVertex v = (PreloadedVertex) vertex;
+                PreloadedVertex v = (PreloadedVertex)vertex;
                 v.setAccessCheck(PreloadedVertex.OPENSTAR_CHECK);
-                v.addToQueryCache(VertexProgramScanJob.SYSTEM_PROPS_QUERY, preloaded);
-                VertexMemoryHandler.Partition<M> vh = new VertexMemoryHandler.Partition<M>(vertexMemory, v);
+                v.addToQueryCache(VertexProgramScanJob.SYSTEM_PROPS_QUERY,preloaded);
+                VertexMemoryHandler.Partition<M> vh = new VertexMemoryHandler.Partition<M>(vertexMemory,v);
                 v.setPropertyMixing(vh);
-                vertexProgram.execute(v, vh, memory);
+                vertexProgram.execute(v,vh,memory);
                 metrics.incrementCustom(PARTITION_VERTEX_POSTSUCCESS);
             } catch (Throwable e) {
                 metrics.incrementCustom(PARTITION_VERTEX_POSTFAIL);
-                log.error("Error post-processing partition vertex: " + vertexId, e);
+                log.error("Error post-processing partition vertex: " + vertexId,e);
             }
         }
     }

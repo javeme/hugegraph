@@ -35,6 +35,7 @@ public class MetricInstrumentedStoreManager implements KeyColumnValueStoreManage
     public static final String M_START_TX = "startTransaction";
     public static final String M_CLOSE_MANAGER = "closeManager";
 
+
     public static final String GLOBAL_PREFIX = "global";
 
     private final KeyColumnValueStoreManager backend;
@@ -43,12 +44,13 @@ public class MetricInstrumentedStoreManager implements KeyColumnValueStoreManage
     private final String managerMetricsName;
 
     public MetricInstrumentedStoreManager(KeyColumnValueStoreManager backend, String managerMetricsName,
-            boolean mergeStoreMetrics, String mergedMetricsName) {
+                                          boolean mergeStoreMetrics, String mergedMetricsName) {
         this.backend = backend;
         this.mergeStoreMetrics = mergeStoreMetrics;
         this.mergedMetricsName = mergedMetricsName;
         this.managerMetricsName = managerMetricsName;
     }
+
 
     private String getMetricsStoreName(String storeName) {
         return mergeStoreMetrics ? mergedMetricsName : storeName;
@@ -57,28 +59,27 @@ public class MetricInstrumentedStoreManager implements KeyColumnValueStoreManage
     @Override
     public KeyColumnValueStore openDatabase(String name, StoreMetaData.Container metaData) throws BackendException {
         MetricManager.INSTANCE.getCounter(GLOBAL_PREFIX, managerMetricsName, M_OPEN_DATABASE, M_CALLS).inc();
-        return new MetricInstrumentedStore(backend.openDatabase(name, metaData), getMetricsStoreName(name));
+        return new MetricInstrumentedStore(backend.openDatabase(name, metaData),getMetricsStoreName(name));
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         if (!txh.getConfiguration().hasGroupName()) {
-            backend.mutateMany(mutations, txh);
+            backend.mutateMany(mutations,txh);
         }
         String prefix = txh.getConfiguration().getGroupName();
 
         final MetricManager mgr = MetricManager.INSTANCE;
         mgr.getCounter(prefix, managerMetricsName, M_MUTATE, M_CALLS).inc();
-        final Timer.Context tc = mgr.getTimer(prefix, managerMetricsName, M_MUTATE, M_TIME).time();
+        final Timer.Context tc = mgr.getTimer(prefix,  managerMetricsName, M_MUTATE, M_TIME).time();
 
         try {
-            backend.mutateMany(mutations, txh);
+            backend.mutateMany(mutations,txh);
         } catch (BackendException e) {
-            mgr.getCounter(prefix, managerMetricsName, M_MUTATE, M_EXCEPTIONS).inc();
+            mgr.getCounter(prefix,  managerMetricsName, M_MUTATE, M_EXCEPTIONS).inc();
             throw e;
         } catch (RuntimeException e) {
-            mgr.getCounter(prefix, managerMetricsName, M_MUTATE, M_EXCEPTIONS).inc();
+            mgr.getCounter(prefix,  managerMetricsName, M_MUTATE, M_EXCEPTIONS).inc();
             throw e;
         } finally {
             tc.stop();

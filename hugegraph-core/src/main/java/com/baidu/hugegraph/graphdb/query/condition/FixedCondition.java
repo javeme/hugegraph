@@ -42,8 +42,7 @@ public class FixedCondition<E extends HugeGraphElement> extends Literal<E> {
 
     @Override
     public boolean equals(Object other) {
-        return this == other
-                || !(other == null || !getClass().isInstance(other)) && value == ((FixedCondition) other).value;
+        return this == other || !(other == null || !getClass().isInstance(other)) && value == ((FixedCondition) other).value;
 
     }
 

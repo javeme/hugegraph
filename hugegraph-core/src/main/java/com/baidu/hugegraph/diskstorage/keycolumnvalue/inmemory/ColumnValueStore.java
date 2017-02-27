@@ -64,16 +64,13 @@ class ColumnValueStore {
         try {
             Data datacp = data;
             int start = datacp.getIndex(query.getSliceStart());
-            if (start < 0)
-                start = (-start - 1);
+            if (start < 0) start = (-start - 1);
             int end = datacp.getIndex(query.getSliceEnd());
-            if (end < 0)
-                end = (-end - 1);
+            if (end < 0) end = (-end - 1);
             if (start < end) {
                 MemoryEntryList result = new MemoryEntryList(end - start);
                 for (int i = start; i < end; i++) {
-                    if (query.hasLimit() && result.size() >= query.getLimit())
-                        break;
+                    if (query.hasLimit() && result.size() >= query.getLimit()) break;
                     result.add(datacp.get(i));
                 }
                 return result;
@@ -106,8 +103,9 @@ class ColumnValueStore {
         }
     }
 
+
     synchronized void mutate(List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) {
-        // Prepare data
+        //Prepare data
         Entry[] add;
         if (!additions.isEmpty()) {
             add = new Entry[additions.size()];
@@ -117,25 +115,21 @@ class ColumnValueStore {
                 pos++;
             }
             Arrays.sort(add);
-        } else
-            add = new Entry[0];
+        } else add = new Entry[0];
 
-        // Filter out deletions that are also added
+        //Filter out deletions that are also added
         Entry[] del;
         if (!deletions.isEmpty()) {
             del = new Entry[deletions.size()];
-            int pos = 0;
+            int pos=0;
             for (StaticBuffer deletion : deletions) {
                 Entry delEntry = StaticArrayEntry.of(deletion);
-                if (Arrays.binarySearch(add, delEntry) >= 0)
-                    continue;
-                del[pos++] = delEntry;
+                if (Arrays.binarySearch(add,delEntry) >= 0) continue;
+                del[pos++]=delEntry;
             }
-            if (pos < deletions.size())
-                del = Arrays.copyOf(del, pos);
+            if (pos<deletions.size()) del = Arrays.copyOf(del,pos);
             Arrays.sort(del);
-        } else
-            del = new Entry[0];
+        } else del = new Entry[0];
 
         Lock lock = getLock(txh);
         lock.lock();
@@ -144,31 +138,27 @@ class ColumnValueStore {
             int oldsize = data.size;
             Entry[] newdata = new Entry[oldsize + add.length];
 
-            // Merge sort
+            //Merge sort
             int i = 0, iold = 0, iadd = 0, idel = 0;
             while (iold < oldsize) {
                 Entry e = olddata[iold];
                 iold++;
-                // Compare with additions
+                //Compare with additions
                 if (iadd < add.length) {
                     int compare = e.compareTo(add[iadd]);
                     if (compare >= 0) {
                         e = add[iadd];
                         iadd++;
-                        // Skip duplicates
-                        while (iadd < add.length && e.equals(add[iadd]))
-                            iadd++;
+                        //Skip duplicates
+                        while (iadd < add.length && e.equals(add[iadd])) iadd++;
                     }
-                    if (compare > 0)
-                        iold--;
+                    if (compare > 0) iold--;
                 }
-                // Compare with deletions
+                //Compare with deletions
                 if (idel < del.length) {
                     int compare = e.compareTo(del[idel]);
-                    if (compare == 0)
-                        e = null;
-                    if (compare >= 0)
-                        idel++;
+                    if (compare == 0) e = null;
+                    if (compare >= 0) idel++;
                 }
                 if (e != null) {
                     newdata[i] = e;
@@ -182,7 +172,7 @@ class ColumnValueStore {
             }
 
             if (i * 1.0 / newdata.length < SIZE_THRESHOLD) {
-                // shrink array to free space
+                //shrink array to free space
                 Entry[] tmpdata = newdata;
                 newdata = new Entry[i];
                 System.arraycopy(tmpdata, 0, newdata, 0, i);
@@ -206,8 +196,7 @@ class ColumnValueStore {
                 }
             }
             return lock;
-        } else
-            return NoLock.INSTANCE;
+        } else return NoLock.INSTANCE;
     }
 
     private static class Data {
@@ -236,12 +225,12 @@ class ColumnValueStore {
 
         boolean isSorted() {
             for (int i = 1; i < size; i++) {
-                if (!(array[i].compareTo(array[i - 1]) > 0))
-                    return false;
+                if (!(array[i].compareTo(array[i - 1]) > 0)) return false;
             }
             return true;
         }
 
     }
+
 
 }

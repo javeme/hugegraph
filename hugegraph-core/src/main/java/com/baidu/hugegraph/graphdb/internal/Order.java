@@ -32,8 +32,8 @@ public enum Order {
     DESC;
 
     /**
-     * Modulates the result of a {@link Comparable#compareTo(Object)} execution for this specific order, i.e. it negates
-     * the result if the order is {@link #DESC}.
+     * Modulates the result of a {@link Comparable#compareTo(Object)} execution for this specific
+     * order, i.e. it negates the result if the order is {@link #DESC}.
      *
      * @param compare
      * @return
@@ -56,23 +56,17 @@ public enum Order {
 
     public org.apache.tinkerpop.gremlin.process.traversal.Order getTP() {
         switch (this) {
-            case ASC:
-                return org.apache.tinkerpop.gremlin.process.traversal.Order.incr;
-            case DESC:
-                return org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
-            default:
-                throw new AssertionError();
+            case ASC :return org.apache.tinkerpop.gremlin.process.traversal.Order.incr;
+            case DESC: return org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
+            default: throw new AssertionError();
         }
     }
 
     public static Order convert(org.apache.tinkerpop.gremlin.process.traversal.Order order) {
-        switch (order) {
-            case incr:
-                return ASC;
-            case decr:
-                return DESC;
-            default:
-                throw new AssertionError();
+        switch(order) {
+            case incr: return ASC;
+            case decr: return DESC;
+            default: throw new AssertionError();
         }
     }
 

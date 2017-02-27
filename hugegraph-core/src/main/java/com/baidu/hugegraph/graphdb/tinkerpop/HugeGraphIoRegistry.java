@@ -29,8 +29,7 @@ public class HugeGraphIoRegistry extends AbstractIoRegistry {
 
     private static HugeGraphIoRegistry INSTANCE = new HugeGraphIoRegistry();
 
-    // todo: made the constructor temporarily public to workaround an interoperability issue with hadoop in tp3 GA
-    // https://issues.apache.org/jira/browse/TINKERPOP3-771
+    // todo: made the constructor temporarily public to workaround an interoperability issue with hadoop in tp3 GA https://issues.apache.org/jira/browse/TINKERPOP3-771
 
     public HugeGraphIoRegistry() {
         register(GraphSONIo.class, null, HugeGraphSONModule.getInstance());

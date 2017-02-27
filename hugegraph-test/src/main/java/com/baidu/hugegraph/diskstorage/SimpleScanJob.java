@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage;
 
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.baidu.hugegraph.diskstorage.configuration.*;
@@ -43,15 +44,19 @@ public class SimpleScanJob implements ScanJob {
 
     public static final ConfigNamespace ROOT_NS = new ConfigNamespace(null, "simplescan", "testing job");
 
-    public static final ConfigOption<String> HEX_QUERIES = new ConfigOption<>(ROOT_NS, "queries",
-            "comma-delimited, hex-encoded queries", ConfigOption.Type.LOCAL, String.class);
+    public static final ConfigOption<String> HEX_QUERIES =
+            new ConfigOption<>(ROOT_NS, "queries", "comma-delimited, hex-encoded queries",
+                    ConfigOption.Type.LOCAL, String.class);
 
-    public static final ConfigOption<Long> KEY_FILTER_ID_MODULUS = new ConfigOption<>(ROOT_NS, "id-modulus",
-            "ID extracted from key must be divisible by this to pass the key filter", ConfigOption.Type.LOCAL,
-            Long.class);
+    public static final ConfigOption<Long> KEY_FILTER_ID_MODULUS =
+            new ConfigOption<>(ROOT_NS, "id-modulus",
+                    "ID extracted from key must be divisible by this to pass the key filter",
+                    ConfigOption.Type.LOCAL, Long.class);
 
-    public static final ConfigOption<Long> KEY_FILTER_ID_MODULAR_VALUE = new ConfigOption<>(ROOT_NS, "id-modular-value",
-            "ID in modular arithmetic", ConfigOption.Type.LOCAL, Long.class);
+    public static final ConfigOption<Long> KEY_FILTER_ID_MODULAR_VALUE =
+            new ConfigOption<>(ROOT_NS, "id-modular-value",
+                    "ID in modular arithmetic",
+                    ConfigOption.Type.LOCAL, Long.class);
 
     private List<SliceQuery> qs;
     private Predicate<StaticBuffer> keyFilter;
@@ -68,11 +73,11 @@ public class SimpleScanJob implements ScanJob {
 
     @Override
     public SimpleScanJob clone() {
-        return new SimpleScanJob(qs, keyFilter);
+        return new SimpleScanJob(qs,keyFilter);
     }
 
     public SimpleScanJob(SliceQuery q) {
-        this(ImmutableList.of(q), k -> true);
+        this(ImmutableList.of(q),k -> true);
     }
 
     @Override
@@ -113,6 +118,7 @@ public class SimpleScanJob implements ScanJob {
         metrics.incrementCustom(TEARDOWN_COUNT);
     }
 
+
     @Override
     public void process(StaticBuffer key, Map<SliceQuery, EntryList> entries, ScanMetrics metrics) {
         assertNotNull(key);
@@ -125,7 +131,7 @@ public class SimpleScanJob implements ScanJob {
                 continue;
             }
             EntryList result = entries.get(q);
-            metrics.incrementCustom(TOTAL_COUNT, result.size());
+            metrics.incrementCustom(TOTAL_COUNT,result.size());
         }
     }
 
@@ -163,97 +169,95 @@ public class SimpleScanJob implements ScanJob {
     public static void runBasicTests(int keys, int columns, SimpleScanJobRunner runner)
             throws InterruptedException, ExecutionException, BackendException, IOException {
 
-        Configuration conf1 =
-                getJobConf(ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128))));
+        Configuration conf1 = getJobConf(
+                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128))));
         ScanMetrics result1 = runner.run(new SimpleScanJob(), conf1, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys, result1.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * columns / 4 * 3, result1.getCustom(SimpleScanJob.TOTAL_COUNT));
-        /*
-         * These assertions are not valid on Hadoop. The Hadoop implementation uses Hadoop Counters to store
-         * ScanMetrics. These Counters are shared clusterwide. Hence there will be as many setups and teardowns as there
-         * are input splits -- generally more than one. So these don't apply:
+        assertEquals(keys,result1.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys*columns/4*3,result1.getCustom(SimpleScanJob.TOTAL_COUNT));
+        /* These assertions are not valid on Hadoop.  The Hadoop implementation uses
+         * Hadoop Counters to store ScanMetrics.  These Counters are shared
+         * clusterwide.  Hence there will be as many setups and teardowns as there
+         * are input splits -- generally more than one.  So these don't apply:
          *
-         * assertEquals(1, result1.getCustom(SimpleScanJob.SETUP_COUNT)); assertEquals(1,
-         * result1.getCustom(SimpleScanJob.TEARDOWN_COUNT));
+         *  assertEquals(1, result1.getCustom(SimpleScanJob.SETUP_COUNT));
+         *  assertEquals(1, result1.getCustom(SimpleScanJob.TEARDOWN_COUNT));
          *
-         * However, even on Hadoop, we can expect both of the following to hold: 1. The number of setups must equal the
-         * number of teardowns 2. The number of setups (teardowns) must be positive
+         * However, even on Hadoop, we can expect both of the following to hold:
+         * 1. The number of setups must equal the number of teardowns
+         * 2. The number of setups (teardowns) must be positive
          */
         assertEquals("Number of ScanJob setup calls must equal number of ScanJob teardown calls",
                 result1.getCustom(SimpleScanJob.SETUP_COUNT), result1.getCustom(SimpleScanJob.TEARDOWN_COUNT));
         assertTrue("Number of ScanJob setup/teardown calls must be positive",
                 0 < result1.getCustom(SimpleScanJob.SETUP_COUNT));
 
-        Configuration conf2 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(5)));
+        Configuration conf2 = getJobConf(ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(5)));
         ScanMetrics result2 = runner.run(new SimpleScanJob(), conf2, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys, result2.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * 5, result2.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys,result2.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys*5,result2.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf3 = getJobConf(
-                ImmutableList.of(new SliceQuery(KeyValueStoreUtil.getBuffer(0), KeyValueStoreUtil.getBuffer(5))));
+        Configuration conf3 = getJobConf(ImmutableList.of(new SliceQuery(KeyValueStoreUtil.getBuffer(0), KeyValueStoreUtil.getBuffer(5))));
         ScanMetrics result3 = runner.run(new SimpleScanJob(), conf3, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys, result3.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * 5, result3.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys,result3.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys*5,result3.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf4 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(0), KeyValueStoreUtil.getBuffer(5))));
+        Configuration conf4 = getJobConf(ImmutableList.of(
+                new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(0), KeyValueStoreUtil.getBuffer(5))));
         ScanMetrics result4 = runner.run(new SimpleScanJob(), conf4, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys, result4.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * 6, result4.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys,result4.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys*6,result4.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf5 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(2), KeyValueStoreUtil.getBuffer(4)),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(6), KeyValueStoreUtil.getBuffer(8)),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(10), KeyValueStoreUtil.getBuffer(20)).setLimit(4)));
+        Configuration conf5 = getJobConf(ImmutableList.of(
+                new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(2), KeyValueStoreUtil.getBuffer(4)),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(6), KeyValueStoreUtil.getBuffer(8)),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(10), KeyValueStoreUtil.getBuffer(20)).setLimit(4)));
 
         ScanMetrics result5 = runner.run(new SimpleScanJob(), conf5, SimpleScanJob.class.getName() + "#ROOT_NS");
         assertEquals(keys, result5.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * 9, result5.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys*9,result5.getCustom(SimpleScanJob.TOTAL_COUNT));
 
         Configuration conf6 = getJobConf(
                 ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(5)), 2L);
         ScanMetrics result6 = runner.run(new SimpleScanJob(), conf6, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys / 2, result6.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys / 2 * 5, result6.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys/2,result6.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys/2*5,result6.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf7 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(2), KeyValueStoreUtil.getBuffer(4)),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35)),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(36), KeyValueStoreUtil.getBuffer(40)).setLimit(1)));
+
+        Configuration conf7 = getJobConf(ImmutableList.of(
+                new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(2), KeyValueStoreUtil.getBuffer(4)),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35)),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(36), KeyValueStoreUtil.getBuffer(40)).setLimit(1)));
         ScanMetrics result7 = runner.run(new SimpleScanJob(), conf7, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys, result7.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys * 3 + keys / 2 * 5, result7.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys,result7.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys*3+keys/2*5,result7.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf8 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35))),
-                2L, 1L);
+        Configuration conf8 = getJobConf(ImmutableList.of(
+                new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
+                new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35))), 2L, 1L);
         ScanMetrics result8 = runner.run(new SimpleScanJob(), conf8, SimpleScanJob.class.getName() + "#ROOT_NS");
-        // k -> KeyValueStoreUtil.getID(k) % 2 == 1));
-        assertEquals(keys / 2, result8.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys / 2 * 5, result8.getCustom(SimpleScanJob.TOTAL_COUNT));
+//                        k -> KeyValueStoreUtil.getID(k) % 2 == 1));
+        assertEquals(keys/2,result8.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys/2*5,result8.getCustom(SimpleScanJob.TOTAL_COUNT));
 
-        Configuration conf9 = getJobConf(
-                ImmutableList.of(new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
-                        new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35))),
-                2L);
-        // k -> KeyValueStoreUtil.getID(k) % 2 == 0));
+        Configuration conf9 = getJobConf(ImmutableList.of(
+                    new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(128)).setLimit(1),
+                    new SliceQuery(KeyValueStoreUtil.getBuffer(31), KeyValueStoreUtil.getBuffer(35))), 2L);
+//                        k -> KeyValueStoreUtil.getID(k) % 2 == 0));
         ScanMetrics result9 = runner.run(new SimpleScanJob(), conf9, SimpleScanJob.class.getName() + "#ROOT_NS");
-        assertEquals(keys / 2, result9.getCustom(SimpleScanJob.KEY_COUNT));
-        assertEquals(keys / 2, result9.getCustom(SimpleScanJob.TOTAL_COUNT));
+        assertEquals(keys/2,result9.getCustom(SimpleScanJob.KEY_COUNT));
+        assertEquals(keys/2,result9.getCustom(SimpleScanJob.TOTAL_COUNT));
 
         try {
             Configuration conf10 = getJobConf(ImmutableList.of(
-                    new SliceQuery(StaticArrayBuffer.of(new byte[] { (byte) 2 }), BufferUtil.oneBuffer(1)),
+                    new SliceQuery(StaticArrayBuffer.of(new byte[]{(byte) 2}), BufferUtil.oneBuffer(1)),
                     new SliceQuery(BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(1))));
             runner.run(new SimpleScanJob(), conf10, SimpleScanJob.class.getName() + "#ROOT_NS");
             fail();
         } catch (Exception e) {
-            // assertTrue(e instanceof ExecutionException && e.getCause() instanceof IllegalArgumentException);
+            //assertTrue(e instanceof ExecutionException && e.getCause() instanceof IllegalArgumentException);
         }
     }
 
@@ -266,8 +270,9 @@ public class SimpleScanJob implements ScanJob {
     }
 
     public static Configuration getJobConf(List<SliceQuery> queries, Long modulus, Long modVal) {
-        ModifiableConfiguration conf2 = new ModifiableConfiguration(SimpleScanJob.ROOT_NS,
-                new CommonsConfiguration(new BaseConfiguration()), BasicConfiguration.Restriction.NONE);
+        ModifiableConfiguration conf2 =
+                new ModifiableConfiguration(SimpleScanJob.ROOT_NS,
+                        new CommonsConfiguration(new BaseConfiguration()), BasicConfiguration.Restriction.NONE);
         if (null != queries)
             conf2.set(HEX_QUERIES, encodeQueries(queries));
         if (null != modulus)

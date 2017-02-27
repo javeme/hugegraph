@@ -37,8 +37,8 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 /**
- * Blueprints specific implementation of {@link HugeGraphTransaction}. Provides utility methods that wrap HugeGraph
- * calls with Blueprints terminology.
+ * Blueprints specific implementation of {@link HugeGraphTransaction}.
+ * Provides utility methods that wrap HugeGraph calls with Blueprints terminology.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -46,7 +46,6 @@ public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransac
 
     /**
      * Returns the graph that this transaction is based on
-     * 
      * @return
      */
     protected abstract HugeGraphBlueprintsGraph getGraph();
@@ -74,113 +73,102 @@ public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransac
     @Override
     public <C extends GraphComputer> C compute(Class<C> graphComputerClass) throws IllegalArgumentException {
         HugeGraphBlueprintsGraph graph = getGraph();
-        if (isOpen())
-            commit();
+        if (isOpen()) commit();
         return graph.compute(graphComputerClass);
     }
 
     @Override
     public FulgoraGraphComputer compute() throws IllegalArgumentException {
         HugeGraphBlueprintsGraph graph = getGraph();
-        if (isOpen())
-            commit();
+        if (isOpen()) commit();
         return graph.compute();
     }
 
     /**
-     * Creates a new vertex in the graph with the given vertex id. Note, that an exception is thrown if the vertex id is
-     * not a valid HugeGraph vertex id or if a vertex with the given id already exists. Only accepts long ids - all
-     * others are ignored.
+     * Creates a new vertex in the graph with the given vertex id.
+     * Note, that an exception is thrown if the vertex id is not a valid HugeGraph vertex id or if a vertex with the given
+     * id already exists. Only accepts long ids - all others are ignored.
      * <p/>
-     * Custom id setting must be enabled via the configuration option
-     * {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#ALLOW_SETTING_VERTEX_ID}.
+     * Custom id setting must be enabled via the configuration option {@link com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration#ALLOW_SETTING_VERTEX_ID}.
      * <p/>
-     * Use {@link com.baidu.hugegraph.core.util.HugeGraphId#toVertexId(long)} to construct a valid HugeGraph vertex id
-     * from a user id.
+     * Use {@link com.baidu.hugegraph.core.util.HugeGraphId#toVertexId(long)} to construct a valid HugeGraph vertex id from a user id.
      *
      * @param keyValues key-value pairs of properties to characterize or attach to the vertex
      * @return New vertex
      */
     @Override
-    public HugeGraphVertex addVertex(Object...keyValues) {
+    public HugeGraphVertex addVertex(Object... keyValues) {
         ElementHelper.legalPropertyKeyValueArray(keyValues);
-        if (ElementHelper.getIdValue(keyValues).isPresent())
-            throw Vertex.Exceptions.userSuppliedIdsNotSupported();
+        if (ElementHelper.getIdValue(keyValues).isPresent()) throw Vertex.Exceptions.userSuppliedIdsNotSupported();
         Object labelValue = null;
         for (int i = 0; i < keyValues.length; i = i + 2) {
             if (keyValues[i].equals(T.label)) {
-                labelValue = keyValues[i + 1];
+                labelValue = keyValues[i+1];
                 Preconditions.checkArgument(labelValue instanceof VertexLabel || labelValue instanceof String,
-                        "Expected a string or VertexLabel as the vertex label argument, but got: %s", labelValue);
-                if (labelValue instanceof String)
-                    ElementHelper.validateLabel((String) labelValue);
+                        "Expected a string or VertexLabel as the vertex label argument, but got: %s",labelValue);
+                if (labelValue instanceof String) ElementHelper.validateLabel((String) labelValue);
             }
         }
         VertexLabel label = BaseVertexLabel.DEFAULT_VERTEXLABEL;
-        if (labelValue != null) {
-            label = (labelValue instanceof VertexLabel) ? (VertexLabel) labelValue
-                    : getOrCreateVertexLabel((String) labelValue);
+        if (labelValue!=null) {
+            label = (labelValue instanceof VertexLabel)?(VertexLabel)labelValue:getOrCreateVertexLabel((String) labelValue);
         }
 
-        final HugeGraphVertex vertex = addVertex(null, label);
-        // for (int i = 0; i < keyValues.length; i = i + 2) {
-        // if (!keyValues[i].equals(T.id) && !keyValues[i].equals(T.label))
-        // ((StandardHugeGraphTx)this).addPropertyInternal(vertex,getOrCreatePropertyKey((String)
-        // keyValues[i]),keyValues[i+1]);
-        // }
+        final HugeGraphVertex vertex = addVertex(null,label);
+//        for (int i = 0; i < keyValues.length; i = i + 2) {
+//            if (!keyValues[i].equals(T.id) && !keyValues[i].equals(T.label))
+//                ((StandardHugeGraphTx)this).addPropertyInternal(vertex,getOrCreatePropertyKey((String) keyValues[i]),keyValues[i+1]);
+//        }
         com.baidu.hugegraph.graphdb.util.ElementHelper.attachProperties(vertex, keyValues);
         return vertex;
     }
 
     @Override
-    public Iterator<Vertex> vertices(Object...vids) {
-        if (vids == null || vids.length == 0)
-            return (Iterator) getVertices().iterator();
+    public Iterator<Vertex> vertices(Object... vids) {
+        if (vids==null || vids.length==0) return (Iterator)getVertices().iterator();
         ElementUtils.verifyArgsMustBeEitherIdorElement(vids);
         long[] ids = new long[vids.length];
         int pos = 0;
         for (int i = 0; i < vids.length; i++) {
             long id = ElementUtils.getVertexId(vids[i]);
-            if (id > 0)
-                ids[pos++] = id;
+            if (id>0) ids[pos++]=id;
         }
-        if (pos == 0)
-            return Collections.emptyIterator();
-        if (pos < ids.length)
-            ids = Arrays.copyOf(ids, pos);
-        return (Iterator) getVertices(ids).iterator();
+        if (pos==0) return Collections.emptyIterator();
+        if (pos<ids.length) ids = Arrays.copyOf(ids,pos);
+        return (Iterator)getVertices(ids).iterator();
     }
 
     @Override
-    public Iterator<Edge> edges(Object...eids) {
-        if (eids == null || eids.length == 0)
-            return (Iterator) getEdges().iterator();
+    public Iterator<Edge> edges(Object... eids) {
+        if (eids==null || eids.length==0) return (Iterator)getEdges().iterator();
         ElementUtils.verifyArgsMustBeEitherIdorElement(eids);
         RelationIdentifier[] ids = new RelationIdentifier[eids.length];
         int pos = 0;
         for (int i = 0; i < eids.length; i++) {
             RelationIdentifier id = ElementUtils.getEdgeId(eids[i]);
-            if (id != null)
-                ids[pos++] = id;
+            if (id!=null) ids[pos++]=id;
         }
-        if (pos == 0)
-            return Collections.emptyIterator();
-        if (pos < ids.length)
-            ids = Arrays.copyOf(ids, pos);
-        return (Iterator) getEdges(ids).iterator();
+        if (pos==0) return Collections.emptyIterator();
+        if (pos<ids.length) ids = Arrays.copyOf(ids,pos);
+        return (Iterator)getEdges(ids).iterator();
     }
 
-    // @Override
-    // public GraphComputer compute(final Class... graphComputerClass) {
-    // throw new UnsupportedOperationException("Graph Computer not supported on an individual transaction. Call on graph
-    // instead.");
-    // }
+
+
+
+//    @Override
+//    public GraphComputer compute(final Class... graphComputerClass) {
+//        throw new UnsupportedOperationException("Graph Computer not supported on an individual transaction. Call on graph instead.");
+//    }
 
     @Override
     public String toString() {
         int ihc = System.identityHashCode(this);
-        String ihcString = String.format("0x%s", Hex.bytesToHex((byte) (ihc >>> 24 & 0x000000FF),
-                (byte) (ihc >>> 16 & 0x000000FF), (byte) (ihc >>> 8 & 0x000000FF), (byte) (ihc & 0x000000FF)));
+        String ihcString = String.format("0x%s", Hex.bytesToHex(
+                (byte)(ihc >>> 24 & 0x000000FF),
+                (byte)(ihc >>> 16 & 0x000000FF),
+                (byte)(ihc >>> 8  & 0x000000FF),
+                (byte)(ihc        & 0x000000FF)));
         return StringFactory.graphString(this, ihcString);
     }
 
@@ -189,8 +177,7 @@ public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransac
         return new AbstractThreadedTransaction(getGraph()) {
             @Override
             public void doOpen() {
-                if (isClosed())
-                    throw new IllegalStateException("Cannot re-open a closed transaction.");
+                if (isClosed()) throw new IllegalStateException("Cannot re-open a closed transaction.");
             }
 
             @Override
@@ -205,8 +192,8 @@ public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransac
 
             @Override
             public <R> Workload<R> submit(Function<Graph, R> graphRFunction) {
-                throw new UnsupportedOperationException("HugeGraph does not support nested transactions. "
-                        + "Call submit on a HugeGraph not an individual transaction.");
+                throw new UnsupportedOperationException("HugeGraph does not support nested transactions. " +
+                        "Call submit on a HugeGraph not an individual transaction.");
             }
 
             @Override
@@ -233,5 +220,6 @@ public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransac
     public void close() {
         tx().close();
     }
+
 
 }

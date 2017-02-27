@@ -39,32 +39,36 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
- * A {@link StoreTransaction} that supports locking via {@link LocalLockMediator} and writing and reading lock records
- * in a {@link ExpectedValueCheckingStore}.
+ * A {@link StoreTransaction} that supports locking via
+ * {@link LocalLockMediator} and writing and reading lock records in a
+ * {@link ExpectedValueCheckingStore}.
  * <p/>
  * <p/>
- * <b>This class is not safe for concurrent use by multiple threads. Multithreaded access must be prevented or
- * externally synchronized.</b>
+ * <b>This class is not safe for concurrent use by multiple threads.
+ * Multithreaded access must be prevented or externally synchronized.</b>
  */
 public class ExpectedValueCheckingTransaction implements StoreTransaction {
 
     private static final Logger log = LoggerFactory.getLogger(ExpectedValueCheckingTransaction.class);
 
     /**
-     * This variable starts false. It remains false during the locking stage of a transaction. It is set to true at the
-     * beginning of the first mutate/mutateMany call in a transaction (before performing any writes to the backing
-     * store).
+     * This variable starts false.  It remains false during the
+     * locking stage of a transaction.  It is set to true at the
+     * beginning of the first mutate/mutateMany call in a transaction
+     * (before performing any writes to the backing store).
      */
     private boolean isMutationStarted;
 
     /**
-     * Transaction for reading and writing locking-related metadata. Also used for reading expected values provided as
-     * arguments to {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}
+     * Transaction for reading and writing locking-related metadata. Also used
+     * for reading expected values provided as arguments to
+     * {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}
      */
     private final StoreTransaction strongConsistentTx;
 
     /**
-     * Transaction for reading and writing client data. No guarantees about consistency strength.
+     * Transaction for reading and writing client data. No guarantees about
+     * consistency strength.
      */
     private final StoreTransaction inconsistentTx;
     private final Duration maxReadTime;
@@ -72,8 +76,7 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
     private final Map<ExpectedValueCheckingStore, Map<KeyColumn, StaticBuffer>> expectedValuesByStore =
             new HashMap<ExpectedValueCheckingStore, Map<KeyColumn, StaticBuffer>>();
 
-    public ExpectedValueCheckingTransaction(StoreTransaction inconsistentTx, StoreTransaction strongConsistentTx,
-            Duration maxReadTime) {
+    public ExpectedValueCheckingTransaction(StoreTransaction inconsistentTx, StoreTransaction strongConsistentTx, Duration maxReadTime) {
         this.inconsistentTx = inconsistentTx;
         this.strongConsistentTx = strongConsistentTx;
         this.maxReadTime = maxReadTime;
@@ -95,12 +98,15 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
 
     /**
      * Tells whether this transaction has been used in a
-     * {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)} call. When this returns
-     * true, the transaction is no longer allowed in calls to
+     * {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)}
+     * call. When this returns true, the transaction is no longer allowed in
+     * calls to
      * {@link ExpectedValueCheckingStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}.
      *
-     * @return False until {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)} is
-     *         called on this transaction instance. Returns true forever after.
+     * @return False until
+     *         {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)}
+     *         is called on this transaction instance. Returns true forever
+     *         after.
      */
     public boolean isMutationStarted() {
         return isMutationStarted;
@@ -128,7 +134,7 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
         assert null != m;
         if (m.containsKey(lockID)) {
             log.debug("Multiple expected values for {}: keeping initial value {} and discarding later value {}",
-                    new Object[] { lockID, m.get(lockID), value });
+                    new Object[]{lockID, m.get(lockID), value});
         } else {
             m.put(lockID, value);
             log.debug("Store expected value for {}: {}", lockID, value);
@@ -136,14 +142,15 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
     }
 
     /**
-     * If {@code !}{@link #isMutationStarted()}, check all locks and expected values, then mark the transaction as
-     * started.
+     * If {@code !}{@link #isMutationStarted()}, check all locks and expected
+     * values, then mark the transaction as started.
      * <p>
      * If {@link #isMutationStarted()}, this does nothing.
      *
      * @throws com.baidu.hugegraph.diskstorage.BackendException
      *
-     * @return true if this transaction holds at least one lock, false if the transaction holds no locks
+     * @return true if this transaction holds at least one lock, false if the
+     *         transaction holds no locks
      */
     boolean prepareForMutations() throws BackendException {
         if (!isMutationStarted()) {
@@ -156,8 +163,8 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
 
     /**
      * Check all locks attempted by earlier
-     * {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)} calls using
-     * this transaction.
+     * {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}
+     * calls using this transaction.
      *
      * @throws com.baidu.hugegraph.diskstorage.BackendException
      */
@@ -174,8 +181,8 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
 
     /**
      * Check that all expected values saved from earlier
-     * {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)} calls using
-     * this transaction.
+     * {@link KeyColumnValueStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}
+     * calls using this transaction.
      *
      * @throws com.baidu.hugegraph.diskstorage.BackendException
      */
@@ -190,12 +197,14 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
 
     /**
      * Signals the transaction that it has been used in a call to
-     * {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)} . This transaction can't be
-     * used in subsequent calls to
-     * {@link ExpectedValueCheckingStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)} .
+     * {@link ExpectedValueCheckingStore#mutate(StaticBuffer, List, List, StoreTransaction)}
+     * . This transaction can't be used in subsequent calls to
+     * {@link ExpectedValueCheckingStore#acquireLock(StaticBuffer, StaticBuffer, StaticBuffer, StoreTransaction)}
+     * .
      * <p/>
-     * Calling this method at the appropriate time is handled automatically by {@link ExpectedValueCheckingStore}.
-     * HugeGraph users don't need to call this method by hand.
+     * Calling this method at the appropriate time is handled automatically by
+     * {@link ExpectedValueCheckingStore}. HugeGraph users don't need to call this
+     * method by hand.
      */
     private void mutationStarted() {
         isMutationStarted = true;
@@ -210,36 +219,36 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
         }
     }
 
-    private void checkSingleExpectedValue(final KeyColumn kc, final StaticBuffer ev,
-            final ExpectedValueCheckingStore store) throws BackendException {
+    private void checkSingleExpectedValue(final KeyColumn kc,
+                                          final StaticBuffer ev, final ExpectedValueCheckingStore store) throws BackendException {
         BackendOperation.executeDirect(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 checkSingleExpectedValueUnsafe(kc, ev, store);
                 return true;
             }
-
             @Override
             public String toString() {
                 return "ExpectedValueChecking";
             }
-        }, maxReadTime);
+        },maxReadTime);
     }
 
-    private void checkSingleExpectedValueUnsafe(final KeyColumn kc, final StaticBuffer ev,
-            final ExpectedValueCheckingStore store) throws BackendException {
+    private void checkSingleExpectedValueUnsafe(final KeyColumn kc,
+                                                final StaticBuffer ev, final ExpectedValueCheckingStore store) throws BackendException {
         final StaticBuffer nextBuf = BufferUtil.nextBiggerBuffer(kc.getColumn());
         KeySliceQuery ksq = new KeySliceQuery(kc.getKey(), kc.getColumn(), nextBuf);
         // Call getSlice on the wrapped store using the quorum+ consistency tx
         Iterable<Entry> actualEntries = store.getBackingStore().getSlice(ksq, strongConsistentTx);
 
         if (null == actualEntries)
-            actualEntries = ImmutableList.<Entry> of();
+            actualEntries = ImmutableList.<Entry>of();
 
         /*
          * Discard any columns which do not exactly match kc.getColumn().
          *
-         * For example, it's possible that the slice returned columns which for which kc.getColumn() is a prefix.
+         * For example, it's possible that the slice returned columns which for
+         * which kc.getColumn() is a prefix.
          */
         actualEntries = Iterables.filter(actualEntries, new Predicate<Entry>() {
             @Override
@@ -261,7 +270,7 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
                 assert null != actualCol;
                 assert null != kc.getColumn();
                 assert 0 >= kc.getColumn().compareTo(actualCol);
-                assert 0 > actualCol.compareTo(nextBuf);
+                assert 0  > actualCol.compareTo(nextBuf);
                 return e.getValueAs(StaticBuffer.STATIC_FACTORY);
             }
         });
@@ -269,14 +278,15 @@ public class ExpectedValueCheckingTransaction implements StoreTransaction {
         final Iterable<StaticBuffer> expectedVals;
 
         if (null == ev) {
-            expectedVals = ImmutableList.<StaticBuffer> of();
+            expectedVals = ImmutableList.<StaticBuffer>of();
         } else {
-            expectedVals = ImmutableList.<StaticBuffer> of(ev);
+            expectedVals = ImmutableList.<StaticBuffer>of(ev);
         }
 
         if (!Iterables.elementsEqual(expectedVals, actualVals)) {
-            throw new PermanentLockingException("Expected value mismatch for " + kc + ": expected=" + expectedVals
-                    + " vs actual=" + actualVals + " (store=" + store.getName() + ")");
+            throw new PermanentLockingException(
+                    "Expected value mismatch for " + kc + ": expected="
+                            + expectedVals + " vs actual=" + actualVals + " (store=" + store.getName() + ")");
         }
     }
 

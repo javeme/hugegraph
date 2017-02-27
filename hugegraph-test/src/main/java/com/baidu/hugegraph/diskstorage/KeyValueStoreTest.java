@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
 
     private int numKeys = 2000;
     private String storeName = "testStore1";
+
 
     protected OrderedKeyValueStoreManager manager;
     protected StoreTransaction tx;
@@ -66,8 +68,7 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
     }
 
     public void close() throws BackendException {
-        if (tx != null)
-            tx.commit();
+        if (tx != null) tx.commit();
         store.close();
         manager.close();
     }
@@ -79,8 +80,9 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
 
     @Test
     public void createDatabase() {
-        // Just setup and shutdown
+        //Just setup and shutdown
     }
+
 
     public String[] generateValues() {
         return KeyValueStoreUtil.generateData(numKeys);
@@ -121,7 +123,7 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
     }
 
     public void checkValues(String[] values, Set<Integer> removed) throws BackendException {
-        // 1. Check one-by-one
+        //1. Check one-by-one
         for (int i = 0; i < numKeys; i++) {
             StaticBuffer result = store.get(KeyValueStoreUtil.getBuffer(i), tx);
             if (removed.contains(i)) {
@@ -130,14 +132,14 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
                 Assert.assertEquals(values[i], KeyValueStoreUtil.getString(result));
             }
         }
-        // 2. Check all at once (if supported)
+        //2. Check all at once (if supported)
         if (manager.getFeatures().hasMultiQuery()) {
             List<KVQuery> queries = Lists.newArrayList();
             for (int i = 0; i < numKeys; i++) {
                 StaticBuffer key = KeyValueStoreUtil.getBuffer(i);
-                queries.add(new KVQuery(key, BufferUtil.nextBiggerBuffer(key), 2));
+                queries.add(new KVQuery(key, BufferUtil.nextBiggerBuffer(key),2));
             }
-            Map<KVQuery, RecordIterator<KeyValueEntry>> results = store.getSlices(queries, tx);
+            Map<KVQuery,RecordIterator<KeyValueEntry>> results = store.getSlices(queries,tx);
             for (int i = 0; i < numKeys; i++) {
                 RecordIterator<KeyValueEntry> result = results.get(queries.get(i));
                 Assert.assertNotNull(result);
@@ -145,8 +147,7 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
                 if (result.hasNext()) {
                     value = result.next().getValue();
                     Assert.assertFalse(result.hasNext());
-                } else
-                    value = null;
+                } else value=null;
                 if (removed.contains(i)) {
                     Assert.assertNull(value);
                 } else {
@@ -224,23 +225,20 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
     }
 
     private RecordIterator<KeyValueEntry> getAllData(StoreTransaction tx) throws BackendException {
-        return store.getSlice(new KVQuery(BackendTransaction.EDGESTORE_MIN_KEY, BackendTransaction.EDGESTORE_MAX_KEY),
-                tx);
+        return store.getSlice(new KVQuery(BackendTransaction.EDGESTORE_MIN_KEY, BackendTransaction.EDGESTORE_MAX_KEY), tx);
     }
 
-    public void checkSlice(String[] values, Set<Integer> removed, int start, int end, int limit)
-            throws BackendException {
+
+    public void checkSlice(String[] values, Set<Integer> removed, int start, int end, int limit) throws BackendException {
         EntryList entries;
         if (limit <= 0)
             entries = KVUtil.getSlice(store, KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end), tx);
         else
-            entries = KVUtil.getSlice(store, KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end),
-                    limit, tx);
+            entries = KVUtil.getSlice(store, KeyValueStoreUtil.getBuffer(start), KeyValueStoreUtil.getBuffer(end), limit, tx);
 
         int pos = 0;
         for (int i = start; i < end; i++) {
-            if (removed.contains(i))
-                continue;
+            if (removed.contains(i)) continue;
             if (pos < limit) {
                 Entry entry = entries.get(pos);
                 int id = KeyValueStoreUtil.getID(entry.getColumn());
@@ -250,8 +248,7 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
             }
             pos++;
         }
-        if (limit > 0 && pos >= limit)
-            Assert.assertEquals(limit, entries.size());
+        if (limit > 0 && pos >= limit) Assert.assertEquals(limit, entries.size());
         else {
             Assert.assertNotNull(entries);
             Assert.assertEquals(pos, entries.size());
@@ -274,5 +271,6 @@ public abstract class KeyValueStoreTest extends AbstractKCVSTest {
         checkSlice(values, deleted, 50, 20, -1);
 
     }
+
 
 }

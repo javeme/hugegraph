@@ -50,8 +50,7 @@ public class RelationTypeIndexWrapper implements RelationTypeIndex {
     public String name() {
         String typeName = type.name();
         int index = typeName.lastIndexOf(RELATION_INDEX_SEPARATOR);
-        Preconditions.checkArgument(index > 0 && index < typeName.length() - 1, "Invalid name encountered: %s",
-                typeName);
+        Preconditions.checkArgument(index > 0 && index < typeName.length() - 1, "Invalid name encountered: %s", typeName);
         return typeName.substring(index + 1, typeName.length());
     }
 
@@ -74,12 +73,9 @@ public class RelationTypeIndexWrapper implements RelationTypeIndex {
 
     @Override
     public Direction getDirection() {
-        if (type.isUnidirected(Direction.BOTH))
-            return Direction.BOTH;
-        else if (type.isUnidirected(Direction.OUT))
-            return Direction.OUT;
-        else if (type.isUnidirected(Direction.IN))
-            return Direction.IN;
+        if (type.isUnidirected(Direction.BOTH)) return Direction.BOTH;
+        else if (type.isUnidirected(Direction.OUT)) return Direction.OUT;
+        else if (type.isUnidirected(Direction.IN)) return Direction.IN;
         throw new AssertionError();
     }
 
@@ -90,12 +86,9 @@ public class RelationTypeIndexWrapper implements RelationTypeIndex {
 
     @Override
     public boolean equals(Object oth) {
-        if (oth == null)
-            return false;
-        else if (oth == this)
-            return true;
-        else if (!getClass().isInstance(oth))
-            return false;
+        if (oth == null) return false;
+        else if (oth == this) return true;
+        else if (!getClass().isInstance(oth)) return false;
         return type.equals(((RelationTypeIndexWrapper) oth).type);
     }
 

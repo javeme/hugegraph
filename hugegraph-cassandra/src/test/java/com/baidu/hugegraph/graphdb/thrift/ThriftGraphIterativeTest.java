@@ -33,9 +33,9 @@ public class ThriftGraphIterativeTest extends HugeGraphIterativeBenchmark {
 
     @Override
     public KeyColumnValueStoreManager openStorageManager() throws BackendException {
-        return new CassandraThriftStoreManager(new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS,
-                getConfiguration(), BasicConfiguration.Restriction.NONE));
+        return new CassandraThriftStoreManager(new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS,getConfiguration(), BasicConfiguration.Restriction.NONE));
     }
+
 
     @BeforeClass
     public static void beforeClass() {

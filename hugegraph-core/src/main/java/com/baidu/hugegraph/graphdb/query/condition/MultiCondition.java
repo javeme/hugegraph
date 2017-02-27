@@ -30,8 +30,7 @@ import java.util.ArrayList;
  * @see Or
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayList<Condition<E>>
-        implements Condition<E> {
+public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayList<Condition<E>> implements Condition<E> {
 
     MultiCondition() {
         this(5);
@@ -41,7 +40,7 @@ public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayLi
         super(capacity);
     }
 
-    MultiCondition(final Condition<E>...conditions) {
+    MultiCondition(final Condition<E>... conditions) {
         super(conditions.length);
         for (Condition<E> condition : conditions) {
             assert condition != null;
@@ -85,8 +84,7 @@ public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayLi
     @Override
     public int hashCode() {
         int sum = 0;
-        for (Condition kp : this)
-            sum += kp.hashCode();
+        for (Condition kp : this) sum += kp.hashCode();
         return new HashCodeBuilder().append(getType()).append(sum).toHashCode();
     }
 
@@ -98,7 +96,7 @@ public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayLi
         if (other == null || !getClass().isInstance(other))
             return false;
 
-        MultiCondition oth = (MultiCondition) other;
+        MultiCondition oth = (MultiCondition)other;
         if (getType() != oth.getType() || size() != oth.size())
             return false;
 
@@ -127,8 +125,7 @@ public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayLi
         StringBuilder b = new StringBuilder();
         b.append("(");
         for (int i = 0; i < size(); i++) {
-            if (i > 0)
-                b.append(" ").append(token).append(" ");
+            if (i > 0) b.append(" ").append(token).append(" ");
             b.append(get(i));
         }
         b.append(")");

@@ -47,14 +47,12 @@ public class VertexIterable implements Iterable<InternalVertex> {
                 InternalVertex v = null;
                 while (v == null && iterator.hasNext()) {
                     long nextId = iterator.next().longValue();
-                    // Filter out invisible vertices
-                    if (IDManager.VertexIDType.Invisible.is(nextId))
-                        continue;
+                    //Filter out invisible vertices
+                    if (IDManager.VertexIDType.Invisible.is(nextId)) continue;
 
                     v = tx.getInternalVertex(nextId);
-                    // Filter out deleted vertices and types
-                    if (v.isRemoved())
-                        v = null;
+                    //Filter out deleted vertices and types
+                    if (v.isRemoved()) v = null;
                 }
                 return v;
             }
@@ -66,8 +64,7 @@ public class VertexIterable implements Iterable<InternalVertex> {
 
             @Override
             public InternalVertex next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
+                if (!hasNext()) throw new NoSuchElementException();
                 InternalVertex returnVertex = nextVertex;
                 nextVertex = nextVertex();
                 return returnVertex;

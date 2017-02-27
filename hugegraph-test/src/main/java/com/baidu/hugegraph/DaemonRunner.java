@@ -25,7 +25,8 @@ import java.io.InputStreamReader;
 
 public abstract class DaemonRunner<S> {
 
-    private static final Logger log = LoggerFactory.getLogger(DaemonRunner.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(DaemonRunner.class);
 
     private Thread killerHook;
 
@@ -38,13 +39,16 @@ public abstract class DaemonRunner<S> {
     protected abstract S readStatusFromDisk();
 
     /**
-     * Read daemon status from disk, then try to start the dameon if the status file says it is stopped. Do nothing if
-     * the status read from disk says the daemon is running.
+     * Read daemon status from disk, then try to start the dameon
+     * if the status file says it is stopped.  Do nothing if the
+     * status read from disk says the daemon is running.
      *
-     * After succesfully starting the daemon (no exceptions from {@link #startImpl()}, register a shutdown hook with the
-     * VM that will call {@link #killImpl(S)} on shutdown.
+     * After succesfully starting the daemon (no exceptions from
+     * {@link #startImpl()}, register a shutdown hook with the VM
+     * that will call {@link #killImpl(S)} on shutdown.
      *
-     * @return status representing the daemon, either just-started or already running
+     * @return status representing the daemon, either just-started
+     *         or already running
      */
     public synchronized S start() {
         S stat = readStatusFromDisk();
@@ -66,8 +70,9 @@ public abstract class DaemonRunner<S> {
     }
 
     /**
-     * Read daemon status from disk, then try to kill the daemon if the status file says it is running. Do nothing if
-     * the status read from disk says the daemon is stopped.
+     * Read daemon status from disk, then try to kill the daemon
+     * if the status file says it is running.  Do nothing if the
+     * status read from disk says the daemon is stopped.
      */
     public synchronized void stop() {
         S stat = readStatusFromDisk();
@@ -107,9 +112,8 @@ public abstract class DaemonRunner<S> {
                 Runtime.getRuntime().removeShutdownHook(killerHook);
                 log.debug("Unregistered killer hook: {}", killerHook);
             } catch (IllegalStateException e) {
-                /*
-                 * Can receive "java.lang.IllegalStateException: Shutdown in progress" when called from JVM shutdown (as
-                 * opposed to called from the stop method).
+                /* Can receive "java.lang.IllegalStateException: Shutdown in progress"
+                 * when called from JVM shutdown (as opposed to called from the stop method).
                  */
                 log.debug("Could not unregister killer hook: {}", e);
             }
@@ -118,15 +122,17 @@ public abstract class DaemonRunner<S> {
     }
 
     /**
-     * Run the parameter as an external process. Returns if the command starts without throwing an exception and returns
-     * exit status 0. Throws an exception if there's any problem invoking the command or if it does not return zero exit
-     * status.
+     * Run the parameter as an external process. Returns if the command starts
+     * without throwing an exception and returns exit status 0. Throws an
+     * exception if there's any problem invoking the command or if it does not
+     * return zero exit status.
      *
      * Blocks indefinitely while waiting for the command to complete.
      *
-     * @param argv passed directly to {@link ProcessBuilder}'s constructor
+     * @param argv
+     *            passed directly to {@link ProcessBuilder}'s constructor
      */
-    protected static void runCommand(String...argv) {
+    protected static void runCommand(String... argv) {
 
         final String cmd = Joiner.on(" ").join(argv);
         log.info("Executing {}", cmd);
@@ -162,12 +168,14 @@ public abstract class DaemonRunner<S> {
     }
 
     /*
-     * This could be retired in favor of ProcessBuilder.Redirect when we move to source level 1.7.
+     * This could be retired in favor of ProcessBuilder.Redirect when we move to
+     * source level 1.7.
      */
     private static class StreamLogger extends Thread {
 
         private final BufferedReader reader;
-        private static final Logger log = LoggerFactory.getLogger(StreamLogger.class);
+        private static final Logger log =
+                LoggerFactory.getLogger(StreamLogger.class);
 
         private StreamLogger(InputStream is) {
             this.reader = new BufferedReader(new InputStreamReader(is));

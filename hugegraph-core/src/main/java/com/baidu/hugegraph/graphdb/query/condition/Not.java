@@ -69,14 +69,13 @@ public class Not<E extends HugeGraphElement> implements Condition<E> {
 
     @Override
     public boolean equals(Object other) {
-        return this == other
-                || !(other == null || !getClass().isInstance(other)) && condition.equals(((Not) other).condition);
+        return this == other || !(other == null || !getClass().isInstance(other)) && condition.equals(((Not) other).condition);
 
     }
 
     @Override
     public String toString() {
-        return "!(" + condition.toString() + ")";
+        return "!("+ condition.toString()+")";
     }
 
     public static <E extends HugeGraphElement> Not<E> of(Condition<E> element) {

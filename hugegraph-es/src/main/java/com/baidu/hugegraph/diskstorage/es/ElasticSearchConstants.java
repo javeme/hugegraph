@@ -26,9 +26,9 @@ public class ElasticSearchConstants {
 
     public static final String ES_PROPERTIES_FILE = "hugegraph-es.properties";
     public static final String ES_VERSION_EXPECTED;
-
+    
     private static final Logger log = LoggerFactory.getLogger(ElasticSearchConstants.class);
-
+    
     static {
         Properties props;
 

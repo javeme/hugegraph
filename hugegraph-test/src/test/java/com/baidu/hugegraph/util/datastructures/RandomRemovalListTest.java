@@ -22,9 +22,11 @@ import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
 
+
 public class RandomRemovalListTest {
 
-    private static final Logger log = LoggerFactory.getLogger(RandomRemovalListTest.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(RandomRemovalListTest.class);
 
     @Test
     public void test1() {
@@ -84,10 +86,10 @@ public class RandomRemovalListTest {
         assertEquals(numReturned, max);
     }
 
-    // @Test
+    //@Test
     public void benchmark() {
         for (int i = 10; i < 20; i = i + 1) {
-            // RandomRemovalList.numTriesBeforeCompactification=i;
+            //RandomRemovalList.numTriesBeforeCompactification=i;
             long before = System.currentTimeMillis();
             int compact = runIndividual();
             long after = System.currentTimeMillis();

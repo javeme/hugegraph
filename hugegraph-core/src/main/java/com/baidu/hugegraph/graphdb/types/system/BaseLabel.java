@@ -27,6 +27,7 @@ public class BaseLabel extends BaseRelationType implements EdgeLabel {
     public static final BaseLabel VertexLabelEdge =
             new BaseLabel("vertexlabel", 2, Direction.OUT, Multiplicity.MANY2ONE);
 
+
     private final Direction directionality;
     private final Multiplicity multiplicity;
 
@@ -38,7 +39,7 @@ public class BaseLabel extends BaseRelationType implements EdgeLabel {
 
     @Override
     public long[] getSignature() {
-        return new long[] { BaseKey.SchemaDefinitionDesc.longId() };
+        return new long[]{BaseKey.SchemaDefinitionDesc.longId()};
     }
 
     @Override
@@ -68,7 +69,8 @@ public class BaseLabel extends BaseRelationType implements EdgeLabel {
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return dir == directionality;
+        return dir== directionality;
     }
+
 
 }

@@ -23,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This enum is only intended for use by HugeGraph internals. It is subject to backwards-incompatible change.
+ * This enum is only intended for use by HugeGraph internals.
+ * It is subject to backwards-incompatible change.
  */
 public enum StandardIndexProvider {
-    LUCENE("com.baidu.hugegraph.diskstorage.lucene.LuceneIndex", "lucene"), ELASTICSEARCH(
-            "com.baidu.hugegraph.diskstorage.es.ElasticSearchIndex",
-            ImmutableList.of("elasticsearch", "es")), SOLR("com.baidu.hugegraph.diskstorage.solr.SolrIndex", "solr");
+    LUCENE("com.baidu.hugegraph.diskstorage.lucene.LuceneIndex", "lucene"),
+    ELASTICSEARCH("com.baidu.hugegraph.diskstorage.es.ElasticSearchIndex", ImmutableList.of("elasticsearch", "es")),
+    SOLR("com.baidu.hugegraph.diskstorage.solr.SolrIndex", "solr");
 
     private final String providerName;
     private final ImmutableList<String> shorthands;

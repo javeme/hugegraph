@@ -36,4 +36,6 @@ public interface Query {
      */
     public int getLimit();
 
+
+
 }

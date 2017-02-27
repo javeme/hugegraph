@@ -26,6 +26,7 @@ public abstract class BaseRelationType extends EmptyRelationType implements Syst
     private final String name;
     private final long id;
 
+
     BaseRelationType(String name, long id, HugeGraphSchemaCategory type) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name));
         this.name = Token.systemETprefix + name;
@@ -62,6 +63,7 @@ public abstract class BaseRelationType extends EmptyRelationType implements Syst
         return true;
     }
 
+
     static long getSystemTypeId(long id, HugeGraphSchemaCategory type) {
         Preconditions.checkArgument(id > 0);
         Preconditions.checkArgument(type.isRelationType());
@@ -69,7 +71,7 @@ public abstract class BaseRelationType extends EmptyRelationType implements Syst
             case EDGELABEL:
                 return IDManager.getSchemaId(IDManager.VertexIDType.SystemEdgeLabel, id);
             case PROPERTYKEY:
-                return IDManager.getSchemaId(IDManager.VertexIDType.SystemPropertyKey, id);
+                return IDManager.getSchemaId(IDManager.VertexIDType.SystemPropertyKey,id);
             default:
                 throw new AssertionError("Illegal argument: " + type);
         }

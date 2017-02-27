@@ -41,8 +41,8 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean test(Object value, Object condition) {
-            if (condition == null) {
-                return value == null;
+            if (condition==null) {
+                return value==null;
             } else {
                 if (condition.equals(value)) {
                     return true;
@@ -79,8 +79,8 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean test(Object value, Object condition) {
-            if (condition == null) {
-                return value != null;
+            if (condition==null) {
+                return value!=null;
             } else {
                 return !condition.equals(value);
             }
@@ -107,13 +107,13 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean isValidCondition(Object condition) {
-            return condition != null && condition instanceof Comparable;
+            return condition!=null && condition instanceof Comparable;
         }
 
         @Override
         public boolean test(Object value, Object condition) {
-            Integer cmp = AttributeUtil.compare(value, condition);
-            return cmp != null ? cmp < 0 : false;
+            Integer cmp = AttributeUtil.compare(value,condition);
+            return cmp!=null?cmp<0:false;
         }
 
         @Override
@@ -137,13 +137,13 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean isValidCondition(Object condition) {
-            return condition != null && condition instanceof Comparable;
+            return condition!=null && condition instanceof Comparable;
         }
 
         @Override
         public boolean test(Object value, Object condition) {
-            Integer cmp = AttributeUtil.compare(value, condition);
-            return cmp != null ? cmp <= 0 : false;
+            Integer cmp = AttributeUtil.compare(value,condition);
+            return cmp!=null?cmp<=0:false;
         }
 
         @Override
@@ -167,13 +167,13 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean isValidCondition(Object condition) {
-            return condition != null && condition instanceof Comparable;
+            return condition!=null && condition instanceof Comparable;
         }
 
         @Override
         public boolean test(Object value, Object condition) {
-            Integer cmp = AttributeUtil.compare(value, condition);
-            return cmp != null ? cmp > 0 : false;
+            Integer cmp = AttributeUtil.compare(value,condition);
+            return cmp!=null?cmp>0:false;
         }
 
         @Override
@@ -197,13 +197,13 @@ public enum Cmp implements HugeGraphPredicate {
 
         @Override
         public boolean isValidCondition(Object condition) {
-            return condition != null && condition instanceof Comparable;
+            return condition!=null && condition instanceof Comparable;
         }
 
         @Override
         public boolean test(Object value, Object condition) {
-            Integer cmp = AttributeUtil.compare(value, condition);
-            return cmp != null ? cmp >= 0 : false;
+            Integer cmp = AttributeUtil.compare(value,condition);
+            return cmp!=null?cmp>=0:false;
         }
 
         @Override

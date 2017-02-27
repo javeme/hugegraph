@@ -23,13 +23,13 @@ public interface MessageReader {
 
     /**
      * Processes the given message. The message object may not be mutated!
-     * 
      * @param message
      */
     public void read(Message message);
 
     /**
-     * Need to override this method because the {@link Log} uses this comparison when unregistering readers
+     * Need to override this method because the {@link Log} uses this comparison
+     * when unregistering readers
      *
      * @param other other reader to compare against
      * @return

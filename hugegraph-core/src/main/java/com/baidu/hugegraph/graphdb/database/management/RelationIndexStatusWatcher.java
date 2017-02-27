@@ -44,7 +44,8 @@ public class RelationIndexStatusWatcher
     }
 
     /**
-     * Poll a relation index until it has a certain {@link SchemaStatus}, or until a configurable timeout is exceeded.
+     * Poll a relation index until it has a certain {@link SchemaStatus},
+     * or until a configurable timeout is exceeded.
      *
      * @return a report with information about schema state, execution duration, and the index
      */
@@ -65,11 +66,9 @@ public class RelationIndexStatusWatcher
                 mgmt = g.openManagement();
                 idx = mgmt.getRelationIndex(mgmt.getRelationType(relationTypeName), relationIndexName);
                 actualStatus = idx.getIndexStatus();
-                LOGGER.info("Index {} (relation type {}) has status {}", relationIndexName, relationTypeName,
-                        actualStatus);
+                LOGGER.info("Index {} (relation type {}) has status {}", relationIndexName, relationTypeName, actualStatus);
                 if (status.equals(actualStatus)) {
-                    return new RelationIndexStatusReport(true, relationIndexName, relationTypeName, actualStatus,
-                            status, t.elapsed());
+                    return new RelationIndexStatusReport(true, relationIndexName, relationTypeName, actualStatus, status, t.elapsed());
                 }
             } finally {
                 if (null != mgmt)
@@ -79,10 +78,9 @@ public class RelationIndexStatusWatcher
             timedOut = null != timeout && 0 < t.elapsed().compareTo(timeout);
 
             if (timedOut) {
-                LOGGER.info("Timed out ({}) while waiting for index {} (relation type {}) to reach status {}", timeout,
-                        relationIndexName, relationTypeName, status);
-                return new RelationIndexStatusReport(false, relationIndexName, relationTypeName, actualStatus, status,
-                        t.elapsed());
+                LOGGER.info("Timed out ({}) while waiting for index {} (relation type {}) to reach status {}",
+                        timeout, relationIndexName, relationTypeName, status);
+                return new RelationIndexStatusReport(false, relationIndexName, relationTypeName, actualStatus, status, t.elapsed());
             }
 
             Thread.sleep(poll.toMillis());

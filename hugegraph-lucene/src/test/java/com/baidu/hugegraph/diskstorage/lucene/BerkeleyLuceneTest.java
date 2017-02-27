@@ -35,17 +35,17 @@ public class BerkeleyLuceneTest extends HugeGraphIndexTest {
     @Override
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = getBerkeleyJEConfiguration();
-        // Add index
-        config.set(INDEX_BACKEND, "lucene", INDEX);
-        config.set(INDEX_DIRECTORY, StorageSetup.getHomeDir("lucene"), INDEX);
+        //Add index
+        config.set(INDEX_BACKEND,"lucene",INDEX);
+        config.set(INDEX_DIRECTORY, StorageSetup.getHomeDir("lucene"),INDEX);
         return config.getConfiguration();
     }
 
     @Override
     public boolean supportsLuceneStyleQueries() {
         return false;
-        // TODO: The query [v.name:"Uncle Berry has a farm"] has an empty result set which indicates that exact string
-        // matching inside this query is not supported for some reason. INVESTIGATE!
+        //TODO: The query [v.name:"Uncle Berry has a farm"] has an empty result set which indicates that exact string
+        //matching inside this query is not supported for some reason. INVESTIGATE!
     }
 
     @Override

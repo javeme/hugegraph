@@ -122,7 +122,8 @@ import static com.baidu.hugegraph.graphdb.database.management.RelationTypeIndexW
  */
 public class ManagementSystem implements HugeGraphManagement {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagementSystem.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(ManagementSystem.class);
 
     private static final String CURRENT_INSTANCE_SUFFIX = "(current)";
 
@@ -145,8 +146,8 @@ public class ManagementSystem implements HugeGraphManagement {
     private boolean graphShutdownRequired;
     private boolean isOpen;
 
-    public ManagementSystem(StandardHugeGraph graph, KCVSConfiguration config, Log sysLog, ManagementLogger mgmtLogger,
-            SchemaCache schemaCache) {
+    public ManagementSystem(StandardHugeGraph graph, KCVSConfiguration config, Log sysLog,
+                            ManagementLogger mgmtLogger, SchemaCache schemaCache) {
         Preconditions.checkArgument(config != null && graph != null && sysLog != null && mgmtLogger != null);
         this.graph = graph;
         this.baseConfig = config;
@@ -154,8 +155,8 @@ public class ManagementSystem implements HugeGraphManagement {
         this.mgmtLogger = mgmtLogger;
         this.schemaCache = schemaCache;
         this.transactionalConfig = new TransactionalConfiguration(baseConfig);
-        this.modifyConfig =
-                new ModifiableConfiguration(ROOT_NS, transactionalConfig, BasicConfiguration.Restriction.GLOBAL);
+        this.modifyConfig = new ModifiableConfiguration(ROOT_NS,
+                transactionalConfig, BasicConfiguration.Restriction.GLOBAL);
         this.userConfig = new UserModifiableConfiguration(modifyConfig, configVerifier);
 
         this.updatedTypes = new HashSet<HugeGraphSchemaVertex>();
@@ -167,30 +168,25 @@ public class ManagementSystem implements HugeGraphManagement {
         this.isOpen = true;
     }
 
-    private final UserModifiableConfiguration.ConfigVerifier configVerifier =
-            new UserModifiableConfiguration.ConfigVerifier() {
-                @Override
-                public void verifyModification(ConfigOption option) {
-                    Preconditions.checkArgument(option.getType() != ConfigOption.Type.FIXED,
-                            "Cannot change the fixed configuration option: %s", option);
-                    Preconditions.checkArgument(option.getType() != ConfigOption.Type.LOCAL,
-                            "Cannot change the local configuration option: %s", option);
-                    if (option.getType() == ConfigOption.Type.GLOBAL_OFFLINE) {
-                        // Verify that there no other open HugeGraph graph instance and no open transactions
-                        Set<String> openInstances = getOpenInstancesInternal();
-                        assert openInstances.size() > 0;
-                        Preconditions.checkArgument(openInstances.size() < 2,
-                                "Cannot change offline config option [%s] since multiple instances are currently open: %s",
-                                option, openInstances);
-                        Preconditions.checkArgument(openInstances.contains(graph.getConfiguration().getUniqueGraphId()),
-                                "Only one open instance (" + openInstances.iterator().next()
-                                        + "), but it's not the current one ("
-                                        + graph.getConfiguration().getUniqueGraphId() + ")");
-                        // Indicate that this graph must be closed
-                        graphShutdownRequired = true;
-                    }
-                }
-            };
+    private final UserModifiableConfiguration.ConfigVerifier configVerifier = new UserModifiableConfiguration.ConfigVerifier() {
+        @Override
+        public void verifyModification(ConfigOption option) {
+            Preconditions.checkArgument(option.getType() != ConfigOption.Type.FIXED, "Cannot change the fixed configuration option: %s", option);
+            Preconditions.checkArgument(option.getType() != ConfigOption.Type.LOCAL, "Cannot change the local configuration option: %s", option);
+            if (option.getType() == ConfigOption.Type.GLOBAL_OFFLINE) {
+                //Verify that there no other open HugeGraph graph instance and no open transactions
+                Set<String> openInstances = getOpenInstancesInternal();
+                assert openInstances.size() > 0;
+                Preconditions.checkArgument(openInstances.size() < 2, "Cannot change offline config option [%s] since multiple instances are currently open: %s", option, openInstances);
+                Preconditions.checkArgument(openInstances.contains(graph.getConfiguration().getUniqueGraphId()),
+                        "Only one open instance ("
+                                + openInstances.iterator().next() + "), but it's not the current one ("
+                                + graph.getConfiguration().getUniqueGraphId() + ")");
+                //Indicate that this graph must be closed
+                graphShutdownRequired = true;
+            }
+        }
+    };
 
     public Set<String> getOpenInstancesInternal() {
         Set<String> openInstances = Sets.newHashSet(modifyConfig.getContainedNamespaces(REGISTRATION_NS));
@@ -202,8 +198,7 @@ public class ManagementSystem implements HugeGraphManagement {
     public Set<String> getOpenInstances() {
         Set<String> openInstances = getOpenInstancesInternal();
         String uid = graph.getConfiguration().getUniqueGraphId();
-        Preconditions.checkArgument(openInstances.contains(uid),
-                "Current instance [%s] not listed as an open instance: %s", uid, openInstances);
+        Preconditions.checkArgument(openInstances.contains(uid), "Current instance [%s] not listed as an open instance: %s", uid, openInstances);
         openInstances.remove(uid);
         openInstances.add(uid + CURRENT_INSTANCE_SUFFIX);
         return openInstances;
@@ -213,13 +208,10 @@ public class ManagementSystem implements HugeGraphManagement {
     public void forceCloseInstance(String instanceId) {
         Preconditions.checkArgument(!graph.getConfiguration().getUniqueGraphId().equals(instanceId),
                 "Cannot force close this current instance [%s]. Properly shut down the graph instead.", instanceId);
-        Preconditions.checkArgument(modifyConfig.has(REGISTRATION_TIME, instanceId),
-                "Instance [%s] is not currently open", instanceId);
+        Preconditions.checkArgument(modifyConfig.has(REGISTRATION_TIME, instanceId), "Instance [%s] is not currently open", instanceId);
         Instant registrationTime = modifyConfig.get(REGISTRATION_TIME, instanceId);
-        Preconditions.checkArgument(registrationTime.compareTo(txStartTime) < 0,
-                "The to-be-closed instance [%s] was started after this transaction"
-                        + "which indicates a successful restart and can hence not be closed: %s vs %s",
-                instanceId, registrationTime, txStartTime);
+        Preconditions.checkArgument(registrationTime.compareTo(txStartTime) < 0, "The to-be-closed instance [%s] was started after this transaction" +
+                "which indicates a successful restart and can hence not be closed: %s vs %s", instanceId, registrationTime, txStartTime);
         modifyConfig.remove(REGISTRATION_TIME, instanceId);
     }
 
@@ -230,7 +222,7 @@ public class ManagementSystem implements HugeGraphManagement {
     @Override
     public synchronized void commit() {
         ensureOpen();
-        // Commit config changes
+        //Commit config changes
         if (transactionalConfig.hasMutations()) {
             DataOutput out = graph.getDataSerializer().getDataOutput(128);
             out.writeObjectNotNull(MgmtLogType.CONFIG_MUTATION);
@@ -239,10 +231,10 @@ public class ManagementSystem implements HugeGraphManagement {
         }
         transactionalConfig.commit();
 
-        // Commit underlying transaction
+        //Commit underlying transaction
         transaction.commit();
 
-        // Communicate schema changes
+        //Communicate schema changes
         if (!updatedTypes.isEmpty()) {
             mgmtLogger.sendCacheEviction(updatedTypes, updatedTypeTriggers, getOpenInstancesInternal());
             for (HugeGraphSchemaVertex schemaVertex : updatedTypes) {
@@ -250,8 +242,7 @@ public class ManagementSystem implements HugeGraphManagement {
             }
         }
 
-        if (graphShutdownRequired)
-            graph.close();
+        if (graphShutdownRequired) graph.close();
         close();
     }
 
@@ -276,8 +267,7 @@ public class ManagementSystem implements HugeGraphManagement {
         return transaction;
     }
 
-    private HugeGraphEdge addSchemaEdge(HugeGraphVertex out, HugeGraphVertex in, TypeDefinitionCategory def,
-            Object modifier) {
+    private HugeGraphEdge addSchemaEdge(HugeGraphVertex out, HugeGraphVertex in, TypeDefinitionCategory def, Object modifier) {
         assert def.isEdge();
         HugeGraphEdge edge = transaction.addEdge(out, in, BaseLabel.SchemaDefinitionEdge);
         TypeDefinitionDescription desc = new TypeDefinitionDescription(def, modifier);
@@ -287,17 +277,15 @@ public class ManagementSystem implements HugeGraphManagement {
 
     // ###### INDEXING SYSTEM #####################
 
-    /*
-     * -------------- Type Indexes ---------------
-     */
+    /* --------------
+    Type Indexes
+     --------------- */
 
     public HugeGraphSchemaElement getSchemaElement(long id) {
         HugeGraphVertex v = transaction.getVertex(id);
-        if (v == null)
-            return null;
+        if (v == null) return null;
         if (v instanceof RelationType) {
-            if (((InternalRelationType) v).getBaseType() == null)
-                return (RelationType) v;
+            if (((InternalRelationType) v).getBaseType() == null) return (RelationType) v;
             return new RelationTypeIndexWrapper((InternalRelationType) v);
         }
         if (v instanceof HugeGraphSchemaVertex) {
@@ -310,41 +298,35 @@ public class ManagementSystem implements HugeGraphManagement {
     }
 
     @Override
-    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, PropertyKey...sortKeys) {
+    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, PropertyKey... sortKeys) {
         return buildRelationTypeIndex(label, name, direction, Order.ASC, sortKeys);
     }
 
     @Override
-    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction,
-            org.apache.tinkerpop.gremlin.process.traversal.Order sortOrder, PropertyKey...sortKeys) {
+    public RelationTypeIndex buildEdgeIndex(EdgeLabel label, String name, Direction direction, org.apache.tinkerpop.gremlin.process.traversal.Order sortOrder, PropertyKey... sortKeys) {
         return buildRelationTypeIndex(label, name, direction, Order.convert(sortOrder), sortKeys);
     }
 
     @Override
-    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, PropertyKey...sortKeys) {
+    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, PropertyKey... sortKeys) {
         return buildRelationTypeIndex(key, name, Direction.OUT, Order.ASC, sortKeys);
     }
 
     @Override
-    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name,
-            org.apache.tinkerpop.gremlin.process.traversal.Order sortOrder, PropertyKey...sortKeys) {
+    public RelationTypeIndex buildPropertyIndex(PropertyKey key, String name, org.apache.tinkerpop.gremlin.process.traversal.Order sortOrder, PropertyKey... sortKeys) {
         return buildRelationTypeIndex(key, name, Direction.OUT, Order.convert(sortOrder), sortKeys);
     }
 
-    private RelationTypeIndex buildRelationTypeIndex(RelationType type, String name, Direction direction,
-            Order sortOrder, PropertyKey...sortKeys) {
+    private RelationTypeIndex buildRelationTypeIndex(RelationType type, String name, Direction direction, Order sortOrder, PropertyKey... sortKeys) {
         Preconditions.checkArgument(type != null && direction != null && sortOrder != null && sortKeys != null);
         Preconditions.checkArgument(StringUtils.isNotBlank(name), "Name cannot be blank: %s", name);
         Token.verifyName(name);
         Preconditions.checkArgument(sortKeys.length > 0, "Need to specify sort keys");
-        for (RelationType key : sortKeys)
-            Preconditions.checkArgument(key != null, "Keys cannot be null");
-        Preconditions.checkArgument(
-                !(type instanceof EdgeLabel) || !((EdgeLabel) type).isUnidirected() || direction == Direction.OUT,
+        for (RelationType key : sortKeys) Preconditions.checkArgument(key != null, "Keys cannot be null");
+        Preconditions.checkArgument(!(type instanceof EdgeLabel) || !((EdgeLabel) type).isUnidirected() || direction == Direction.OUT,
                 "Can only index uni-directed labels in the out-direction: %s", type);
         Preconditions.checkArgument(!((InternalRelationType) type).multiplicity().isConstrained(direction),
-                "The relation type [%s] has a multiplicity or cardinality constraint in direction [%s] and can therefore not be indexed",
-                type, direction);
+                "The relation type [%s] has a multiplicity or cardinality constraint in direction [%s] and can therefore not be indexed", type, direction);
 
         String composedName = composeRelationTypeIndexName(type, name);
         StandardRelationTypeMaker maker;
@@ -365,13 +347,11 @@ public class ManagementSystem implements HugeGraphManagement {
         maker.sortKey(sortKeys);
         maker.sortOrder(sortOrder);
 
-        // Compose signature
+        //Compose signature
         long[] typeSig = ((InternalRelationType) type).getSignature();
         Set<PropertyKey> signature = Sets.newHashSet();
-        for (long typeId : typeSig)
-            signature.add(transaction.getExistingPropertyKey(typeId));
-        for (RelationType sortType : sortKeys)
-            signature.remove(sortType);
+        for (long typeId : typeSig) signature.add(transaction.getExistingPropertyKey(typeId));
+        for (RelationType sortType : sortKeys) signature.remove(sortType);
         if (!signature.isEmpty()) {
             PropertyKey[] sig = signature.toArray(new PropertyKey[signature.size()]);
             maker.signature(sig);
@@ -379,8 +359,7 @@ public class ManagementSystem implements HugeGraphManagement {
         RelationType typeIndex = maker.make();
         addSchemaEdge(type, typeIndex, TypeDefinitionCategory.RELATIONTYPE_INDEX, null);
         RelationTypeIndexWrapper index = new RelationTypeIndexWrapper((InternalRelationType) typeIndex);
-        if (!type.isNew())
-            updateIndex(index, SchemaAction.REGISTER_INDEX);
+        if (!type.isNew()) updateIndex(index, SchemaAction.REGISTER_INDEX);
         return index;
     }
 
@@ -399,42 +378,37 @@ public class ManagementSystem implements HugeGraphManagement {
         Preconditions.checkArgument(StringUtils.isNotBlank(name));
         String composedName = composeRelationTypeIndexName(type, name);
 
-        // Don't use SchemaCache to make code more compact and since we don't need the extra performance here
-        HugeGraphVertex v = Iterables.getOnlyElement(QueryUtil.getVertices(transaction, BaseKey.SchemaName,
-                HugeGraphSchemaCategory.getRelationTypeName(composedName)), null);
-        if (v == null)
-            return null;
+        //Don't use SchemaCache to make code more compact and since we don't need the extra performance here
+        HugeGraphVertex v = Iterables.getOnlyElement(QueryUtil.getVertices(transaction, BaseKey.SchemaName, HugeGraphSchemaCategory.getRelationTypeName(composedName)), null);
+        if (v == null) return null;
         assert v instanceof InternalRelationType;
         return new RelationTypeIndexWrapper((InternalRelationType) v);
     }
 
     @Override
     public Iterable<RelationTypeIndex> getRelationIndexes(final RelationType type) {
-        Preconditions.checkArgument(type != null && type instanceof InternalRelationType,
-                "Invalid relation type provided: %s", type);
-        return Iterables.transform(Iterables.filter(((InternalRelationType) type).getRelationIndexes(),
-                new Predicate<InternalRelationType>() {
-                    @Override
-                    public boolean apply(@Nullable InternalRelationType internalRelationType) {
-                        return !type.equals(internalRelationType);
-                    }
-                }), new Function<InternalRelationType, RelationTypeIndex>() {
-                    @Nullable
-                    @Override
-                    public RelationTypeIndex apply(@Nullable InternalRelationType internalType) {
-                        return new RelationTypeIndexWrapper(internalType);
-                    }
-                });
+        Preconditions.checkArgument(type != null && type instanceof InternalRelationType, "Invalid relation type provided: %s", type);
+        return Iterables.transform(Iterables.filter(((InternalRelationType) type).getRelationIndexes(), new Predicate<InternalRelationType>() {
+            @Override
+            public boolean apply(@Nullable InternalRelationType internalRelationType) {
+                return !type.equals(internalRelationType);
+            }
+        }), new Function<InternalRelationType, RelationTypeIndex>() {
+            @Nullable
+            @Override
+            public RelationTypeIndex apply(@Nullable InternalRelationType internalType) {
+                return new RelationTypeIndexWrapper(internalType);
+            }
+        });
     }
 
-    /*
-     * -------------- Graph Indexes ---------------
-     */
+    /* --------------
+    Graph Indexes
+     --------------- */
 
     public static IndexType getGraphIndexDirect(String name, StandardHugeGraphTx transaction) {
         HugeGraphSchemaVertex v = transaction.getSchemaVertex(HugeGraphSchemaCategory.GRAPHINDEX.getSchemaName(name));
-        if (v == null)
-            return null;
+        if (v == null) return null;
         return v.asIndexType();
     }
 
@@ -461,25 +435,27 @@ public class ManagementSystem implements HugeGraphManagement {
                         return ((HugeGraphSchemaVertex) hugegraphVertex).asIndexType();
                     }
                 }), new Predicate<IndexType>() {
-                    @Override
-                    public boolean apply(@Nullable IndexType indexType) {
-                        return indexType.getElement().subsumedBy(elementType);
-                    }
-                }), new Function<IndexType, HugeGraphIndex>() {
-                    @Nullable
-                    @Override
-                    public HugeGraphIndex apply(@Nullable IndexType indexType) {
-                        return new HugeGraphIndexWrapper(indexType);
-                    }
-                });
+            @Override
+            public boolean apply(@Nullable IndexType indexType) {
+                return indexType.getElement().subsumedBy(elementType);
+            }
+        }), new Function<IndexType, HugeGraphIndex>() {
+            @Nullable
+            @Override
+            public HugeGraphIndex apply(@Nullable IndexType indexType) {
+                return new HugeGraphIndexWrapper(indexType);
+            }
+        });
     }
 
     /**
-     * Returns a {@link GraphIndexStatusWatcher} configured to watch {@code graphIndexName} through graph {@code g}.
+     * Returns a {@link GraphIndexStatusWatcher} configured to watch
+     * {@code graphIndexName} through graph {@code g}.
      * <p/>
-     * This method just instantiates an object. Invoke {@link GraphIndexStatusWatcher#call()} to wait.
+     * This method just instantiates an object.
+     * Invoke {@link GraphIndexStatusWatcher#call()} to wait.
      *
-     * @param g the graph through which to read index information
+     * @param g              the graph through which to read index information
      * @param graphIndexName the name of a graph index to watch
      * @return
      */
@@ -487,32 +463,33 @@ public class ManagementSystem implements HugeGraphManagement {
         return new GraphIndexStatusWatcher(g, graphIndexName);
     }
 
+
     /**
-     * Returns a {@link RelationIndexStatusWatcher} configured to watch the index specified by {@code relationIndexName}
-     * and {@code relationIndexType} through graph {@code g}.
+     * Returns a {@link RelationIndexStatusWatcher} configured to watch the index specified by
+     * {@code relationIndexName} and {@code relationIndexType} through graph {@code g}.
      * <p/>
-     * This method just instantiates an object. Invoke {@link RelationIndexStatusWatcher#call()} to wait.
+     * This method just instantiates an object.
+     * Invoke {@link RelationIndexStatusWatcher#call()} to wait.
      *
-     * @param g the graph through which to read index information
+     * @param g                 the graph through which to read index information
      * @param relationIndexName the name of the relation index to watch
-     * @param relationTypeName the type on the relation index to watch
+     * @param relationTypeName  the type on the relation index to watch
      * @return
      */
-    public static RelationIndexStatusWatcher awaitRelationIndexStatus(HugeGraph g, String relationIndexName,
-            String relationTypeName) {
+    public static RelationIndexStatusWatcher awaitRelationIndexStatus(HugeGraph g,
+                                                                      String relationIndexName,
+                                                                      String relationTypeName) {
         return new RelationIndexStatusWatcher(g, relationIndexName, relationTypeName);
     }
 
     private void checkIndexName(String indexName) {
         Preconditions.checkArgument(StringUtils.isNotBlank(indexName));
-        Preconditions.checkArgument(getGraphIndex(indexName) == null,
-                "An index with name '%s' has already been defined", indexName);
+        Preconditions.checkArgument(getGraphIndex(indexName) == null, "An index with name '%s' has already been defined", indexName);
     }
 
     private HugeGraphIndex createMixedIndex(String indexName, ElementCategory elementCategory,
-            HugeGraphSchemaType constraint, String backingIndex) {
-        Preconditions.checkArgument(graph.getIndexSerializer().containsIndex(backingIndex),
-                "Unknown external index backend: %s", backingIndex);
+                                             HugeGraphSchemaType constraint, String backingIndex) {
+        Preconditions.checkArgument(graph.getIndexSerializer().containsIndex(backingIndex), "Unknown external index backend: %s", backingIndex);
         checkIndexName(indexName);
 
         TypeDefinitionMap def = new TypeDefinitionMap();
@@ -522,56 +499,46 @@ public class ManagementSystem implements HugeGraphManagement {
         def.setValue(TypeDefinitionCategory.INDEXSTORE_NAME, indexName);
         def.setValue(TypeDefinitionCategory.INDEX_CARDINALITY, Cardinality.LIST);
         def.setValue(TypeDefinitionCategory.STATUS, SchemaStatus.ENABLED);
-        HugeGraphSchemaVertex indexVertex =
-                transaction.makeSchemaVertex(HugeGraphSchemaCategory.GRAPHINDEX, indexName, def);
+        HugeGraphSchemaVertex indexVertex = transaction.makeSchemaVertex(HugeGraphSchemaCategory.GRAPHINDEX, indexName, def);
 
-        Preconditions.checkArgument(constraint == null
-                || (elementCategory.isValidConstraint(constraint) && constraint instanceof HugeGraphSchemaVertex));
+        Preconditions.checkArgument(constraint == null || (elementCategory.isValidConstraint(constraint) && constraint instanceof HugeGraphSchemaVertex));
         if (constraint != null) {
-            addSchemaEdge(indexVertex, (HugeGraphSchemaVertex) constraint,
-                    TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, null);
+            addSchemaEdge(indexVertex, (HugeGraphSchemaVertex) constraint, TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, null);
         }
         updateSchemaVertex(indexVertex);
         return new HugeGraphIndexWrapper(indexVertex.asIndexType());
     }
 
     @Override
-    public void addIndexKey(final HugeGraphIndex index, final PropertyKey key, Parameter...parameters) {
-        Preconditions.checkArgument(
-                index != null && key != null && index instanceof HugeGraphIndexWrapper && !(key instanceof BaseKey),
-                "Need to provide valid index and key");
-        if (parameters == null)
-            parameters = new Parameter[0];
+    public void addIndexKey(final HugeGraphIndex index, final PropertyKey key, Parameter... parameters) {
+        Preconditions.checkArgument(index != null && key != null && index instanceof HugeGraphIndexWrapper
+                && !(key instanceof BaseKey), "Need to provide valid index and key");
+        if (parameters == null) parameters = new Parameter[0];
         IndexType indexType = ((HugeGraphIndexWrapper) index).getBaseIndex();
-        Preconditions.checkArgument(indexType instanceof MixedIndexType,
-                "Can only add keys to an external index, not %s", index.name());
+        Preconditions.checkArgument(indexType instanceof MixedIndexType, "Can only add keys to an external index, not %s", index.name());
         Preconditions.checkArgument(indexType instanceof IndexTypeWrapper && key instanceof HugeGraphSchemaVertex
                 && ((IndexTypeWrapper) indexType).getSchemaBase() instanceof HugeGraphSchemaVertex);
 
         HugeGraphSchemaVertex indexVertex = (HugeGraphSchemaVertex) ((IndexTypeWrapper) indexType).getSchemaBase();
 
         for (IndexField field : indexType.getFieldKeys())
-            Preconditions.checkArgument(!field.getFieldKey().equals(key), "Key [%s] has already been added to index %s",
-                    key.name(), index.name());
+            Preconditions.checkArgument(!field.getFieldKey().equals(key), "Key [%s] has already been added to index %s", key.name(), index.name());
 
-        // Assemble parameters
+        //Assemble parameters
         boolean addMappingParameter = !ParameterType.MAPPED_NAME.hasParameter(parameters);
         Parameter[] extendedParas = new Parameter[parameters.length + 1 + (addMappingParameter ? 1 : 0)];
         System.arraycopy(parameters, 0, extendedParas, 0, parameters.length);
         int arrPosition = parameters.length;
-        if (addMappingParameter)
-            extendedParas[arrPosition++] = ParameterType.MAPPED_NAME.getParameter(
-                    graph.getIndexSerializer().getDefaultFieldName(key, parameters, indexType.getBackingIndexName()));
-        extendedParas[arrPosition++] =
-                ParameterType.STATUS.getParameter(key.isNew() ? SchemaStatus.ENABLED : SchemaStatus.INSTALLED);
+        if (addMappingParameter) extendedParas[arrPosition++] = ParameterType.MAPPED_NAME.getParameter(
+                graph.getIndexSerializer().getDefaultFieldName(key, parameters, indexType.getBackingIndexName()));
+        extendedParas[arrPosition++] = ParameterType.STATUS.getParameter(key.isNew() ? SchemaStatus.ENABLED : SchemaStatus.INSTALLED);
 
         addSchemaEdge(indexVertex, key, TypeDefinitionCategory.INDEX_FIELD, extendedParas);
         updateSchemaVertex(indexVertex);
         indexType.resetCache();
-        // Check to see if the index supports this
+        //Check to see if the index supports this
         if (!graph.getIndexSerializer().supports((MixedIndexType) indexType, ParameterIndexField.of(key, parameters))) {
-            throw new HugeGraphException("Could not register new index field '" + key.name()
-                    + "' with index backend as the data type, cardinality or parameter combination is not supported.");
+            throw new HugeGraphException("Could not register new index field '" + key.name() + "' with index backend as the data type, cardinality or parameter combination is not supported.");
         }
 
         try {
@@ -579,36 +546,26 @@ public class ManagementSystem implements HugeGraphManagement {
         } catch (BackendException e) {
             throw new HugeGraphException("Could not register new index field with index backend", e);
         }
-        if (!indexVertex.isNew())
-            updatedTypes.add(indexVertex);
-        if (!key.isNew())
-            updateIndex(index, SchemaAction.REGISTER_INDEX);
+        if (!indexVertex.isNew()) updatedTypes.add(indexVertex);
+        if (!key.isNew()) updateIndex(index, SchemaAction.REGISTER_INDEX);
     }
 
-    private HugeGraphIndex createCompositeIndex(String indexName, ElementCategory elementCategory, boolean unique,
-            HugeGraphSchemaType constraint, PropertyKey...keys) {
+    private HugeGraphIndex createCompositeIndex(String indexName, ElementCategory elementCategory, boolean unique, HugeGraphSchemaType constraint, PropertyKey... keys) {
         checkIndexName(indexName);
         Preconditions.checkArgument(keys != null && keys.length > 0, "Need to provide keys to index [%s]", indexName);
-        Preconditions.checkArgument(!unique || elementCategory == ElementCategory.VERTEX,
-                "Unique indexes can only be created on vertices [%s]", indexName);
+        Preconditions.checkArgument(!unique || elementCategory == ElementCategory.VERTEX, "Unique indexes can only be created on vertices [%s]", indexName);
         boolean allSingleKeys = true;
         boolean oneNewKey = false;
         for (PropertyKey key : keys) {
-            Preconditions.checkArgument(key != null && key instanceof PropertyKeyVertex,
-                    "Need to provide valid keys: %s", key);
-            if (key.cardinality() != Cardinality.SINGLE)
-                allSingleKeys = false;
-            if (key.isNew())
-                oneNewKey = true;
-            else
-                updatedTypes.add((PropertyKeyVertex) key);
+            Preconditions.checkArgument(key != null && key instanceof PropertyKeyVertex, "Need to provide valid keys: %s", key);
+            if (key.cardinality() != Cardinality.SINGLE) allSingleKeys = false;
+            if (key.isNew()) oneNewKey = true;
+            else updatedTypes.add((PropertyKeyVertex) key);
         }
 
         Cardinality indexCardinality;
-        if (unique)
-            indexCardinality = Cardinality.SINGLE;
-        else
-            indexCardinality = (allSingleKeys ? Cardinality.SET : Cardinality.LIST);
+        if (unique) indexCardinality = Cardinality.SINGLE;
+        else indexCardinality = (allSingleKeys ? Cardinality.SET : Cardinality.LIST);
 
         TypeDefinitionMap def = new TypeDefinitionMap();
         def.setValue(TypeDefinitionCategory.INTERNAL_INDEX, true);
@@ -617,23 +574,19 @@ public class ManagementSystem implements HugeGraphManagement {
         def.setValue(TypeDefinitionCategory.INDEXSTORE_NAME, indexName);
         def.setValue(TypeDefinitionCategory.INDEX_CARDINALITY, indexCardinality);
         def.setValue(TypeDefinitionCategory.STATUS, oneNewKey ? SchemaStatus.ENABLED : SchemaStatus.INSTALLED);
-        HugeGraphSchemaVertex indexVertex =
-                transaction.makeSchemaVertex(HugeGraphSchemaCategory.GRAPHINDEX, indexName, def);
+        HugeGraphSchemaVertex indexVertex = transaction.makeSchemaVertex(HugeGraphSchemaCategory.GRAPHINDEX, indexName, def);
         for (int i = 0; i < keys.length; i++) {
-            Parameter[] paras = { ParameterType.INDEX_POSITION.getParameter(i) };
+            Parameter[] paras = {ParameterType.INDEX_POSITION.getParameter(i)};
             addSchemaEdge(indexVertex, keys[i], TypeDefinitionCategory.INDEX_FIELD, paras);
         }
 
-        Preconditions.checkArgument(constraint == null
-                || (elementCategory.isValidConstraint(constraint) && constraint instanceof HugeGraphSchemaVertex));
+        Preconditions.checkArgument(constraint == null || (elementCategory.isValidConstraint(constraint) && constraint instanceof HugeGraphSchemaVertex));
         if (constraint != null) {
-            addSchemaEdge(indexVertex, (HugeGraphSchemaVertex) constraint,
-                    TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, null);
+            addSchemaEdge(indexVertex, (HugeGraphSchemaVertex) constraint, TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, null);
         }
         updateSchemaVertex(indexVertex);
         HugeGraphIndexWrapper index = new HugeGraphIndexWrapper(indexVertex.asIndexType());
-        if (!oneNewKey)
-            updateIndex(index, SchemaAction.REGISTER_INDEX);
+        if (!oneNewKey) updateIndex(index, SchemaAction.REGISTER_INDEX);
         return index;
     }
 
@@ -657,16 +610,14 @@ public class ManagementSystem implements HugeGraphManagement {
 
         @Override
         public HugeGraphManagement.IndexBuilder addKey(PropertyKey key) {
-            Preconditions.checkArgument(key != null && (key instanceof PropertyKeyVertex),
-                    "Key must be a user defined key: %s", key);
+            Preconditions.checkArgument(key != null && (key instanceof PropertyKeyVertex), "Key must be a user defined key: %s", key);
             keys.put(key, null);
             return this;
         }
 
         @Override
-        public HugeGraphManagement.IndexBuilder addKey(PropertyKey key, Parameter...parameters) {
-            Preconditions.checkArgument(key != null && (key instanceof PropertyKeyVertex),
-                    "Key must be a user defined key: %s", key);
+        public HugeGraphManagement.IndexBuilder addKey(PropertyKey key, Parameter... parameters) {
+            Preconditions.checkArgument(key != null && (key instanceof PropertyKeyVertex), "Key must be a user defined key: %s", key);
             keys.put(key, parameters);
             return this;
         }
@@ -674,8 +625,7 @@ public class ManagementSystem implements HugeGraphManagement {
         @Override
         public HugeGraphManagement.IndexBuilder indexOnly(HugeGraphSchemaType schemaType) {
             Preconditions.checkNotNull(schemaType);
-            Preconditions.checkArgument(elementCategory.isValidConstraint(schemaType),
-                    "Need to specify a valid schema type for this index definition: %s", schemaType);
+            Preconditions.checkArgument(elementCategory.isValidConstraint(schemaType), "Need to specify a valid schema type for this index definition: %s", schemaType);
             constraint = schemaType;
             return this;
         }
@@ -692,8 +642,7 @@ public class ManagementSystem implements HugeGraphManagement {
             PropertyKey[] keyArr = new PropertyKey[keys.size()];
             int pos = 0;
             for (Map.Entry<PropertyKey, Parameter[]> entry : keys.entrySet()) {
-                Preconditions.checkArgument(entry.getValue() == null,
-                        "Cannot specify parameters for composite index: %s", entry.getKey());
+                Preconditions.checkArgument(entry.getValue() == null, "Cannot specify parameters for composite index: %s", entry.getKey());
                 keyArr[pos++] = entry.getKey();
             }
             return createCompositeIndex(indexName, elementCategory, unique, constraint, keyArr);
@@ -712,9 +661,9 @@ public class ManagementSystem implements HugeGraphManagement {
         }
     }
 
-    /*
-     * -------------- Schema Update ---------------
-     */
+    /* --------------
+    Schema Update
+     --------------- */
 
     @Override
     public IndexJobFuture updateIndex(Index index, SchemaAction updateAction) {
@@ -725,8 +674,7 @@ public class ManagementSystem implements HugeGraphManagement {
         Set<HugeGraphSchemaVertex> dependentTypes;
         Set<PropertyKeyVertex> keySubset = ImmutableSet.of();
         if (index instanceof RelationTypeIndex) {
-            dependentTypes =
-                    ImmutableSet.of((HugeGraphSchemaVertex) ((InternalRelationType) schemaVertex).getBaseType());
+            dependentTypes = ImmutableSet.of((HugeGraphSchemaVertex) ((InternalRelationType) schemaVertex).getBaseType());
             if (!updateAction.isApplicableStatus(schemaVertex.getStatus()))
                 return null;
         } else if (index instanceof HugeGraphIndex) {
@@ -751,8 +699,7 @@ public class ManagementSystem implements HugeGraphManagement {
 
                 dependentTypes.addAll(keySubset);
             }
-        } else
-            throw new UnsupportedOperationException("Updates not supported for index: " + index);
+        } else throw new UnsupportedOperationException("Updates not supported for index: " + index);
 
         IndexIdentifier indexId = new IndexIdentifier(index);
         StandardScanner.Builder builder;
@@ -769,8 +716,7 @@ public class ManagementSystem implements HugeGraphManagement {
                 builder = graph.getBackend().buildEdgeScanJob();
                 builder.setFinishJob(indexId.getIndexJobFinisher(graph, SchemaAction.ENABLE_INDEX));
                 builder.setJobId(indexId);
-                builder.setJob(VertexJobConverter.convert(graph,
-                        new IndexRepairJob(indexId.indexName, indexId.relationTypeName)));
+                builder.setJob(VertexJobConverter.convert(graph, new IndexRepairJob(indexId.indexName, indexId.relationTypeName)));
                 try {
                     future = builder.execute();
                 } catch (BackendException e) {
@@ -780,15 +726,13 @@ public class ManagementSystem implements HugeGraphManagement {
             case ENABLE_INDEX:
                 setStatus(schemaVertex, SchemaStatus.ENABLED, keySubset);
                 updatedTypes.add(schemaVertex);
-                if (!keySubset.isEmpty())
-                    updatedTypes.addAll(dependentTypes);
+                if (!keySubset.isEmpty()) updatedTypes.addAll(dependentTypes);
                 future = new EmptyIndexJobFuture();
                 break;
             case DISABLE_INDEX:
                 setStatus(schemaVertex, SchemaStatus.INSTALLED, keySubset);
                 updatedTypes.add(schemaVertex);
-                if (!keySubset.isEmpty())
-                    updatedTypes.addAll(dependentTypes);
+                if (!keySubset.isEmpty()) updatedTypes.addAll(dependentTypes);
                 setUpdateTrigger(new UpdateStatusTrigger(graph, schemaVertex, SchemaStatus.DISABLED, keySubset));
                 future = new EmptyIndexJobFuture();
                 break;
@@ -798,8 +742,7 @@ public class ManagementSystem implements HugeGraphManagement {
                 } else {
                     HugeGraphIndex gindex = (HugeGraphIndex) index;
                     if (gindex.isMixedIndex())
-                        throw new UnsupportedOperationException(
-                                "External mixed indexes must be removed in the indexing system directly.");
+                        throw new UnsupportedOperationException("External mixed indexes must be removed in the indexing system directly.");
                     builder = graph.getBackend().buildGraphIndexScanJob();
                 }
                 builder.setFinishJob(indexId.getIndexJobFinisher());
@@ -845,23 +788,22 @@ public class ManagementSystem implements HugeGraphManagement {
         }
 
         @Override
-        public ScanMetrics get(long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
+        public ScanMetrics get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             return null;
         }
     }
 
     private static class UpdateStatusTrigger implements Callable<Boolean> {
 
-        private static final Logger log = LoggerFactory.getLogger(UpdateStatusTrigger.class);
+        private static final Logger log =
+                LoggerFactory.getLogger(UpdateStatusTrigger.class);
 
         private final StandardHugeGraph graph;
         private final long schemaVertexId;
         private final SchemaStatus newStatus;
         private final Set<Long> propertyKeys;
 
-        private UpdateStatusTrigger(StandardHugeGraph graph, HugeGraphSchemaVertex vertex, SchemaStatus newStatus,
-                Iterable<PropertyKeyVertex> keys) {
+        private UpdateStatusTrigger(StandardHugeGraph graph, HugeGraphSchemaVertex vertex, SchemaStatus newStatus, Iterable<PropertyKeyVertex> keys) {
             this.graph = graph;
             this.schemaVertexId = vertex.longId();
             this.newStatus = newStatus;
@@ -883,8 +825,7 @@ public class ManagementSystem implements HugeGraphManagement {
                 HugeGraphSchemaVertex schemaVertex = (HugeGraphSchemaVertex) vertex;
 
                 Set<PropertyKeyVertex> keys = Sets.newHashSet();
-                for (Long keyId : propertyKeys)
-                    keys.add((PropertyKeyVertex) mgmt.transaction.getVertex(keyId));
+                for (Long keyId : propertyKeys) keys.add((PropertyKeyVertex) mgmt.transaction.getVertex(keyId));
                 mgmt.setStatus(schemaVertex, newStatus, keys);
                 mgmt.updatedTypes.addAll(keys);
                 mgmt.updatedTypes.add(schemaVertex);
@@ -904,8 +845,7 @@ public class ManagementSystem implements HugeGraphManagement {
                     } catch (Throwable t) {
                         log.warn("Failed to get name for schema vertex with id {}", schemaVertexId, t);
                     }
-                    log.info("Set status {} on schema element {} with property keys {}", newStatus, schemaName,
-                            propNames);
+                    log.info("Set status {} on schema element {} with property keys {}", newStatus, schemaName, propNames);
                 }
                 mgmt.commit();
                 return true;
@@ -922,27 +862,22 @@ public class ManagementSystem implements HugeGraphManagement {
 
         @Override
         public boolean equals(Object oth) {
-            if (this == oth)
-                return true;
-            else if (oth == null || !getClass().isInstance(oth))
-                return false;
+            if (this == oth) return true;
+            else if (oth == null || !getClass().isInstance(oth)) return false;
             return schemaVertexId == ((UpdateStatusTrigger) oth).schemaVertexId;
         }
 
     }
 
     private void setUpdateTrigger(Callable<Boolean> trigger) {
-        // Make sure the most current is the one set
-        if (updatedTypeTriggers.contains(trigger))
-            updatedTypeTriggers.remove(trigger);
+        //Make sure the most current is the one set
+        if (updatedTypeTriggers.contains(trigger)) updatedTypeTriggers.remove(trigger);
         updatedTypeTriggers.add(trigger);
     }
 
     private void setStatus(HugeGraphSchemaVertex vertex, SchemaStatus status, Set<PropertyKeyVertex> keys) {
-        if (keys.isEmpty())
-            setStatusVertex(vertex, status);
-        else
-            setStatusEdges(vertex, status, keys);
+        if (keys.isEmpty()) setStatusVertex(vertex, status);
+        else setStatusEdges(vertex, status, keys);
         vertex.resetCache();
         updateSchemaVertex(vertex);
     }
@@ -950,17 +885,14 @@ public class ManagementSystem implements HugeGraphManagement {
     private void setStatusVertex(HugeGraphSchemaVertex vertex, SchemaStatus status) {
         Preconditions.checkArgument(vertex instanceof RelationTypeVertex || vertex.asIndexType().isCompositeIndex());
 
-        // Delete current status
+        //Delete current status
         for (HugeGraphVertexProperty p : vertex.query().types(BaseKey.SchemaDefinitionProperty).properties()) {
-            if (p.<TypeDefinitionDescription> valueOrNull(BaseKey.SchemaDefinitionDesc)
-                    .getCategory() == TypeDefinitionCategory.STATUS) {
-                if (p.value().equals(status))
-                    return;
-                else
-                    p.remove();
+            if (p.<TypeDefinitionDescription>valueOrNull(BaseKey.SchemaDefinitionDesc).getCategory() == TypeDefinitionCategory.STATUS) {
+                if (p.value().equals(status)) return;
+                else p.remove();
             }
         }
-        // Add new status
+        //Add new status
         HugeGraphVertexProperty p = transaction.addProperty(vertex, BaseKey.SchemaDefinitionProperty, status);
         p.property(BaseKey.SchemaDefinitionDesc.name(), TypeDefinitionDescription.of(TypeDefinitionCategory.STATUS));
     }
@@ -969,14 +901,12 @@ public class ManagementSystem implements HugeGraphManagement {
         Preconditions.checkArgument(vertex.asIndexType().isMixedIndex());
 
         for (HugeGraphEdge edge : vertex.getEdges(TypeDefinitionCategory.INDEX_FIELD, Direction.OUT)) {
-            if (!keys.contains(edge.vertex(Direction.IN)))
-                continue; // Only address edges with matching keys
+            if (!keys.contains(edge.vertex(Direction.IN))) continue; //Only address edges with matching keys
             TypeDefinitionDescription desc = edge.valueOrNull(BaseKey.SchemaDefinitionDesc);
             assert desc.getCategory() == TypeDefinitionCategory.INDEX_FIELD;
             Parameter[] parameters = (Parameter[]) desc.getModifier();
             assert parameters[parameters.length - 1].key().equals(ParameterType.STATUS.getName());
-            if (parameters[parameters.length - 1].value().equals(status))
-                continue;
+            if (parameters[parameters.length - 1].value().equals(status)) continue;
 
             Parameter[] paraCopy = Arrays.copyOf(parameters, parameters.length);
             paraCopy[parameters.length - 1] = ParameterType.STATUS.getParameter(status);
@@ -984,8 +914,7 @@ public class ManagementSystem implements HugeGraphManagement {
             addSchemaEdge(vertex, edge.vertex(Direction.IN), TypeDefinitionCategory.INDEX_FIELD, paraCopy);
         }
 
-        for (PropertyKeyVertex prop : keys)
-            prop.resetCache();
+        for (PropertyKeyVertex prop : keys) prop.resetCache();
     }
 
     @Override
@@ -1010,9 +939,8 @@ public class ManagementSystem implements HugeGraphManagement {
         @Override
         public String toString() {
             String msg = "Job status: " + getState().toString() + ". ";
-            if (metrics != null)
-                msg += String.format("Processed %s records successfully and failed on %s records.",
-                        metrics.get(ScanMetrics.Metric.SUCCESS), metrics.get(ScanMetrics.Metric.FAILURE));
+            if (metrics != null) msg += String.format("Processed %s records successfully and failed on %s records.",
+                    metrics.get(ScanMetrics.Metric.SUCCESS), metrics.get(ScanMetrics.Metric.FAILURE));
             return msg;
         }
 
@@ -1027,26 +955,21 @@ public class ManagementSystem implements HugeGraphManagement {
         private IndexIdentifier(Index index) {
             Preconditions.checkArgument(index != null);
             indexName = index.name();
-            if (index instanceof RelationTypeIndex)
-                relationTypeName = ((RelationTypeIndex) index).getType().name();
-            else
-                relationTypeName = null;
+            if (index instanceof RelationTypeIndex) relationTypeName = ((RelationTypeIndex) index).getType().name();
+            else relationTypeName = null;
             Preconditions.checkArgument(StringUtils.isNotBlank(indexName));
             hashcode = new HashCodeBuilder().append(indexName).append(relationTypeName).toHashCode();
         }
 
         private Index retrieve(ManagementSystem mgmt) {
-            if (relationTypeName == null)
-                return mgmt.getGraphIndex(indexName);
-            else
-                return mgmt.getRelationIndex(mgmt.getRelationType(relationTypeName), indexName);
+            if (relationTypeName == null) return mgmt.getGraphIndex(indexName);
+            else return mgmt.getRelationIndex(mgmt.getRelationType(relationTypeName), indexName);
         }
 
         @Override
         public String toString() {
             String s = indexName;
-            if (relationTypeName != null)
-                s += "[" + relationTypeName + "]";
+            if (relationTypeName != null) s += "[" + relationTypeName + "]";
             return s;
         }
 
@@ -1057,13 +980,11 @@ public class ManagementSystem implements HugeGraphManagement {
 
         @Override
         public boolean equals(Object other) {
-            if (this == other)
-                return true;
-            else if (other == null || !getClass().isInstance(other))
-                return false;
+            if (this == other) return true;
+            else if (other == null || !getClass().isInstance(other)) return false;
             IndexIdentifier oth = (IndexIdentifier) other;
-            return indexName.equals(oth.indexName) && (relationTypeName == oth.relationTypeName
-                    || (relationTypeName != null && relationTypeName.equals(oth.relationTypeName)));
+            return indexName.equals(oth.indexName) &&
+                    (relationTypeName == oth.relationTypeName || (relationTypeName != null && relationTypeName.equals(oth.relationTypeName)));
         }
 
         public Consumer<ScanMetrics> getIndexJobFinisher() {
@@ -1086,23 +1007,21 @@ public class ManagementSystem implements HugeGraphManagement {
                         }
                         LOGGER.info("Index update job successful for [{}]", IndexIdentifier.this.toString());
                     } else {
-                        LOGGER.error("Index update job unsuccessful for [{}]. Check logs",
-                                IndexIdentifier.this.toString());
+                        LOGGER.error("Index update job unsuccessful for [{}]. Check logs", IndexIdentifier.this.toString());
                     }
                 } catch (Throwable e) {
-                    LOGGER.error("Error encountered when updating index after job finished ["
-                            + IndexIdentifier.this.toString() + "]: ", e);
+                    LOGGER.error("Error encountered when updating index after job finished [" + IndexIdentifier.this.toString() + "]: ", e);
                 }
             };
         }
     }
 
+
     @Override
     public void changeName(HugeGraphSchemaElement element, String newName) {
         Preconditions.checkArgument(StringUtils.isNotBlank(newName), "Invalid name: %s", newName);
         HugeGraphSchemaVertex schemaVertex = getSchemaVertex(element);
-        if (schemaVertex.name().equals(newName))
-            return;
+        if (schemaVertex.name().equals(newName)) return;
 
         HugeGraphSchemaCategory schemaCategory = schemaVertex.valueOrNull(BaseKey.SchemaCategory);
         Preconditions.checkArgument(schemaCategory.hasName(), "Invalid schema element: %s", element);
@@ -1111,11 +1030,10 @@ public class ManagementSystem implements HugeGraphManagement {
             InternalRelationType relType = (InternalRelationType) schemaVertex;
             if (relType.getBaseType() != null) {
                 newName = composeRelationTypeIndexName(relType.getBaseType(), newName);
-            } else
-                assert !(element instanceof RelationTypeIndex);
+            } else assert !(element instanceof RelationTypeIndex);
 
-            HugeGraphSchemaCategory cat =
-                    relType.isEdgeLabel() ? HugeGraphSchemaCategory.EDGELABEL : HugeGraphSchemaCategory.PROPERTYKEY;
+            HugeGraphSchemaCategory cat = relType.isEdgeLabel() ?
+                    HugeGraphSchemaCategory.EDGELABEL : HugeGraphSchemaCategory.PROPERTYKEY;
             SystemTypeManager.isNotSystemName(cat, newName);
         } else if (element instanceof VertexLabel) {
             SystemTypeManager.isNotSystemName(HugeGraphSchemaCategory.VERTEXLABEL, newName);
@@ -1131,18 +1049,15 @@ public class ManagementSystem implements HugeGraphManagement {
 
     public HugeGraphSchemaVertex getSchemaVertex(HugeGraphSchemaElement element) {
         if (element instanceof RelationType) {
-            Preconditions.checkArgument(element instanceof RelationTypeVertex, "Invalid schema element provided: %s",
-                    element);
+            Preconditions.checkArgument(element instanceof RelationTypeVertex, "Invalid schema element provided: %s", element);
             return (RelationTypeVertex) element;
         } else if (element instanceof RelationTypeIndex) {
             return (RelationTypeVertex) ((RelationTypeIndexWrapper) element).getWrappedType();
         } else if (element instanceof VertexLabel) {
-            Preconditions.checkArgument(element instanceof VertexLabelVertex, "Invalid schema element provided: %s",
-                    element);
+            Preconditions.checkArgument(element instanceof VertexLabelVertex, "Invalid schema element provided: %s", element);
             return (VertexLabelVertex) element;
         } else if (element instanceof HugeGraphIndex) {
-            Preconditions.checkArgument(element instanceof HugeGraphIndexWrapper, "Invalid schema element provided: %s",
-                    element);
+            Preconditions.checkArgument(element instanceof HugeGraphIndexWrapper, "Invalid schema element provided: %s", element);
             IndexType index = ((HugeGraphIndexWrapper) element).getBaseIndex();
             assert index instanceof IndexTypeWrapper;
             SchemaSource base = ((IndexTypeWrapper) index).getSchemaBase();
@@ -1156,9 +1071,9 @@ public class ManagementSystem implements HugeGraphManagement {
         transaction.updateSchemaVertex(schemaVertex);
     }
 
-    /*
-     * -------------- Type Modifiers ---------------
-     */
+    /* --------------
+    Type Modifiers
+     --------------- */
 
     /**
      * Retrieves the consistency level for a schema element (types and internal indexes)
@@ -1169,23 +1084,20 @@ public class ManagementSystem implements HugeGraphManagement {
     @Override
     public ConsistencyModifier getConsistency(HugeGraphSchemaElement element) {
         Preconditions.checkArgument(element != null);
-        if (element instanceof RelationType)
-            return ((InternalRelationType) element).getConsistencyModifier();
+        if (element instanceof RelationType) return ((InternalRelationType) element).getConsistencyModifier();
         else if (element instanceof HugeGraphIndex) {
             IndexType index = ((HugeGraphIndexWrapper) element).getBaseIndex();
-            if (index.isMixedIndex())
-                return ConsistencyModifier.DEFAULT;
+            if (index.isMixedIndex()) return ConsistencyModifier.DEFAULT;
             return ((CompositeIndexType) index).getConsistencyModifier();
-        } else
-            return ConsistencyModifier.DEFAULT;
+        } else return ConsistencyModifier.DEFAULT;
     }
 
     /**
      * Sets the consistency level for those schema elements that support it (types and internal indexes)
      * </p>
      * Note, that it is possible to have a race condition here if two threads simultaneously try to change the
-     * consistency level. However, this is resolved when the consistency level is being read by taking the first one and
-     * deleting all existing attached consistency levels upon modification.
+     * consistency level. However, this is resolved when the consistency level is being read by taking the
+     * first one and deleting all existing attached consistency levels upon modification.
      *
      * @param element
      * @param consistency
@@ -1200,8 +1112,7 @@ public class ManagementSystem implements HugeGraphManagement {
             IndexType index = ((HugeGraphIndexWrapper) element).getBaseIndex();
             if (index.isMixedIndex())
                 throw new IllegalArgumentException("Cannot change consistency on mixed index: " + element);
-        } else
-            throw new IllegalArgumentException("Cannot change consistency of schema element: " + element);
+        } else throw new IllegalArgumentException("Cannot change consistency of schema element: " + element);
         setTypeModifier(element, ModifierType.CONSISTENCY, consistency);
     }
 
@@ -1226,32 +1137,33 @@ public class ManagementSystem implements HugeGraphManagement {
      * @param duration Note that only 'seconds' granularity is supported
      */
     @Override
-    public void setTTL(final HugeGraphSchemaType type, final Duration duration) {
+    public void setTTL(final HugeGraphSchemaType type,
+                       final Duration duration) {
         if (!graph.getBackend().getStoreFeatures().hasCellTTL())
             throw new UnsupportedOperationException("The storage engine does not support TTL");
         if (type instanceof VertexLabelVertex) {
-            Preconditions.checkArgument(((VertexLabelVertex) type).isStatic(),
-                    "must define vertex label as static to allow setting TTL");
+            Preconditions.checkArgument(((VertexLabelVertex) type).isStatic(), "must define vertex label as static to allow setting TTL");
         } else {
-            Preconditions.checkArgument(type instanceof EdgeLabelVertex || type instanceof PropertyKeyVertex,
-                    "TTL is not supported for type " + type.getClass().getSimpleName());
+            Preconditions.checkArgument(type instanceof EdgeLabelVertex || type instanceof PropertyKeyVertex, "TTL is not supported for type " + type.getClass().getSimpleName());
         }
         Preconditions.checkArgument(type instanceof HugeGraphSchemaVertex);
 
-        Integer ttlSeconds = (duration.isZero()) ? null : (int) duration.getSeconds();
+        Integer ttlSeconds = (duration.isZero()) ?
+                null :
+                (int) duration.getSeconds();
 
         setTypeModifier(type, ModifierType.TTL, ttlSeconds);
     }
 
-    private void setTypeModifier(final HugeGraphSchemaElement element, final ModifierType modifierType,
-            final Object value) {
+    private void setTypeModifier(final HugeGraphSchemaElement element,
+                                 final ModifierType modifierType,
+                                 final Object value) {
         Preconditions.checkArgument(element != null, "null schema element");
 
         TypeDefinitionCategory cat = modifierType.getCategory();
 
         if (cat.hasDataType() && null != value) {
-            Preconditions.checkArgument(cat.getDataType().equals(value.getClass()),
-                    "modifier value is not of expected type " + cat.getDataType());
+            Preconditions.checkArgument(cat.getDataType().equals(value.getClass()), "modifier value is not of expected type " + cat.getDataType());
         }
 
         HugeGraphSchemaVertex typeVertex;
@@ -1263,8 +1175,7 @@ public class ManagementSystem implements HugeGraphManagement {
             assert index instanceof IndexTypeWrapper;
             SchemaSource base = ((IndexTypeWrapper) index).getSchemaBase();
             typeVertex = (HugeGraphSchemaVertex) base;
-        } else
-            throw new IllegalArgumentException("Invalid schema element: " + element);
+        } else throw new IllegalArgumentException("Invalid schema element: " + element);
 
         // remove any pre-existing value for the modifier, or return if an identical value has already been set
         for (HugeGraphEdge e : typeVertex.getEdges(TypeDefinitionCategory.TYPE_MODIFIER, Direction.OUT)) {
@@ -1274,7 +1185,7 @@ public class ManagementSystem implements HugeGraphManagement {
             Object existingValue = def.getValue(modifierType.getCategory());
             if (null != existingValue) {
                 if (existingValue.equals(value)) {
-                    return; // Already has the right value, don't need to do anything
+                    return; //Already has the right value, don't need to do anything
                 } else {
                     e.remove();
                     v.remove();
@@ -1285,8 +1196,7 @@ public class ManagementSystem implements HugeGraphManagement {
         if (null != value) {
             TypeDefinitionMap def = new TypeDefinitionMap();
             def.setValue(cat, value);
-            HugeGraphSchemaVertex cVertex =
-                    transaction.makeSchemaVertex(HugeGraphSchemaCategory.TYPE_MODIFIER, null, def);
+            HugeGraphSchemaVertex cVertex = transaction.makeSchemaVertex(HugeGraphSchemaCategory.TYPE_MODIFIER, null, def);
             addSchemaEdge(typeVertex, cVertex, TypeDefinitionCategory.TYPE_MODIFIER, null);
         }
 
@@ -1356,12 +1266,11 @@ public class ManagementSystem implements HugeGraphManagement {
             types = QueryUtil.getVertices(transaction, BaseKey.SchemaCategory, HugeGraphSchemaCategory.EDGELABEL);
         } else if (RelationType.class.equals(clazz)) {
             types = Iterables.concat(getRelationTypes(EdgeLabel.class), getRelationTypes(PropertyKey.class));
-        } else
-            throw new IllegalArgumentException("Unknown type class: " + clazz);
+        } else throw new IllegalArgumentException("Unknown type class: " + clazz);
         return Iterables.filter(Iterables.filter(types, clazz), new Predicate<T>() {
             @Override
             public boolean apply(@Nullable T t) {
-                // Filter out all relation type indexes
+                //Filter out all relation type indexes
                 return ((InternalRelationType) t).getBaseType() == null;
             }
         });
@@ -1389,9 +1298,8 @@ public class ManagementSystem implements HugeGraphManagement {
 
     @Override
     public Iterable<VertexLabel> getVertexLabels() {
-        return Iterables.filter(
-                QueryUtil.getVertices(transaction, BaseKey.SchemaCategory, HugeGraphSchemaCategory.VERTEXLABEL),
-                VertexLabel.class);
+        return Iterables.filter(QueryUtil.getVertices(transaction, BaseKey.SchemaCategory,
+                HugeGraphSchemaCategory.VERTEXLABEL), VertexLabel.class);
     }
 
     // ###### USERMODIFIABLECONFIGURATION PROXY #########

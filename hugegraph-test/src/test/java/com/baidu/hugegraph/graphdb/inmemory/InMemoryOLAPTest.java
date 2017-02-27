@@ -28,13 +28,13 @@ public class InMemoryOLAPTest extends OLAPTest {
 
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
+        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
         return config.getConfiguration();
     }
 
     @Override
-    public void clopen(Object...settings) {
-        Preconditions.checkArgument(settings == null || settings.length == 0);
+    public void clopen(Object... settings) {
+        Preconditions.checkArgument(settings==null || settings.length==0);
         newTx();
     }
 

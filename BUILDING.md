@@ -1,4 +1,4 @@
-Building JanusGraph
+Building hugegraph
 --------------
 
 Required:

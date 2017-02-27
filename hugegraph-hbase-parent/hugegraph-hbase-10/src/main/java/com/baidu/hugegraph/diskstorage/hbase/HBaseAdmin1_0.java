@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,18 +26,20 @@ import org.apache.hadoop.hbase.TableNotDisabledException;
 import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.client.Admin;
 
-public class HBaseAdmin1_0 implements AdminMask {
+public class HBaseAdmin1_0 implements AdminMask
+{
 
     private static final Logger log = LoggerFactory.getLogger(HBaseAdmin1_0.class);
 
     private final Admin adm;
 
-    public HBaseAdmin1_0(Admin adm) {
+    public HBaseAdmin1_0(Admin adm)
+    {
         this.adm = adm;
     }
-
     @Override
-    public void clearTable(String tableString, long timestamp) throws IOException {
+    public void clearTable(String tableString, long timestamp) throws IOException
+    {
         TableName tableName = TableName.valueOf(tableString);
 
         if (!adm.tableExists(tableName)) {
@@ -64,27 +66,32 @@ public class HBaseAdmin1_0 implements AdminMask {
     }
 
     @Override
-    public HTableDescriptor getTableDescriptor(String tableString) throws TableNotFoundException, IOException {
+    public HTableDescriptor getTableDescriptor(String tableString) throws TableNotFoundException, IOException
+    {
         return adm.getTableDescriptor(TableName.valueOf(tableString));
     }
 
     @Override
-    public boolean tableExists(String tableString) throws IOException {
+    public boolean tableExists(String tableString) throws IOException
+    {
         return adm.tableExists(TableName.valueOf(tableString));
     }
 
     @Override
-    public void createTable(HTableDescriptor desc) throws IOException {
+    public void createTable(HTableDescriptor desc) throws IOException
+    {
         adm.createTable(desc);
     }
 
     @Override
-    public void createTable(HTableDescriptor desc, byte[] startKey, byte[] endKey, int numRegions) throws IOException {
+    public void createTable(HTableDescriptor desc, byte[] startKey, byte[] endKey, int numRegions) throws IOException
+    {
         adm.createTable(desc, startKey, endKey, numRegions);
     }
 
     @Override
-    public int getEstimatedRegionServerCount() {
+    public int getEstimatedRegionServerCount()
+    {
         int serverCount = -1;
         try {
             serverCount = adm.getClusterStatus().getServers().size();
@@ -96,27 +103,32 @@ public class HBaseAdmin1_0 implements AdminMask {
     }
 
     @Override
-    public void disableTable(String tableString) throws IOException {
+    public void disableTable(String tableString) throws IOException
+    {
         adm.disableTable(TableName.valueOf(tableString));
     }
 
     @Override
-    public void enableTable(String tableString) throws IOException {
+    public void enableTable(String tableString) throws IOException
+    {
         adm.enableTable(TableName.valueOf(tableString));
     }
 
     @Override
-    public boolean isTableDisabled(String tableString) throws IOException {
+    public boolean isTableDisabled(String tableString) throws IOException
+    {
         return adm.isTableDisabled(TableName.valueOf(tableString));
     }
 
     @Override
-    public void addColumn(String tableString, HColumnDescriptor columnDescriptor) throws IOException {
+    public void addColumn(String tableString, HColumnDescriptor columnDescriptor) throws IOException
+    {
         adm.addColumn(TableName.valueOf(tableString), columnDescriptor);
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         adm.close();
     }
 }

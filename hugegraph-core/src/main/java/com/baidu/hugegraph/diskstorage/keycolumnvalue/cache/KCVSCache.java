@@ -46,10 +46,9 @@ public abstract class KCVSCache extends KCVSProxy {
     }
 
     protected void incActionBy(int by, CacheMetricsAction action, StoreTransaction txh) {
-        assert by >= 1;
-        if (metricsName != null && txh.getConfiguration().hasGroupName()) {
-            MetricManager.INSTANCE.getCounter(txh.getConfiguration().getGroupName(), metricsName, action.getName())
-                    .inc(by);
+        assert by>=1;
+        if (metricsName!=null && txh.getConfiguration().hasGroupName()) {
+            MetricManager.INSTANCE.getCounter(txh.getConfiguration().getGroupName(), metricsName, action.getName()).inc(by);
         }
     }
 
@@ -58,13 +57,11 @@ public abstract class KCVSCache extends KCVSProxy {
     protected abstract void invalidate(StaticBuffer key, List<CachableStaticBuffer> entries);
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException("Only supports mutateEntries()");
     }
 
-    public void mutateEntries(StaticBuffer key, List<Entry> additions, List<Entry> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutateEntries(StaticBuffer key, List<Entry> additions, List<Entry> deletions, StoreTransaction txh) throws BackendException {
         assert txh instanceof CacheTransaction;
         ((CacheTransaction) txh).mutate(this, key, additions, deletions);
     }
@@ -76,12 +73,11 @@ public abstract class KCVSCache extends KCVSProxy {
     }
 
     public EntryList getSliceNoCache(KeySliceQuery query, StoreTransaction txh) throws BackendException {
-        return store.getSlice(query, unwrapTx(txh));
+        return store.getSlice(query,unwrapTx(txh));
     }
 
-    public Map<StaticBuffer, EntryList> getSliceNoCache(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
-        return store.getSlice(keys, query, unwrapTx(txh));
+    public Map<StaticBuffer, EntryList> getSliceNoCache(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh) throws BackendException {
+        return store.getSlice(keys,query,unwrapTx(txh));
     }
 
 }

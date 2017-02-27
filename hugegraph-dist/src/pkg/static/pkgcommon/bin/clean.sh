@@ -3,7 +3,7 @@
 set -e
 set -u
 
-# Change to janusgraph repository root
+# Change to hugegraph repository root
 cd "`dirname $0`/../../"
 
 # Load config

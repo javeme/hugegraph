@@ -22,12 +22,13 @@ import com.carrotsearch.hppc.LongArrayList;
  * Basic interface for a list of vertices which supports retrieving individuals vertices or iterating over all of them,
  * but does not support modification.
  * <p/>
- * VertexList is returned by {@link HugeGraphVertexQuery}. Depending on how the query was executed that returned this
- * VertexList, getting vertex ids might be significantly faster than retrieving vertex objects.
+ * VertexList is returned by {@link HugeGraphVertexQuery}. Depending on how the query was executed that returned this VertexList,
+ * getting vertex ids might be significantly faster than retrieving vertex objects.
  *
  * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public interface VertexList extends Iterable<HugeGraphVertex> {
+
 
     /**
      * Returns the number of vertices in this list.
@@ -45,8 +46,8 @@ public interface VertexList extends Iterable<HugeGraphVertex> {
     public HugeGraphVertex get(int pos);
 
     /**
-     * Sorts this list according to vertex ids in increasing order. If the list is already sorted, invoking this method
-     * incurs no cost.
+     * Sorts this list according to vertex ids in increasing order.
+     * If the list is already sorted, invoking this method incurs no cost.
      *
      * @throws UnsupportedOperationException If not all vertices in this list have an id
      */
@@ -73,8 +74,7 @@ public interface VertexList extends Iterable<HugeGraphVertex> {
      * <p/>
      * Uses an efficient primitive variable-sized array.
      *
-     * @return A list of idAuthorities of all vertices in this list of vertices in the same order of the original vertex
-     *         list.
+     * @return A list of idAuthorities of all vertices in this list of vertices in the same order of the original vertex list.
      * @see LongArrayList
      */
     public LongArrayList getIDs();

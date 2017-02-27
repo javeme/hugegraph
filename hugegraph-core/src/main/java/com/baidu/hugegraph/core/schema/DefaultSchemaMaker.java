@@ -20,9 +20,10 @@ import com.baidu.hugegraph.core.PropertyKey;
 import com.baidu.hugegraph.core.VertexLabel;
 
 /**
- * When a graph is configured to automatically create vertex/edge labels and property keys when they are first used, a
- * DefaultTypeMaker implementation is used to define them by invoking the {@link #makeVertexLabel(VertexLabelMaker)},
- * {@link #makeEdgeLabel(EdgeLabelMaker)}, or {@link #makePropertyKey(PropertyKeyMaker)} methods respectively. <br />
+ * When a graph is configured to automatically create vertex/edge labels and property keys when they are first used,
+ * a DefaultTypeMaker implementation is used to define them by invoking the {@link #makeVertexLabel(VertexLabelMaker)},
+ * {@link #makeEdgeLabel(EdgeLabelMaker)}, or {@link #makePropertyKey(PropertyKeyMaker)} methods respectively.
+ * <br />
  * By providing a custom DefaultTypeMaker implementation, one can specify how these types should be defined by default.
  * A DefaultTypeMaker implementation is specified in the graph configuration using the full path which means the
  * implementation must be on the classpath.
@@ -74,11 +75,12 @@ public interface DefaultSchemaMaker {
     /**
      * Whether to ignore undefined types occurring in a query.
      * <p/>
-     * If this method returns true, then undefined types referred to in a
-     * {@link com.baidu.hugegraph.core.HugeGraphVertexQuery} will be silently ignored and an empty result set will be
-     * returned. If this method returns false, then usage of undefined types in queries results in an
-     * {@link IllegalArgumentException}.
+     * If this method returns true, then undefined types referred to in a {@link com.baidu.hugegraph.core.HugeGraphVertexQuery} will be silently
+     * ignored and an empty result set will be returned. If this method returns false, then usage of undefined types
+     * in queries results in an {@link IllegalArgumentException}.
      */
     public boolean ignoreUndefinedQueryTypes();
+
+
 
 }

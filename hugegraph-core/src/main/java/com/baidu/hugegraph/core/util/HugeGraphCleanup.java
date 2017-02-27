@@ -41,23 +41,20 @@ public class HugeGraphCleanup {
      */
     public static final void clear(HugeGraph graph) {
         Preconditions.checkNotNull(graph);
-        Preconditions.checkArgument(graph instanceof StandardHugeGraph, "Invalid graph instance detected: %s",
-                graph.getClass());
-        StandardHugeGraph g = (StandardHugeGraph) graph;
-        Preconditions.checkArgument(!g.isOpen(), "Graph needs to be shut down before it can be cleared.");
+        Preconditions.checkArgument(graph instanceof StandardHugeGraph,"Invalid graph instance detected: %s",graph.getClass());
+        StandardHugeGraph g = (StandardHugeGraph)graph;
+        Preconditions.checkArgument(!g.isOpen(),"Graph needs to be shut down before it can be cleared.");
         final GraphDatabaseConfiguration config = g.getConfiguration();
-        BackendOperation.execute(new Callable<Boolean>() {
+        BackendOperation.execute(new Callable<Boolean>(){
             @Override
             public Boolean call() throws Exception {
                 config.getBackend().clearStorage();
                 return true;
             }
-
             @Override
-            public String toString() {
-                return "ClearBackend";
-            }
+            public String toString() { return "ClearBackend"; }
         }, Duration.ofSeconds(20));
     }
+
 
 }

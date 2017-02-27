@@ -44,6 +44,7 @@ public class PredicateCondition<K, E extends HugeGraphElement> extends Literal<E
         this.value = value;
     }
 
+
     private boolean satisfiesCondition(Object value) {
         return predicate.test(value, this.value);
     }
@@ -62,7 +63,7 @@ public class PredicateCondition<K, E extends HugeGraphElement> extends Literal<E
         Preconditions.checkNotNull(type);
 
         if (type.isPropertyKey()) {
-            Iterator<Object> iter = ElementHelper.getValues(element, (PropertyKey) type).iterator();
+            Iterator<Object> iter = ElementHelper.getValues(element,(PropertyKey)type).iterator();
             if (iter.hasNext()) {
                 while (iter.hasNext()) {
                     if (satisfiesCondition(iter.next()))
@@ -72,8 +73,8 @@ public class PredicateCondition<K, E extends HugeGraphElement> extends Literal<E
             }
             return satisfiesCondition(null);
         } else {
-            assert ((InternalRelationType) type).multiplicity().isUnique(Direction.OUT);
-            return satisfiesCondition((HugeGraphVertex) element.value(type.name()));
+            assert ((InternalRelationType)type).multiplicity().isUnique(Direction.OUT);
+            return satisfiesCondition((HugeGraphVertex)element.value(type.name()));
         }
     }
 
@@ -111,8 +112,7 @@ public class PredicateCondition<K, E extends HugeGraphElement> extends Literal<E
         return key.toString() + " " + predicate.toString() + " " + String.valueOf(value);
     }
 
-    public static <K, E extends HugeGraphElement> PredicateCondition<K, E> of(K key,
-            HugeGraphPredicate hugegraphPredicate, Object condition) {
+    public static <K, E extends HugeGraphElement> PredicateCondition<K, E> of(K key, HugeGraphPredicate hugegraphPredicate, Object condition) {
         return new PredicateCondition<K, E>(key, hugegraphPredicate, condition);
     }
 

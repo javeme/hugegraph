@@ -21,8 +21,7 @@ import java.lang.reflect.Constructor;
  *
  */
 public class Hex {
-    private static final Constructor<String> stringConstructor =
-            getProtectedConstructor(String.class, int.class, int.class, char[].class);
+    private static final Constructor<String> stringConstructor = getProtectedConstructor(String.class, int.class, int.class, char[].class);
     private final static byte[] charToByte = new byte[256];
 
     // package protected for use by BufferUtil. Do not modify this array !!
@@ -60,7 +59,7 @@ public class Hex {
         return bytes;
     }
 
-    public static String bytesToHex(byte...bytes) {
+    public static String bytesToHex(byte... bytes) {
         char[] c = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
             int bint = bytes[i];
@@ -72,8 +71,7 @@ public class Hex {
     }
 
     /**
-     * Create a String from a char array with zero-copy (if available), using reflection to access a package-protected
-     * constructor of String.
+     * Create a String from a char array with zero-copy (if available), using reflection to access a package-protected constructor of String.
      */
     public static String wrapCharArray(char[] c) {
         if (c == null)
@@ -94,11 +92,12 @@ public class Hex {
     /**
      * Used to get access to protected/private constructor of the specified class
      *
-     * @param klass - name of the class
+     * @param klass      - name of the class
      * @param paramTypes - types of the constructor parameters
-     * @return Constructor if successful, null if the constructor cannot be accessed
+     * @return Constructor if successful, null if the constructor cannot be
+     *         accessed
      */
-    public static Constructor getProtectedConstructor(Class klass, Class...paramTypes) {
+    public static Constructor getProtectedConstructor(Class klass, Class... paramTypes) {
         Constructor c;
         try {
             c = klass.getDeclaredConstructor(paramTypes);

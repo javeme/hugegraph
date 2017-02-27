@@ -55,6 +55,7 @@ public interface KeyValueStore {
      */
     public boolean containsKey(StaticBuffer key, StoreTransaction txh) throws BackendException;
 
+
     /**
      * Acquires a lock for the given key and expected value (null, if not value is expected).
      *

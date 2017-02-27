@@ -24,10 +24,10 @@ import com.google.common.base.Preconditions;
  */
 public class AbstractLongListUtil {
 
+
     public static boolean isSorted(LongArrayList l, final boolean unique) {
         for (int i = 1; i < l.size(); i++) {
-            if (l.get(i) < l.get(i - 1) || (unique && l.get(i) == l.get(i - 1)))
-                return false;
+            if (l.get(i) < l.get(i - 1) || (unique && l.get(i) == l.get(i - 1))) return false;
         }
         return true;
     }
@@ -37,20 +37,20 @@ public class AbstractLongListUtil {
     }
 
     public static LongArrayList mergeSort(LongArrayList a, LongArrayList b) {
-        int posa = 0, posb = 0;
-        LongArrayList result = new LongArrayList(a.size() + b.size());
-        while (posa < a.size() || posb < b.size()) {
+        int posa=0, posb=0;
+        LongArrayList result = new LongArrayList(a.size()+b.size());
+        while (posa<a.size() || posb<b.size()) {
             long next;
-            if (posa >= a.size()) {
-                next = b.get(posb++);
-            } else if (posb >= b.size()) {
-                next = a.get(posa++);
-            } else if (a.get(posa) <= b.get(posb)) {
-                next = a.get(posa++);
+            if (posa>=a.size()) {
+                next=b.get(posb++);
+            } else if (posb>=b.size()) {
+                next=a.get(posa++);
+            } else if (a.get(posa)<=b.get(posb)) {
+                next=a.get(posa++);
             } else {
-                next = b.get(posb++);
+                next=b.get(posb++);
             }
-            Preconditions.checkArgument(result.isEmpty() || result.get(result.size() - 1) <= next,
+            Preconditions.checkArgument(result.isEmpty() || result.get(result.size()-1)<=next,
                     "The input lists are not sorted");
             result.add(next);
         }

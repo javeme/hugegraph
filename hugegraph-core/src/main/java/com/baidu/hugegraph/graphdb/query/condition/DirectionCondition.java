@@ -39,14 +39,13 @@ public class DirectionCondition<E extends HugeGraphRelation> extends Literal<E> 
 
     @Override
     public boolean evaluate(E element) {
-        if (direction == Direction.BOTH)
-            return true;
+        if (direction==Direction.BOTH) return true;
         if (element instanceof CacheEdge) {
-            return direction == ((CacheEdge) element).getVertexCentricDirection();
+            return direction==((CacheEdge)element).getVertexCentricDirection();
         } else if (element instanceof HugeGraphEdge) {
-            return ((HugeGraphEdge) element).vertex(direction).equals(baseVertex);
+            return ((HugeGraphEdge)element).vertex(direction).equals(baseVertex);
         } else if (element instanceof HugeGraphVertexProperty) {
-            return direction == Direction.OUT;
+            return direction==Direction.OUT;
         }
         return false;
     }
@@ -68,12 +67,12 @@ public class DirectionCondition<E extends HugeGraphRelation> extends Literal<E> 
         if (other == null || !getClass().isInstance(other))
             return false;
 
-        DirectionCondition oth = (DirectionCondition) other;
+        DirectionCondition oth = (DirectionCondition)other;
         return direction == oth.direction && baseVertex.equals(oth.baseVertex);
     }
 
     @Override
     public String toString() {
-        return "dir[" + getDirection() + "]";
+        return "dir["+getDirection()+"]";
     }
 }

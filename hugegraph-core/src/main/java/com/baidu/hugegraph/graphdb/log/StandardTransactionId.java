@@ -30,7 +30,7 @@ public class StandardTransactionId implements TransactionId {
     private Instant transactionTime;
 
     public StandardTransactionId(String instanceId, long transactionId, Instant transactionTime) {
-        Preconditions.checkArgument(instanceId != null && transactionId >= 0 && transactionTime != null);
+        Preconditions.checkArgument(instanceId!=null && transactionId>=0 && transactionTime!=null);
         this.instanceId = instanceId;
         this.transactionId = transactionId;
         this.transactionTime = transactionTime;
@@ -58,18 +58,16 @@ public class StandardTransactionId implements TransactionId {
 
     @Override
     public boolean equals(Object oth) {
-        if (this == oth)
-            return true;
-        else if (oth == null || !getClass().isInstance(oth))
-            return false;
-        StandardTransactionId id = (StandardTransactionId) oth;
-        return instanceId.equals(id.instanceId) && transactionId == id.transactionId
+        if (this==oth) return true;
+        else if (oth==null || !getClass().isInstance(oth)) return false;
+        StandardTransactionId id = (StandardTransactionId)oth;
+        return instanceId.equals(id.instanceId) && transactionId==id.transactionId
                 && transactionTime.equals(id.transactionTime);
     }
 
     @Override
     public String toString() {
-        return transactionId + "@" + instanceId + "::" + transactionTime;
+        return transactionId+"@"+instanceId+"::"+transactionTime;
     }
 
 }

@@ -56,24 +56,22 @@ public abstract class LuceneExample {
 
     private static final int MAX_RESULT = 10000;
 
-    private Map<String, SpatialStrategy> spatial = new HashMap<String, SpatialStrategy>();
+    private Map<String,SpatialStrategy> spatial=new HashMap<String,SpatialStrategy>();
     private SpatialContext ctx = SpatialContext.GEO;
 
     @Before
     public void setup() {
-        if (path.exists())
-            IOUtils.deleteDirectory(path, false);
-        if (!path.exists() && path.isDirectory())
-            path.mkdirs();
+        if (path.exists()) IOUtils.deleteDirectory(path,false);
+        if (!path.exists() && path.isDirectory()) path.mkdirs();
     }
 
     private SpatialStrategy getSpatialStrategy(String key) {
         SpatialStrategy strategy = spatial.get(key);
-        if (strategy == null) {
+        if (strategy==null) {
             final int maxLevels = 11;
             SpatialPrefixTree grid = new GeohashPrefixTree(ctx, maxLevels);
             strategy = new RecursivePrefixTreeStrategy(grid, key);
-            spatial.put(key, strategy);
+            spatial.put(key,strategy);
         }
         return strategy;
     }
@@ -87,43 +85,49 @@ public abstract class LuceneExample {
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         IndexWriter writer = new IndexWriter(dir, iwc);
 
-        indexDocs(writer, "doc1", ImmutableMap.of("name", "The laborious work of John Doe as we know it", "city",
-                "Blumenkamp", "location", Geoshape.point(51.687882, 6.612053), "time", 1000342034));
+        indexDocs(writer, "doc1", ImmutableMap.of("name","The laborious work of John Doe as we know it",
+                                                  "city","Blumenkamp",
+                                                  "location",Geoshape.point(51.687882,6.612053),
+                                                  "time",1000342034
+                ));
 
-        indexDocs(writer, "doc2", ImmutableMap.of("name", "Life as we know it or not", "city", "Essen", "location",
-                Geoshape.point(51.787882, 6.712053), "time", 1000342034 - 500));
+        indexDocs(writer, "doc2", ImmutableMap.of("name","Life as we know it or not",
+                "city","Essen",
+                "location",Geoshape.point(51.787882,6.712053),
+                "time",1000342034-500
+        ));
 
-        indexDocs(writer, "doc3", ImmutableMap.of("name", "Berlin - poor but sexy and a display of the extraordinary",
-                "city", "Berlin", "location", Geoshape.circle(52.509535, 13.425293, 50), "time", 1000342034 + 2000));
+        indexDocs(writer, "doc3", ImmutableMap.of("name","Berlin - poor but sexy and a display of the extraordinary",
+                "city","Berlin",
+                "location",Geoshape.circle(52.509535, 13.425293, 50),
+                "time",1000342034+2000
+        ));
         writer.close();
 
-        // Search
+        //Search
         IndexReader reader = DirectoryReader.open(FSDirectory.open(path));
         IndexSearcher searcher = new IndexSearcher(reader);
         analyzer = new StandardAnalyzer();
 
-        // Auesee
+        //Auesee
         BooleanFilter filter = new BooleanFilter();
-        // filter.add(new TermsFilter(new Term("name_txt","know")), BooleanClause.Occur.MUST);
+        //filter.add(new TermsFilter(new Term("name_txt","know")), BooleanClause.Occur.MUST);
 
-        SpatialArgs args = new SpatialArgs(SpatialOperation.Intersects,
-                Geoshape.circle(51.666167, 6.58905, 450).convert2Spatial4j());
-        // filter.add(getSpatialStrategy("location").makeFilter(args), BooleanClause.Occur.MUST);
+        SpatialArgs args = new SpatialArgs(SpatialOperation.Intersects,Geoshape.circle(51.666167,6.58905,450).convert2Spatial4j());
+        //filter.add(getSpatialStrategy("location").makeFilter(args), BooleanClause.Occur.MUST);
 
-        filter.add(NumericRangeFilter.newLongRange("time", (long) 1000342034, (long) 1000342034, true, true),
-                BooleanClause.Occur.MUST);
-        // filter.add(NumericRangeFilter.newLongRange("time",(long)1000342034-100,Long.MAX_VALUE,true,true),
-        // BooleanClause.Occur.MUST);
-        // filter.add(NumericRangeFilter.newLongRange("time",Long.MIN_VALUE,(long)1000342034+300,true,true),
-        // BooleanClause.Occur.MUST);
+        filter.add(NumericRangeFilter.newLongRange("time",(long)1000342034,(long)1000342034,true,true), BooleanClause.Occur.MUST);
+//        filter.add(NumericRangeFilter.newLongRange("time",(long)1000342034-100,Long.MAX_VALUE,true,true), BooleanClause.Occur.MUST);
+//        filter.add(NumericRangeFilter.newLongRange("time",Long.MIN_VALUE,(long)1000342034+300,true,true), BooleanClause.Occur.MUST);
 
-        filter.add(new PrefixFilter(new Term("city_str", "B")), BooleanClause.Occur.MUST);
+
+        filter.add(new PrefixFilter(new Term("city_str","B")), BooleanClause.Occur.MUST);
+
 
         TopDocs docs = searcher.search(new MatchAllDocsQuery(), filter, MAX_RESULT);
-        if (docs.totalHits >= MAX_RESULT)
-            throw new RuntimeException("Max results exceeded: " + MAX_RESULT);
+        if (docs.totalHits>=MAX_RESULT) throw new RuntimeException("Max results exceeded: " + MAX_RESULT);
 
-        Set<String> result = getResults(searcher, docs);
+        Set<String> result = getResults(searcher,docs);
         System.out.println(result);
 
     }
@@ -136,42 +140,42 @@ public abstract class LuceneExample {
         return found;
     }
 
-    void indexDocs(IndexWriter writer, String docid, Map<String, Object> docMap) throws IOException {
+    void indexDocs(IndexWriter writer, String docid, Map<String,Object> docMap) throws IOException {
         Document doc = new Document();
 
         Field docidField = new StringField("docid", docid, Field.Store.YES);
         doc.add(docidField);
 
-        for (Map.Entry<String, Object> kv : docMap.entrySet()) {
+        for (Map.Entry<String,Object> kv : docMap.entrySet()) {
             String key = kv.getKey();
             Object value = kv.getValue();
 
             if (value instanceof Number) {
                 Field field = null;
                 if (value instanceof Integer || value instanceof Long) {
-                    field = new LongField(key, ((Number) value).longValue(), Field.Store.NO);
-                } else { // double or float
-                    field = new DoubleField(key, ((Number) value).doubleValue(), Field.Store.NO);
+                    field = new LongField(key, ((Number)value).longValue(), Field.Store.NO);
+                } else { //double or float
+                    field = new DoubleField(key, ((Number)value).doubleValue(), Field.Store.NO);
                 }
                 doc.add(field);
             } else if (value instanceof String) {
-                String str = (String) value;
-                Field field = new TextField(key + TXT_SUFFIX, str, Field.Store.NO);
+                String str = (String)value;
+                Field field = new TextField(key+ TXT_SUFFIX, str, Field.Store.NO);
                 doc.add(field);
-                if (str.length() < 256)
-                    field = new StringField(key + STR_SUFFIX, str, Field.Store.NO);
+                if (str.length()<256)
+                field = new StringField(key+STR_SUFFIX, str, Field.Store.NO);
                 doc.add(field);
             } else if (value instanceof Geoshape) {
-                Shape shape = ((Geoshape) value).convert2Spatial4j();
+                Shape shape = ((Geoshape)value).convert2Spatial4j();
                 for (IndexableField f : getSpatialStrategy(key).createIndexableFields(shape)) {
                     doc.add(f);
                 }
-            } else
-                throw new IllegalArgumentException("Unsupported type: " + value);
+            } else throw new IllegalArgumentException("Unsupported type: " + value);
         }
 
         writer.updateDocument(new Term("docid", docid), doc);
 
     }
+
 
 }

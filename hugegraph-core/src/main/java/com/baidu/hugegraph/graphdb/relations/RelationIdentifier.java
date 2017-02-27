@@ -52,8 +52,7 @@ public final class RelationIdentifier implements Serializable {
         inVertexId = 0;
     }
 
-    private RelationIdentifier(final long outVertexId, final long typeId, final long relationId,
-            final long inVertexId) {
+    private RelationIdentifier(final long outVertexId, final long typeId, final long relationId, final long inVertexId) {
         this.outVertexId = outVertexId;
         this.typeId = typeId;
         this.relationId = relationId;
@@ -62,10 +61,10 @@ public final class RelationIdentifier implements Serializable {
 
     static final RelationIdentifier get(InternalRelation r) {
         if (r.hasId()) {
-            return new RelationIdentifier(r.getVertex(0).longId(), r.getType().longId(), r.longId(),
-                    (r.isEdge() ? r.getVertex(1).longId() : 0));
-        } else
-            return null;
+            return new RelationIdentifier(r.getVertex(0).longId(),
+                    r.getType().longId(),
+                    r.longId(), (r.isEdge() ? r.getVertex(1).longId() : 0));
+        } else return null;
     }
 
     public long getRelationId() {
@@ -110,8 +109,7 @@ public final class RelationIdentifier implements Serializable {
         r[0] = relationId;
         r[1] = outVertexId;
         r[2] = typeId;
-        if (inVertexId != 0)
-            r[3] = inVertexId;
+        if (inVertexId != 0) r[3] = inVertexId;
         return r;
     }
 
@@ -122,10 +120,8 @@ public final class RelationIdentifier implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (!getClass().isInstance(other))
-            return false;
+        if (this == other) return true;
+        else if (!getClass().isInstance(other)) return false;
         RelationIdentifier oth = (RelationIdentifier) other;
         return relationId == oth.relationId && typeId == oth.typeId;
     }
@@ -135,8 +131,7 @@ public final class RelationIdentifier implements Serializable {
         StringBuilder s = new StringBuilder();
         s.append(LongEncoding.encode(relationId)).append(TOSTRING_DELIMITER).append(LongEncoding.encode(outVertexId))
                 .append(TOSTRING_DELIMITER).append(LongEncoding.encode(typeId));
-        if (inVertexId != 0)
-            s.append(TOSTRING_DELIMITER).append(LongEncoding.encode(inVertexId));
+        if (inVertexId != 0) s.append(TOSTRING_DELIMITER).append(LongEncoding.encode(inVertexId));
         return s.toString();
     }
 
@@ -145,20 +140,20 @@ public final class RelationIdentifier implements Serializable {
         if (elements.length != 3 && elements.length != 4)
             throw new IllegalArgumentException("Not a valid relation identifier: " + id);
         try {
-            return new RelationIdentifier(LongEncoding.decode(elements[1]), LongEncoding.decode(elements[2]),
-                    LongEncoding.decode(elements[0]), elements.length == 4 ? LongEncoding.decode(elements[3]) : 0);
+            return new RelationIdentifier(LongEncoding.decode(elements[1]),
+                    LongEncoding.decode(elements[2]),
+                    LongEncoding.decode(elements[0]),
+                    elements.length == 4 ? LongEncoding.decode(elements[3]) : 0);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid id - each token expected to be a number", e);
         }
     }
 
     HugeGraphRelation findRelation(HugeGraphTransaction tx) {
-        HugeGraphVertex v = ((StandardHugeGraphTx) tx).getInternalVertex(outVertexId);
-        if (v == null || v.isRemoved())
-            return null;
+        HugeGraphVertex v = ((StandardHugeGraphTx)tx).getInternalVertex(outVertexId);
+        if (v == null || v.isRemoved()) return null;
         HugeGraphVertex typeVertex = tx.getVertex(typeId);
-        if (typeVertex == null)
-            return null;
+        if (typeVertex == null) return null;
         if (!(typeVertex instanceof RelationType))
             throw new IllegalArgumentException("Invalid RelationIdentifier: typeID does not reference a type");
 
@@ -166,50 +161,40 @@ public final class RelationIdentifier implements Serializable {
         Iterable<? extends HugeGraphRelation> rels;
         if (((RelationType) typeVertex).isEdgeLabel()) {
             Direction dir = Direction.OUT;
-            HugeGraphVertex other = ((StandardHugeGraphTx) tx).getInternalVertex(inVertexId);
-            if (other == null || other.isRemoved())
-                return null;
-            if (((StandardHugeGraphTx) tx).isPartitionedVertex(v)
-                    && !((StandardHugeGraphTx) tx).isPartitionedVertex(other)) { // Swap for likely better performance
+            HugeGraphVertex other = ((StandardHugeGraphTx)tx).getInternalVertex(inVertexId);
+            if (other==null || other.isRemoved()) return null;
+            if (((StandardHugeGraphTx) tx).isPartitionedVertex(v) && !((StandardHugeGraphTx) tx).isPartitionedVertex(other)) { //Swap for likely better performance
                 HugeGraphVertex tmp = other;
                 other = v;
                 v = tmp;
                 dir = Direction.IN;
             }
-            rels = ((VertexCentricQueryBuilder) v.query()).noPartitionRestriction().types((EdgeLabel) type)
-                    .direction(dir).adjacent(other).edges();
+            rels = ((VertexCentricQueryBuilder) v.query()).noPartitionRestriction().types((EdgeLabel) type).direction(dir).adjacent(other).edges();
         } else {
-            rels = ((VertexCentricQueryBuilder) v.query()).noPartitionRestriction().types((PropertyKey) type)
-                    .properties();
+            rels = ((VertexCentricQueryBuilder) v.query()).noPartitionRestriction().types((PropertyKey) type).properties();
         }
 
         for (HugeGraphRelation r : rels) {
-            // Find current or previous relation
-            if (r.longId() == relationId
-                    || ((r instanceof StandardRelation) && ((StandardRelation) r).getPreviousID() == relationId))
-                return r;
+            //Find current or previous relation
+            if (r.longId() == relationId ||
+                    ((r instanceof StandardRelation) && ((StandardRelation) r).getPreviousID() == relationId)) return r;
         }
         return null;
     }
 
     public HugeGraphEdge findEdge(HugeGraphTransaction tx) {
         HugeGraphRelation r = findRelation(tx);
-        if (r == null)
-            return null;
-        else if (r instanceof HugeGraphEdge)
-            return (HugeGraphEdge) r;
-        else
-            throw new UnsupportedOperationException("Referenced relation is a property not an edge");
+        if (r == null) return null;
+        else if (r instanceof HugeGraphEdge) return (HugeGraphEdge) r;
+        else throw new UnsupportedOperationException("Referenced relation is a property not an edge");
     }
 
     public HugeGraphVertexProperty findProperty(HugeGraphTransaction tx) {
         HugeGraphRelation r = findRelation(tx);
-        if (r == null)
-            return null;
-        else if (r instanceof HugeGraphVertexProperty)
-            return (HugeGraphVertexProperty) r;
-        else
-            throw new UnsupportedOperationException("Referenced relation is a edge not a property");
+        if (r == null) return null;
+        else if (r instanceof HugeGraphVertexProperty) return (HugeGraphVertexProperty) r;
+        else throw new UnsupportedOperationException("Referenced relation is a edge not a property");
     }
+
 
 }

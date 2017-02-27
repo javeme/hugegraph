@@ -15,12 +15,10 @@
 package com.baidu.hugegraph.graphdb.database.serialize;
 
 /**
- * Marks a {@link com.baidu.hugegraph.core.attribute.AttributeSerializer} that requires a
- * {@link com.baidu.hugegraph.graphdb.database.serialize.Serializer} to serialize the internal state. It is expected
- * that the serializer is passed into this object upon initialization and before usage. Furthermore, such serializers
- * will convert the {@link com.baidu.hugegraph.diskstorage.WriteBuffer} passed into the
- * {@link com.baidu.hugegraph.core.attribute.AttributeSerializer}'s write methods to be cast to
- * {@link com.baidu.hugegraph.graphdb.database.serialize.DataOutput}.
+ * Marks a {@link com.baidu.hugegraph.core.attribute.AttributeSerializer} that requires a {@link com.baidu.hugegraph.graphdb.database.serialize.Serializer}
+ * to serialize the internal state. It is expected that the serializer is passed into this object upon initialization and before usage.
+ * Furthermore, such serializers will convert the {@link com.baidu.hugegraph.diskstorage.WriteBuffer} passed into the
+ * {@link com.baidu.hugegraph.core.attribute.AttributeSerializer}'s write methods to be cast to {@link com.baidu.hugegraph.graphdb.database.serialize.DataOutput}.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */

@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 public class RandomGenerator {
 
-    private static final Logger log = LoggerFactory.getLogger(RandomGenerator.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(RandomGenerator.class);
 
     private final static int standardLower = 7;
     private final static int standardUpper = 21;
@@ -100,7 +101,7 @@ public class RandomGenerator {
         }
         double avg = sum * 1.0 / trials;
         double error = (5 / Math.pow(trials, 0.3));
-        // log.debug(error);
+        //log.debug(error);
         assertTrue(Math.abs(avg - 50.5) < error);
     }
 
@@ -113,8 +114,8 @@ public class RandomGenerator {
         }
         double avg = sum * 1.0 / trials;
         double error = (5 / Math.pow(trials, 0.3));
-        // log.debug(error);
-        assertEquals(50.5, avg, error);
+        //log.debug(error);
+        assertEquals(50.5,avg,error);
     }
 
     @Test

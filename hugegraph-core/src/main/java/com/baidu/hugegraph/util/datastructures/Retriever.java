@@ -19,7 +19,7 @@ package com.baidu.hugegraph.util.datastructures;
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public interface Retriever<I, O> {
+public interface Retriever<I,O> {
 
     public O get(I input);
 

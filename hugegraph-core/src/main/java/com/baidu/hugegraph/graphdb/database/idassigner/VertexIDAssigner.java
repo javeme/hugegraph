@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.graphdb.database.idassigner;
 
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -49,17 +50,20 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 @PreInitializeConfigOptions
 public class VertexIDAssigner implements AutoCloseable {
 
-    private static final Logger log = LoggerFactory.getLogger(VertexIDAssigner.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(VertexIDAssigner.class);
 
     private static final int MAX_PARTITION_RENEW_ATTEMPTS = 1000;
 
-    public static final ConfigOption<String> PLACEMENT_STRATEGY = new ConfigOption<String>(IDS_NS, "placement",
+    public static final ConfigOption<String> PLACEMENT_STRATEGY = new ConfigOption<String>(IDS_NS,"placement",
             "Name of the vertex placement strategy or full class name", ConfigOption.Type.MASKABLE, "simple");
 
-    private static final Map<String, String> REGISTERED_PLACEMENT_STRATEGIES =
-            ImmutableMap.of("simple", SimpleBulkPlacementStrategy.class.getName());
+    private static final Map<String,String> REGISTERED_PLACEMENT_STRATEGIES = ImmutableMap.of(
+            "simple", SimpleBulkPlacementStrategy.class.getName()
+    );
 
-    final ConcurrentMap<Integer, PartitionIDPool> idPools;
+
+    final ConcurrentMap<Integer,PartitionIDPool> idPools;
     final StandardIDPool schemaIdPool;
     final StandardIDPool partitionVertexIdPool;
 
@@ -67,7 +71,7 @@ public class VertexIDAssigner implements AutoCloseable {
     private final IDManager idManager;
     private final IDPlacementStrategy placementStrategy;
 
-    // For StandardIDPool
+    //For StandardIDPool
     private final Duration renewTimeoutMS;
     private final double renewBufferPercentage;
 
@@ -78,17 +82,17 @@ public class VertexIDAssigner implements AutoCloseable {
         Preconditions.checkNotNull(idAuthority);
         this.idAuthority = idAuthority;
 
+
         int partitionBits = NumberUtil.getPowerOf2(config.get(CLUSTER_MAX_PARTITIONS));
         idManager = new IDManager(partitionBits);
-        Preconditions
-                .checkArgument(idManager.getPartitionBound() <= Integer.MAX_VALUE && idManager.getPartitionBound() > 0);
-        this.partitionIdBound = (int) idManager.getPartitionBound();
+        Preconditions.checkArgument(idManager.getPartitionBound() <= Integer.MAX_VALUE && idManager.getPartitionBound()>0);
+        this.partitionIdBound = (int)idManager.getPartitionBound();
         hasLocalPartitions = idAuthFeatures.hasLocalKeyPartition();
 
-        placementStrategy =
-                Backend.getImplementationClass(config, config.get(PLACEMENT_STRATEGY), REGISTERED_PLACEMENT_STRATEGIES);
+        placementStrategy = Backend.getImplementationClass(config, config.get(PLACEMENT_STRATEGY),
+                REGISTERED_PLACEMENT_STRATEGIES);
         placementStrategy.injectIDManager(idManager);
-        log.debug("Partition IDs? [{}], Local Partitions? [{}]", true, hasLocalPartitions);
+        log.debug("Partition IDs? [{}], Local Partitions? [{}]",true,hasLocalPartitions);
 
         long baseBlockSize = config.get(IDS_BLOCK_SIZE);
         idAuthority.setIDBlockSizer(new SimpleVertexIDBlockSizer(baseBlockSize));
@@ -99,9 +103,8 @@ public class VertexIDAssigner implements AutoCloseable {
         idPools = new ConcurrentHashMap<Integer, PartitionIDPool>(partitionIdBound);
         schemaIdPool = new StandardIDPool(idAuthority, IDManager.SCHEMA_PARTITION, PoolType.SCHEMA.getIDNamespace(),
                 IDManager.getSchemaCountBound(), renewTimeoutMS, renewBufferPercentage);
-        partitionVertexIdPool = new StandardIDPool(idAuthority, IDManager.PARTITIONED_VERTEX_PARTITION,
-                PoolType.PARTITIONED_VERTEX.getIDNamespace(), PoolType.PARTITIONED_VERTEX.getCountBound(idManager),
-                renewTimeoutMS, renewBufferPercentage);
+        partitionVertexIdPool = new StandardIDPool(idAuthority, IDManager.PARTITIONED_VERTEX_PARTITION, PoolType.PARTITIONED_VERTEX.getIDNamespace(),
+                PoolType.PARTITIONED_VERTEX.getCountBound(idManager), renewTimeoutMS, renewBufferPercentage);
         setLocalPartitions(partitionBits);
     }
 
@@ -115,9 +118,9 @@ public class VertexIDAssigner implements AutoCloseable {
         } else {
             List<PartitionIDRange> partitionRanges = ImmutableList.of();
             try {
-                partitionRanges = PartitionIDRange.getIDRanges(partitionBits, idAuthority.getLocalIDPartition());
+                partitionRanges = PartitionIDRange.getIDRanges(partitionBits,idAuthority.getLocalIDPartition());
             } catch (Throwable e) {
-                log.error("Could not process local id partitions", e);
+                log.error("Could not process local id partitions",e);
             }
 
             if (!partitionRanges.isEmpty()) {
@@ -146,9 +149,10 @@ public class VertexIDAssigner implements AutoCloseable {
     }
 
     public void assignID(InternalVertex vertex, VertexLabel label) {
-        Preconditions.checkArgument(vertex != null && label != null);
-        assignID(vertex, getVertexIDType(label));
+        Preconditions.checkArgument(vertex!=null && label!=null);
+        assignID(vertex,getVertexIDType(label));
     }
+
 
     private void assignID(InternalElement element, IDManager.VertexIDType vertexIDType) {
         for (int attempt = 0; attempt < MAX_PARTITION_RENEW_ATTEMPTS; attempt++) {
@@ -156,13 +160,13 @@ public class VertexIDAssigner implements AutoCloseable {
             if (element instanceof HugeGraphSchemaVertex) {
                 partitionID = IDManager.SCHEMA_PARTITION;
             } else if (element instanceof HugeGraphVertex) {
-                if (vertexIDType == IDManager.VertexIDType.PartitionedVertex)
+                if (vertexIDType== IDManager.VertexIDType.PartitionedVertex)
                     partitionID = IDManager.PARTITIONED_VERTEX_PARTITION;
                 else
                     partitionID = placementStrategy.getPartition(element);
             } else if (element instanceof InternalRelation) {
-                InternalRelation relation = (InternalRelation) element;
-                if (attempt < relation.getLen()) { // On the first attempts, try to use partition of incident vertices
+                InternalRelation relation = (InternalRelation)element;
+                if (attempt < relation.getLen()) { //On the first attempts, try to use partition of incident vertices
                     InternalVertex incident = relation.getVertex(attempt);
                     Preconditions.checkArgument(incident.hasId());
                     if (!IDManager.VertexIDType.PartitionedVertex.is(incident.longId()) || relation.isProperty()) {
@@ -177,48 +181,43 @@ public class VertexIDAssigner implements AutoCloseable {
             try {
                 assignID(element, partitionID, vertexIDType);
             } catch (IDPoolExhaustedException e) {
-                continue; // try again on a different partition
+                continue; //try again on a different partition
             }
             assert element.hasId();
 
             /**
-             * The next block of code checks the added the relation for partitioned vertices as either end point. If
-             * such exists, we might have to assign the relation to a different representative of that partitioned
-             * vertex using the following logic: 1) Properties are always assigned to the canonical representative 2)
-             * Edges are assigned to the partition block of the non-partitioned vertex 2a) unless the edge is unique in
-             * the direction away from the partitioned vertex in which case its assigned to the canonical representative
-             * 2b) if both end vertices are partitioned, it is assigned to the partition to which the edge id hashes
+             * The next block of code checks the added the relation for partitioned vertices as either end point. If such exists,
+             * we might have to assign the relation to a different representative of that partitioned vertex using the following logic:
+             * 1) Properties are always assigned to the canonical representative
+             * 2) Edges are assigned to the partition block of the non-partitioned vertex
+             *  2a) unless the edge is unique in the direction away from the partitioned vertex in which case its assigned to the canonical representative
+             *  2b) if both end vertices are partitioned, it is assigned to the partition to which the edge id hashes
              */
-            // Check if we should assign a different representative of a potential partitioned vertex
+            //Check if we should assign a different representative of a potential partitioned vertex
             if (element instanceof InternalRelation) {
-                InternalRelation relation = (InternalRelation) element;
-                if (relation.isProperty() && isPartitionedAt(relation, 0)) {
-                    // Always assign properties to the canonical representative of a partitioned vertex
+                InternalRelation relation = (InternalRelation)element;
+                if (relation.isProperty() && isPartitionedAt(relation,0)) {
+                    //Always assign properties to the canonical representative of a partitioned vertex
                     InternalVertex vertex = relation.getVertex(0);
-                    ((ReassignableRelation) relation).setVertexAt(0,
-                            vertex.tx().getInternalVertex(idManager.getCanonicalVertexId(vertex.longId())));
+                    ((ReassignableRelation)relation).setVertexAt(0,vertex.tx().getInternalVertex(idManager.getCanonicalVertexId(vertex.longId())));
                 } else if (relation.isEdge()) {
                     for (int pos = 0; pos < relation.getArity(); pos++) {
                         if (isPartitionedAt(relation, pos)) {
                             InternalVertex incident = relation.getVertex(pos);
                             long newPartition;
-                            int otherpos = (pos + 1) % 2;
-                            if (((InternalRelationType) relation.getType()).multiplicity()
-                                    .isUnique(EdgeDirection.fromPosition(pos))) {
-                                // If the relation is unique in the direction, we assign it to the canonical vertex...
-                                newPartition =
-                                        idManager.getPartitionId(idManager.getCanonicalVertexId(incident.longId()));
-                            } else if (!isPartitionedAt(relation, otherpos)) {
-                                // ...else, we assign it to the partition of the non-partitioned vertex...
+                            int otherpos = (pos+1)%2;
+                            if (((InternalRelationType)relation.getType()).multiplicity().isUnique(EdgeDirection.fromPosition(pos))) {
+                                //If the relation is unique in the direction, we assign it to the canonical vertex...
+                                newPartition = idManager.getPartitionId(idManager.getCanonicalVertexId(incident.longId()));
+                            } else if (!isPartitionedAt(relation,otherpos)) {
+                                //...else, we assign it to the partition of the non-partitioned vertex...
                                 newPartition = getPartitionID(relation.getVertex(otherpos));
                             } else {
-                                // ...and if such does not exists (i.e. both end vertices are partitioned) we use the
-                                // hash of the relation id
+                                //...and if such does not exists (i.e. both end vertices are partitioned) we use the hash of the relation id
                                 newPartition = idManager.getPartitionHashForId(relation.longId());
                             }
-                            if (idManager.getPartitionId(incident.longId()) != newPartition) {
-                                ((ReassignableRelation) relation).setVertexAt(pos,
-                                        incident.tx().getOtherPartitionVertex(incident, newPartition));
+                            if (idManager.getPartitionId(incident.longId())!=newPartition) {
+                                ((ReassignableRelation)relation).setVertexAt(pos,incident.tx().getOtherPartitionVertex(incident, newPartition));
                             }
                         }
                     }
@@ -226,8 +225,7 @@ public class VertexIDAssigner implements AutoCloseable {
             }
             return;
         }
-        throw new IDPoolExhaustedException(
-                "Could not find non-exhausted partition ID Pool after " + MAX_PARTITION_RENEW_ATTEMPTS + " attempts");
+        throw new IDPoolExhaustedException("Could not find non-exhausted partition ID Pool after " + MAX_PARTITION_RENEW_ATTEMPTS + " attempts");
     }
 
     private final boolean isPartitionedAt(InternalRelation relation, int position) {
@@ -246,24 +244,22 @@ public class VertexIDAssigner implements AutoCloseable {
                 assignID(relation);
             }
         } else {
-            // 2) only assign ids to (user) vertices
+            //2) only assign ids to (user) vertices
             Map<InternalVertex, PartitionAssignment> assignments = new HashMap<InternalVertex, PartitionAssignment>();
             for (InternalRelation relation : addedRelations) {
                 for (int i = 0; i < relation.getArity(); i++) {
                     InternalVertex vertex = relation.getVertex(i);
                     if (!vertex.hasId()) {
-                        assert !(vertex instanceof HugeGraphSchemaVertex); // Those are assigned ids immediately in the
-                                                                           // transaction
+                        assert !(vertex instanceof HugeGraphSchemaVertex); //Those are assigned ids immediately in the transaction
                         if (vertex.vertexLabel().isPartitioned())
-                            assignID(vertex, getVertexIDType(vertex)); // Assign partitioned vertex ids immediately
+                            assignID(vertex, getVertexIDType(vertex)); //Assign partitioned vertex ids immediately
                         else
                             assignments.put(vertex, PartitionAssignment.EMPTY);
                     }
                 }
             }
             log.trace("Bulk id assignment for {} vertices", assignments.size());
-            for (int attempt = 0; attempt < MAX_PARTITION_RENEW_ATTEMPTS
-                    && (assignments != null && !assignments.isEmpty()); attempt++) {
+            for (int attempt = 0; attempt < MAX_PARTITION_RENEW_ATTEMPTS && (assignments != null && !assignments.isEmpty()); attempt++) {
                 placementStrategy.getPartitions(assignments);
                 Map<InternalVertex, PartitionAssignment> leftOvers = null;
                 Iterator<Map.Entry<InternalVertex, PartitionAssignment>> iter = assignments.entrySet().iterator();
@@ -273,23 +269,20 @@ public class VertexIDAssigner implements AutoCloseable {
                         assignID(entry.getKey(), entry.getValue().getPartitionID(), getVertexIDType(entry.getKey()));
                         Preconditions.checkArgument(entry.getKey().hasId());
                     } catch (IDPoolExhaustedException e) {
-                        if (leftOvers == null)
-                            leftOvers = new HashMap<InternalVertex, PartitionAssignment>();
+                        if (leftOvers == null) leftOvers = new HashMap<InternalVertex, PartitionAssignment>();
                         leftOvers.put(entry.getKey(), PartitionAssignment.EMPTY);
                         break;
                     }
                 }
                 if (leftOvers != null) {
-                    while (iter.hasNext())
-                        leftOvers.put(iter.next().getKey(), PartitionAssignment.EMPTY);
+                    while (iter.hasNext()) leftOvers.put(iter.next().getKey(), PartitionAssignment.EMPTY);
                     log.debug("Exhausted ID Pool in bulk assignment. Left-over vertices {}", leftOvers.size());
                 }
                 assignments = leftOvers;
             }
             if (assignments != null && !assignments.isEmpty())
-                throw new IDPoolExhaustedException("Could not find non-exhausted partition ID Pool after "
-                        + MAX_PARTITION_RENEW_ATTEMPTS + " attempts");
-            // 3) assign ids to relations
+                throw new IDPoolExhaustedException("Could not find non-exhausted partition ID Pool after " + MAX_PARTITION_RENEW_ATTEMPTS + " attempts");
+            //3) assign ids to relations
             for (InternalRelation relation : addedRelations) {
                 assignID(relation);
             }
@@ -298,34 +291,30 @@ public class VertexIDAssigner implements AutoCloseable {
 
     private final long getPartitionID(final InternalVertex v) {
         long vid = v.longId();
-        if (IDManager.VertexIDType.Schema.is(vid))
-            return IDManager.SCHEMA_PARTITION;
-        else
-            return idManager.getPartitionId(vid);
+        if (IDManager.VertexIDType.Schema.is(vid)) return IDManager.SCHEMA_PARTITION;
+        else return idManager.getPartitionId(vid);
     }
 
-    private void assignID(final InternalElement element, final long partitionIDl,
-            final IDManager.VertexIDType userVertexIDType) {
+    private void assignID(final InternalElement element, final long partitionIDl, final IDManager.VertexIDType userVertexIDType) {
         Preconditions.checkNotNull(element);
         Preconditions.checkArgument(!element.hasId());
-        Preconditions.checkArgument((element instanceof HugeGraphRelation) ^ (userVertexIDType != null));
+        Preconditions.checkArgument((element instanceof HugeGraphRelation) ^ (userVertexIDType!=null));
         Preconditions.checkArgument(partitionIDl >= 0 && partitionIDl < partitionIdBound, partitionIDl);
         final int partitionID = (int) partitionIDl;
 
         long count;
         if (element instanceof HugeGraphSchemaVertex) {
-            Preconditions.checkArgument(partitionID == IDManager.SCHEMA_PARTITION);
+            Preconditions.checkArgument(partitionID==IDManager.SCHEMA_PARTITION);
             count = schemaIdPool.nextID();
-        } else if (userVertexIDType == IDManager.VertexIDType.PartitionedVertex) {
-            Preconditions.checkArgument(partitionID == IDManager.PARTITIONED_VERTEX_PARTITION);
-            Preconditions.checkArgument(partitionVertexIdPool != null);
+        } else if (userVertexIDType==IDManager.VertexIDType.PartitionedVertex) {
+            Preconditions.checkArgument(partitionID==IDManager.PARTITIONED_VERTEX_PARTITION);
+            Preconditions.checkArgument(partitionVertexIdPool!=null);
             count = partitionVertexIdPool.nextID();
         } else {
             PartitionIDPool partitionPool = idPools.get(partitionID);
             if (partitionPool == null) {
-                partitionPool =
-                        new PartitionIDPool(partitionID, idAuthority, idManager, renewTimeoutMS, renewBufferPercentage);
-                idPools.putIfAbsent(partitionID, partitionPool);
+                partitionPool = new PartitionIDPool(partitionID, idAuthority, idManager, renewTimeoutMS, renewBufferPercentage);
+                idPools.putIfAbsent(partitionID,partitionPool);
                 partitionPool = idPools.get(partitionID);
             }
             Preconditions.checkNotNull(partitionPool);
@@ -337,7 +326,7 @@ public class VertexIDAssigner implements AutoCloseable {
             if (element instanceof HugeGraphRelation) {
                 idPool = partitionPool.getPool(PoolType.RELATION);
             } else {
-                Preconditions.checkArgument(userVertexIDType != null);
+                Preconditions.checkArgument(userVertexIDType!=null);
                 idPool = partitionPool.getPool(PoolType.getPoolTypeFor(userVertexIDType));
             }
             try {
@@ -355,13 +344,13 @@ public class VertexIDAssigner implements AutoCloseable {
         if (element instanceof InternalRelation) {
             elementId = idManager.getRelationID(count, partitionID);
         } else if (element instanceof PropertyKey) {
-            elementId = IDManager.getSchemaId(IDManager.VertexIDType.UserPropertyKey, count);
+            elementId = IDManager.getSchemaId(IDManager.VertexIDType.UserPropertyKey,count);
         } else if (element instanceof EdgeLabel) {
             elementId = IDManager.getSchemaId(IDManager.VertexIDType.UserEdgeLabel, count);
         } else if (element instanceof VertexLabel) {
             elementId = IDManager.getSchemaId(IDManager.VertexIDType.VertexLabel, count);
         } else if (element instanceof HugeGraphSchemaVertex) {
-            elementId = IDManager.getSchemaId(IDManager.VertexIDType.GenericSchemaType, count);
+            elementId = IDManager.getSchemaId(IDManager.VertexIDType.GenericSchemaType,count);
         } else {
             elementId = idManager.getVertexID(count, partitionID, userVertexIDType);
         }
@@ -399,9 +388,9 @@ public class VertexIDAssigner implements AutoCloseable {
                 case NORMAL_VERTEX:
                     return baseBlockSize;
                 case UNMODIFIABLE_VERTEX:
-                    return Math.max(10, baseBlockSize / 10);
+                    return Math.max(10,baseBlockSize/10);
                 case PARTITIONED_VERTEX:
-                    return Math.max(10, baseBlockSize / 100);
+                    return Math.max(10,baseBlockSize/100);
                 case RELATION:
                     return baseBlockSize * 8;
                 case SCHEMA:
@@ -432,59 +421,47 @@ public class VertexIDAssigner implements AutoCloseable {
                 case UNMODIFIABLE_VERTEX:
                 case PARTITIONED_VERTEX:
                     return idManager.getVertexCountBound();
-                case RELATION:
-                    return idManager.getRelationCountBound();
-                case SCHEMA:
-                    return IDManager.getSchemaCountBound();
-                default:
-                    throw new AssertionError("Unrecognized type: " + this);
+                case RELATION: return idManager.getRelationCountBound();
+                case SCHEMA: return IDManager.getSchemaCountBound();
+                default: throw new AssertionError("Unrecognized type: " + this);
             }
         }
 
         public boolean hasOnePerPartition() {
-            switch (this) {
+            switch(this) {
                 case NORMAL_VERTEX:
                 case UNMODIFIABLE_VERTEX:
                 case RELATION:
                     return true;
-                default:
-                    return false;
+                default: return false;
             }
         }
 
         public static PoolType getPoolTypeFor(IDManager.VertexIDType idType) {
-            if (idType == IDManager.VertexIDType.NormalVertex)
-                return NORMAL_VERTEX;
-            else if (idType == IDManager.VertexIDType.UnmodifiableVertex)
-                return UNMODIFIABLE_VERTEX;
-            else if (idType == IDManager.VertexIDType.PartitionedVertex)
-                return PARTITIONED_VERTEX;
-            else if (IDManager.VertexIDType.Schema.isSubType(idType))
-                return SCHEMA;
-            else
-                throw new IllegalArgumentException("Invalid id type: " + idType);
+            if (idType==IDManager.VertexIDType.NormalVertex) return NORMAL_VERTEX;
+            else if (idType== IDManager.VertexIDType.UnmodifiableVertex) return UNMODIFIABLE_VERTEX;
+            else if (idType== IDManager.VertexIDType.PartitionedVertex) return PARTITIONED_VERTEX;
+            else if (IDManager.VertexIDType.Schema.isSubType(idType)) return SCHEMA;
+            else throw new IllegalArgumentException("Invalid id type: " + idType);
         }
 
         public static PoolType getPoolType(int idNamespace) {
-            Preconditions.checkArgument(idNamespace >= 0 && idNamespace < values().length);
+            Preconditions.checkArgument(idNamespace>=0 && idNamespace<values().length);
             return values()[idNamespace];
         }
 
     }
 
-    private static class PartitionIDPool extends EnumMap<PoolType, IDPool> {
+    private static class PartitionIDPool extends EnumMap<PoolType,IDPool> {
 
         private volatile long lastAccess;
         private volatile boolean exhausted;
 
-        PartitionIDPool(int partitionID, IDAuthority idAuthority, IDManager idManager, Duration renewTimeoutMS,
-                double renewBufferPercentage) {
+        PartitionIDPool(int partitionID, IDAuthority idAuthority, IDManager idManager, Duration renewTimeoutMS, double renewBufferPercentage) {
             super(PoolType.class);
             for (PoolType type : PoolType.values()) {
-                if (!type.hasOnePerPartition())
-                    continue;
-                put(type, new StandardIDPool(idAuthority, partitionID, type.getIDNamespace(),
-                        type.getCountBound(idManager), renewTimeoutMS, renewBufferPercentage));
+                if (!type.hasOnePerPartition()) continue;
+                put(type,new StandardIDPool(idAuthority, partitionID, type.getIDNamespace(), type.getCountBound(idManager), renewTimeoutMS, renewBufferPercentage));
             }
         }
 
@@ -494,8 +471,7 @@ public class VertexIDAssigner implements AutoCloseable {
         }
 
         public void close() {
-            for (IDPool pool : values())
-                pool.close();
+            for (IDPool pool : values()) pool.close();
             super.clear();
         }
 
@@ -517,5 +493,7 @@ public class VertexIDAssigner implements AutoCloseable {
         }
 
     }
+
+
 
 }

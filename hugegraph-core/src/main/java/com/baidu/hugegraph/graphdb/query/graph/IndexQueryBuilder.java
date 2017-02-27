@@ -36,23 +36,24 @@ import java.util.List;
 
 /**
  * Implementation of {@link HugeGraphIndexQuery} for string based queries that are issued directly against the specified
- * indexing backend. It is assumed that the given string conforms to the query language of the indexing backend. This
- * class does not understand or verify the provided query. However, it will introspect the query and replace any
- * reference to `v.SOME_KEY`, `e.SOME_KEY` or `p.SOME_KEY` with the respective key reference. This replacement is 'dumb'
- * in the sense that it relies on simple string replacements to accomplish this. If the key contains special characters
+ * indexing backend. It is assumed that the given string conforms to the query language of the indexing backend.
+ * This class does not understand or verify the provided query. However, it will introspect the query and replace
+ * any reference to `v.SOME_KEY`, `e.SOME_KEY` or `p.SOME_KEY` with the respective key reference. This replacement
+ * is 'dumb' in the sense that it relies on simple string replacements to accomplish this. If the key contains special characters
  * (in particular space) then it must be encapsulated in quotation marks.
  * </p>
- * In addition to the query string, a number of parameters can be specified which will be passed verbatim to the
- * indexing backend during query execution.
+ * In addition to the query string, a number of parameters can be specified which will be passed verbatim to the indexing
+ * backend during query execution.
  * </p>
- * This class essentially just acts as a builder, uses the {@link IndexSerializer} to execute the query, and then
- * post-processes the result set to return to the user.
+ * This class essentially just acts as a builder, uses the {@link IndexSerializer} to execute the query, and then post-processes
+ * the result set to return to the user.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery {
 
     private static final Logger log = LoggerFactory.getLogger(IndexQueryBuilder.class);
+
 
     private static final String VERTEX_PREFIX = "v.";
     private static final String EDGE_PREFIX = "e.";
@@ -75,8 +76,9 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
     private final List<Parameter> parameters;
 
     /**
-     * Prefix to be used to identify vertex, edge or property references and trigger key parsing and conversion. In most
-     * cases this will be one of the above defined static prefixes, but in some special cases, the user may define this.
+     * Prefix to be used to identify vertex, edge or property references and trigger key parsing and conversion.
+     * In most cases this will be one of the above defined static prefixes, but in some special cases, the user may
+     * define this.
      */
     private String prefix;
     /**
@@ -88,6 +90,7 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
      */
     private int offset;
 
+
     public IndexQueryBuilder(StandardHugeGraphTx tx, IndexSerializer serializer) {
         Preconditions.checkNotNull(tx);
         Preconditions.checkNotNull(serializer);
@@ -96,12 +99,12 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
 
         parameters = Lists.newArrayList();
         unkownKeyName = tx.getGraph().getConfiguration().getUnknownIndexKeyName();
-        this.offset = 0;
+        this.offset=0;
     }
 
-    // ################################################
+    //################################################
     // Inspection Methods
-    // ################################################
+    //################################################
 
     public String getIndex() {
         return indexName;
@@ -125,8 +128,8 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
 
     @Override
     public IndexQueryBuilder setElementIdentifier(String identifier) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(identifier), "Prefix may not be a blank string");
-        this.prefix = identifier;
+        Preconditions.checkArgument(StringUtils.isNotBlank(identifier),"Prefix may not be a blank string");
+        this.prefix=identifier;
         return this;
     }
 
@@ -134,26 +137,27 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
         return unkownKeyName;
     }
 
-    // ################################################
+
+    //################################################
     // Builder Methods
-    // ################################################
+    //################################################
 
     public IndexQueryBuilder setIndex(String indexName) {
         Preconditions.checkArgument(StringUtils.isNotBlank(indexName));
-        this.indexName = indexName;
+        this.indexName=indexName;
         return this;
     }
 
     public IndexQueryBuilder setQuery(String query) {
         Preconditions.checkArgument(StringUtils.isNotBlank(query));
-        this.query = query;
+        this.query=query;
         return this;
     }
 
     @Override
     public IndexQueryBuilder offset(int offset) {
-        Preconditions.checkArgument(offset >= 0, "Invalid offset provided: %s", offset);
-        this.offset = offset;
+        Preconditions.checkArgument(offset>=0,"Invalid offset provided: %s",offset);
+        this.offset=offset;
         return this;
     }
 
@@ -176,9 +180,8 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
     }
 
     @Override
-    public IndexQueryBuilder addParameters(Parameter...paras) {
-        for (Parameter para : paras)
-            addParameter(para);
+    public IndexQueryBuilder addParameters(Parameter... paras) {
+        for (Parameter para: paras) addParameter(para);
         return this;
     }
 
@@ -186,17 +189,16 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
         Preconditions.checkNotNull(indexName);
         Preconditions.checkNotNull(query);
         if (tx.hasModifications())
-            log.warn("Modifications in this transaction might not be accurately reflected in this index query: {}",
-                    query);
-        Iterable<RawQuery.Result> result = serializer.executeQuery(this, resultType, tx.getTxHandle(), tx);
+            log.warn("Modifications in this transaction might not be accurately reflected in this index query: {}",query);
+        Iterable<RawQuery.Result> result = serializer.executeQuery(this,resultType,tx.getTxHandle(),tx);
         final Function<Object, ? extends HugeGraphElement> conversionFct = tx.getConversionFunction(resultType);
         return Iterables.filter(Iterables.transform(result, new Function<RawQuery.Result, Result<HugeGraphElement>>() {
             @Nullable
             @Override
             public Result<HugeGraphElement> apply(@Nullable RawQuery.Result result) {
-                return new ResultImpl<HugeGraphElement>(conversionFct.apply(result.getResult()), result.getScore());
+                return new ResultImpl<HugeGraphElement>(conversionFct.apply(result.getResult()),result.getScore());
             }
-        }), new Predicate<Result<HugeGraphElement>>() {
+        }),new Predicate<Result<HugeGraphElement>>() {
             @Override
             public boolean apply(@Nullable Result<HugeGraphElement> r) {
                 return !r.getElement().isRemoved();
@@ -207,25 +209,24 @@ public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery 
     @Override
     public Iterable<Result<HugeGraphVertex>> vertices() {
         setPrefixInternal(VERTEX_PREFIX);
-        return (Iterable) execute(ElementCategory.VERTEX);
+        return (Iterable)execute(ElementCategory.VERTEX);
     }
 
     @Override
     public Iterable<Result<HugeGraphEdge>> edges() {
         setPrefixInternal(EDGE_PREFIX);
-        return (Iterable) execute(ElementCategory.EDGE);
+        return (Iterable)execute(ElementCategory.EDGE);
     }
 
     @Override
     public Iterable<Result<HugeGraphVertexProperty>> properties() {
         setPrefixInternal(PROPERTY_PREFIX);
-        return (Iterable) execute(ElementCategory.PROPERTY);
+        return (Iterable)execute(ElementCategory.PROPERTY);
     }
 
     private void setPrefixInternal(String prefix) {
         Preconditions.checkArgument(StringUtils.isNotBlank(prefix));
-        if (this.prefix == null)
-            this.prefix = prefix;
+        if (this.prefix==null) this.prefix=prefix;
     }
 
     private static class ResultImpl<V extends Element> implements Result<V> {

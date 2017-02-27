@@ -17,12 +17,20 @@ package com.baidu.hugegraph.diskstorage.cassandra;
 import com.google.common.base.Preconditions;
 
 /**
- * This enum unites different libraries' consistency level enums, streamlining configuration and processing in
- * {@link AbstractCassandraStoreManager}.
+ * This enum unites different libraries' consistency level enums, streamlining
+ * configuration and processing in {@link AbstractCassandraStoreManager}.
  *
  */
 public enum CLevel implements CLevelInterface { // One ring to rule them all
-    ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_ONE, LOCAL_QUORUM, EACH_QUORUM;
+    ANY,
+    ONE,
+    TWO,
+    THREE,
+    QUORUM,
+    ALL,
+    LOCAL_ONE,
+    LOCAL_QUORUM,
+    EACH_QUORUM;
 
     private final org.apache.cassandra.db.ConsistencyLevel db;
     private final org.apache.cassandra.thrift.ConsistencyLevel thrift;
@@ -52,16 +60,13 @@ public enum CLevel implements CLevelInterface { // One ring to rule them all
     public static CLevel parse(String value) {
         Preconditions.checkArgument(value != null && !value.isEmpty());
         value = value.trim();
-        if (value.equals("1"))
-            return ONE;
-        else if (value.equals("2"))
-            return TWO;
-        else if (value.equals("3"))
-            return THREE;
+        if (value.equals("1")) return ONE;
+        else if (value.equals("2")) return TWO;
+        else if (value.equals("3")) return THREE;
         else {
             for (CLevel c : values()) {
-                if (c.toString().equalsIgnoreCase(value) || ("CL_" + c.toString()).equalsIgnoreCase(value))
-                    return c;
+                if (c.toString().equalsIgnoreCase(value) ||
+                    ("CL_" + c.toString()).equalsIgnoreCase(value)) return c;
             }
         }
         throw new IllegalArgumentException("Unrecognized cassandra consistency level: " + value);

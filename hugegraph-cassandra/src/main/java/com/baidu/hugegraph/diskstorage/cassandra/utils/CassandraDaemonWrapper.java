@@ -19,27 +19,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class starts a Thrift CassandraDaemon inside the current JVM. This class supports testing and shouldn't be used
- * in production.
+ * This class starts a Thrift CassandraDaemon inside the current JVM. This class
+ * supports testing and shouldn't be used in production.
  *
- * This class starts Cassandra on the first invocation of {@link CassandraDaemonWrapper#start(String)} in the life of
- * the JVM. Invocations after the first have no effect except that they may log a warning.
+ * This class starts Cassandra on the first invocation of
+ * {@link CassandraDaemonWrapper#start(String)} in the life of the JVM.
+ * Invocations after the first have no effect except that they may log a
+ * warning.
  *
- * When the thread that first called {@code #start(String)} dies, a daemon thread returns from {@link Thread#join()} and
- * kills all embedded Cassandra threads in the JVM.
+ * When the thread that first called {@code #start(String)} dies, a daemon
+ * thread returns from {@link Thread#join()} and kills all embedded Cassandra
+ * threads in the JVM.
  *
- * This class once supported consecutive, idempotent calls to start(String) so long as the argument was the same in each
- * invocation. It also once used refcounting to kill Cassandra's non-daemon threads once stop() was called as many times
- * as start(). Some of Cassandra's background threads and statics can't be easily reset to allow a restart inside the
- * same JVM, so this was intended as a one-use thing. However, this interacts poorly with the new KCVConfiguration
- * system in hugegraph-core. When KCVConfiguration is in use, core starts and stops each backend at least twice in the
- * course of opening a single database instance. So the old refcounting and killing approach is out.
+ * This class once supported consecutive, idempotent calls to start(String) so
+ * long as the argument was the same in each invocation. It also once used
+ * refcounting to kill Cassandra's non-daemon threads once stop() was called as
+ * many times as start(). Some of Cassandra's background threads and statics
+ * can't be easily reset to allow a restart inside the same JVM, so this was
+ * intended as a one-use thing. However, this interacts poorly with the new
+ * KCVConfiguration system in hugegraph-core. When KCVConfiguration is in use, core
+ * starts and stops each backend at least twice in the course of opening a
+ * single database instance. So the old refcounting and killing approach is out.
  *
  * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class CassandraDaemonWrapper {
 
-    private static final Logger log = LoggerFactory.getLogger(CassandraDaemonWrapper.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(CassandraDaemonWrapper.class);
 
     private static String activeConfig;
 
@@ -49,8 +56,10 @@ public class CassandraDaemonWrapper {
 
         if (started) {
             if (null != config && !config.equals(activeConfig)) {
-                log.warn("Can't start in-process Cassandra instance " + "with yaml path {} because an instance was "
-                        + "previously started with yaml path {}", config, activeConfig);
+                log.warn("Can't start in-process Cassandra instance " +
+                         "with yaml path {} because an instance was " +
+                         "previously started with yaml path {}",
+                         config, activeConfig);
             }
 
             return;
@@ -69,8 +78,8 @@ public class CassandraDaemonWrapper {
         log.info("Starting cassandra with {}", config);
 
         /*
-         * This main method doesn't block for any substantial length of time. It creates and starts threads and returns
-         * in relatively short order.
+         * This main method doesn't block for any substantial length of time. It
+         * creates and starts threads and returns in relatively short order.
          */
         CassandraDaemon.main(new String[0]);
 

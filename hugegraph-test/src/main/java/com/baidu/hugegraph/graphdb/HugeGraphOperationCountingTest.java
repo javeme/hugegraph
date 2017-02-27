@@ -32,6 +32,7 @@ import com.baidu.hugegraph.diskstorage.util.CacheMetricsAction;
 import com.baidu.hugegraph.diskstorage.util.MetricInstrumentedStore;
 import static com.baidu.hugegraph.diskstorage.util.MetricInstrumentedStore.*;
 
+
 import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.*;
 import static com.baidu.hugegraph.graphdb.database.cache.MetricInstrumentedSchemaCache.*;
@@ -64,7 +65,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
     public MetricManager metric;
-    public final String SYSTEM_METRICS = GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT;
+    public final String SYSTEM_METRICS  = GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT;
 
     public abstract WriteConfiguration getBaseConfiguration();
 
@@ -73,11 +74,10 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
     @Override
     public WriteConfiguration getConfiguration() {
         WriteConfiguration config = getBaseConfiguration();
-        ModifiableConfiguration mconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS, config,
-                BasicConfiguration.Restriction.NONE);
-        mconf.set(BASIC_METRICS, true);
-        mconf.set(METRICS_MERGE_STORES, false);
-        mconf.set(PROPERTY_PREFETCHING, false);
+        ModifiableConfiguration mconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,config, BasicConfiguration.Restriction.NONE);
+        mconf.set(BASIC_METRICS,true);
+        mconf.set(METRICS_MERGE_STORES,false);
+        mconf.set(PROPERTY_PREFETCHING,false);
         mconf.set(DB_CACHE, false);
         return config;
     }
@@ -88,10 +88,11 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         super.open(config);
     }
 
+
     private void verifyLockingOverwrite(String storeName, long num) {
         if (storeUsesConsistentKeyLocker()) {
-            verifyStoreMetrics(storeName, ImmutableMap.of(M_GET_SLICE, 2 * num));
-            verifyStoreMetrics(storeName + LOCK_STORE_SUFFIX, ImmutableMap.of(M_GET_SLICE, num, M_MUTATE, 2 * num));
+            verifyStoreMetrics(storeName, ImmutableMap.of(M_GET_SLICE, 2*num));
+            verifyStoreMetrics(storeName+LOCK_STORE_SUFFIX, ImmutableMap.of(M_GET_SLICE, num, M_MUTATE, 2*num));
         } else {
             verifyStoreMetrics(storeName, ImmutableMap.of(M_GET_SLICE, num, M_ACQUIRE_LOCK, num));
         }
@@ -103,10 +104,10 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         mgmt.setConsistency(mgmt.getGraphIndex("uid"), ConsistencyModifier.LOCK);
         finishSchema();
 
-        // Schema and relation id pools are tapped, Schema id pool twice because the renew is triggered. Each id
-        // acquisition requires 1 mutations and 2 reads
+        //Schema and relation id pools are tapped, Schema id pool twice because the renew is triggered. Each id acquisition requires 1 mutations and 2 reads
         verifyStoreMetrics(ID_STORE_NAME, SYSTEM_METRICS, ImmutableMap.of(M_MUTATE, 3l, M_GET_SLICE, 6l));
     }
+
 
     @Test
     public void testReadOperations() {
@@ -120,18 +121,16 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
     @SuppressWarnings("unchecked")
     public void testReadOperations(boolean cache) {
-        metricsPrefix = "testReadOperations" + cache;
+        metricsPrefix = "testReadOperations"+cache;
 
         resetEdgeCacheCounts();
 
         makeVertexIndexedUniqueKey("uid", Integer.class);
-        mgmt.setConsistency(mgmt.getGraphIndex("uid"), ConsistencyModifier.LOCK);
+        mgmt.setConsistency(mgmt.getGraphIndex("uid"),ConsistencyModifier.LOCK);
         finishSchema();
 
-        if (cache)
-            clopen(option(DB_CACHE), true, option(DB_CACHE_CLEAN_WAIT), 0, option(DB_CACHE_TIME), 0);
-        else
-            clopen();
+        if (cache) clopen(option(DB_CACHE),true,option(DB_CACHE_CLEAN_WAIT),0,option(DB_CACHE_TIME),0);
+        else clopen();
 
         HugeGraphTransaction tx = graph.buildTransaction().groupName(metricsPrefix).start();
         tx.makePropertyKey("name").dataType(String.class).make();
@@ -144,14 +143,14 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
         resetMetrics();
 
-        metricsPrefix = GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT;
+        metricsPrefix=GraphDatabaseConfiguration.METRICS_SCHEMA_PREFIX_DEFAULT;
 
         resetMetrics();
 
-        // Test schema caching
-        for (int t = 0; t < 10; t++) {
+        //Test schema caching
+        for (int t=0;t<10;t++) {
             tx = graph.buildTransaction().groupName(metricsPrefix).start();
-            // Retrieve name by index (one backend call each)
+            //Retrieve name by index (one backend call each)
             assertTrue(tx.containsRelationType("name"));
             assertTrue(tx.containsRelationType("knows"));
             assertTrue(tx.containsVertexLabel("person"));
@@ -159,72 +158,73 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
             EdgeLabel knows = tx.getEdgeLabel("knows");
             VertexLabel person = tx.getVertexLabel("person");
             PropertyKey uid = tx.getPropertyKey("uid");
-            // Retrieve name as property (one backend call each)
-            assertEquals("name", name.name());
-            assertEquals("knows", knows.name());
-            assertEquals("person", person.name());
-            assertEquals("uid", uid.name());
-            // Looking up the definition (one backend call each)
-            assertEquals(Cardinality.SINGLE, name.cardinality());
-            assertEquals(Multiplicity.MULTI, knows.multiplicity());
+            //Retrieve name as property (one backend call each)
+            assertEquals("name",name.name());
+            assertEquals("knows",knows.name());
+            assertEquals("person",person.name());
+            assertEquals("uid",uid.name());
+            //Looking up the definition (one backend call each)
+            assertEquals(Cardinality.SINGLE,name.cardinality());
+            assertEquals(Multiplicity.MULTI,knows.multiplicity());
             assertFalse(person.isPartitioned());
-            assertEquals(Integer.class, uid.dataType());
-            // Retrieving in and out relations for the relation types...
-            InternalRelationType namei = (InternalRelationType) name;
-            InternalRelationType knowsi = (InternalRelationType) knows;
-            InternalRelationType uidi = (InternalRelationType) uid;
+            assertEquals(Integer.class,uid.dataType());
+            //Retrieving in and out relations for the relation types...
+            InternalRelationType namei = (InternalRelationType)name;
+            InternalRelationType knowsi = (InternalRelationType)knows;
+            InternalRelationType uidi = (InternalRelationType)uid;
             assertNull(namei.getBaseType());
             assertNull(knowsi.getBaseType());
             IndexType index = Iterables.getOnlyElement(uidi.getKeyIndexes());
-            assertEquals(1, index.getFieldKeys().length);
-            assertEquals(ElementCategory.VERTEX, index.getElement());
-            assertEquals(ConsistencyModifier.LOCK, ((CompositeIndexType) index).getConsistencyModifier());
+            assertEquals(1,index.getFieldKeys().length);
+            assertEquals(ElementCategory.VERTEX,index.getElement());
+            assertEquals(ConsistencyModifier.LOCK,((CompositeIndexType)index).getConsistencyModifier());
             assertEquals(1, Iterables.size(uidi.getRelationIndexes()));
             assertEquals(1, Iterables.size(namei.getRelationIndexes()));
             assertEquals(namei, Iterables.getOnlyElement(namei.getRelationIndexes()));
             assertEquals(knowsi, Iterables.getOnlyElement(knowsi.getRelationIndexes()));
-            // .. and vertex labels
-            assertEquals(0, ((InternalVertexLabel) person).getTTL());
+            //.. and vertex labels
+            assertEquals(0,((InternalVertexLabel)person).getTTL());
 
             tx.commit();
-            // Needs to read on first iteration, after that it doesn't change anymore
+            //Needs to read on first iteration, after that it doesn't change anymore
             verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 19l));
             verifyStoreMetrics(INDEXSTORE_NAME,
                     ImmutableMap.of(M_GET_SLICE, 4l /* name, knows, person, uid */, M_ACQUIRE_LOCK, 0l));
         }
 
-        // Create some graph data
-        metricsPrefix = "add" + cache;
+        //Create some graph data
+        metricsPrefix = "add"+cache;
 
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
         HugeGraphVertex v = tx.addVertex(), u = tx.addVertex("person");
-        v.property(VertexProperty.Cardinality.single, "uid", 1);
-        u.property(VertexProperty.Cardinality.single, "name", "juju");
-        Edge e = v.addEdge("knows", u);
+        v.property(VertexProperty.Cardinality.single, "uid",  1);
+        u.property(VertexProperty.Cardinality.single, "name",  "juju");
+        Edge e = v.addEdge("knows",u);
         e.property("name", "edge");
         tx.commit();
         verifyStoreMetrics(EDGESTORE_NAME);
         verifyLockingOverwrite(INDEXSTORE_NAME, 1);
 
         for (int i = 1; i <= 30; i++) {
-            metricsPrefix = "op" + i + cache;
+            metricsPrefix = "op"+i+cache;
             tx = graph.buildTransaction().groupName(metricsPrefix).start();
-            v = (HugeGraphVertex) getOnlyElement(tx.query().has("uid", 1).vertices());
-            assertEquals(1, v.<Integer> value("uid").intValue());
-            u = (HugeGraphVertex) getOnlyElement(v.query().direction(Direction.BOTH).labels("knows").vertices());
-            e = (Edge) getOnlyElement(u.query().direction(Direction.IN).labels("knows").edges());
-            assertEquals("juju", u.value("name"));
-            assertEquals("edge", e.value("name"));
+            v = (HugeGraphVertex)getOnlyElement(tx.query().has("uid",1).vertices());
+            assertEquals(1,v.<Integer>value("uid").intValue());
+            u = (HugeGraphVertex)getOnlyElement(v.query().direction(Direction.BOTH).labels("knows").vertices());
+            e = (Edge)getOnlyElement(u.query().direction(Direction.IN).labels("knows").edges());
+            assertEquals("juju",u.value("name"));
+            assertEquals("edge",e.value("name"));
             tx.commit();
-            if (!cache || i == 0) {
+            if (!cache || i==0) {
                 verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 4l));
                 verifyStoreMetrics(INDEXSTORE_NAME, ImmutableMap.of(M_GET_SLICE, 1l));
-            } else if (cache && i > 20) { // Needs a couple of iterations for cache to be cleaned
+            } else if (cache && i>20) { //Needs a couple of iterations for cache to be cleaned
                 verifyStoreMetrics(EDGESTORE_NAME);
                 verifyStoreMetrics(INDEXSTORE_NAME);
             }
 
         }
+
 
     }
 
@@ -236,14 +236,14 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         finishSchema();
 
         HugeGraphVertex v = tx.addVertex();
-        v.property("foo", "bar");
+        v.property("foo","bar");
         tx.commit();
 
-        HugeGraphTransaction tx =
-                graph.buildTransaction().checkExternalVertexExistence(false).groupName(metricsPrefix).start();
+
+        HugeGraphTransaction tx = graph.buildTransaction().checkExternalVertexExistence(false).groupName(metricsPrefix).start();
         v = tx.getVertex(v.longId());
         v.property("foo", "bus");
-        // printAllMetrics();
+//        printAllMetrics();
         tx.commit();
         verifyStoreMetrics(EDGESTORE_NAME);
         verifyStoreMetrics(INDEXSTORE_NAME);
@@ -262,6 +262,7 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         verifyStoreMetrics(ID_STORE_NAME);
     }
 
+
     @Test
     public void testKCVSAccess1() throws InterruptedException {
         metricsPrefix = "testKCVSAccess1";
@@ -273,54 +274,52 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         tx.commit();
         verifyStoreMetrics(EDGESTORE_NAME);
         verifyLockingOverwrite(INDEXSTORE_NAME, 3);
-        verifyStoreMetrics(METRICS_STOREMANAGER_NAME,
-                ImmutableMap.of(M_MUTATE, 1l + (features.hasTxIsolation() ? 0 : 1)));
+        verifyStoreMetrics(METRICS_STOREMANAGER_NAME, ImmutableMap.of(M_MUTATE, 1l + (features.hasTxIsolation()?0:1)));
 
         verifyTypeCacheMetrics(3, 0);
 
-        // Check type name & definition caching
+        //Check type name & definition caching
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
-        v = getV(tx, v);
+        v = getV(tx,v);
         assertCount(2, v.properties());
-        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 2l)); // 1 verify vertex existence, 1 for query
+        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 2l)); //1 verify vertex existence, 1 for query
         verifyTypeCacheMetrics(3, 4);
         tx.commit();
 
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
-        v = getV(tx, v);
+        v = getV(tx,v);
         assertCount(2, v.properties());
-        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 4l)); // 1 verify vertex existence, 1 for query
+        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 4l)); //1 verify vertex existence, 1 for query
         verifyTypeCacheMetrics(3, 4);
         tx.commit();
 
-        // Check type index lookup caching
+        //Check type index lookup caching
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
-        v = getV(tx, v);
+        v = getV(tx,v);
         assertNotNull(v.value("age"));
         assertNotNull(v.value("name"));
-        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 7l)); // 1 verify vertex existence, 2 for query
+        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 7l)); //1 verify vertex existence, 2 for query
         verifyTypeCacheMetrics(5, 8);
         tx.commit();
 
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
-        v = getV(tx, v);
+        v = getV(tx,v);
         assertNotNull(v.value("age"));
         assertNotNull(v.value("name"));
         assertCount(1, v.query().direction(Direction.BOTH).edges());
-        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 11l)); // 1 verify vertex existence, 3 for query
+        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 11l)); //1 verify vertex existence, 3 for query
         verifyTypeCacheMetrics(5, 10);
         tx.commit();
 
         verifyLockingOverwrite(INDEXSTORE_NAME, 3);
-        verifyStoreMetrics(METRICS_STOREMANAGER_NAME,
-                ImmutableMap.of(M_MUTATE, 1l + (features.hasTxIsolation() ? 0 : 1)));
+        verifyStoreMetrics(METRICS_STOREMANAGER_NAME, ImmutableMap.of(M_MUTATE, 1l + (features.hasTxIsolation()?0:1)));
 
     }
 
     @Test
     public void checkPropertyLockingAndIndex() {
-        PropertyKey uid = makeKey("uid", String.class);
-        HugeGraphIndex index = mgmt.buildIndex("uid", Vertex.class).unique().addKey(uid).buildCompositeIndex();
+        PropertyKey uid = makeKey("uid",String.class);
+        HugeGraphIndex index = mgmt.buildIndex("uid",Vertex.class).unique().addKey(uid).buildCompositeIndex();
         mgmt.setConsistency(index, ConsistencyModifier.LOCK);
         mgmt.makePropertyKey("name").dataType(String.class).make();
         mgmt.makePropertyKey("age").dataType(Integer.class).make();
@@ -330,7 +329,7 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
         HugeGraphTransaction tx = graph.buildTransaction().groupName(metricsPrefix).start();
         HugeGraphVertex v = tx.addVertex("uid", "v1", "age", 25, "name", "john");
-        assertEquals(25, v.property("age").value());
+        assertEquals(25,v.property("age").value());
         tx.commit();
         verifyStoreMetrics(EDGESTORE_NAME);
         verifyLockingOverwrite(INDEXSTORE_NAME, 1);
@@ -340,12 +339,13 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
         v = (HugeGraphVertex) Iterables.getOnlyElement(tx.query().has("uid", Cmp.EQUAL, "v1").vertices());
-        assertEquals(25, v.property("age").value());
+        assertEquals(25,v.property("age").value());
         tx.commit();
-        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 1l));
-        verifyStoreMetrics(INDEXSTORE_NAME, ImmutableMap.of(M_GET_SLICE, 1l));
+        verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE,1l));
+        verifyStoreMetrics(INDEXSTORE_NAME, ImmutableMap.of(M_GET_SLICE,1l));
         verifyStoreMetrics(METRICS_STOREMANAGER_NAME);
     }
+
 
     @Test
     public void checkFastPropertyTrue() {
@@ -357,14 +357,15 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         checkFastProperty(false);
     }
 
+
     public void checkFastProperty(boolean fastProperty) {
-        makeKey("uid", String.class);
+        makeKey("uid",String.class);
         makeKey("name", String.class);
         makeKey("age", String.class);
         finishSchema();
 
         clopen(option(GraphDatabaseConfiguration.PROPERTY_PREFETCHING), fastProperty);
-        metricsPrefix = "checkFastProperty" + fastProperty;
+        metricsPrefix = "checkFastProperty"+fastProperty;
 
         HugeGraphTransaction tx = graph.buildTransaction().groupName(metricsPrefix).start();
         HugeGraphVertex v = tx.addVertex("uid", "v1", "age", 25, "name", "john");
@@ -375,9 +376,9 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
         tx = graph.buildTransaction().groupName(metricsPrefix).start();
         v = getV(tx, v);
-        assertEquals("v1", v.property("uid").value());
-        assertEquals("25", v.property("age").value());
-        assertEquals("john", v.property("name").value());
+        assertEquals("v1",v.property("uid").value());
+        assertEquals("25",v.property("age").value());
+        assertEquals("john",v.property("name").value());
         tx.commit();
         if (fastProperty)
             verifyStoreMetrics(EDGESTORE_NAME, ImmutableMap.of(M_GET_SLICE, 2l));
@@ -400,51 +401,36 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
     public void verifyStoreMetrics(String storeName, String prefix, Map<String, Long> operationCounts) {
         for (String operation : OPERATION_NAMES) {
             Long count = operationCounts.get(operation);
-            if (count == null)
-                count = 0l;
-            assertEquals(Joiner.on(".").join(prefix, storeName, operation, MetricInstrumentedStore.M_CALLS),
-                    count.longValue(),
-                    metric.getCounter(prefix, storeName, operation, MetricInstrumentedStore.M_CALLS).getCount());
+            if (count==null) count = 0l;
+            assertEquals(Joiner.on(".").join(prefix, storeName, operation, MetricInstrumentedStore.M_CALLS),count.longValue(), metric.getCounter(prefix, storeName, operation, MetricInstrumentedStore.M_CALLS).getCount());
         }
     }
 
     public void verifyTypeCacheMetrics(int nameMisses, int relationMisses) {
-        verifyTypeCacheMetrics(metricsPrefix, nameMisses, relationMisses);
+        verifyTypeCacheMetrics(metricsPrefix,nameMisses,relationMisses);
     }
 
     public void verifyTypeCacheMetrics(String prefix, int nameMisses, int relationMisses) {
-        // assertEquals("On type cache name retrievals",nameRetrievals,
-        // metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_TYPENAME,
-        // CacheMetricsAction.RETRIEVAL.getName()).getCount());
-        assertEquals("On type cache name misses", nameMisses,
-                metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME,
-                        METRICS_TYPENAME, CacheMetricsAction.MISS.getName()).getCount());
-        assertTrue(nameMisses <= metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT,
-                METRICS_NAME, METRICS_TYPENAME, CacheMetricsAction.RETRIEVAL.getName()).getCount());
-        // assertEquals("On type cache relation retrievals",relationRetrievals,
-        // metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_RELATIONS,
-        // CacheMetricsAction.RETRIEVAL.getName()).getCount());
-        assertEquals("On type cache relation misses", relationMisses,
-                metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME,
-                        METRICS_RELATIONS, CacheMetricsAction.MISS.getName()).getCount());
-        assertTrue(relationMisses <= metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT,
-                METRICS_NAME, METRICS_RELATIONS, CacheMetricsAction.RETRIEVAL.getName()).getCount());
+//        assertEquals("On type cache name retrievals",nameRetrievals, metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_TYPENAME, CacheMetricsAction.RETRIEVAL.getName()).getCount());
+        assertEquals("On type cache name misses",nameMisses, metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_TYPENAME, CacheMetricsAction.MISS.getName()).getCount());
+        assertTrue(nameMisses <= metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_TYPENAME, CacheMetricsAction.RETRIEVAL.getName()).getCount());
+//        assertEquals("On type cache relation retrievals",relationRetrievals, metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_RELATIONS, CacheMetricsAction.RETRIEVAL.getName()).getCount());
+        assertEquals("On type cache relation misses", relationMisses, metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_RELATIONS, CacheMetricsAction.MISS.getName()).getCount());
+        assertTrue(relationMisses <= metric.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, METRICS_RELATIONS, CacheMetricsAction.RETRIEVAL.getName()).getCount());
     }
 
-    // public void verifyCacheMetrics(String storeName) {
-    // verifyCacheMetrics(storeName,0,0);
-    // }
-    //
-    // public void verifyCacheMetrics(String storeName, int misses, int retrievals) {
-    // verifyCacheMetrics(storeName, metricsPrefix, misses, retrievals);
-    // }
-    //
-    // public void verifyCacheMetrics(String storeName, String prefix, int misses, int retrievals) {
-    // assertEquals("On "+storeName+"-cache retrievals",retrievals, metric.getCounter(prefix, storeName +
-    // Backend.METRICS_CACHE_SUFFIX, CacheMetricsAction.RETRIEVAL.getName()).getCount());
-    // assertEquals("On "+storeName+"-cache misses",misses, metric.getCounter(prefix, storeName +
-    // Backend.METRICS_CACHE_SUFFIX, CacheMetricsAction.MISS.getName()).getCount());
-    // }
+//    public void verifyCacheMetrics(String storeName) {
+//        verifyCacheMetrics(storeName,0,0);
+//    }
+//
+//    public void verifyCacheMetrics(String storeName, int misses, int retrievals) {
+//        verifyCacheMetrics(storeName, metricsPrefix, misses, retrievals);
+//    }
+//
+//    public void verifyCacheMetrics(String storeName, String prefix, int misses, int retrievals) {
+//        assertEquals("On "+storeName+"-cache retrievals",retrievals, metric.getCounter(prefix, storeName + Backend.METRICS_CACHE_SUFFIX, CacheMetricsAction.RETRIEVAL.getName()).getCount());
+//        assertEquals("On "+storeName+"-cache misses",misses, metric.getCounter(prefix, storeName + Backend.METRICS_CACHE_SUFFIX, CacheMetricsAction.MISS.getName()).getCount());
+//    }
 
     public void printAllMetrics() {
         printAllMetrics(metricsPrefix);
@@ -457,24 +443,18 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         storeNames.add(ID_STORE_NAME);
         storeNames.add(METRICS_STOREMANAGER_NAME);
         if (storeUsesConsistentKeyLocker()) {
-            storeNames.add(EDGESTORE_NAME + LOCK_STORE_SUFFIX);
-            storeNames.add(INDEXSTORE_NAME + LOCK_STORE_SUFFIX);
+            storeNames.add(EDGESTORE_NAME+LOCK_STORE_SUFFIX);
+            storeNames.add(INDEXSTORE_NAME+LOCK_STORE_SUFFIX);
         }
 
         for (String store : storeNames) {
             System.out.println("######## Store: " + store + " (" + prefix + ")");
             for (String operation : MetricInstrumentedStore.OPERATION_NAMES) {
                 System.out.println("-- Operation: " + operation);
-                System.out.print("\t");
-                System.out.println(
-                        metric.getCounter(prefix, store, operation, MetricInstrumentedStore.M_CALLS).getCount());
-                System.out.print("\t");
-                System.out.println(
-                        metric.getTimer(prefix, store, operation, MetricInstrumentedStore.M_TIME).getMeanRate());
-                if (operation == MetricInstrumentedStore.M_GET_SLICE) {
-                    System.out.print("\t");
-                    System.out.println(metric
-                            .getCounter(prefix, store, operation, MetricInstrumentedStore.M_ENTRIES_COUNT).getCount());
+                System.out.print("\t"); System.out.println(metric.getCounter(prefix, store, operation, MetricInstrumentedStore.M_CALLS).getCount());
+                System.out.print("\t"); System.out.println(metric.getTimer(prefix, store, operation, MetricInstrumentedStore.M_TIME).getMeanRate());
+                if (operation==MetricInstrumentedStore.M_GET_SLICE) {
+                    System.out.print("\t"); System.out.println(metric.getCounter(prefix, store, operation, MetricInstrumentedStore.M_ENTRIES_COUNT).getCount());
                 }
             }
         }
@@ -483,57 +463,55 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
     @Test
     public void testCacheConcurrency() throws InterruptedException {
         metricsPrefix = "tCC";
-        Object[] newConfig =
-                { option(GraphDatabaseConfiguration.DB_CACHE), true, option(GraphDatabaseConfiguration.DB_CACHE_TIME),
-                        0, option(GraphDatabaseConfiguration.DB_CACHE_CLEAN_WAIT), 0,
-                        option(GraphDatabaseConfiguration.DB_CACHE_SIZE), 0.25,
-                        option(GraphDatabaseConfiguration.BASIC_METRICS), true,
-                        option(GraphDatabaseConfiguration.METRICS_MERGE_STORES), false,
-                        option(GraphDatabaseConfiguration.METRICS_PREFIX), metricsPrefix };
+        Object[] newConfig = {option(GraphDatabaseConfiguration.DB_CACHE),true,
+                option(GraphDatabaseConfiguration.DB_CACHE_TIME),0,
+                option(GraphDatabaseConfiguration.DB_CACHE_CLEAN_WAIT),0,
+                option(GraphDatabaseConfiguration.DB_CACHE_SIZE),0.25,
+                option(GraphDatabaseConfiguration.BASIC_METRICS),true,
+                option(GraphDatabaseConfiguration.METRICS_MERGE_STORES),false,
+                option(GraphDatabaseConfiguration.METRICS_PREFIX),metricsPrefix};
         clopen(newConfig);
         final String prop = "someProp";
-        makeKey(prop, Integer.class);
+        makeKey(prop,Integer.class);
         finishSchema();
 
         final int numV = 100;
         final long[] vids = new long[numV];
-        for (int i = 0; i < numV; i++) {
-            HugeGraphVertex v = graph.addVertex(prop, 0);
+        for (int i=0;i<numV;i++) {
+            HugeGraphVertex v = graph.addVertex(prop,0);
             graph.tx().commit();
-            vids[i] = getId(v);
+            vids[i]=getId(v);
         }
         clopen(newConfig);
         resetEdgeCacheCounts();
 
         final AtomicBoolean[] precommit = new AtomicBoolean[numV];
         final AtomicBoolean[] postcommit = new AtomicBoolean[numV];
-        for (int i = 0; i < numV; i++) {
-            precommit[i] = new AtomicBoolean(false);
-            postcommit[i] = new AtomicBoolean(false);
+        for (int i=0;i<numV;i++) {
+            precommit[i]=new AtomicBoolean(false);
+            postcommit[i]=new AtomicBoolean(false);
         }
         final AtomicInteger lookups = new AtomicInteger(0);
         final Random random = new Random();
         final int updateSleepTime = 40;
         final int readSleepTime = 2;
-        final int numReads = Math.round((numV * updateSleepTime) / readSleepTime * 2.0f);
+        final int numReads = Math.round((numV*updateSleepTime)/readSleepTime*2.0f);
 
         Thread reader = new Thread(new Runnable() {
             @Override
             public void run() {
                 int reads = 0;
-                while (reads < numReads) {
+                while (reads<numReads) {
                     final int pos = random.nextInt(vids.length);
                     long vid = vids[pos];
-                    HugeGraphVertex v = getV(graph, vid);
+                    HugeGraphVertex v = getV(graph,vid);
                     assertNotNull(v);
                     boolean postCommit = postcommit[pos].get();
                     Integer value = v.value(prop);
                     lookups.incrementAndGet();
                     assertNotNull("On pos [" + pos + "]", value);
-                    if (!precommit[pos].get())
-                        assertEquals(0, value.intValue());
-                    else if (postCommit)
-                        assertEquals(1, value.intValue());
+                    if (!precommit[pos].get()) assertEquals(0, value.intValue());
+                    else if (postCommit) assertEquals(1, value.intValue());
                     graph.tx().commit();
                     try {
                         Thread.sleep(readSleepTime);
@@ -549,52 +527,46 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
         Thread updater = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < numV; i++) {
+                for (int i=0;i<numV;i++) {
                     try {
-                        HugeGraphVertex v = getV(graph, vids[i]);
+                        HugeGraphVertex v = getV(graph,vids[i]);
                         v.property(VertexProperty.Cardinality.single, prop, 1);
                         precommit[i].set(true);
                         graph.tx().commit();
                         postcommit[i].set(true);
                         Thread.sleep(updateSleepTime);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException("Unexpected interruption", e);
+                        throw new RuntimeException("Unexpected interruption",e);
                     }
                 }
             }
         });
         updater.start();
         updater.join();
-        // reader.start();
+//        reader.start();
         reader.join();
 
         System.out.println("Retrievals: " + getEdgeCacheRetrievals());
-        System.out.println("Hits: " + (getEdgeCacheRetrievals() - getEdgeCacheMisses()));
+        System.out.println("Hits: " + (getEdgeCacheRetrievals()-getEdgeCacheMisses()));
         System.out.println("Misses: " + getEdgeCacheMisses());
         assertEquals(numReads, lookups.get());
         assertEquals(2 * numReads + 1 * numV, getEdgeCacheRetrievals());
-        int minMisses = 2 * numV;
-        assertTrue("Min misses [" + minMisses + "] vs actual [" + getEdgeCacheMisses() + "]",
-                minMisses <= getEdgeCacheMisses() && 4 * minMisses >= getEdgeCacheMisses());
+        int minMisses = 2*numV;
+        assertTrue("Min misses ["+minMisses+"] vs actual ["+getEdgeCacheMisses()+"]",minMisses<=getEdgeCacheMisses() && 4*minMisses>=getEdgeCacheMisses());
     }
 
     private long getEdgeCacheRetrievals() {
-        return metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX,
-                CacheMetricsAction.RETRIEVAL.getName()).getCount();
+        return metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX, CacheMetricsAction.RETRIEVAL.getName()).getCount();
     }
 
     private long getEdgeCacheMisses() {
-        return metric
-                .getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX, CacheMetricsAction.MISS.getName())
-                .getCount();
+        return metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX, CacheMetricsAction.MISS.getName()).getCount();
     }
 
     private void resetEdgeCacheCounts() {
-        Counter counter = metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX,
-                CacheMetricsAction.RETRIEVAL.getName());
+        Counter counter = metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX, CacheMetricsAction.RETRIEVAL.getName());
         counter.dec(counter.getCount());
-        counter = metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX,
-                CacheMetricsAction.MISS.getName());
+        counter = metric.getCounter(metricsPrefix, EDGESTORE_NAME + METRICS_CACHE_SUFFIX, CacheMetricsAction.MISS.getName());
         counter.dec(counter.getCount());
     }
 
@@ -607,17 +579,17 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
      */
     @Test
     public void testCacheSpeedup() {
-        Object[] newConfig = { option(GraphDatabaseConfiguration.DB_CACHE), true,
-                option(GraphDatabaseConfiguration.DB_CACHE_TIME), 0 };
+        Object[] newConfig = {option(GraphDatabaseConfiguration.DB_CACHE),true,
+                option(GraphDatabaseConfiguration.DB_CACHE_TIME),0};
         clopen(newConfig);
 
         int numV = 1000;
 
         HugeGraphVertex previous = null;
-        for (int i = 0; i < numV; i++) {
+        for (int i=0;i<numV;i++) {
             HugeGraphVertex v = graph.addVertex("name", "v" + i);
-            if (previous != null)
-                v.addEdge("knows", previous);
+            if (previous!=null)
+                v.addEdge("knows",previous);
             previous = v;
         }
         graph.tx().commit();
@@ -626,54 +598,52 @@ public abstract class HugeGraphOperationCountingTest extends HugeGraphBaseTest {
 
         clopen(newConfig);
 
-        double timecoldglobal = 0, timewarmglobal = 0, timehotglobal = 0;
+        double timecoldglobal=0, timewarmglobal=0,timehotglobal=0;
 
         int outerRepeat = 20;
         int measurements = 10;
-        assertTrue(measurements < outerRepeat);
+        assertTrue(measurements<outerRepeat);
         int innerRepeat = 2;
-        for (int c = 0; c < outerRepeat; c++) {
+        for (int c=0;c<outerRepeat;c++) {
 
-            double timecold = testAllVertices(vertexId, numV);
+            double timecold = testAllVertices(vertexId,numV);
 
             double timewarm = 0;
             double timehot = 0;
-            for (int i = 0; i < innerRepeat; i++) {
+            for (int i = 0;i<innerRepeat;i++) {
                 graph.tx().commit();
-                timewarm += testAllVertices(vertexId, numV);
-                for (int j = 0; j < innerRepeat; j++) {
-                    timehot += testAllVertices(vertexId, numV);
+                timewarm += testAllVertices(vertexId,numV);
+                for (int j=0;j<innerRepeat;j++) {
+                    timehot += testAllVertices(vertexId,numV);
                 }
             }
             timewarm = timewarm / innerRepeat;
-            timehot = timehot / (innerRepeat * innerRepeat);
+            timehot = timehot / (innerRepeat*innerRepeat);
 
-            if (c >= (outerRepeat - measurements)) {
+            if (c>=(outerRepeat-measurements)) {
                 timecoldglobal += timecold;
                 timewarmglobal += timewarm;
-                timehotglobal += timehot;
+                timehotglobal  += timehot;
             }
-            // System.out.println(timecold + "\t" + timewarm + "\t" + timehot);
+//            System.out.println(timecold + "\t" + timewarm + "\t" + timehot);
             clopen(newConfig);
         }
-        timecoldglobal = timecoldglobal / measurements;
-        timewarmglobal = timewarmglobal / measurements;
-        timehotglobal = timehotglobal / measurements;
+        timecoldglobal = timecoldglobal/measurements;
+        timewarmglobal = timewarmglobal/measurements;
+        timehotglobal = timehotglobal/measurements;
 
         System.out.println(round(timecoldglobal) + "\t" + round(timewarmglobal) + "\t" + round(timehotglobal));
-        assertTrue(timecoldglobal + " vs " + timewarmglobal, timecoldglobal > timewarmglobal * 2);
-        // assertTrue(timewarmglobal + " vs " + timehotglobal, timewarmglobal>timehotglobal); Sometimes, this is not
-        // true
+        assertTrue(timecoldglobal + " vs " + timewarmglobal, timecoldglobal>timewarmglobal*2);
+        //assertTrue(timewarmglobal + " vs " + timehotglobal, timewarmglobal>timehotglobal); Sometimes, this is not true
     }
 
     private double testAllVertices(long vid, int numV) {
         long start = System.nanoTime();
-        HugeGraphVertex v = getV(graph, vid);
-        for (int i = 1; i < numV; i++) {
-            v = Iterables
-                    .<HugeGraphVertex> getOnlyElement(v.query().direction(Direction.OUT).labels("knows").vertices());
+        HugeGraphVertex v = getV(graph,vid);
+        for (int i=1; i<numV; i++) {
+            v = Iterables.<HugeGraphVertex>getOnlyElement(v.query().direction(Direction.OUT).labels("knows").vertices());
         }
-        return ((System.nanoTime() - start) / 1000000.0);
+        return ((System.nanoTime()-start)/1000000.0);
     }
 
 }

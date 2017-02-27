@@ -63,7 +63,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class FulgoraGraphComputer implements HugeGraphComputer {
 
-    private static final Logger log = LoggerFactory.getLogger(FulgoraGraphComputer.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(FulgoraGraphComputer.class);
 
     private VertexProgram<?> vertexProgram;
     private final Set<MapReduce> mapReduces = new HashSet<>();
@@ -74,7 +75,7 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
     private FulgoraVertexMemory vertexMemory;
     private boolean executed = false;
 
-    private int numThreads = 1;// Math.max(1,Runtime.getRuntime().availableProcessors());
+    private int numThreads = 1;//Math.max(1,Runtime.getRuntime().availableProcessors());
     private int readBatchSize = 10000;
     private int writeBatchSize;
 
@@ -157,22 +158,18 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
         }
 
         // if the user didn't set desired persistence/resultgraph, then get from vertex program or else, no persistence
-        this.persistMode = GraphComputerHelper.getPersistState(Optional.ofNullable(this.vertexProgram),
-                Optional.ofNullable(this.persistMode));
-        this.resultGraphMode = GraphComputerHelper.getResultGraphState(Optional.ofNullable(this.vertexProgram),
-                Optional.ofNullable(this.resultGraphMode));
+        this.persistMode = GraphComputerHelper.getPersistState(Optional.ofNullable(this.vertexProgram), Optional.ofNullable(this.persistMode));
+        this.resultGraphMode = GraphComputerHelper.getResultGraphState(Optional.ofNullable(this.vertexProgram), Optional.ofNullable(this.resultGraphMode));
         // determine the legality persistence and result graph options
         if (!this.features().supportsResultGraphPersistCombination(this.resultGraphMode, this.persistMode))
-            throw GraphComputer.Exceptions.resultGraphPersistCombinationNotSupported(this.resultGraphMode,
-                    this.persistMode);
+            throw GraphComputer.Exceptions.resultGraphPersistCombinationNotSupported(this.resultGraphMode, this.persistMode);
         // ensure requested workers are not larger than supported workers
         if (this.numThreads > this.features().getMaxWorkers())
-            throw GraphComputer.Exceptions.computerRequiresMoreWorkersThanSupported(this.numThreads,
-                    this.features().getMaxWorkers());
+            throw GraphComputer.Exceptions.computerRequiresMoreWorkersThanSupported(this.numThreads, this.features().getMaxWorkers());
 
         memory = new FulgoraMemory(vertexProgram, mapReduces);
 
-        return CompletableFuture.<ComputerResult> supplyAsync(() -> {
+        return CompletableFuture.<ComputerResult>supplyAsync(() -> {
             final long time = System.currentTimeMillis();
             if (null != vertexProgram) {
                 // ##### Execute vertex program
@@ -180,9 +177,8 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                 // execute the vertex program
                 vertexProgram.setup(memory);
 
-                try (VertexProgramScanJob.Executor job =
-                        VertexProgramScanJob.getVertexProgramScanJob(graph, memory, vertexMemory, vertexProgram)) {
-                    for (int iteration = 1;; iteration++) {
+                try (VertexProgramScanJob.Executor job = VertexProgramScanJob.getVertexProgramScanJob(graph, memory, vertexMemory, vertexProgram)) {
+                    for (int iteration = 1; ; iteration++) {
                         memory.completeSubRound();
                         vertexMemory.nextIteration(vertexProgram.getMessageScopes(memory));
 
@@ -192,25 +188,19 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                         scanBuilder.setNumProcessingThreads(numThreads);
                         scanBuilder.setWorkBlockSize(readBatchSize);
                         scanBuilder.setJob(job);
-                        PartitionedVertexProgramExecutor pvpe =
-                                new PartitionedVertexProgramExecutor(graph, memory, vertexMemory, vertexProgram);
+                        PartitionedVertexProgramExecutor pvpe = new PartitionedVertexProgramExecutor(graph, memory, vertexMemory, vertexProgram);
                         try {
-                            // Iterates over all vertices and computes the vertex program on all non-partitioned
-                            // vertices. For partitioned ones, the data is aggregated
+                            //Iterates over all vertices and computes the vertex program on all non-partitioned vertices. For partitioned ones, the data is aggregated
                             ScanMetrics jobResult = scanBuilder.execute().get();
                             long failures = jobResult.get(ScanMetrics.Metric.FAILURE);
                             if (failures > 0) {
-                                throw new HugeGraphException(
-                                        "Failed to process [" + failures + "] vertices in vertex program iteration ["
-                                                + iteration + "]. Computer is aborting.");
+                                throw new HugeGraphException("Failed to process [" + failures + "] vertices in vertex program iteration [" + iteration + "]. Computer is aborting.");
                             }
-                            // Runs the vertex program on all aggregated, partitioned vertices.
+                            //Runs the vertex program on all aggregated, partitioned vertices.
                             pvpe.run(numThreads, jobResult);
                             failures = jobResult.getCustom(PartitionedVertexProgramExecutor.PARTITION_VERTEX_POSTFAIL);
                             if (failures > 0) {
-                                throw new HugeGraphException("Failed to process [" + failures
-                                        + "] partitioned vertices in vertex program iteration [" + iteration
-                                        + "]. Computer is aborting.");
+                                throw new HugeGraphException("Failed to process [" + failures + "] partitioned vertices in vertex program iteration [" + iteration + "]. Computer is aborting.");
                             }
                         } catch (Exception e) {
                             throw new HugeGraphException(e);
@@ -250,13 +240,11 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                     ScanMetrics jobResult = scanBuilder.execute().get();
                     long failures = jobResult.get(ScanMetrics.Metric.FAILURE);
                     if (failures > 0) {
-                        throw new HugeGraphException(
-                                "Failed to process [" + failures + "] vertices in map phase. Computer is aborting.");
+                        throw new HugeGraphException("Failed to process [" + failures + "] vertices in map phase. Computer is aborting.");
                     }
                     failures = jobResult.getCustom(VertexMapJob.MAP_JOB_FAILURE);
                     if (failures > 0) {
-                        throw new HugeGraphException(
-                                "Failed to process [" + failures + "] individual map jobs. Computer is aborting.");
+                        throw new HugeGraphException("Failed to process [" + failures + "] individual map jobs. Computer is aborting.");
                     }
                 } catch (Exception e) {
                     throw new HugeGraphException(e);
@@ -271,17 +259,15 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                         try (WorkerPool workers = new WorkerPool(numThreads)) {
                             workers.submit(() -> mapReduce.workerStart(MapReduce.Stage.REDUCE));
                             for (final Map.Entry queueEntry : mapEmitter.reduceMap.entrySet()) {
-                                if (null == queueEntry)
-                                    break;
-                                workers.submit(() -> mapReduce.reduce(queueEntry.getKey(),
-                                        ((Iterable) queueEntry.getValue()).iterator(), reduceEmitter));
+                                if (null == queueEntry) break;
+                                workers.submit(() -> mapReduce.reduce(queueEntry.getKey(), ((Iterable) queueEntry.getValue()).iterator(), reduceEmitter));
                             }
                             workers.submit(() -> mapReduce.workerEnd(MapReduce.Stage.REDUCE));
                         } catch (Exception e) {
                             throw new HugeGraphException("Exception while executing reduce phase", e);
                         }
-                        // mapEmitter.reduceMap.entrySet().parallelStream().forEach(entry ->
-                        // mapReduce.reduce(entry.getKey(), entry.getValue().iterator(), reduceEmitter));
+//                    mapEmitter.reduceMap.entrySet().parallelStream().forEach(entry -> mapReduce.reduce(entry.getKey(), entry.getValue().iterator(), reduceEmitter));
+
 
                         reduceEmitter.complete(mapReduce); // sort results if a reduce output sort is defined
                         mapReduce.addResultToMemory(this.memory, reduceEmitter.reduceQueue.iterator());
@@ -296,41 +282,34 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
             Graph resultgraph = graph;
             if (persistMode == Persist.NOTHING && resultGraphMode == ResultGraph.NEW) {
                 resultgraph = EmptyGraph.instance();
-            } else if (persistMode != Persist.NOTHING && vertexProgram != null
-                    && !vertexProgram.getVertexComputeKeys().isEmpty()) {
-                // First, create property keys in graph if they don't already exist
+            } else if (persistMode != Persist.NOTHING && vertexProgram != null && !vertexProgram.getVertexComputeKeys().isEmpty()) {
+                //First, create property keys in graph if they don't already exist
                 HugeGraphManagement mgmt = graph.openManagement();
                 try {
                     for (VertexComputeKey key : vertexProgram.getVertexComputeKeys()) {
                         if (!mgmt.containsPropertyKey(key.getKey()))
-                            log.warn(
-                                    "Property key [{}] is not part of the schema and will be created. It is advised to initialize all keys.",
-                                    key.getKey());
+                            log.warn("Property key [{}] is not part of the schema and will be created. It is advised to initialize all keys.", key.getKey());
                         mgmt.getOrCreatePropertyKey(key.getKey());
                     }
                     mgmt.commit();
                 } finally {
-                    if (mgmt != null && mgmt.isOpen())
-                        mgmt.rollback();
+                    if (mgmt != null && mgmt.isOpen()) mgmt.rollback();
                 }
 
-                // TODO: Filter based on VertexProgram
-                Map<Long, Map<String, Object>> mutatedProperties =
-                        Maps.transformValues(vertexMemory.getMutableVertexProperties(),
-                                new Function<Map<String, Object>, Map<String, Object>>() {
-                                    @Nullable
-                                    @Override
-                                    public Map<String, Object> apply(@Nullable Map<String, Object> o) {
-                                        return Maps.filterKeys(o, s -> !VertexProgramHelper
-                                                .isTransientVertexComputeKey(s, vertexProgram.getVertexComputeKeys()));
-                                    }
-                                });
+                //TODO: Filter based on VertexProgram
+                Map<Long, Map<String, Object>> mutatedProperties = Maps.transformValues(vertexMemory.getMutableVertexProperties(),
+                        new Function<Map<String, Object>, Map<String, Object>>() {
+                            @Nullable
+                            @Override
+                            public Map<String, Object> apply(@Nullable Map<String, Object> o) {
+                                return Maps.filterKeys(o, s -> !VertexProgramHelper.isTransientVertexComputeKey(s, vertexProgram.getVertexComputeKeys()));
+                            }
+                        });
 
                 if (resultGraphMode == ResultGraph.ORIGINAL) {
                     AtomicInteger failures = new AtomicInteger(0);
                     try (WorkerPool workers = new WorkerPool(numThreads)) {
-                        List<Map.Entry<Long, Map<String, Object>>> subset =
-                                new ArrayList<>(writeBatchSize / vertexProgram.getVertexComputeKeys().size());
+                        List<Map.Entry<Long, Map<String, Object>>> subset = new ArrayList<>(writeBatchSize / vertexProgram.getVertexComputeKeys().size());
                         int currentSize = 0;
                         for (Map.Entry<Long, Map<String, Object>> entry : mutatedProperties.entrySet()) {
                             subset.add(entry);
@@ -341,14 +320,12 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                                 currentSize = 0;
                             }
                         }
-                        if (!subset.isEmpty())
-                            workers.submit(new VertexPropertyWriter(subset, failures));
+                        if (!subset.isEmpty()) workers.submit(new VertexPropertyWriter(subset, failures));
                     } catch (Exception e) {
                         throw new HugeGraphException("Exception while attempting to persist result into graph", e);
                     }
                     if (failures.get() > 0)
-                        throw new HugeGraphException(
-                                "Could not persist program results to graph. Check log for details.");
+                        throw new HugeGraphException("Could not persist program results to graph. Check log for details.");
                 } else if (resultGraphMode == ResultGraph.NEW) {
                     resultgraph = graph.newTransaction();
                     for (Map.Entry<Long, Map<String, Object>> vprop : mutatedProperties.entrySet()) {
@@ -365,6 +342,7 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
             return new DefaultComputerResult(resultgraph, this.memory);
         });
     }
+
 
     private class VertexPropertyWriter implements Runnable {
 
@@ -392,11 +370,11 @@ public class FulgoraGraphComputer implements HugeGraphComputer {
                 failures.incrementAndGet();
                 log.error("Encountered exception while trying to write properties: ", e);
             } finally {
-                if (tx != null && tx.isOpen())
-                    tx.rollback();
+                if (tx != null && tx.isOpen()) tx.rollback();
             }
         }
     }
+
 
     @Override
     public String toString() {

@@ -29,8 +29,7 @@ import java.util.Iterator;
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class HugeGraphStepStrategy extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy>
-        implements TraversalStrategy.ProviderOptimizationStrategy {
+public class HugeGraphStepStrategy extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy> implements TraversalStrategy.ProviderOptimizationStrategy {
 
     private static final HugeGraphStepStrategy INSTANCE = new HugeGraphStepStrategy();
 
@@ -44,25 +43,25 @@ public class HugeGraphStepStrategy extends AbstractTraversalStrategy<TraversalSt
 
         TraversalHelper.getStepsOfClass(GraphStep.class, traversal).forEach(originalGraphStep -> {
             if (originalGraphStep.getIds() == null || originalGraphStep.getIds().length == 0) {
-                // Try to optimize for index calls
+                //Try to optimize for index calls
                 final HugeGraphStep<?, ?> hugeGraphStep = new HugeGraphStep<>(originalGraphStep);
                 TraversalHelper.replaceStep(originalGraphStep, (Step) hugeGraphStep, traversal);
                 HasStepFolder.foldInHasContainer(hugeGraphStep, traversal);
                 HasStepFolder.foldInOrder(hugeGraphStep, traversal, traversal, hugeGraphStep.returnsVertex());
                 HasStepFolder.foldInRange(hugeGraphStep, traversal);
             } else {
-                // Make sure that any provided "start" elements are instantiated in the current transaction
+                //Make sure that any provided "start" elements are instantiated in the current transaction
                 Object[] ids = originalGraphStep.getIds();
                 ElementUtils.verifyArgsMustBeEitherIdorElement(ids);
                 if (ids[0] instanceof Element) {
-                    // GraphStep constructor ensures that the entire array is elements
+                    //GraphStep constructor ensures that the entire array is elements
                     final Object[] elementIds = new Object[ids.length];
                     for (int i = 0; i < ids.length; i++) {
                         elementIds[i] = ((Element) ids[i]).id();
                     }
-                    originalGraphStep.setIteratorSupplier(() -> (Iterator) (originalGraphStep.returnsVertex()
-                            ? ((Graph) originalGraphStep.getTraversal().getGraph().get()).vertices(elementIds)
-                            : ((Graph) originalGraphStep.getTraversal().getGraph().get()).edges(elementIds)));
+                    originalGraphStep.setIteratorSupplier(() -> (Iterator) (originalGraphStep.returnsVertex() ?
+                            ((Graph) originalGraphStep.getTraversal().getGraph().get()).vertices(elementIds) :
+                            ((Graph) originalGraphStep.getTraversal().getGraph().get()).edges(elementIds)));
                 }
             }
         });

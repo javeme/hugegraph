@@ -73,25 +73,18 @@ public class ElasticSearchIndexTest extends IndexProviderTest {
         return config.restrictTo(index);
     }
 
+
     @Test
     public void testSupport() {
         assertTrue(index.supports(of(String.class, Cardinality.SINGLE), Text.CONTAINS));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.CONTAINS_PREFIX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.CONTAINS_REGEX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)),
-                Text.REGEX));
-        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.CONTAINS));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.PREFIX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Text.REGEX));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Cmp.EQUAL));
-        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)),
-                Cmp.NOT_EQUAL));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.CONTAINS_PREFIX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.CONTAINS_REGEX));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.TEXT)), Text.REGEX));
+        assertFalse(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping",Mapping.STRING)), Text.CONTAINS));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.PREFIX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping", Mapping.STRING)), Text.REGEX));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping",Mapping.STRING)), Cmp.EQUAL));
+        assertTrue(index.supports(of(String.class, Cardinality.SINGLE, new Parameter("mapping",Mapping.STRING)), Cmp.NOT_EQUAL));
 
         assertTrue(index.supports(of(Date.class, Cardinality.SINGLE), Cmp.EQUAL));
         assertTrue(index.supports(of(Date.class, Cardinality.SINGLE), Cmp.LESS_THAN_EQUAL));
@@ -144,8 +137,7 @@ public class ElasticSearchIndexTest extends IndexProviderTest {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
         config.set(LOCAL_MODE, true, index);
         config.set(CLIENT_ONLY, true, index);
-        config.set(INDEX_CONF_FILE, Joiner.on(File.separator).join("target", "test-classes", "es_nodename_foo.yml"),
-                index);
+        config.set(INDEX_CONF_FILE, Joiner.on(File.separator).join("target", "test-classes", "es_nodename_foo.yml"), index);
         config.set(GraphDatabaseConfiguration.INDEX_DIRECTORY, StorageSetup.getHomeDir("es"), index);
         Configuration indexConfig = config.restrictTo(index);
 
@@ -157,8 +149,7 @@ public class ElasticSearchIndexTest extends IndexProviderTest {
         config = GraphDatabaseConfiguration.buildGraphConfiguration();
         config.set(LOCAL_MODE, true, index);
         config.set(CLIENT_ONLY, true, index);
-        config.set(INDEX_CONF_FILE, Joiner.on(File.separator).join("target", "test-classes", "es_nodename_bar.yml"),
-                index);
+        config.set(INDEX_CONF_FILE, Joiner.on(File.separator).join("target", "test-classes", "es_nodename_bar.yml"), index);
         config.set(GraphDatabaseConfiguration.INDEX_DIRECTORY, StorageSetup.getHomeDir("es"), index);
         indexConfig = config.restrictTo(index);
 
@@ -209,9 +200,7 @@ public class ElasticSearchIndexTest extends IndexProviderTest {
 
         clopen();
 
-        assertEquals("unescaped",
-                tx.query(new IndexQuery("vertex", PredicateCondition.of(PHONE_SET, Cmp.EQUAL, "$123"))).get(0));
-        assertEquals("unescaped",
-                tx.query(new IndexQuery("vertex", PredicateCondition.of(PHONE_SET, Cmp.EQUAL, "12345"))).get(0));
+        assertEquals("unescaped", tx.query(new IndexQuery("vertex", PredicateCondition.of(PHONE_SET, Cmp.EQUAL, "$123"))).get(0));
+        assertEquals("unescaped", tx.query(new IndexQuery("vertex", PredicateCondition.of(PHONE_SET, Cmp.EQUAL, "12345"))).get(0));
     }
 }

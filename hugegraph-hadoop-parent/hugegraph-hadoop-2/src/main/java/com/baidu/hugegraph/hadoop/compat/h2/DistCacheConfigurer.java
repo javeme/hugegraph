@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,11 +40,11 @@ public class DistCacheConfigurer extends AbstractDistCacheConfigurer implements 
         for (Path p : getLocalPaths()) {
             Path stagedPath = uploadFileIfNecessary(localFS, p, jobFS);
             // Calling this method decompresses the archive and makes Hadoop
-            // handle its classfiles individually. This leads to crippling
+            // handle its classfiles individually.  This leads to crippling
             // overhead times (10+ seconds) even with the LocalJobRunner
             // courtesy of o.a.h.yarn.util.FSDownload.changePermissions
             // copying and chmodding each classfile copy file individually.
-            // job.addArchiveToClassPath(p);
+            //job.addArchiveToClassPath(p);
             // Just add the compressed archive instead:
             job.addFileToClassPath(stagedPath);
         }

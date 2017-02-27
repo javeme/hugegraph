@@ -49,7 +49,7 @@ public class CacheEdge extends AbstractEdge {
         return data.getCache().direction;
     }
 
-    // ############## Similar code as CacheProperty but be careful when copying #############################
+    //############## Similar code as CacheProperty but be careful when copying #############################
 
     private final Entry data;
 
@@ -59,13 +59,12 @@ public class CacheEdge extends AbstractEdge {
         InternalVertex startVertex = getVertex(0);
 
         if (startVertex.hasAddedRelations() && startVertex.hasRemovedRelations()) {
-            // Test whether this relation has been replaced
+            //Test whether this relation has been replaced
             final long id = super.longId();
             Iterable<InternalRelation> previous = startVertex.getAddedRelations(new Predicate<InternalRelation>() {
                 @Override
                 public boolean apply(@Nullable InternalRelation internalRelation) {
-                    return (internalRelation instanceof StandardEdge)
-                            && ((StandardEdge) internalRelation).getPreviousID() == id;
+                    return (internalRelation instanceof StandardEdge) && ((StandardEdge) internalRelation).getPreviousID() == id;
                 }
             });
             assert Iterables.size(previous) <= 1 || (isLoop() && Iterables.size(previous) == 2);
@@ -87,14 +86,12 @@ public class CacheEdge extends AbstractEdge {
     }
 
     private synchronized InternalRelation update() {
-        StandardEdge copy =
-                new StandardEdge(super.longId(), edgeLabel(), getVertex(0), getVertex(1), ElementLifeCycle.Loaded);
+        StandardEdge copy = new StandardEdge(super.longId(), edgeLabel(), getVertex(0), getVertex(1), ElementLifeCycle.Loaded);
         copyProperties(copy);
         copy.remove();
 
         StandardEdge u = (StandardEdge) tx().addEdge(getVertex(0), getVertex(1), edgeLabel());
-        if (type.getConsistencyModifier() != ConsistencyModifier.FORK)
-            u.setId(super.longId());
+        if (type.getConsistencyModifier()!=ConsistencyModifier.FORK) u.setId(super.longId());
         u.setPreviousID(super.longId());
         copyProperties(u);
         setId(u.longId());
@@ -139,15 +136,15 @@ public class CacheEdge extends AbstractEdge {
     @Override
     public byte getLifeCycle() {
         InternalVertex startVertex = getVertex(0);
-        return ((startVertex.hasRemovedRelations() || startVertex.isRemoved())
-                && tx().isRemovedRelation(super.longId())) ? ElementLifeCycle.Removed : ElementLifeCycle.Loaded;
+        return ((startVertex.hasRemovedRelations() || startVertex.isRemoved()) && tx().isRemovedRelation(super.longId()))
+                ? ElementLifeCycle.Removed : ElementLifeCycle.Loaded;
     }
 
     @Override
     public void remove() {
         if (!tx().isRemovedRelation(super.longId())) {
             tx().removeRelation(this);
-        } // else throw InvalidElementException.removedException(this);
+        }// else throw InvalidElementException.removedException(this);
     }
 
 }

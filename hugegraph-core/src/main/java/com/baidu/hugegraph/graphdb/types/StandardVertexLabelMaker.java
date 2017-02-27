@@ -38,11 +38,12 @@ public class StandardVertexLabelMaker implements VertexLabelMaker {
     }
 
     public StandardVertexLabelMaker name(String name) {
-        // Verify name
+        //Verify name
         SystemTypeManager.isNotSystemName(HugeGraphSchemaCategory.VERTEXLABEL, name);
-        this.name = name;
+        this.name=name;
         return this;
     }
+
 
     public String getName() {
         return name;
@@ -50,7 +51,7 @@ public class StandardVertexLabelMaker implements VertexLabelMaker {
 
     @Override
     public StandardVertexLabelMaker partition() {
-        partitioned = true;
+        partitioned=true;
         return this;
     }
 
@@ -62,12 +63,11 @@ public class StandardVertexLabelMaker implements VertexLabelMaker {
 
     @Override
     public VertexLabel make() {
-        Preconditions.checkArgument(!partitioned || !isStatic,
-                "A vertex label cannot be partitioned and static at the same time");
+        Preconditions.checkArgument(!partitioned || !isStatic,"A vertex label cannot be partitioned and static at the same time");
         TypeDefinitionMap def = new TypeDefinitionMap();
         def.setValue(PARTITIONED, partitioned);
         def.setValue(STATIC, isStatic);
 
-        return (VertexLabelVertex) tx.makeSchemaVertex(HugeGraphSchemaCategory.VERTEXLABEL, name, def);
+        return (VertexLabelVertex)tx.makeSchemaVertex(HugeGraphSchemaCategory.VERTEXLABEL,name,def);
     }
 }

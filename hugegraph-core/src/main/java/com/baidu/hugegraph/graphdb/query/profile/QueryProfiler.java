@@ -66,6 +66,7 @@ public interface QueryProfiler {
         }
     };
 
+
     public QueryProfiler addNested(String groupName);
 
     public QueryProfiler setAnnotation(String key, Object value);
@@ -76,38 +77,31 @@ public interface QueryProfiler {
 
     public void setResultSize(long size);
 
-    public static <Q extends Query, R extends Collection> R profile(QueryProfiler profiler, Q query,
-            Function<Q, R> queryExecutor) {
-        return profile(profiler, query, false, queryExecutor);
+    public static<Q extends Query,R extends Collection> R profile(QueryProfiler profiler, Q query, Function<Q,R> queryExecutor) {
+        return profile(profiler,query,false,queryExecutor);
     }
 
-    public static <Q extends Query, R extends Collection> R profile(String groupName, QueryProfiler profiler, Q query,
-            Function<Q, R> queryExecutor) {
-        return profile(groupName, profiler, query, false, queryExecutor);
+    public static<Q extends Query,R extends Collection> R profile(String groupName, QueryProfiler profiler, Q query, Function<Q,R> queryExecutor) {
+        return profile(groupName,profiler,query,false,queryExecutor);
     }
 
-    public static <Q extends Query, R extends Collection> R profile(QueryProfiler profiler, Q query, boolean multiQuery,
-            Function<Q, R> queryExecutor) {
-        return profile("backend-query", profiler, query, multiQuery, queryExecutor);
+    public static<Q extends Query,R extends Collection> R profile(QueryProfiler profiler, Q query, boolean multiQuery, Function<Q,R> queryExecutor) {
+        return profile("backend-query",profiler,query,multiQuery,queryExecutor);
     }
 
-    public static <Q extends Query, R extends Collection> R profile(String groupName, QueryProfiler profiler, Q query,
-            boolean multiQuery, Function<Q, R> queryExecutor) {
+    public static<Q extends Query,R extends Collection> R profile(String groupName, QueryProfiler profiler, Q query, boolean multiQuery, Function<Q,R> queryExecutor) {
         QueryProfiler sub = profiler.addNested(groupName);
         sub.setAnnotation(QUERY_ANNOTATION, query);
-        if (query.hasLimit())
-            sub.setAnnotation(LIMIT_ANNOTATION, query.getLimit());
+        if (query.hasLimit()) sub.setAnnotation(LIMIT_ANNOTATION,query.getLimit());
         sub.startTimer();
         R result = queryExecutor.apply(query);
         sub.stopTimer();
         long resultSize = 0;
-        if (multiQuery && profiler != QueryProfiler.NO_OP) {
-            // The result set is a collection of collections, but don't do this computation if profiling is disabled
+        if (multiQuery && profiler!=QueryProfiler.NO_OP) {
+            //The result set is a collection of collections, but don't do this computation if profiling is disabled
             for (Object r : result) {
-                if (r instanceof Collection)
-                    resultSize += ((Collection) r).size();
-                else
-                    resultSize++;
+                if (r instanceof Collection) resultSize+=((Collection)r).size();
+                else resultSize++;
             }
         } else {
             resultSize = result.size();

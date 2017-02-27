@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ import java.util.function.Predicate;
 import static com.baidu.hugegraph.hadoop.compat.HadoopCompatLoader.DEFAULT_COMPAT;
 
 /**
- * Run a {@link com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanJob} via a Hadoop
- * {@link org.apache.hadoop.mapreduce.Mapper} over the edgestore.
+ * Run a {@link com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanJob}
+ * via a Hadoop {@link org.apache.hadoop.mapreduce.Mapper} over the edgestore.
  */
 public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, NullWritable, NullWritable> {
 
@@ -58,11 +58,10 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
         org.apache.hadoop.conf.Configuration hadoopConf = DEFAULT_COMPAT.getContextConfiguration(context);
-        ModifiableHadoopConfiguration scanConf =
-                ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf);
+        ModifiableHadoopConfiguration scanConf = ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf);
         job = getJob(scanConf);
         metrics = new HadoopContextScanMetrics(context);
-        Configuration graphConf = getHugeGraphConfiguration(context);
+        Configuration graphConf = gethugegraphConfiguration(context);
         finishSetup(scanConf, graphConf);
     }
 
@@ -70,7 +69,7 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
         jobConf = getJobConfiguration(scanConf);
         Preconditions.checkNotNull(metrics);
         // Allowed to be null for jobs that specify no configuration and no configuration root
-        // Preconditions.checkNotNull(jobConf);
+        //Preconditions.checkNotNull(jobConf);
         Preconditions.checkNotNull(job);
         job.workerIterationStart(jobConf, graphConf, metrics);
         keyFilter = job.getKeyFilter();
@@ -80,12 +79,12 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
         // Assign head of getQueries() to "initialQuery"
         initialQuery = sliceQueries.get(0);
         // Assign tail of getQueries() to "subsequentQueries"
-        subsequentQueries = new ArrayList<>(sliceQueries.subList(1, sliceQueries.size()));
+        subsequentQueries = new ArrayList<>(sliceQueries.subList(1,sliceQueries.size()));
         Preconditions.checkState(sliceQueries.size() == subsequentQueries.size() + 1);
         Preconditions.checkNotNull(initialQuery);
 
         if (0 < subsequentQueries.size()) {
-            // It is assumed that the first query is the grounding query if multiple queries exist
+            //It is assumed that the first query is the grounding query if multiple queries exist
             StaticBuffer start = initialQuery.getSliceStart();
             Preconditions.checkArgument(start.equals(BufferUtil.zeroBuffer(1)),
                     "Expected start of first query to be all 0s: %s", start);
@@ -96,8 +95,7 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
     }
 
     @Override
-    protected void map(StaticBuffer key, Iterable<Entry> values, Context context)
-            throws IOException, InterruptedException {
+    protected void map(StaticBuffer key, Iterable<Entry> values, Context context) throws IOException, InterruptedException {
         EntryArrayList al = EntryArrayList.of(values);
 
         // KeyFilter check
@@ -223,7 +221,7 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
         String jobClass = scanConf.get(HugeGraphHadoopConfiguration.SCAN_JOB_CLASS);
 
         try {
-            return (ScanJob) Class.forName(jobClass).newInstance();
+            return (ScanJob)Class.forName(jobClass).newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -233,10 +231,9 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
         }
     }
 
-    static ModifiableConfiguration getHugeGraphConfiguration(Context context) {
+    static ModifiableConfiguration gethugegraphConfiguration(Context context) {
         org.apache.hadoop.conf.Configuration hadoopConf = DEFAULT_COMPAT.getContextConfiguration(context);
-        return ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf)
-                .getHugeGraphConf();
+        return ModifiableHadoopConfiguration.of(HugeGraphHadoopConfiguration.MAPRED_NS, hadoopConf).getHugeGraphConf();
     }
 
     static Configuration getJobConfiguration(ModifiableHadoopConfiguration scanConf) {
@@ -257,7 +254,7 @@ public class HadoopScanMapper extends Mapper<StaticBuffer, Iterable<Entry>, Null
 
         try {
             Field f = Class.forName(className).getField(fieldName);
-            return (ConfigNamespace) f.get(null);
+            return (ConfigNamespace)f.get(null);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {

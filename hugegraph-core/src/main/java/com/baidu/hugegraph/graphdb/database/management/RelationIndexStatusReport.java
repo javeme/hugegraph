@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.graphdb.database.management;
 
+
 import com.baidu.hugegraph.core.schema.SchemaStatus;
 
 import java.time.Duration;
@@ -27,8 +28,8 @@ public class RelationIndexStatusReport {
     private final SchemaStatus targetStatus;
     private final Duration elapsed;
 
-    public RelationIndexStatusReport(boolean succeeded, String indexName, String relationTypeName,
-            SchemaStatus actualStatus, SchemaStatus targetStatus, Duration elapsed) {
+    public RelationIndexStatusReport(boolean succeeded, String indexName, String relationTypeName, SchemaStatus actualStatus,
+                                   SchemaStatus targetStatus, Duration elapsed) {
         this.succeeded = succeeded;
         this.indexName = indexName;
         this.relationTypeName = relationTypeName;
@@ -63,8 +64,13 @@ public class RelationIndexStatusReport {
 
     @Override
     public String toString() {
-        return "RelationIndexStatusReport[" + "succeeded=" + succeeded + ", indexName='" + indexName + '\''
-                + ", relationTypeName='" + relationTypeName + '\'' + ", actualStatus=" + actualStatus
-                + ", targetStatus=" + targetStatus + ", elapsed=" + elapsed + ']';
+        return "RelationIndexStatusReport[" +
+                "succeeded=" + succeeded +
+                ", indexName='" + indexName + '\'' +
+                ", relationTypeName='" + relationTypeName + '\'' +
+                ", actualStatus=" + actualStatus +
+                ", targetStatus=" + targetStatus +
+                ", elapsed=" + elapsed +
+                ']';
     }
 }

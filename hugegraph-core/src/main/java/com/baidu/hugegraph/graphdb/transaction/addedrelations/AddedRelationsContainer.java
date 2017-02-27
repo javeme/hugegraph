@@ -36,12 +36,12 @@ public interface AddedRelationsContainer {
     public boolean isEmpty();
 
     /**
-     * This method returns all relations in this container. It may only be invoked at the end of the transaction after
-     * there are no additional changes. Otherwise the behavior is non deterministic.
-     * 
+     * This method returns all relations in this container. It may only be invoked at the end
+     * of the transaction after there are no additional changes. Otherwise the behavior is non deterministic.
      * @return
      */
     public Collection<InternalRelation> getAll();
+
 
     public static final AddedRelationsContainer EMPTY = new AddedRelationsContainer() {
         @Override

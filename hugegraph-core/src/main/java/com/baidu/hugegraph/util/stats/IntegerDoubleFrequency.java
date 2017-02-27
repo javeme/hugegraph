@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.util.stats;
 
+
 import com.carrotsearch.hppc.IntCollection;
 import com.carrotsearch.hppc.IntDoubleMap;
 import com.carrotsearch.hppc.IntDoubleHashMap;
@@ -53,5 +54,6 @@ public class IntegerDoubleFrequency {
     public int getN() {
         return counts.size();
     }
+
 
 }

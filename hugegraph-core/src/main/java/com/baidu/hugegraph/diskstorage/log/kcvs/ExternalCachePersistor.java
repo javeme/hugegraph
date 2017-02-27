@@ -38,9 +38,9 @@ public class ExternalCachePersistor implements ExternalPersistor {
     @Override
     public void add(StaticBuffer key, Entry cell) {
         try {
-            kcvs.mutateEntries(key, Lists.newArrayList(cell), KCVSCache.NO_DELETIONS, tx);
+            kcvs.mutateEntries(key, Lists.newArrayList(cell), KCVSCache.NO_DELETIONS,tx);
         } catch (BackendException e) {
-            throw new HugeGraphException("Unexpected storage exception in log persistence against cache", e);
+            throw new HugeGraphException("Unexpected storage exception in log persistence against cache",e);
         }
     }
 }

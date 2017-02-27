@@ -1,5 +1,5 @@
 /etc/default/
-/usr/share/janusgraph/lib/
-/var/lib/janusgraph/
-/var/log/janusgraph/
-/var/run/janusgraph/
+/usr/share/hugegraph/lib/
+/var/lib/hugegraph/
+/var/log/hugegraph/
+/var/run/hugegraph/

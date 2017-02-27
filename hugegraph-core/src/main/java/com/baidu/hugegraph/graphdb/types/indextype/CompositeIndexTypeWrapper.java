@@ -59,21 +59,21 @@ public class CompositeIndexTypeWrapper extends IndexTypeWrapper implements Compo
     @Override
     public IndexField[] getFieldKeys() {
         IndexField[] result = fields;
-        if (result == null) {
-            Iterable<SchemaSource.Entry> entries = base.getRelated(TypeDefinitionCategory.INDEX_FIELD, Direction.OUT);
+        if (result==null) {
+            Iterable<SchemaSource.Entry> entries = base.getRelated(TypeDefinitionCategory.INDEX_FIELD,Direction.OUT);
             int numFields = Iterables.size(entries);
             result = new IndexField[numFields];
             for (SchemaSource.Entry entry : entries) {
-                Integer value = ParameterType.INDEX_POSITION.findParameter((Parameter[]) entry.getModifier(), null);
+                Integer value = ParameterType.INDEX_POSITION.findParameter((Parameter[]) entry.getModifier(),null);
                 Preconditions.checkNotNull(value);
                 int pos = value;
-                Preconditions.checkArgument(pos >= 0 && pos < numFields, "Invalid field position: %s", pos);
+                Preconditions.checkArgument(pos>=0 && pos<numFields,"Invalid field position: %s",pos);
                 assert entry.getSchemaType() instanceof PropertyKey;
-                result[pos] = IndexField.of((PropertyKey) entry.getSchemaType());
+                result[pos]=IndexField.of((PropertyKey)entry.getSchemaType());
             }
-            fields = result;
+            fields=result;
         }
-        assert result != null;
+        assert result!=null;
         return result;
     }
 
@@ -85,13 +85,13 @@ public class CompositeIndexTypeWrapper extends IndexTypeWrapper implements Compo
 
     @Override
     public Cardinality getCardinality() {
-        return base.getDefinition().getValue(TypeDefinitionCategory.INDEX_CARDINALITY, Cardinality.class);
+        return base.getDefinition().getValue(TypeDefinitionCategory.INDEX_CARDINALITY,Cardinality.class);
     }
 
     private ConsistencyModifier consistency = null;
 
     public ConsistencyModifier getConsistencyModifier() {
-        if (consistency == null) {
+        if (consistency==null) {
             consistency = TypeUtil.getConsistencyModifier(base);
         }
         return consistency;

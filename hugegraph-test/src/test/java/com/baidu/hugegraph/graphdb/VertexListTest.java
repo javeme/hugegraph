@@ -42,7 +42,7 @@ public class VertexListTest {
         StandardHugeGraphTx tx = (StandardHugeGraphTx) g.newTransaction();
         VertexLongList vll = new VertexLongList(tx);
         VertexArrayList val = new VertexArrayList(tx);
-        for (int i = 0; i < num; i++) {
+        for (int i=0; i<num; i++) {
             HugeGraphVertex v = tx.addVertex();
             vll.add(v);
             val.add(v);
@@ -56,13 +56,12 @@ public class VertexListTest {
         assertTrue(vll.isSorted());
         assertTrue(val.isSorted());
 
-        for (Iterable<HugeGraphVertex> iterable : new Iterable[] { val, vll }) {
+        for (Iterable<HugeGraphVertex> iterable : new Iterable[]{val,vll}) {
             Iterator<HugeGraphVertex> iter = iterable.iterator();
             HugeGraphVertex previous = null;
             for (int i = 0; i < num; i++) {
                 HugeGraphVertex next = iter.next();
-                if (previous != null)
-                    assertTrue(previous.longId() < next.longId());
+                if (previous!=null) assertTrue(previous.longId()<next.longId());
                 previous = next;
             }
             try {
@@ -73,9 +72,11 @@ public class VertexListTest {
             }
         }
 
+
         tx.commit();
         g.close();
 
     }
+
 
 }

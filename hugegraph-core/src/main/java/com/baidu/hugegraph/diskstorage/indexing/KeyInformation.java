@@ -18,8 +18,8 @@ import com.baidu.hugegraph.core.Cardinality;
 import com.baidu.hugegraph.core.schema.Parameter;
 
 /**
- * Helper class that provides information on the data type and additional parameters that form the definition of a key
- * in an index.
+ * Helper class that provides information on the data type and additional parameters that
+ * form the definition of a key in an index.
  * <p/>
  *
  * So, given a key, its associated KeyInformation provides the details on what data type the key's associated values
@@ -29,8 +29,7 @@ import com.baidu.hugegraph.core.schema.Parameter;
  * <p/>
  *
  * {@link IndexRetriever} returns {@link KeyInformation} for a given store and given key. This will be provided to an
- * index when the key is not fixed in the context, e.g. in
- * {@link IndexProvider#mutate(java.util.Map, IndexRetriever, com.baidu.hugegraph.diskstorage.BaseTransaction)}
+ * index when the key is not fixed in the context, e.g. in {@link IndexProvider#mutate(java.util.Map, IndexRetriever, com.baidu.hugegraph.diskstorage.BaseTransaction)}
  *
  * <p/>
  *
@@ -57,16 +56,15 @@ public interface KeyInformation {
 
     /**
      * Returns the {@link com.baidu.hugegraph.core.Cardinality} for this key.
-     * 
      * @return
      */
     public Cardinality getCardinality();
+
 
     public interface StoreRetriever {
 
         /**
          * Returns the {@link KeyInformation} for a particular key for this store
-         * 
          * @param key
          * @return
          */
@@ -87,7 +85,6 @@ public interface KeyInformation {
 
         /**
          * Returns a {@link StoreRetriever} for the given store on this IndexRetriever
-         * 
          * @param store
          * @return
          */
@@ -99,7 +96,6 @@ public interface KeyInformation {
 
         /**
          * Returns the {@link IndexRetriever} for a given index.
-         * 
          * @param index
          * @return
          */

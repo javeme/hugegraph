@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.baidu.hugegraph.core;
 
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 /**
- * HugeGraphProperty is a {@link HugeGraphRelation} connecting a vertex to a value. HugeGraphProperty extends
- * {@link HugeGraphRelation}, with methods for retrieving the property's value and key.
+ * HugeGraphProperty is a {@link HugeGraphRelation} connecting a vertex to a value.
+ * HugeGraphProperty extends {@link HugeGraphRelation}, with methods for retrieving the property's value and key.
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  * @see HugeGraphRelation
@@ -41,7 +42,7 @@ public interface HugeGraphVertexProperty<V> extends HugeGraphRelation, VertexPro
 
     @Override
     public default PropertyKey propertyKey() {
-        return (PropertyKey) getType();
+        return (PropertyKey)getType();
     }
 
 }

@@ -19,11 +19,13 @@ import com.baidu.hugegraph.diskstorage.BackendException;
 import com.baidu.hugegraph.diskstorage.KeyValueStoreTest;
 import com.baidu.hugegraph.diskstorage.keycolumnvalue.keyvalue.OrderedKeyValueStoreManager;
 
+
 public class BerkeleyKeyValueTest extends KeyValueStoreTest {
 
     @Override
     public OrderedKeyValueStoreManager openStorageManager() throws BackendException {
         return new BerkeleyJEStoreManager(BerkeleyStorageSetup.getBerkeleyJEConfiguration());
     }
+
 
 }

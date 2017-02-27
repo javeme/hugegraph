@@ -19,7 +19,8 @@ import com.baidu.hugegraph.graphdb.internal.InternalRelation;
 
 import java.util.Iterator;
 
-public class RemovableRelationIterable<O extends HugeGraphRelation> implements Iterable<O> {
+public class RemovableRelationIterable<O extends HugeGraphRelation>
+        implements Iterable<O> {
 
     private final Iterable<InternalRelation> iterable;
 

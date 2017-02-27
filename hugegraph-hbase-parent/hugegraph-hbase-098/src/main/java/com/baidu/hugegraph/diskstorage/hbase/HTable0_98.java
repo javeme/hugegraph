@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,31 +24,37 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Scan;
 
-public class HTable0_98 implements TableMask {
+public class HTable0_98 implements TableMask
+{
     private final HTableInterface table;
 
-    public HTable0_98(HTableInterface table) {
+    public HTable0_98(HTableInterface table)
+    {
         this.table = table;
     }
 
     @Override
-    public ResultScanner getScanner(Scan filter) throws IOException {
+    public ResultScanner getScanner(Scan filter) throws IOException
+    {
         return table.getScanner(filter);
     }
 
     @Override
-    public Result[] get(List<Get> gets) throws IOException {
+    public Result[] get(List<Get> gets) throws IOException
+    {
         return table.get(gets);
     }
 
     @Override
-    public void batch(List<Row> writes, Object[] results) throws IOException, InterruptedException {
+    public void batch(List<Row> writes, Object[] results) throws IOException, InterruptedException
+    {
         table.batch(writes, results);
         table.flushCommits();
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         table.close();
     }
 }

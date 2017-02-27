@@ -27,16 +27,16 @@ import java.time.Instant;
 public interface BaseTransactionConfig {
 
     /**
-     * Returns the commit time of this transaction which is either a custom timestamp provided by the user, the commit
-     * time as set by the enclosing operation, or the first time this method is called.
+     * Returns the commit time of this transaction which is either a custom timestamp provided
+     * by the user, the commit time as set by the enclosing operation, or the first time this method is called.
      *
      * @return commit timestamp for this transaction
      */
     public Instant getCommitTime();
 
     /**
-     * Sets the commit time of this transaction. If a commit time has already been set, this method throws an exception.
-     * Use {@link #hasCommitTime()} to check prior to setting.
+     * Sets the commit time of this transaction. If a commit time has already been set, this method throws
+     * an exception. Use {@link #hasCommitTime()} to check prior to setting.
      *
      * @param time
      */
@@ -55,8 +55,8 @@ public interface BaseTransactionConfig {
     public TimestampProvider getTimestampProvider();
 
     /**
-     * Returns the (possibly null) group name for this transaction. Transactions are grouped under this name for
-     * reporting and error tracking purposes.
+     * Returns the (possibly null) group name for this transaction.
+     * Transactions are grouped under this name for reporting and error tracking purposes.
      *
      * @return group name prefix string or null
      */

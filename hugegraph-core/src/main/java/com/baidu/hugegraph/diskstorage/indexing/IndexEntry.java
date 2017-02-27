@@ -52,17 +52,17 @@ public class IndexEntry implements MetaAnnotated, MetaAnnotatable {
             setMetaData(e.getKey(), e.getValue());
     }
 
-    // ########## META DATA ############
-    // copied from StaticArrayEntry
+    //########## META DATA ############
+    //copied from StaticArrayEntry
 
-    private Map<EntryMetaData, Object> metadata = EntryMetaData.EMPTY_METADATA;
+    private Map<EntryMetaData,Object> metadata = EntryMetaData.EMPTY_METADATA;
 
     @Override
     public synchronized Object setMetaData(EntryMetaData key, Object value) {
         if (metadata == EntryMetaData.EMPTY_METADATA)
             metadata = new EntryMetaData.Map();
 
-        return metadata.put(key, value);
+        return metadata.put(key,value);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class IndexEntry implements MetaAnnotated, MetaAnnotatable {
     }
 
     @Override
-    public Map<EntryMetaData, Object> getMetaData() {
+    public Map<EntryMetaData,Object> getMetaData() {
         return metadata;
     }
 

@@ -38,8 +38,8 @@ public interface VertexCache {
     public InternalVertex get(long id, Retriever<Long, InternalVertex> retriever);
 
     /**
-     * Adds the given vertex with the given id to the cache. The given vertex may already be in the cache. In other
-     * words, this method may be called to ensure that a vertex is still in the cache.
+     * Adds the given vertex with the given id to the cache. The given vertex may already be in the cache.
+     * In other words, this method may be called to ensure that a vertex is still in the cache.
      *
      * @param vertex
      * @param id
@@ -55,8 +55,8 @@ public interface VertexCache {
     public List<InternalVertex> getAllNew();
 
     /**
-     * Closes the cache which allows the cache to release allocated memory. Calling any of the other methods after
-     * closing a cache has undetermined behavior.
+     * Closes the cache which allows the cache to release allocated memory.
+     * Calling any of the other methods after closing a cache has undetermined behavior.
      */
     public void close();
 

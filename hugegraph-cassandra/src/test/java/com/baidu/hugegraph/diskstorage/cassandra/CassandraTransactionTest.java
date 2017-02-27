@@ -28,11 +28,12 @@ import static org.junit.Assert.*;
 
 public class CassandraTransactionTest {
 
-    /*
-     * testRead/WriteConsistencyLevel have unnecessary code duplication that could be avoided by creating a common
-     * helper method that takes a ConfigOption parameter and a function that converts a CassandraTransaction to a
-     * consistency level by calling either ct.getReadConsistencyLevel() or .getWriteConsistencyLevel(), but it doesn't
-     * seem worth the complexity.
+    /* testRead/WriteConsistencyLevel have unnecessary code duplication
+     * that could be avoided by creating a common helper method that takes
+     * a ConfigOption parameter and a function that converts a
+     * CassandraTransaction to a consistency level by calling either
+     * ct.getReadConsistencyLevel() or .getWriteConsistencyLevel(),
+     * but it doesn't seem worth the complexity.
      */
 
     @Test

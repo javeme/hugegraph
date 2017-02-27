@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 /**
- * Wraps a ColumnFamilyRecordReader and converts CFRR's binary types to HugeGraph binary types.
+ * Wraps a ColumnFamilyRecordReader and converts CFRR's binary types to hugegraph binary types.
  */
 public class CassandraBinaryRecordReader extends RecordReader<StaticBuffer, Iterable<Entry>> {
 
@@ -47,8 +47,7 @@ public class CassandraBinaryRecordReader extends RecordReader<StaticBuffer, Iter
     }
 
     @Override
-    public void initialize(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext)
-            throws IOException, InterruptedException {
+    public void initialize(final InputSplit inputSplit, final TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
         reader.initialize(inputSplit, taskAttemptContext);
     }
 
@@ -88,10 +87,10 @@ public class CassandraBinaryRecordReader extends RecordReader<StaticBuffer, Iter
 
                 incompleteKV.addEntries(entries);
             }
-            /*
-             * Loop ends when either A) the cassandra reader ran out of data or B) the cassandra reader switched keys,
-             * thereby completing a KV
-             */
+            /* Loop ends when either
+             * A) the cassandra reader ran out of data
+             * or
+             * B) the cassandra reader switched keys, thereby completing a KV */
         } while (hasNext && null == completedKV);
 
         return completedKV;

@@ -20,7 +20,7 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import com.baidu.hugegraph.graphdb.database.idhandling.VariableLong;
 import com.baidu.hugegraph.graphdb.database.serialize.OrderPreservingSerializer;
 
-public class EnumSerializer<E extends Enum> implements OrderPreservingSerializer<E> {
+public class EnumSerializer<E extends Enum> implements OrderPreservingSerializer<E>  {
 
     private static final long serialVersionUID = 117423419862504186L;
 
@@ -34,9 +34,8 @@ public class EnumSerializer<E extends Enum> implements OrderPreservingSerializer
 
     private E getValue(long ordinal) {
         E[] values = datatype.getEnumConstants();
-        Preconditions.checkArgument(ordinal >= 0 && ordinal < values.length, "Invalid ordinal number (max %s): %s",
-                values.length, ordinal);
-        return values[(int) ordinal];
+        Preconditions.checkArgument(ordinal>=0 && ordinal<values.length,"Invalid ordinal number (max %s): %s",values.length,ordinal);
+        return values[(int)ordinal];
     }
 
     @Override
@@ -54,9 +53,10 @@ public class EnumSerializer<E extends Enum> implements OrderPreservingSerializer
         return getValue(ints.readByteOrder(buffer));
     }
 
+
     @Override
     public void writeByteOrder(WriteBuffer buffer, E attribute) {
-        ints.writeByteOrder(buffer, attribute.ordinal());
+        ints.writeByteOrder(buffer,attribute.ordinal());
     }
 
 }

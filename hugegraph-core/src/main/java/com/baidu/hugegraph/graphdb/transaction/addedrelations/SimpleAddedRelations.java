@@ -47,8 +47,7 @@ public class SimpleAddedRelations extends ArrayList<InternalRelation> implements
     public List<InternalRelation> getView(Predicate<InternalRelation> filter) {
         List<InternalRelation> result = new ArrayList<InternalRelation>();
         for (InternalRelation r : this) {
-            if (filter.apply(r))
-                result.add(r);
+            if (filter.apply(r)) result.add(r);
         }
         return result;
     }

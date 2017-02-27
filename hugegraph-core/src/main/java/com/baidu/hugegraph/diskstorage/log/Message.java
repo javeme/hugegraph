@@ -27,15 +27,13 @@ public interface Message {
 
     /**
      * Returns the unique identifier for the sender of the message
-     * 
      * @return
      */
     public String getSenderId();
 
     /**
-     * Returns the timestamp of this message in the specified time unit. This is the time when the message was added to
-     * the log.
-     * 
+     * Returns the timestamp of this message in the specified time unit.
+     * This is the time when the message was added to the log.
      * @param unit
      * @return
      */
@@ -43,7 +41,6 @@ public interface Message {
 
     /**
      * Returns the content of the message
-     * 
      * @return
      */
     public StaticBuffer getContent();

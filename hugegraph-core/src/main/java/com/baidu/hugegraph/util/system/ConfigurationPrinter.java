@@ -32,15 +32,14 @@ import com.baidu.hugegraph.diskstorage.configuration.ConfigNamespace;
 import com.baidu.hugegraph.diskstorage.configuration.ConfigOption;
 
 /**
- * Recursively dump the root configuration namespace to either System.out or the named file in a CSV-type format with
- * configurable delimiter, header, and footer. Used to generate a table of all configuration keys for inclusion in the
- * AsciiDoc documentation.
+ * Recursively dump the root configuration namespace to either System.out or the
+ * named file in a CSV-type format with configurable delimiter, header, and
+ * footer. Used to generate a table of all configuration keys for inclusion in
+ * the AsciiDoc documentation.
  */
 public class ConfigurationPrinter {
 
-    // private static final String TABLE_HEADER_LINES =
-    // "[role=\"tss-config-table\",cols=\"2,3,1,1,1\",options=\"header\",width=\"100%\"]\n|=====\n| Name | Description |
-    // Datatype | Default Value | Mutability";
+//    private static final String TABLE_HEADER_LINES = "[role=\"tss-config-table\",cols=\"2,3,1,1,1\",options=\"header\",width=\"100%\"]\n|=====\n| Name | Description | Datatype | Default Value | Mutability";
     private static final String DELIM = "|";
     private static final String DELIM_PADDING = " ";
     private static final String TABLE_FOOTER_LINES = "|=====\n";
@@ -50,15 +49,15 @@ public class ConfigurationPrinter {
     private final boolean showMutability;
     private final PrintStream stream;
 
-    public static void main(String args[])
-            throws FileNotFoundException, IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException, IllegalAccessException,
+            NoSuchFieldException, ClassNotFoundException {
 
         ReflectiveConfigOptionLoader.INSTANCE.loadStandard(ConfigurationPrinter.class);
 
         // Write to filename argument
         if (3 != args.length) {
-            System.err.println("Usage: " + ConfigurationPrinter.class.getName()
-                    + " <package.class.fieldname of a ConfigNamespace root> <output filename> <display mutabilities>");
+            System.err.println("Usage: " + ConfigurationPrinter.class.getName() +
+                    " <package.class.fieldname of a ConfigNamespace root> <output filename> <display mutabilities>");
             System.exit(-1);
         }
 
@@ -88,14 +87,15 @@ public class ConfigurationPrinter {
         String fullClassName = raw.substring(0, i);
         String fieldName = raw.substring(i + 1);
 
-        return (ConfigNamespace) Class.forName(fullClassName).getField(fieldName).get(null);
+        return (ConfigNamespace)Class.forName(fullClassName).getField(fieldName).get(null);
     }
 
     private String getFullPath(ConfigOption<?> opt) {
         StringBuilder sb = new StringBuilder(64);
         sb.insert(0, opt.getName());
-        for (ConfigNamespace parent = opt.getNamespace(); null != parent && !parent.isRoot(); parent =
-                parent.getNamespace()) {
+        for (ConfigNamespace parent = opt.getNamespace();
+             null != parent && !parent.isRoot();
+             parent = parent.getNamespace()) {
             if (parent.isUmbrella())
                 sb.insert(0, "[X].");
             sb.insert(0, ".");
@@ -106,13 +106,11 @@ public class ConfigurationPrinter {
 
     private void printNamespace(ConfigNamespace n, String prefix) {
         String newPrefix = prefix + n.getName() + ".";
-        if (n.isUmbrella())
-            newPrefix += "[X].";
+        if (n.isUmbrella()) newPrefix += "[X].";
 
-        if (n.isRoot())
-            newPrefix = ""; // Override for root namespace
+        if (n.isRoot()) newPrefix = ""; //Override for root namespace
 
-        // Only print namespace if it contains (visible) options
+        //Only print namespace if it contains (visible) options
         if (!Iterables.isEmpty(getSortedChildOptions(n))) {
             stream.println(getNamespaceSectionHeader(n, prefix));
             stream.println(getTableHeader());
@@ -129,8 +127,7 @@ public class ConfigurationPrinter {
 
     private String getNamespaceSectionHeader(ConfigNamespace n, String prefix) {
         String fullName = prefix + n.getName();
-        if (n.isUmbrella())
-            fullName += " *";
+        if (n.isUmbrella()) fullName += " *";
         return "==== " + fullName + " ====\n[role=\"font16\"]\n" + n.getDescription() + "\n\n";
     }
 
@@ -138,7 +135,7 @@ public class ConfigurationPrinter {
         return getSortedChildren(n, new Function<ConfigElement, Boolean>() {
             @Override
             public Boolean apply(ConfigElement arg0) {
-                return arg0.isOption() && !((ConfigOption) arg0).isHidden();
+                return arg0.isOption() && !((ConfigOption)arg0).isHidden();
             }
         });
     }
@@ -161,8 +158,7 @@ public class ConfigurationPrinter {
             if (null == successor) {
                 name = "[deprecation-warning]*Deprecated* [line-through]#" + name + "#";
             } else {
-                name = "[deprecation-warning]*Deprecated.  See " + getFullPath(successor) + "* [line-through]#" + name
-                        + "#";
+                name = "[deprecation-warning]*Deprecated.  See " + getFullPath(successor) + "* [line-through]#" + name + "#";
             }
 
         }
@@ -192,10 +188,11 @@ public class ConfigurationPrinter {
         String colNames = "Name | Description | Datatype | Default Value";
         if (showMutability) {
             colWidths += ",1"; // Mutability level
-            colNames += " | Mutability";
+            colNames  += " | Mutability";
         }
-        return "[role=\"tss-config-table\",cols=\"" + colWidths + "\",options=\"header\",width=\"100%\"]\n" + "|=====\n"
-                + "| " + colNames; // no terminal newline reqd
+        return "[role=\"tss-config-table\",cols=\"" + colWidths + "\",options=\"header\",width=\"100%\"]\n" +
+                "|=====\n" +
+                "| " + colNames; // no terminal newline reqd
     }
 
     @SuppressWarnings("unchecked")
@@ -214,7 +211,7 @@ public class ConfigurationPrinter {
             }
         });
 
-        return (List<E>) sortedElements;
+        return (List<E>)sortedElements;
     }
 
     private String removeDelim(String s) {
@@ -227,10 +224,10 @@ public class ConfigurationPrinter {
         if (null == o) {
             return "(no default value)";
         } else if (o instanceof Duration) {
-            Duration d = (Duration) o;
+            Duration d = (Duration)o;
             return d.toMillis() + " ms";
         } else if (o instanceof String[]) {
-            return Joiner.on(",").join((String[]) o);
+            return Joiner.on(",").join((String[])o);
         }
 
         return o.toString();

@@ -19,7 +19,7 @@ package com.baidu.hugegraph.diskstorage.configuration;
  */
 public interface WriteConfiguration extends ReadConfiguration {
 
-    public <O> void set(String key, O value);
+    public<O> void set(String key, O value);
 
     public void remove(String key);
 

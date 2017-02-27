@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import com.baidu.hugegraph.util.system.IOUtils;
 
 public class HBaseStatus {
 
-    private static final Logger log = LoggerFactory.getLogger(HBaseStatus.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HBaseStatus.class);
 
     private final File file;
     private final String version;
@@ -111,9 +112,9 @@ public class HBaseStatus {
 
     private static class HBasePidfileParseException extends Exception {
         private static final long serialVersionUID = 1L;
-
         public HBasePidfileParseException(String message) {
             super(message);
         }
     }
 }
+

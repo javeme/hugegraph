@@ -58,8 +58,7 @@ public class TestByteBuffer {
         }
         for (int i = 0; i < NUM; i++) {
             for (int j = 0; j < NUM; j++) {
-                if (i == j)
-                    continue;
+                if (i == j) continue;
                 if (Math.random() < FRACTION) {
                     Edge e = new Edge(vertices[i], "connect", vertices[j]);
                     e.setProperty("number", random.nextInt(ROUNDSIZE));
@@ -81,15 +80,13 @@ public class TestByteBuffer {
     }
 
     private static long testByte() {
-        LongObjectMap<ConcurrentSkipListSet<ByteEntry>> tx =
-                new LongObjectHashMap<ConcurrentSkipListSet<ByteEntry>>(NUM);
+        LongObjectMap<ConcurrentSkipListSet<ByteEntry>> tx = new LongObjectHashMap<ConcurrentSkipListSet<ByteEntry>>(NUM);
         for (int i = 0; i < NUM; i++) {
             tx.put(i, new ConcurrentSkipListSet<ByteEntry>());
         }
         for (int i = 0; i < NUM; i++) {
             for (int j = 0; j < NUM; j++) {
-                if (i == j)
-                    continue;
+                if (i == j) continue;
                 if (Math.random() < FRACTION) {
                     ByteBuffer key = ByteBuffer.allocate(16);
                     key.putLong(5).putLong(j).flip();
@@ -178,7 +175,7 @@ public class TestByteBuffer {
 
         @Override
         public Iterable<Vertex> getNeighbors(final int value) {
-            // SortedSet<ByteEntry> set = (SortedSet<ByteEntry>) tx.get(id);
+//            SortedSet<ByteEntry> set = (SortedSet<ByteEntry>) tx.get(id);
             return Iterables.transform(Iterables.filter(set, new Predicate<ByteEntry>() {
                 @Override
                 public boolean apply(@Nullable ByteEntry entry) {
@@ -192,6 +189,7 @@ public class TestByteBuffer {
             });
         }
     }
+
 
     static class Edge {
 
@@ -227,10 +225,8 @@ public class TestByteBuffer {
         }
 
         public Vertex getOther(Vertex v) {
-            if (start.equals(v))
-                return end;
-            else if (end.equals(v))
-                return start;
+            if (start.equals(v)) return end;
+            else if (end.equals(v)) return start;
             throw new IllegalArgumentException();
         }
     }
@@ -238,6 +234,7 @@ public class TestByteBuffer {
     static class ByteEntry implements Comparable<ByteEntry> {
         final ByteBuffer key;
         final ByteBuffer value;
+
 
         ByteEntry(ByteBuffer key, ByteBuffer value) {
             this.value = value;

@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ public class ModifiableHadoopConfiguration extends ModifiableConfiguration {
     }
 
     public static ModifiableConfiguration prefixView(ConfigNamespace newRoot, ConfigNamespace prefixRoot,
-            ModifiableHadoopConfiguration mc) {
-        HadoopConfiguration prefixConf =
-                new HadoopConfiguration(mc.getHadoopConfiguration(), ConfigElement.getPath(prefixRoot, true) + ".");
-        return new ModifiableConfiguration(newRoot, prefixConf, Restriction.NONE);
+                                                     ModifiableHadoopConfiguration mc) {
+        HadoopConfiguration prefixConf = new HadoopConfiguration(mc.getHadoopConfiguration(),
+                ConfigElement.getPath(prefixRoot, true) + ".");
+        return new ModifiableConfiguration(newRoot, prefixConf,  Restriction.NONE);
     }
 
     public Configuration getHadoopConfiguration() {

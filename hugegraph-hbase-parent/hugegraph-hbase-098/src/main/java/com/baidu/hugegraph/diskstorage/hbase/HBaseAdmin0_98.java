@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,34 +30,37 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
-public class HBaseAdmin0_98 implements AdminMask {
+public class HBaseAdmin0_98 implements AdminMask
+{
 
     private static final Logger log = LoggerFactory.getLogger(HBaseAdmin0_98.class);
 
     private final HBaseAdmin adm;
 
-    public HBaseAdmin0_98(HBaseAdmin adm) {
+    public HBaseAdmin0_98(HBaseAdmin adm)
+    {
         this.adm = adm;
     }
 
     @Override
-    public void clearTable(String tableName, long timestamp) throws IOException {
+    public void clearTable(String tableName, long timestamp) throws IOException
+    {
         if (!adm.tableExists(tableName)) {
             log.debug("clearStorage() called before table {} was created, skipping.", tableName);
             return;
         }
 
-        // long before = System.currentTimeMillis();
-        // try {
-        // adm.disableTable(tableName);
-        // adm.deleteTable(tableName);
-        // } catch (IOException e) {
-        // throw new PermanentBackendException(e);
-        // }
-        // ensureTableExists(tableName, getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME),
-        // 0);
-        // long after = System.currentTimeMillis();
-        // logger.debug("Dropped and recreated table {} in {} ms", tableName, after - before);
+//        long before = System.currentTimeMillis();
+//        try {
+//            adm.disableTable(tableName);
+//            adm.deleteTable(tableName);
+//        } catch (IOException e) {
+//            throw new PermanentBackendException(e);
+//        }
+//        ensureTableExists(tableName, getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME), 0);
+//        long after = System.currentTimeMillis();
+//        logger.debug("Dropped and recreated table {} in {} ms", tableName, after - before);
+
 
         // Unfortunately, linear scanning and deleting tables is faster in HBase < 1 when running integration tests than
         // disabling and deleting tables.
@@ -93,27 +96,32 @@ public class HBaseAdmin0_98 implements AdminMask {
     }
 
     @Override
-    public HTableDescriptor getTableDescriptor(String tableName) throws TableNotFoundException, IOException {
+    public HTableDescriptor getTableDescriptor(String tableName) throws TableNotFoundException, IOException
+    {
         return adm.getTableDescriptor(tableName.getBytes());
     }
 
     @Override
-    public boolean tableExists(String tableName) throws IOException {
+    public boolean tableExists(String tableName) throws IOException
+    {
         return adm.tableExists(tableName);
     }
 
     @Override
-    public void createTable(HTableDescriptor desc) throws IOException {
+    public void createTable(HTableDescriptor desc) throws IOException
+    {
         adm.createTable(desc);
     }
 
     @Override
-    public void createTable(HTableDescriptor desc, byte[] startKey, byte[] endKey, int numRegions) throws IOException {
+    public void createTable(HTableDescriptor desc, byte[] startKey, byte[] endKey, int numRegions) throws IOException
+    {
         adm.createTable(desc, startKey, endKey, numRegions);
     }
 
     @Override
-    public int getEstimatedRegionServerCount() {
+    public int getEstimatedRegionServerCount()
+    {
         int serverCount = -1;
         try {
             serverCount = adm.getClusterStatus().getServers().size();
@@ -125,27 +133,32 @@ public class HBaseAdmin0_98 implements AdminMask {
     }
 
     @Override
-    public void disableTable(String tableName) throws IOException {
+    public void disableTable(String tableName) throws IOException
+    {
         adm.disableTable(tableName);
     }
 
     @Override
-    public void enableTable(String tableName) throws IOException {
+    public void enableTable(String tableName) throws IOException
+    {
         adm.enableTable(tableName);
     }
 
     @Override
-    public boolean isTableDisabled(String tableName) throws IOException {
+    public boolean isTableDisabled(String tableName) throws IOException
+    {
         return adm.isTableDisabled(tableName);
     }
 
     @Override
-    public void addColumn(String tableName, HColumnDescriptor columnDescriptor) throws IOException {
+    public void addColumn(String tableName, HColumnDescriptor columnDescriptor) throws IOException
+    {
         adm.addColumn(tableName, columnDescriptor);
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         adm.close();
     }
 }

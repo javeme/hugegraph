@@ -13,7 +13,6 @@
 // limitations under the License.
 
 package com.baidu.hugegraph.graphdb.query;
-
 import java.util.Iterator;
 import com.codahale.metrics.Timer;
 import com.google.common.base.Function;
@@ -27,13 +26,12 @@ import com.baidu.hugegraph.util.stats.MetricManager;
  *
  * @author Dan LaRocque (dan@thinkaurelius.com)
  */
-public class MetricsQueryExecutor<Q extends ElementQuery, R extends HugeGraphElement, B extends BackendQuery>
-        implements QueryExecutor<Q, R, B> {
+public class MetricsQueryExecutor<Q extends ElementQuery,R extends HugeGraphElement,B extends BackendQuery> implements QueryExecutor<Q,R,B> {
 
-    private final QueryExecutor<Q, R, B> qe;
+    private final QueryExecutor<Q,R,B> qe;
     private final String metricsPrefix;
     private static final String M_CALLS = "calls";
-    private static final String M_TIME = "time";
+    private static final String M_TIME  = "time";
     private static final String M_EXCEPTIONS = "exceptions";
 
     public MetricsQueryExecutor(String prefix, String name, QueryExecutor<Q, R, B> qe) {
@@ -73,8 +71,7 @@ public class MetricsQueryExecutor<Q extends ElementQuery, R extends HugeGraphEle
     }
 
     @Override
-    public Iterator<R> execute(final Q query, final B subquery, final Object executionInfo,
-            final QueryProfiler profiler) {
+    public Iterator<R> execute(final Q query, final B subquery, final Object executionInfo, final QueryProfiler profiler) {
         return runWithMetrics("execute", new Function<Void, Iterator<R>>() {
             @Override
             public Iterator<R> apply(Void v) {
@@ -83,7 +80,7 @@ public class MetricsQueryExecutor<Q extends ElementQuery, R extends HugeGraphEle
         });
     }
 
-    private <T> T runWithMetrics(String opName, Function<Void, T> impl) {
+    private <T> T runWithMetrics(String opName, Function<Void,T> impl) {
 
         Preconditions.checkNotNull(opName);
         Preconditions.checkNotNull(impl);

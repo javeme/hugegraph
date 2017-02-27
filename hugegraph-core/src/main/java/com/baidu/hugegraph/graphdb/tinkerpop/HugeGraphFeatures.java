@@ -63,7 +63,7 @@ public class HugeGraphFeatures implements Graph.Features {
     }
 
     public static HugeGraphFeatures getFeatures(StandardHugeGraph graph, StoreFeatures storageFeatures) {
-        return new HugeGraphFeatures(graph, storageFeatures);
+        return new HugeGraphFeatures(graph,storageFeatures);
     }
 
     private static class HugeGraphDataTypeFeatures implements DataTypeFeatures {
@@ -89,8 +89,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
     }
 
-    private static class HugeGraphVariableFeatures extends HugeGraphDataTypeFeatures implements VariableFeatures {
-    }
+    private static class HugeGraphVariableFeatures extends HugeGraphDataTypeFeatures implements VariableFeatures { }
 
     private static class HugeGraphGeneralFeatures extends HugeGraphDataTypeFeatures implements GraphFeatures {
 
@@ -126,8 +125,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
     }
 
-    private static class HugeGraphVertexPropertyFeatures extends HugeGraphDataTypeFeatures
-            implements VertexPropertyFeatures {
+    private static class HugeGraphVertexPropertyFeatures extends HugeGraphDataTypeFeatures implements VertexPropertyFeatures {
 
         @Override
         public boolean supportsUserSuppliedIds() {
@@ -135,9 +133,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsNumericIds() {
-            return false;
-        }
+        public boolean supportsNumericIds() { return false; }
 
         @Override
         public boolean supportsAnyIds() {
@@ -150,8 +146,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
     }
 
-    private static class HugeGraphEdgePropertyFeatures extends HugeGraphDataTypeFeatures
-            implements EdgePropertyFeatures {
+    private static class HugeGraphEdgePropertyFeatures extends HugeGraphDataTypeFeatures implements EdgePropertyFeatures {
 
     }
 
@@ -159,10 +154,9 @@ public class HugeGraphFeatures implements Graph.Features {
 
         @Override
         public VertexProperty.Cardinality getCardinality(final String key) {
-            StandardHugeGraphTx tx = (StandardHugeGraphTx) HugeGraphFeatures.this.graph.newTransaction();
+            StandardHugeGraphTx tx = (StandardHugeGraphTx)HugeGraphFeatures.this.graph.newTransaction();
             try {
-                if (!tx.containsPropertyKey(key))
-                    return tx.getConfiguration().getAutoSchemaMaker().defaultPropertyCardinality(key).convert();
+                if (!tx.containsPropertyKey(key)) return tx.getConfiguration().getAutoSchemaMaker().defaultPropertyCardinality(key).convert();
                 return tx.getPropertyKey(key).cardinality().convert();
             } finally {
                 tx.rollback();
@@ -175,7 +169,8 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsNumericIds() {
+        public boolean supportsNumericIds()
+        {
             return true;
         }
 
@@ -195,12 +190,14 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsStringIds() {
+        public boolean supportsStringIds()
+        {
             return false;
         }
 
         @Override
-        public boolean supportsCustomIds() {
+        public boolean supportsCustomIds()
+        {
             return false;
         }
     }
@@ -212,7 +209,8 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsCustomIds() {
+        public boolean supportsCustomIds()
+        {
             return true;
         }
 
@@ -222,9 +220,7 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsNumericIds() {
-            return false;
-        }
+        public boolean supportsNumericIds() { return false; }
 
         @Override
         public boolean supportsAnyIds() {
@@ -237,7 +233,8 @@ public class HugeGraphFeatures implements Graph.Features {
         }
 
         @Override
-        public boolean supportsStringIds() {
+        public boolean supportsStringIds()
+        {
             return false;
         }
     }

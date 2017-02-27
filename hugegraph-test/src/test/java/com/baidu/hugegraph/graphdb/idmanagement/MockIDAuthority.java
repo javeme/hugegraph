@@ -62,17 +62,17 @@ public class MockIDAuthority implements IDAuthority {
 
     @Override
     public IDBlock getIDBlock(final int partition, final int idNamespace, Duration timeout) throws BackendException {
-        // Delay artificially
-        if (delayAcquisitionMS > 0) {
+        //Delay artificially
+        if (delayAcquisitionMS>0) {
             try {
                 Thread.sleep(delayAcquisitionMS);
             } catch (InterruptedException e) {
                 throw new TemporaryBackendException(e);
             }
         }
-        Preconditions.checkArgument(partition >= 0 && partition <= Integer.MAX_VALUE);
-        Preconditions.checkArgument(idNamespace >= 0 && idNamespace <= Integer.MAX_VALUE);
-        Long p = (((long) partition) << Integer.SIZE) + ((long) idNamespace);
+        Preconditions.checkArgument(partition>=0 && partition<=Integer.MAX_VALUE);
+        Preconditions.checkArgument(idNamespace>=0 && idNamespace<=Integer.MAX_VALUE);
+        Long p = (((long)partition)<<Integer.SIZE) + ((long)idNamespace);
         long size = blockSizer.getBlockSize(idNamespace);
         AtomicLong id = ids.get(p);
         if (id == null) {
@@ -84,7 +84,7 @@ public class MockIDAuthority implements IDAuthority {
         if (lowerBound >= blockSizeLimit) {
             throw new IDPoolExhaustedException("Reached partition limit: " + blockSizeLimit);
         }
-        return new MockIDBlock(lowerBound, Math.min(size, blockSizeLimit - lowerBound));
+        return new MockIDBlock(lowerBound,Math.min(size,blockSizeLimit-lowerBound));
     }
 
     private static class MockIDBlock implements IDBlock {
@@ -104,9 +104,8 @@ public class MockIDAuthority implements IDAuthority {
 
         @Override
         public long getId(long index) {
-            if (index < 0 || index >= numIds)
-                throw new ArrayIndexOutOfBoundsException((int) index);
-            return start + index;
+            if (index<0 || index>=numIds) throw new ArrayIndexOutOfBoundsException((int)index);
+            return start+index;
         }
     }
 
@@ -136,7 +135,8 @@ public class MockIDAuthority implements IDAuthority {
     }
 
     @Override
-    public boolean supportsInterruption() {
+    public boolean supportsInterruption()
+    {
         return true;
     }
 }

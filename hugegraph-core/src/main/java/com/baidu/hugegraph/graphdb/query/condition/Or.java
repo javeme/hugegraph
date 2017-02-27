@@ -17,15 +17,14 @@ package com.baidu.hugegraph.graphdb.query.condition;
 import com.baidu.hugegraph.core.HugeGraphElement;
 
 /**
- * Combines multiple conditions under semantic OR, i.e. at least one condition must be true for this combination to be
- * true
+ * Combines multiple conditions under semantic OR, i.e. at least one condition must be true for this combination to be true
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class Or<E extends HugeGraphElement> extends MultiCondition<E> {
 
-    public Or(Condition<E>...elements) {
+    public Or(Condition<E>... elements) {
         super(elements);
     }
 
@@ -60,7 +59,7 @@ public class Or<E extends HugeGraphElement> extends MultiCondition<E> {
         return false;
     }
 
-    public static <E extends HugeGraphElement> Or<E> of(Condition<E>...elements) {
+    public static <E extends HugeGraphElement> Or<E> of(Condition<E>... elements) {
         return new Or<E>(elements);
     }
 

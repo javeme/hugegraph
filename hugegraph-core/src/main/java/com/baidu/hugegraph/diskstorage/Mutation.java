@@ -24,12 +24,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Container for collection mutations against a data store. Mutations are either additions or deletions.
+ * Container for collection mutations against a data store.
+ * Mutations are either additions or deletions.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
-public abstract class Mutation<E, K> {
+public abstract class Mutation<E,K> {
 
     private List<E> additions;
 
@@ -38,14 +39,10 @@ public abstract class Mutation<E, K> {
     public Mutation(List<E> additions, List<K> deletions) {
         Preconditions.checkNotNull(additions);
         Preconditions.checkNotNull(deletions);
-        if (additions.isEmpty())
-            this.additions = null;
-        else
-            this.additions = Lists.newArrayList(additions);
-        if (deletions.isEmpty())
-            this.deletions = null;
-        else
-            this.deletions = Lists.newArrayList(deletions);
+        if (additions.isEmpty()) this.additions=null;
+        else this.additions = Lists.newArrayList(additions);
+        if (deletions.isEmpty()) this.deletions=null;
+        else this.deletions = Lists.newArrayList(deletions);
     }
 
     public Mutation() {
@@ -55,16 +52,14 @@ public abstract class Mutation<E, K> {
 
     /**
      * Whether this mutation has additions
-     * 
      * @return
      */
     public boolean hasAdditions() {
-        return additions != null && !additions.isEmpty();
+        return additions!=null && !additions.isEmpty();
     }
 
     /**
      * Whether this mutation has deletions
-     * 
      * @return
      */
     public boolean hasDeletions() {
@@ -73,12 +68,10 @@ public abstract class Mutation<E, K> {
 
     /**
      * Returns the list of additions in this mutation
-     * 
      * @return
      */
     public List<E> getAdditions() {
-        if (additions == null)
-            return ImmutableList.of();
+        if (additions==null) return ImmutableList.of();
         return additions;
     }
 
@@ -88,8 +81,7 @@ public abstract class Mutation<E, K> {
      * @return
      */
     public List<K> getDeletions() {
-        if (deletions == null)
-            return ImmutableList.of();
+        if (deletions==null) return ImmutableList.of();
         return deletions;
     }
 
@@ -99,8 +91,7 @@ public abstract class Mutation<E, K> {
      * @param entry
      */
     public void addition(E entry) {
-        if (additions == null)
-            additions = new ArrayList<E>();
+        if (additions==null) additions = new ArrayList<E>();
         additions.add(entry);
     }
 
@@ -110,65 +101,59 @@ public abstract class Mutation<E, K> {
      * @param key
      */
     public void deletion(K key) {
-        if (deletions == null)
-            deletions = new ArrayList<K>();
+        if (deletions==null) deletions = new ArrayList<K>();
         deletions.add(key);
     }
 
     /**
-     * Merges another mutation into this mutation. Ensures that all additions and deletions are added to this mutation.
-     * Does not remove duplicates if such exist - this needs to be ensured by the caller.
+     * Merges another mutation into this mutation. Ensures that all additions and deletions
+     * are added to this mutation. Does not remove duplicates if such exist - this needs to be ensured by the caller.
      *
      * @param m
      */
-    public void merge(Mutation<E, K> m) {
+    public void merge(Mutation<E,K> m) {
         Preconditions.checkNotNull(m);
 
         if (null != m.additions) {
-            if (null == additions)
-                additions = m.additions;
-            else
-                additions.addAll(m.additions);
+            if (null == additions) additions = m.additions;
+            else additions.addAll(m.additions);
         }
 
         if (null != m.deletions) {
-            if (null == deletions)
-                deletions = m.deletions;
-            else
-                deletions.addAll(m.deletions);
+            if (null == deletions) deletions = m.deletions;
+            else deletions.addAll(m.deletions);
         }
     }
 
     public boolean isEmpty() {
-        return getTotalMutations() == 0;
+        return getTotalMutations()==0;
     }
 
     public int getTotalMutations() {
-        return (additions == null ? 0 : additions.size()) + (deletions == null ? 0 : deletions.size());
+        return (additions==null?0:additions.size()) + (deletions==null?0:deletions.size());
     }
 
     /**
-     * Consolidates this mutation by removing redundant deletions. A deletion is considered redundant if it is identical
-     * to some addition under the provided conversion functions since we consider additions to apply logically after
-     * deletions. Hence, such a deletion would be applied and immediately overwritten by an addition. To avoid this
+     * Consolidates this mutation by removing redundant deletions. A deletion is considered redundant if
+     * it is identical to some addition under the provided conversion functions since we consider additions to apply logically after deletions.
+     * Hence, such a deletion would be applied and immediately overwritten by an addition. To avoid this
      * inefficiency, consolidation should be called.
      * </p>
-     * The provided conversion functions map additions and deletions into some object space V for comparison. An
-     * addition is considered identical to a deletion if both map to the same object (i.e. equals=true) with the
-     * respective conversion functions.
+     * The provided conversion functions map additions and deletions into some object space V for comparison.
+     * An addition is considered identical to a deletion if both map to the same object (i.e. equals=true) with the respective
+     * conversion functions.
      * </p>
      * It needs to be ensured that V objects have valid hashCode() and equals() implementations.
      *
      * @param convertAdds Function which maps additions onto comparison objects.
      * @param convertDels Function which maps deletions onto comparison objects.
      */
-    public <V> void consolidate(Function<E, V> convertAdds, Function<K, V> convertDels) {
+    public<V> void consolidate(Function<E,V> convertAdds, Function<K,V> convertDels) {
         if (hasDeletions() && hasAdditions()) {
-            Set<V> adds = Sets.newHashSet(Iterables.transform(additions, convertAdds));
+            Set<V> adds = Sets.newHashSet(Iterables.transform(additions,convertAdds));
             Iterator<K> iter = deletions.iterator();
             while (iter.hasNext()) {
-                if (adds.contains(convertDels.apply(iter.next())))
-                    iter.remove();
+                if (adds.contains(convertDels.apply(iter.next()))) iter.remove();
             }
         }
     }
@@ -176,21 +161,22 @@ public abstract class Mutation<E, K> {
     public abstract void consolidate();
 
     /**
-     * Checks whether this mutation is consolidated in the sense of
-     * {@link #consolidate(com.google.common.base.Function, com.google.common.base.Function)}. This should only be used
-     * in assertions and tests due to the performance penalty.
+     * Checks whether this mutation is consolidated in the sense of {@link #consolidate(com.google.common.base.Function, com.google.common.base.Function)}.
+     * This should only be used in assertions and tests due to the performance penalty.
      *
      * @param convertAdds
      * @param convertDels
      * @param <V>
      * @return
      */
-    public <V> boolean isConsolidated(Function<E, V> convertAdds, Function<K, V> convertDels) {
+    public<V> boolean isConsolidated(Function<E,V> convertAdds, Function<K,V> convertDels) {
         int delBefore = getDeletions().size();
-        consolidate(convertAdds, convertDels);
-        return getDeletions().size() == delBefore;
+        consolidate(convertAdds,convertDels);
+        return getDeletions().size()==delBefore;
     }
 
     public abstract boolean isConsolidated();
+
+
 
 }

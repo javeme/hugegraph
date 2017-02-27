@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.graphdb;
 
+
 import com.carrotsearch.hppc.IntHashSet;
 import com.carrotsearch.hppc.IntSet;
 import com.carrotsearch.hppc.LongArrayList;
@@ -57,13 +58,12 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
     @Override
     public WriteConfiguration getConfiguration() {
         WriteConfiguration config = getBaseConfiguration();
-        ModifiableConfiguration mconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS, config,
-                BasicConfiguration.Restriction.NONE);
+        ModifiableConfiguration mconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,config, BasicConfiguration.Restriction.NONE);
         // Let GraphDatabaseConfiguration's config freezer set CLUSTER_PARTITION
-        // mconf.set(GraphDatabaseConfiguration.CLUSTER_PARTITION,true);
-        mconf.set(GraphDatabaseConfiguration.CLUSTER_MAX_PARTITIONS, numPartitions);
-        // uses SimpleBulkPlacementStrategy by default
-        mconf.set(SimpleBulkPlacementStrategy.CONCURRENT_PARTITIONS, 3 * numPartitions);
+        //mconf.set(GraphDatabaseConfiguration.CLUSTER_PARTITION,true);
+        mconf.set(GraphDatabaseConfiguration.CLUSTER_MAX_PARTITIONS,numPartitions);
+        //uses SimpleBulkPlacementStrategy by default
+        mconf.set(SimpleBulkPlacementStrategy.CONCURRENT_PARTITIONS,3*numPartitions);
         return config;
     }
 
@@ -76,31 +76,30 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         idManager = graph.getIDManager();
     }
 
-    // @Test
-    // @Category({ OrderedKeyStoreTests.class })
-    // public void testOrderedConfig() {
-    // assertTrue(graph.getConfiguration().getStoreFeatures().isKeyOrdered());
-    // }
-    //
-    // @Test
-    // @Category({ UnorderedKeyStoreTests.class })
-    // public void testUnorderedConfig() {
-    // assertFalse(graph.getConfiguration().getStoreFeatures().isKeyOrdered());
-    // }
+//    @Test
+//    @Category({ OrderedKeyStoreTests.class })
+//    public void testOrderedConfig() {
+//        assertTrue(graph.getConfiguration().getStoreFeatures().isKeyOrdered());
+//    }
+//
+//    @Test
+//    @Category({ UnorderedKeyStoreTests.class })
+//    public void testUnorderedConfig() {
+//        assertFalse(graph.getConfiguration().getStoreFeatures().isKeyOrdered());
+//    }
 
     @Test
     public void testPartitionHashes() {
         assertEquals(8, idManager.getPartitionBound());
         Set<Long> hashs = Sets.newHashSet();
-        for (long i = 1; i < idManager.getPartitionBound() * 2; i++)
-            hashs.add(idManager.getPartitionHashForId(i));
-        assertTrue(hashs.size() > idManager.getPartitionBound() / 2);
-        assertNotEquals(idManager.getPartitionHashForId(101), idManager.getPartitionHashForId(102));
+        for (long i=1;i<idManager.getPartitionBound()*2;i++) hashs.add(idManager.getPartitionHashForId(i));
+        assertTrue(hashs.size()>idManager.getPartitionBound()/2);
+        assertNotEquals(idManager.getPartitionHashForId(101),idManager.getPartitionHashForId(102));
     }
 
     @Test
     public void testVertexPartitioning() throws Exception {
-        Object[] options = { option(GraphDatabaseConfiguration.IDS_FLUSH), false };
+        Object[] options = {option(GraphDatabaseConfiguration.IDS_FLUSH), false};
         clopen(options);
 
         makeVertexIndexedUniqueKey("gid", Integer.class);
@@ -114,8 +113,7 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         mgmt.makeVertexLabel("group").partition().make();
 
         finishSchema();
-        final Set<String> names =
-                ImmutableSet.of("Marko", "Dan", "Stephen", "Daniel", "Josh", "Thad", "Pavel", "Matthias");
+        final Set<String> names = ImmutableSet.of("Marko", "Dan", "Stephen", "Daniel", "Josh", "Thad", "Pavel", "Matthias");
         final int numG = 10;
         final long[] gids = new long[numG];
 
@@ -126,8 +124,8 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
             for (String n : names) {
                 g.property("name", n);
             }
-            assertEquals(i, g.<Integer> value("gid").intValue());
-            assertEquals(0, g.<Integer> value("sig").intValue());
+            assertEquals(i, g.<Integer>value("gid").intValue());
+            assertEquals(0, g.<Integer>value("sig").intValue());
             assertEquals("group", g.label());
             assertCount(names.size(), g.properties("name"));
             assertTrue(getId(g) > 0);
@@ -152,6 +150,7 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
             }
         }
 
+
         newTx();
 
         for (int i = 0; i < numG; i++) {
@@ -161,17 +160,17 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
             HugeGraphVertex g = getV(tx, gId);
             final int canonicalPartition = getPartitionID(g);
             assertEquals(g, getOnlyElement(tx.query().has("gid", i).vertices()));
-            assertEquals(i, g.<Integer> value("gid").intValue());
+            assertEquals(i, g.<Integer>value("gid").intValue());
             assertCount(names.size(), g.properties("name"));
 
-            // Verify that properties are distributed correctly
+            //Verify that properties are distributed correctly
             HugeGraphVertexProperty p = (HugeGraphVertexProperty) getOnlyElement(g.properties("gid"));
             assertEquals(canonicalPartition, getPartitionID(p));
-            for (Iterator<VertexProperty<Object>> niter = g.properties("name"); niter.hasNext();) {
-                assertEquals(canonicalPartition, getPartitionID((HugeGraphVertex) niter.next().element()));
+            for (Iterator<VertexProperty<Object>> niter = g.properties("name"); niter.hasNext(); ) {
+                assertEquals(canonicalPartition,getPartitionID((HugeGraphVertex) niter.next().element()));
             }
 
-            // Copied from above
+            //Copied from above
             assertCount(1, g.query().direction(Direction.BOTH).labels("one").edges());
             assertCount(1, g.query().direction(i % 2 == 0 ? Direction.IN : Direction.OUT).labels("one").edges());
             assertCount(0, g.query().direction(i % 2 == 1 ? Direction.IN : Direction.OUT).labels("one").edges());
@@ -181,6 +180,7 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
                 assertCount(numG - 1, g.query().direction(Direction.IN).labels("base").edges());
             }
         }
+
 
         clopen(options);
 
@@ -205,7 +205,7 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
                 }
             }
             newTx();
-            // Verify that all elements are in the same partition
+            //Verify that all elements are in the same partition
             HugeGraphTransaction txx = graph.buildTransaction().readOnly().start();
             g1 = getV(tx, gids[0]);
             g2 = getV(tx, gids[1]);
@@ -213,10 +213,8 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
             for (int vi = 0; vi < vPerTx; vi++) {
                 assertTrue(vs[vi].hasId());
                 int pid = getPartitionID(vs[vi]);
-                if (partition < 0)
-                    partition = pid;
-                else
-                    assertEquals(partition, pid);
+                if (partition < 0) partition = pid;
+                else assertEquals(partition, pid);
                 int numRels = 0;
                 HugeGraphVertex v = getV(txx, vs[vi].longId());
                 for (HugeGraphRelation r : v.query().relations()) {
@@ -232,14 +230,13 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
             partitions.add(partition);
             txx.commit();
         }
-        // Verify spread across partitions; this number is a pessimistic lower bound but might fail since it is
-        // probabilistic
+        //Verify spread across partitions; this number is a pessimistic lower bound but might fail since it is probabilistic
         assertTrue(partitions.elementSet().size() >= 3); //
 
         newTx();
-        // Verify edge querying across partitions
+        //Verify edge querying across partitions
         HugeGraphVertex g1 = getV(tx, gids[0]);
-        assertEquals(0, g1.<Integer> value("gid").intValue());
+        assertEquals(0, g1.<Integer>value("gid").intValue());
         assertEquals("group", g1.label());
         assertCount(names.size(), g1.properties("name"));
         assertCount(numTx * vPerTx, g1.query().direction(Direction.OUT).labels("knows").edges());
@@ -248,32 +245,30 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         assertCount(numTx * vPerTx + numG, tx.query().vertices());
 
         newTx();
-        // Restrict to partitions
+        //Restrict to partitions
         for (int t = 0; t < 10; t++) {
             int numP = random.nextInt(3) + 1;
             Set<Integer> parts = Sets.newHashSet();
             int numV = 0;
             while (parts.size() < numP) {
                 int part = Iterables.get(partitions.elementSet(), random.nextInt(partitions.elementSet().size()));
-                if (parts.add(part))
-                    numV += partitions.count(part);
+                if (parts.add(part)) numV += partitions.count(part);
             }
             numV *= vPerTx;
             int[] partarr = new int[numP];
             int i = 0;
-            for (Integer part : parts)
-                partarr[i++] = part;
+            for (Integer part : parts) partarr[i++] = part;
             HugeGraphTransaction tx2 = graph.buildTransaction().restrictedPartitions(partarr).readOnly().start();
-            // Copied from above
+            //Copied from above
             g1 = getV(tx2, gids[0]);
-            assertEquals(0, g1.<Integer> value("gid").intValue());
+            assertEquals(0, g1.<Integer>value("gid").intValue());
             assertEquals("group", g1.label());
             assertTrue(names.size() >= size(g1.properties("name")));
             assertCount(numV, g1.query().direction(Direction.OUT).labels("knows").edges());
             assertCount(numV, g1.query().direction(Direction.IN).labels("knows").edges());
             assertCount(numV * 2, g1.query().direction(Direction.BOTH).labels("knows").edges());
 
-            // Test local intersection
+            //Test local intersection
             HugeGraphVertex g2 = getV(tx2, gids[1]);
             VertexList v1 = g1.query().direction(Direction.IN).labels("knows").vertexIds();
             VertexList v2 = g2.query().direction(Direction.IN).labels("knows").vertexIds();
@@ -292,16 +287,14 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         }
     }
 
-    private enum CommitMode {
-        BATCH, PER_VERTEX, PER_CLUSTER
-    }
+    private enum CommitMode { BATCH, PER_VERTEX, PER_CLUSTER }
 
     private int setupGroupClusters(int[] groupDegrees, CommitMode commitMode) {
         mgmt.makeVertexLabel("person").make();
         mgmt.makeVertexLabel("group").partition().make();
         makeVertexIndexedKey("groupid", String.class);
         makeKey("name", String.class);
-        makeKey("clusterId", String.class);
+        makeKey("clusterId",String.class);
         makeLabel("member");
         makeLabel("contain");
 
@@ -310,84 +303,79 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         int numVertices = 0;
         HugeGraphVertex[] groups = new HugeGraphVertex[groupDegrees.length];
         for (int i = 0; i < groupDegrees.length; i++) {
-            groups[i] = tx.addVertex("group");
-            groups[i].property("groupid", "group" + i);
+            groups[i]=tx.addVertex("group");
+            groups[i].property("groupid","group"+i);
             numVertices++;
-            if (commitMode == CommitMode.PER_VERTEX)
-                newTx();
+            if (commitMode==CommitMode.PER_VERTEX) newTx();
             for (int noEdges = 0; noEdges < groupDegrees[i]; noEdges++) {
-                HugeGraphVertex g = vInTx(groups[i], tx);
-                HugeGraphVertex p = tx.addVertex("name", "person" + i + ":" + noEdges, "clusterId", "group" + i);
+                HugeGraphVertex g = vInTx(groups[i],tx);
+                HugeGraphVertex p = tx.addVertex("name","person"+i+":"+noEdges,"clusterId","group"+i);
                 numVertices++;
-                p.addEdge("member", g);
+                p.addEdge("member",g);
                 g.addEdge("contain", p);
-                if (commitMode == CommitMode.PER_VERTEX)
-                    newTx();
+                if (commitMode==CommitMode.PER_VERTEX) newTx();
             }
-            if (commitMode == CommitMode.PER_CLUSTER)
-                newTx();
+            if (commitMode==CommitMode.PER_CLUSTER) newTx();
         }
         newTx();
         return numVertices;
     }
 
     private static HugeGraphVertex vInTx(HugeGraphVertex v, HugeGraphTransaction tx) {
-        if (!v.hasId())
-            return v;
-        else
-            return tx.getVertex(v.longId());
+        if (!v.hasId()) return v;
+        else return tx.getVertex(v.longId());
     }
 
     @Test
     public void testPartitionSpreadFlushBatch() {
-        testPartitionSpread(true, true);
+        testPartitionSpread(true,true);
     }
 
     @Test
     public void testPartitionSpreadFlushNoBatch() {
-        testPartitionSpread(true, false);
+        testPartitionSpread(true,false);
     }
 
     @Test
     public void testPartitionSpreadNoFlushBatch() {
-        testPartitionSpread(false, true);
+        testPartitionSpread(false,true);
     }
 
     @Test
     public void testPartitionSpreadNoFlushNoBatch() {
-        testPartitionSpread(false, false);
+        testPartitionSpread(false,false);
     }
 
     private void testPartitionSpread(boolean flush, boolean batchCommit) {
-        Object[] options = { option(GraphDatabaseConfiguration.IDS_FLUSH), flush };
+        Object[] options = {option(GraphDatabaseConfiguration.IDS_FLUSH), flush};
         clopen(options);
 
-        int[] groupDegrees = { 10, 15, 10, 17, 10, 4, 7, 20, 11 };
-        int numVertices = setupGroupClusters(groupDegrees, batchCommit ? CommitMode.BATCH : CommitMode.PER_VERTEX);
+        int[] groupDegrees = {10,15,10,17,10,4,7,20,11};
+        int numVertices = setupGroupClusters(groupDegrees,batchCommit?CommitMode.BATCH:CommitMode.PER_VERTEX);
 
-        IntSet partitionIds = new IntHashSet(numVertices); // to track the "spread" of partition ids
-        for (int i = 0; i < groupDegrees.length; i++) {
-            HugeGraphVertex g = getOnlyVertex(tx.query().has("groupid", "group" + i));
-            assertCount(groupDegrees[i], g.edges(Direction.OUT, "contain"));
-            assertCount(groupDegrees[i], g.edges(Direction.IN, "member"));
-            assertCount(groupDegrees[i], g.query().direction(Direction.OUT).edges());
-            assertCount(groupDegrees[i], g.query().direction(Direction.IN).edges());
-            assertCount(groupDegrees[i] * 2, g.query().edges());
+        IntSet partitionIds = new IntHashSet(numVertices); //to track the "spread" of partition ids
+        for (int i=0;i<groupDegrees.length;i++) {
+            HugeGraphVertex g = getOnlyVertex(tx.query().has("groupid","group"+i));
+            assertCount(groupDegrees[i],g.edges(Direction.OUT,"contain"));
+            assertCount(groupDegrees[i],g.edges(Direction.IN,"member"));
+            assertCount(groupDegrees[i],g.query().direction(Direction.OUT).edges());
+            assertCount(groupDegrees[i],g.query().direction(Direction.IN).edges());
+            assertCount(groupDegrees[i]*2,g.query().edges());
             for (Object o : g.query().direction(Direction.IN).labels("member").vertices()) {
                 HugeGraphVertex v = (HugeGraphVertex) o;
                 int pid = getPartitionID(v);
                 partitionIds.add(pid);
                 assertEquals(g, getOnlyElement(v.query().direction(Direction.OUT).labels("member").vertices()));
                 VertexList vlist = v.query().direction(Direction.IN).labels("contain").vertexIds();
-                assertEquals(1, vlist.size());
-                assertEquals(pid, idManager.getPartitionId(vlist.getID(0)));
-                assertEquals(g, vlist.get(0));
+                assertEquals(1,vlist.size());
+                assertEquals(pid,idManager.getPartitionId(vlist.getID(0)));
+                assertEquals(g,vlist.get(0));
             }
         }
-        if (flush || !batchCommit) { // In these cases we would expect significant spread across partitions
-            assertTrue(partitionIds.size() > numPartitions / 2); // This is a probabilistic test that might fail
+        if (flush || !batchCommit) { //In these cases we would expect significant spread across partitions
+            assertTrue(partitionIds.size()>numPartitions/2); //This is a probabilistic test that might fail
         } else {
-            assertEquals(1, partitionIds.size()); // No spread in this case
+            assertEquals(1,partitionIds.size()); //No spread in this case
         }
     }
 
@@ -407,22 +395,22 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
     }
 
     private void testVertexPartitionOlap(CommitMode commitMode) throws Exception {
-        Object[] options = { option(GraphDatabaseConfiguration.IDS_FLUSH), false };
+        Object[] options = {option(GraphDatabaseConfiguration.IDS_FLUSH), false};
         clopen(options);
 
-        // int[] groupDegrees = {10,20,30};
-        int[] groupDegrees = { 2 };
+//        int[] groupDegrees = {10,20,30};
+        int[] groupDegrees = {2};
 
-        int numVertices = setupGroupClusters(groupDegrees, commitMode);
+        int numVertices = setupGroupClusters(groupDegrees,commitMode);
 
-        Map<Long, Integer> degreeMap = new HashMap<>(groupDegrees.length);
+        Map<Long,Integer> degreeMap = new HashMap<>(groupDegrees.length);
         for (int i = 0; i < groupDegrees.length; i++) {
-            degreeMap.put(getOnlyVertex(tx.query().has("groupid", "group" + i)).longId(), groupDegrees[i]);
+            degreeMap.put(getOnlyVertex(tx.query().has("groupid","group"+i)).longId(),groupDegrees[i]);
         }
 
         clopen(options);
 
-        // Test OLAP works with partitioned vertices
+        //Test OLAP works with partitioned vertices
         HugeGraphComputer computer = graph.compute(FulgoraGraphComputer.class);
         computer.resultMode(HugeGraphComputer.ResultMode.NONE);
         computer.workers(1);
@@ -431,17 +419,17 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
         ComputerResult result = computer.submit().get();
 
         assertTrue(result.memory().exists(OLAPTest.DegreeMapper.DEGREE_RESULT));
-        Map<Long, Integer> degrees = result.memory().get(OLAPTest.DegreeMapper.DEGREE_RESULT);
+        Map<Long,Integer> degrees = result.memory().get(OLAPTest.DegreeMapper.DEGREE_RESULT);
         assertNotNull(degrees);
-        assertEquals(numVertices, degrees.size());
+        assertEquals(numVertices,degrees.size());
         final IDManager idManager = graph.getIDManager();
 
-        for (Map.Entry<Long, Integer> entry : degrees.entrySet()) {
+        for (Map.Entry<Long,Integer> entry : degrees.entrySet()) {
             long vid = entry.getKey();
             Integer degree = entry.getValue();
             if (idManager.isPartitionedVertex(vid)) {
-                // System.out.println("Partitioned: " + degree );
-                assertEquals(degreeMap.get(vid), degree);
+//                System.out.println("Partitioned: " + degree );
+                assertEquals(degreeMap.get(vid),degree);
             } else {
                 assertEquals(1, (long) degree);
             }
@@ -464,39 +452,39 @@ public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
 
     @Test
     public void testKeybasedGraphPartitioning() {
-        Object[] options = { option(GraphDatabaseConfiguration.IDS_FLUSH), false,
-                option(VertexIDAssigner.PLACEMENT_STRATEGY), PropertyPlacementStrategy.class.getName(),
-                option(PropertyPlacementStrategy.PARTITION_KEY), "clusterId" };
+        Object[] options = {option(GraphDatabaseConfiguration.IDS_FLUSH), false,
+                            option(VertexIDAssigner.PLACEMENT_STRATEGY), PropertyPlacementStrategy.class.getName(),
+                option(PropertyPlacementStrategy.PARTITION_KEY), "clusterId"};
         clopen(options);
 
-        int[] groupDegrees = { 5, 5, 5, 5, 5, 5, 5, 5 };
-        int numVertices = setupGroupClusters(groupDegrees, CommitMode.PER_VERTEX);
+        int[] groupDegrees = {5,5,5,5,5,5,5,5};
+        int numVertices = setupGroupClusters(groupDegrees,CommitMode.PER_VERTEX);
 
-        IntSet partitionIds = new IntHashSet(numVertices); // to track the "spread" of partition ids
-        for (int i = 0; i < groupDegrees.length; i++) {
-            HugeGraphVertex g = getOnlyVertex(tx.query().has("groupid", "group" + i));
+        IntSet partitionIds = new IntHashSet(numVertices); //to track the "spread" of partition ids
+        for (int i=0;i<groupDegrees.length;i++) {
+            HugeGraphVertex g = getOnlyVertex(tx.query().has("groupid","group"+i));
             int partitionId = -1;
             for (Object o : g.query().direction(Direction.IN).labels("member").vertices()) {
                 HugeGraphVertex v = (HugeGraphVertex) o;
-                if (partitionId < 0)
-                    partitionId = getPartitionID(v);
-                assertEquals(partitionId, getPartitionID(v));
+                if (partitionId<0) partitionId = getPartitionID(v);
+                assertEquals(partitionId,getPartitionID(v));
                 partitionIds.add(partitionId);
             }
         }
-        assertTrue(partitionIds.size() > numPartitions / 2); // This is a probabilistic test that might fail
+        assertTrue(partitionIds.size()>numPartitions/2); //This is a probabilistic test that might fail
     }
+
 
     public int getPartitionID(HugeGraphVertex vertex) {
         long p = idManager.getPartitionId(vertex.longId());
-        assertTrue(p >= 0 && p < idManager.getPartitionBound() && p < Integer.MAX_VALUE);
-        return (int) p;
+        assertTrue(p>=0 && p<idManager.getPartitionBound() && p<Integer.MAX_VALUE);
+        return (int)p;
     }
 
     public int getPartitionID(HugeGraphRelation relation) {
-        long p = relation.longId() & (idManager.getPartitionBound() - 1);
-        assertTrue(p >= 0 && p < idManager.getPartitionBound() && p < Integer.MAX_VALUE);
-        return (int) p;
+        long p = relation.longId() & (idManager.getPartitionBound()-1);
+        assertTrue(p>=0 && p<idManager.getPartitionBound() && p<Integer.MAX_VALUE);
+        return (int)p;
     }
 
 }

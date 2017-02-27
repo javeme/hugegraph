@@ -12,21 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.baidu.hugegraph.core;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
- * HugeGraphRelation is the most abstract form of a relation between a vertex and some other entity, where relation is
- * understood in its mathematical sense. It generalizes the notion of an edge and a property. <br />
- * A HugeGraphRelation extends {@link HugeGraphElement} which means it is an entity in its own right. This means, a
- * HugeGraphRelation can have properties and unidirectional edges connecting it to other vertices. <br />
- * A HugeGraphRelation is an abstract concept. A HugeGraphRelation is either a {@link HugeGraphVertexProperty} or a
- * {@link HugeGraphEdge}. A HugeGraphRelation has a type which is either a label or key depending on the implementation.
+ * HugeGraphRelation is the most abstract form of a relation between a vertex and some other entity, where
+ * relation is understood in its mathematical sense. It generalizes the notion of an edge and a property.
  * <br />
- * A HugeGraphRelation is either directed, or unidirected. Properties are always directed (connecting a vertex with a
- * value). A unidirected edge is a special type of directed edge where the connection is only established from the
+ * A HugeGraphRelation extends {@link HugeGraphElement} which means it is an entity in its own right. This means, a HugeGraphRelation
+ * can have properties and unidirectional edges connecting it to other vertices.
+ * <br />
+ * A HugeGraphRelation is an abstract concept. A HugeGraphRelation is either a {@link HugeGraphVertexProperty} or a {@link HugeGraphEdge}.
+ * A HugeGraphRelation has a type which is either a label or key depending on the implementation.
+ * <br />
+ * A HugeGraphRelation is either directed, or unidirected. Properties are always directed (connecting a vertex
+ * with a value). A unidirected edge is a special type of directed edge where the connection is only established from the
  * perspective of the outgoing vertex. In that sense, a unidirected edge is akin to a link.
  *
  * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
@@ -36,9 +39,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 public interface HugeGraphRelation extends HugeGraphElement {
 
     /**
-     * Retrieves the value associated with the given key on this vertex and casts it to the specified type. If the key
-     * has cardinality SINGLE, then there can be at most one value and this value is returned (or null). Otherwise a
-     * list of all associated values is returned, or an empty list if non exist.
+     * Retrieves the value associated with the given key on this vertex and casts it to the specified type.
+     * If the key has cardinality SINGLE, then there can be at most one value and this value is returned (or null).
+     * Otherwise a list of all associated values is returned, or an empty list if non exist.
      * <p/>
      *
      * @param key string identifying a key
@@ -74,7 +77,8 @@ public interface HugeGraphRelation extends HugeGraphElement {
     public boolean isIncidentOn(Vertex vertex);
 
     /**
-     * Checks whether this relation is a loop. An relation is a loop if it connects a vertex with itself.
+     * Checks whether this relation is a loop.
+     * An relation is a loop if it connects a vertex with itself.
      *
      * @return true, if this relation is a loop, else false.
      */
@@ -95,5 +99,6 @@ public interface HugeGraphRelation extends HugeGraphElement {
      * @see HugeGraphEdge
      */
     boolean isEdge();
+
 
 }

@@ -25,11 +25,11 @@ import com.baidu.hugegraph.core.VertexLabel;
 public interface TypeInspector {
 
     public default PropertyKey getExistingPropertyKey(long id) {
-        return (PropertyKey) getExistingRelationType(id);
+        return (PropertyKey)getExistingRelationType(id);
     }
 
     public default EdgeLabel getExistingEdgeLabel(long id) {
-        return (EdgeLabel) getExistingRelationType(id);
+        return (EdgeLabel)getExistingRelationType(id);
     }
 
     public RelationType getExistingRelationType(long id);

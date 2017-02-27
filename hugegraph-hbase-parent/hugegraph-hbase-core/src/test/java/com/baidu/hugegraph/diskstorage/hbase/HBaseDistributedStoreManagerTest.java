@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import com.baidu.hugegraph.HBaseStorageSetup;
 import com.baidu.hugegraph.diskstorage.DistributedStoreManagerTest;
+
 
 public class HBaseDistributedStoreManagerTest extends DistributedStoreManagerTest<HBaseStoreManager> {
 

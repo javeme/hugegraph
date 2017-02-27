@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,16 +24,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class is a hack to support HBase Digest-MD5 token authentication for MapReduce jobs. HBase's Digest-MD5 token
- * authentication is used when a MR job needs to talk to a HBase cluster secured by Kerberos.
+ * This class is a hack to support HBase Digest-MD5 token authentication
+ * for MapReduce jobs.  HBase's Digest-MD5 token authentication is used
+ * when a MR job needs to talk to a HBase cluster secured by Kerberos.
  *
- * This class uses reflection to avoid linking against HBase classes that might not be on the classpath at runtime (e.g.
- * when running HugeGraph-HBase on Cassandra). Its methods log errors but otherwise serve as noops if HBase is not
- * available or if reflection fails for some other reason.
+ * This class uses reflection to avoid linking against HBase classes that
+ * might not be on the classpath at runtime (e.g. when running hugegraph-HBase
+ * on Cassandra).  Its methods log errors but otherwise serve as noops if
+ * HBase is not available or if reflection fails for some other reason.
  */
 public class HBaseAuthHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(HBaseAuthHelper.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HBaseAuthHelper.class);
+
 
     public static Configuration wrapConfiguration(Configuration inner) {
         final String className = "org.apache.hadoop.hbase.HBaseConfiguration";
@@ -43,7 +47,7 @@ public class HBaseAuthHelper {
         try {
             Class<?> clazz = HBaseAuthHelper.class.getClassLoader().loadClass(className);
             Method m = clazz.getMethod(methodName, methodArgType);
-            return (Configuration) m.invoke(null, inner);
+            return (Configuration)m.invoke(null, inner);
         } catch (ClassNotFoundException e) {
             log.error("Failed to call {}.{}({})", className, methodName, methodArgType.getSimpleName(), e);
         } catch (NoSuchMethodException e) {
@@ -64,6 +68,7 @@ public class HBaseAuthHelper {
 
         String hbaseAuthentication = configuration.get("hbase.security.authentication");
 
+
         if (null != hbaseAuthentication && hbaseAuthentication.equals("kerberos")) {
             String quorumCfgKey = "hbase.zookeeper.quorum";
 
@@ -76,8 +81,7 @@ public class HBaseAuthHelper {
                 Object user = getCurrent.invoke(null);
                 Method obtainAuthTokenForJob = clazz.getMethod("obtainAuthTokenForJob", Configuration.class, Job.class);
                 obtainAuthTokenForJob.invoke(user, configuration, job);
-                log.info("Obtained HBase Auth Token from ZooKeeper quorum {} for job {}",
-                        configuration.get(quorumCfgKey), job.getJobName());
+                log.info("Obtained HBase Auth Token from ZooKeeper quorum {} for job {}", configuration.get(quorumCfgKey), job.getJobName());
             } catch (ClassNotFoundException e) {
                 log.error("Failed to generate or store HBase auth token", e);
             } catch (InvocationTargetException e) {

@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ImmutableConfiguration extends Configuration {
 
     @Override
     public void reloadConfiguration() {
-        // throw new UnsupportedOperationException("This configuration instance is immutable");
+        //throw new UnsupportedOperationException("This configuration instance is immutable");
         encapsulated.reloadConfiguration(); // allowed to simplify testing
     }
 
@@ -252,7 +252,7 @@ public class ImmutableConfiguration extends Configuration {
     }
 
     @Override
-    public String[] getStrings(String name, String...defaultValue) {
+    public String[] getStrings(String name, String... defaultValue) {
         return encapsulated.getStrings(name, defaultValue);
     }
 
@@ -267,12 +267,12 @@ public class ImmutableConfiguration extends Configuration {
     }
 
     @Override
-    public String[] getTrimmedStrings(String name, String...defaultValue) {
+    public String[] getTrimmedStrings(String name, String... defaultValue) {
         return encapsulated.getTrimmedStrings(name, defaultValue);
     }
 
     @Override
-    public void setStrings(String name, String...values) {
+    public void setStrings(String name, String... values) {
         throw new UnsupportedOperationException("This configuration instance is immutable");
     }
 
@@ -302,7 +302,7 @@ public class ImmutableConfiguration extends Configuration {
     }
 
     @Override
-    public Class<?>[] getClasses(String name, Class<?>...defaultValue) {
+    public Class<?>[] getClasses(String name, Class<?>... defaultValue) {
         return encapsulated.getClasses(name, defaultValue);
     }
 
@@ -362,10 +362,11 @@ public class ImmutableConfiguration extends Configuration {
     }
 
     /*
-     * The encapsulated method impl creates a new HashMap for each invocation and returns an iterator on that
-     * newly-created HashMap. So, remove is allowed but doesn't mutate the state of the Configuration. This is not
-     * documented and might change. It also might be safer to throw an exception on remove since it won't have the
-     * effect the client code probably intends.
+     * The encapsulated method impl creates a new HashMap for each invocation and returns an
+     * iterator on that newly-created HashMap.  So, remove is allowed but doesn't mutate the
+     * state of the Configuration.  This is not documented and might change.  It also might
+     * be safer to throw an exception on remove since it won't have the effect the client code
+     * probably intends.
      */
     @Override
     public Iterator<Map.Entry<String, String>> iterator() {

@@ -19,7 +19,9 @@ import com.baidu.hugegraph.graphdb.internal.InternalRelation;
 
 import java.util.Iterator;
 
-public class RemovableRelationIterator<O extends HugeGraphRelation> implements Iterator<O> {
+public class RemovableRelationIterator<O extends HugeGraphRelation>
+        implements Iterator<O> {
+
 
     private final Iterator<InternalRelation> iterator;
     private InternalRelation current;
@@ -45,8 +47,9 @@ public class RemovableRelationIterator<O extends HugeGraphRelation> implements I
     @Override
     public void remove() {
         assert current != null;
-        // iterator.remove();
+        //iterator.remove();
         current.remove();
     }
+
 
 }

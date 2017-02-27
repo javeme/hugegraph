@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,26 +19,31 @@ import java.io.IOException;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 
-public class HConnection1_0 implements ConnectionMask {
+public class HConnection1_0 implements ConnectionMask
+{
 
     private final Connection cnx;
 
-    public HConnection1_0(Connection cnx) {
+    public HConnection1_0(Connection cnx)
+    {
         this.cnx = cnx;
     }
 
     @Override
-    public TableMask getTable(String name) throws IOException {
+    public TableMask getTable(String name) throws IOException
+    {
         return new HTable1_0(cnx.getTable(TableName.valueOf(name)));
     }
 
     @Override
-    public AdminMask getAdmin() throws IOException {
+    public AdminMask getAdmin() throws IOException
+    {
         return new HBaseAdmin1_0(cnx.getAdmin());
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         cnx.close();
     }
 }

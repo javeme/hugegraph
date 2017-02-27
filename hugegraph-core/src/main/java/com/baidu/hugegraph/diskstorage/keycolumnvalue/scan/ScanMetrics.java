@@ -19,8 +19,8 @@ package com.baidu.hugegraph.diskstorage.keycolumnvalue.scan;
  * <p>
  * Conceptually, this interface contains two separate stores of counters:
  * <ul>
- * <li>the standard store, accessed via {@code get} and {@code increment}</li>
- * <li>the custom store, accessed via methods with {@code custom} in their names</li>
+ *     <li>the standard store, accessed via {@code get} and {@code increment}</li>
+ *     <li>the custom store, accessed via methods with {@code custom} in their names</li>
  * </ul>
  * All counters values automatically start at zero.
  *
@@ -29,18 +29,17 @@ package com.baidu.hugegraph.diskstorage.keycolumnvalue.scan;
 public interface ScanMetrics {
 
     /**
-     * An enum of standard counters. A value of this enum is the only parameter accepted by
-     * {@link #get(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)} and
-     * {@link #increment(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
+     * An enum of standard counters.  A value of this enum is the only parameter
+     * accepted by {@link #get(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}
+     * and {@link #increment(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
      */
-    public enum Metric {
-        FAILURE, SUCCESS
-    }
+    public enum Metric { FAILURE, SUCCESS }
 
     /**
-     * Get the value of a custom counter. Only the effects of prior calls to {@link #incrementCustom(String)} and
-     * {@link #incrementCustom(String, long)} should be observable through this method, never the effects of prior calls
-     * to {@link #increment(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
+     * Get the value of a custom counter.  Only the effects of prior calls to
+     * {@link #incrementCustom(String)} and {@link #incrementCustom(String, long)}
+     * should be observable through this method, never the effects of prior calls to
+     * {@link #increment(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
      *
      * @param metric
      * @return
@@ -48,9 +47,9 @@ public interface ScanMetrics {
     public long getCustom(String metric);
 
     /**
-     * Increment a custom counter by {@code delta}. The effects of calls to method should only be observable through
-     * {@link #getCustom(String)}, never through
-     * {@link #get(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
+     * Increment a custom counter by {@code delta}.  The effects of calls
+     * to method should only be observable through {@link #getCustom(String)},
+     * never through {@link #get(com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics.Metric)}.
      *
      * @param metric the name of the counter
      * @param delta the amount to add to the counter

@@ -22,13 +22,14 @@ import com.baidu.hugegraph.testcategory.PerformanceTests;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
 
-@Category({ PerformanceTests.class })
+@Category({PerformanceTests.class})
 public class ThriftGraphConcurrentTest extends HugeGraphConcurrentTest {
 
     @Override
     public WriteConfiguration getConfiguration() {
         return CassandraStorageSetup.getCassandraThriftGraphConfiguration(getClass().getSimpleName());
     }
+
 
     @BeforeClass
     public static void beforeClass() {

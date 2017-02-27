@@ -28,9 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
- * Queries for a slice of data identified by a start point (inclusive) and end point (exclusive). Returns all
- * {@link StaticBuffer}s that lie in this range up to the given limit.
+ * Queries for a slice of data identified by a start point (inclusive) and end point (exclusive).
+ * Returns all {@link StaticBuffer}s that lie in this range up to the given limit.
  * <p/>
  * If a SliceQuery is marked <i>static</i> it is expected that the result set does not change.
  *
@@ -86,41 +87,38 @@ public class SliceQuery extends BaseQuery implements BackendQuery<SliceQuery> {
             return false;
 
         SliceQuery oth = (SliceQuery) other;
-        return sliceStart.equals(oth.sliceStart) && sliceEnd.equals(oth.sliceEnd) && getLimit() == oth.getLimit();
+        return sliceStart.equals(oth.sliceStart)
+                && sliceEnd.equals(oth.sliceEnd)
+                && getLimit() == oth.getLimit();
     }
 
     public boolean subsumes(SliceQuery oth) {
         Preconditions.checkNotNull(oth);
-        if (this == oth)
-            return true;
-        if (oth.getLimit() > getLimit())
-            return false;
-        else if (!hasLimit()) // the interval must be subsumed
+        if (this == oth) return true;
+        if (oth.getLimit() > getLimit()) return false;
+        else if (!hasLimit()) //the interval must be subsumed
             return sliceStart.compareTo(oth.sliceStart) <= 0 && sliceEnd.compareTo(oth.sliceEnd) >= 0;
-        else // this the result might be cutoff due to limit, the start must be the same
+        else //this the result might be cutoff due to limit, the start must be the same
             return sliceStart.compareTo(oth.sliceStart) == 0 && sliceEnd.compareTo(oth.sliceEnd) >= 0;
     }
 
-    // TODO: make this more efficient by using reuseIterator() on otherResult
+    //TODO: make this more efficient by using reuseIterator() on otherResult
     public EntryList getSubset(final SliceQuery otherQuery, final EntryList otherResult) {
         assert otherQuery.subsumes(this);
         int pos = Collections.binarySearch(otherResult, sliceStart);
-        if (pos < 0)
-            pos = -pos - 1;
+        if (pos < 0) pos = -pos - 1;
 
         List<Entry> result = new ArrayList<Entry>();
         for (; pos < otherResult.size() && result.size() < getLimit(); pos++) {
             Entry e = otherResult.get(pos);
-            if (e.getColumnAs(StaticBuffer.STATIC_FACTORY).compareTo(sliceEnd) < 0)
-                result.add(e);
-            else
-                break;
+            if (e.getColumnAs(StaticBuffer.STATIC_FACTORY).compareTo(sliceEnd) < 0) result.add(e);
+            else break;
         }
         return StaticArrayEntryList.of(result);
     }
 
     public boolean contains(StaticBuffer buffer) {
-        return sliceStart.compareTo(buffer) <= 0 && sliceEnd.compareTo(buffer) > 0;
+        return sliceStart.compareTo(buffer)<=0 && sliceEnd.compareTo(buffer)>0;
     }
 
     public static StaticBuffer pointRange(StaticBuffer point) {

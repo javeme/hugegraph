@@ -17,8 +17,8 @@ package com.baidu.hugegraph.core.schema;
 import com.baidu.hugegraph.core.Namifiable;
 
 /**
- * Marks any element that is part of a HugeGraph Schema. HugeGraph Schema elements can be uniquely identified by their
- * name.
+ * Marks any element that is part of a HugeGraph Schema.
+ * HugeGraph Schema elements can be uniquely identified by their name.
  * <p/>
  * A HugeGraph Schema element is either a {@link HugeGraphSchemaType} or an index definition, i.e.
  * {@link HugeGraphIndex} or {@link RelationTypeIndex}.

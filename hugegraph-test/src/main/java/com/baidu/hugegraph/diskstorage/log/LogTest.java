@@ -52,8 +52,7 @@ public abstract class LogTest {
     /**
      *
      * @param senderId The unique id identifying the sending instance
-     * @param requiresOrderPreserving whether it is required by the test case that write order is preserved when
-     *            reading.
+     * @param requiresOrderPreserving whether it is required by the test case that write order is preserved when reading.
      * @return
      * @throws BackendException
      */
@@ -61,19 +60,17 @@ public abstract class LogTest {
 
     private LogManager manager;
 
-    // This TestName field must be public. Exception when I tried private:
+    // This TestName field must be public.  Exception when I tried private:
     // "java.lang.Exception: The @Rule 'testName' must be public."
     @Rule
     public TestName testName = new TestName();
 
     @Before
     public void setup() throws Exception {
-        // Tests that assume that write order is preserved when reading from the log must suffix their test names with
-        // "serial"
+        //Tests that assume that write order is preserved when reading from the log must suffix their test names with "serial"
         boolean requiresOrderPreserving = testName.getMethodName().toLowerCase().endsWith("serial");
-        log.debug("Starting {}.{} - Order preserving {}", getClass().getSimpleName(), testName.getMethodName(),
-                requiresOrderPreserving);
-        manager = openLogManager(DEFAULT_SENDER_ID, requiresOrderPreserving);
+        log.debug("Starting {}.{} - Order preserving {}", getClass().getSimpleName(), testName.getMethodName(), requiresOrderPreserving);
+        manager = openLogManager(DEFAULT_SENDER_ID,requiresOrderPreserving);
     }
 
     @After
@@ -93,7 +90,7 @@ public abstract class LogTest {
 
     @Test
     public void mediumSendReceiveSerial() throws Exception {
-        simpleSendReceive(2000, 1);
+        simpleSendReceive(2000,1);
     }
 
     @Test
@@ -113,7 +110,7 @@ public abstract class LogTest {
         log1.close();
         log1 = manager.openLog("test1");
         CountingReader count = new CountingReader(1, true);
-        log1.registerReader(ReadMarker.fromNow(), count);
+        log1.registerReader(ReadMarker.fromNow(),count);
         log1.add(BufferUtil.getLongBuffer(2L));
         count.await(TIMEOUT_MS);
         assertEquals(1, count.totalMsg.get());
@@ -134,7 +131,7 @@ public abstract class LogTest {
 
         l = manager.openLog("durable");
         CountingReader count = new CountingReader(2, true);
-        l.registerReader(ReadMarker.fromTime(Instant.ofEpochMilli(past)), count);
+        l.registerReader(ReadMarker.fromTime(Instant.ofEpochMilli(past)),count);
         count.await(TIMEOUT_MS);
         assertEquals(2, count.totalMsg.get());
         assertEquals(3L, count.totalValue.get());
@@ -153,7 +150,7 @@ public abstract class LogTest {
         }
         // Register readers
         for (int i = 0; i < nl; i++) {
-            logs[i].registerReader(ReadMarker.fromNow(), count);
+            logs[i].registerReader(ReadMarker.fromNow(),count);
         }
         // Send messages
         long value = 1L;
@@ -177,7 +174,7 @@ public abstract class LogTest {
             logs[i] = manager.openLog("loner" + i);
         }
         for (int i = 0; i < n; i++) {
-            logs[i].registerReader(ReadMarker.fromNow(), counts[i]);
+            logs[i].registerReader(ReadMarker.fromNow(),counts[i]);
             logs[i].add(BufferUtil.getLongBuffer(1L << (i + 1)));
         }
         // Check message receipt.
@@ -198,10 +195,10 @@ public abstract class LogTest {
         List<StaticBuffer> expected = new ArrayList<StaticBuffer>(rounds);
 
         Log l = manager.openLog("fuzz");
-        l.registerReader(ReadMarker.fromNow(), reader);
+        l.registerReader(ReadMarker.fromNow(),reader);
         Random rand = new Random();
         for (int i = 0; i < rounds; i++) {
-            // int len = rand.nextInt(maxLen + 1);
+            //int len = rand.nextInt(maxLen + 1);
             int len = maxLen;
             if (0 == len)
                 len = 1; // 0 would throw IllegalArgumentException
@@ -220,19 +217,16 @@ public abstract class LogTest {
     @Test
     public void testReadMarkerCompatibility() throws Exception {
         Log l1 = manager.openLog("testx");
-        l1.registerReader(ReadMarker.fromIdentifierOrNow("mark"), new StoringReader(0));
-        l1.registerReader(ReadMarker.fromIdentifierOrTime("mark", Instant.now().minusMillis(100)),
-                new StoringReader(1));
+        l1.registerReader(ReadMarker.fromIdentifierOrNow("mark"),new StoringReader(0));
+        l1.registerReader(ReadMarker.fromIdentifierOrTime("mark", Instant.now().minusMillis(100)),new StoringReader(1));
         try {
             l1.registerReader(ReadMarker.fromIdentifierOrNow("other"));
             fail();
-        } catch (IllegalArgumentException e) {
-        }
+        } catch (IllegalArgumentException e) {}
         try {
             l1.registerReader(ReadMarker.fromTime(Instant.now().minusMillis(100)));
             fail();
-        } catch (IllegalArgumentException e) {
-        }
+        } catch (IllegalArgumentException e) {}
         l1.registerReader(ReadMarker.fromNow(), new StoringReader(2));
     }
 
@@ -243,7 +237,7 @@ public abstract class LogTest {
         // Register two readers and verify they receive messages.
         CountingReader reader1 = new CountingReader(1, true);
         CountingReader reader2 = new CountingReader(2, true);
-        log.registerReader(ReadMarker.fromNow(), reader1, reader2);
+        log.registerReader(ReadMarker.fromNow(),reader1, reader2);
         log.add(BufferUtil.getLongBuffer(1L));
         reader1.await(TIMEOUT_MS);
 
@@ -265,23 +259,22 @@ public abstract class LogTest {
     public void sendReceive(int readers, int numMessages, int delayMS, boolean expectMessageOrder) throws Exception {
         Preconditions.checkState(0 < readers);
         Log log1 = manager.openLog("test1");
-        assertEquals("test1", log1.getName());
+        assertEquals("test1",log1.getName());
         CountingReader counts[] = new CountingReader[readers];
         for (int i = 0; i < counts.length; i++) {
             counts[i] = new CountingReader(numMessages, expectMessageOrder);
-            log1.registerReader(ReadMarker.fromNow(), counts[i]);
+            log1.registerReader(ReadMarker.fromNow(),counts[i]);
         }
-        for (long i = 1; i <= numMessages; i++) {
+        for (long i=1;i<=numMessages;i++) {
             log1.add(BufferUtil.getLongBuffer(i));
-            // System.out.println("Wrote message: " + i);
+//            System.out.println("Wrote message: " + i);
             Thread.sleep(delayMS);
         }
         for (int i = 0; i < counts.length; i++) {
             CountingReader count = counts[i];
             count.await(TIMEOUT_MS);
             assertEquals("counter index " + i + " message count mismatch", numMessages, count.totalMsg.get());
-            assertEquals("counter index " + i + " value mismatch", numMessages * (numMessages + 1) / 2,
-                    count.totalValue.get());
+            assertEquals("counter index " + i + " value mismatch", numMessages*(numMessages+1)/2,count.totalValue.get());
             assertTrue(log1.unregisterReader(count));
         }
         log1.close();
@@ -289,7 +282,8 @@ public abstract class LogTest {
     }
 
     /**
-     * Test MessageReader implementation. Allows waiting until an expected number of messages have been read.
+     * Test MessageReader implementation. Allows waiting until an expected number of messages have
+     * been read.
      */
     private static class LatchMessageReader implements MessageReader {
         private final CountDownLatch latch;
@@ -312,8 +306,7 @@ public abstract class LogTest {
         /**
          * Subclasses can override this method to perform additional processing on the message.
          */
-        protected void processMessage(Message message) {
-        }
+        protected void processMessage(Message message) {}
 
         /**
          * Blocks until the reader has read the expected number of messages.
@@ -327,8 +320,7 @@ public abstract class LogTest {
             }
             long c = latch.getCount();
             Preconditions.checkState(0 < c); // TODO remove this, it's not technically correct
-            String msg =
-                    "Did not read expected number of messages before timeout was reached (latch count is " + c + ")";
+            String msg = "Did not read expected number of messages before timeout was reached (latch count is " + c + ")";
             log.error(msg);
             throw new AssertionError(msg);
         }
@@ -336,10 +328,11 @@ public abstract class LogTest {
 
     private static class CountingReader extends LatchMessageReader {
 
-        private static final Logger log = LoggerFactory.getLogger(CountingReader.class);
+        private static final Logger log =
+                LoggerFactory.getLogger(CountingReader.class);
 
-        private final AtomicLong totalMsg = new AtomicLong(0);
-        private final AtomicLong totalValue = new AtomicLong(0);
+        private final AtomicLong totalMsg=new AtomicLong(0);
+        private final AtomicLong totalValue=new AtomicLong(0);
         private final boolean expectIncreasingValues;
 
         private long lastMessageValue = 0;
@@ -352,12 +345,11 @@ public abstract class LogTest {
         @Override
         public void processMessage(Message message) {
             StaticBuffer content = message.getContent();
-            assertEquals(8, content.length());
+            assertEquals(8,content.length());
             long value = content.getLong(0);
             log.info("Read log value {} by senderid \"{}\"", value, message.getSenderId());
             if (expectIncreasingValues) {
-                assertTrue("Message out of order or duplicated: " + lastMessageValue + " preceded " + value,
-                        lastMessageValue < value);
+                assertTrue("Message out of order or duplicated: " + lastMessageValue + " preceded " + value, lastMessageValue<value);
                 lastMessageValue = value;
             }
             totalMsg.incrementAndGet();

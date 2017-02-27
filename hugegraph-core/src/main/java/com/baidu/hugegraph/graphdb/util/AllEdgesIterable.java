@@ -21,11 +21,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Constructs {@link Iterable}s over all {@link com.baidu.hugegraph.core.HugeGraphEdge}s connecting a provided set of
- * vertices.
+ * Constructs {@link Iterable}s over all {@link com.baidu.hugegraph.core.HugeGraphEdge}s connecting a provided set of vertices.
  * <p/>
- * Given a set of vertices, one may be interested in all edges that are contained in the subgraph spanned by those
- * vertices.
+ * Given a set of vertices, one may be interested in all edges that are contained in the subgraph spanned
+ * by those vertices.
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
@@ -58,6 +57,7 @@ public class AllEdgesIterable {
     public static Iterable<Edge> of(Set<? extends Vertex> vertices) {
         return new SetBased(vertices);
     }
+
 
     private static class IterableBased implements Iterable<Edge> {
 

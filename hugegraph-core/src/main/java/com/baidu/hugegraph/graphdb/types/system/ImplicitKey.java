@@ -37,68 +37,67 @@ import java.util.Map;
  */
 public class ImplicitKey extends EmptyRelationType implements SystemRelationType, PropertyKey {
 
-    public static final ImplicitKey ID = new ImplicitKey(1001, T.id.getAccessor(), Object.class);
+    public static final ImplicitKey ID = new ImplicitKey(1001, T.id.getAccessor() ,Object.class);
 
-    public static final ImplicitKey JANUSGRAPHID = new ImplicitKey(1002, Token.makeSystemName("nid"), Long.class);
+    public static final ImplicitKey hugegraphID = new ImplicitKey(1002,Token.makeSystemName("nid"),Long.class);
 
-    public static final ImplicitKey LABEL = new ImplicitKey(11, T.label.getAccessor(), String.class);
+    public static final ImplicitKey LABEL = new ImplicitKey(11, T.label.getAccessor() ,String.class);
 
     public static final ImplicitKey KEY = new ImplicitKey(12, T.key.getAccessor(), String.class);
 
     public static final ImplicitKey VALUE = new ImplicitKey(13, T.value.getAccessor(), Object.class);
 
-    public static final ImplicitKey ADJACENT_ID = new ImplicitKey(1003, Token.makeSystemName("adjacent"), Long.class);
+    public static final ImplicitKey ADJACENT_ID = new ImplicitKey(1003,Token.makeSystemName("adjacent"),Long.class);
 
-    // ######### IMPLICIT KEYS WITH ID ############
+    //######### IMPLICIT KEYS WITH ID ############
 
-    public static final ImplicitKey TIMESTAMP = new ImplicitKey(5, Token.makeSystemName("timestamp"), Instant.class);
+    public static final ImplicitKey TIMESTAMP = new ImplicitKey(5,Token.makeSystemName("timestamp"),Instant.class);
 
-    public static final ImplicitKey VISIBILITY = new ImplicitKey(6, Token.makeSystemName("visibility"), String.class);
+    public static final ImplicitKey VISIBILITY = new ImplicitKey(6,Token.makeSystemName("visibility"),String.class);
 
-    public static final ImplicitKey TTL = new ImplicitKey(7, Token.makeSystemName("ttl"), Duration.class);
+    public static final ImplicitKey TTL = new ImplicitKey(7,Token.makeSystemName("ttl"), Duration.class);
 
-    public static final Map<EntryMetaData, ImplicitKey> MetaData2ImplicitKey = ImmutableMap.of(EntryMetaData.TIMESTAMP,
-            TIMESTAMP, EntryMetaData.TTL, TTL, EntryMetaData.VISIBILITY, VISIBILITY);
+
+    public static final Map<EntryMetaData,ImplicitKey> MetaData2ImplicitKey = ImmutableMap.of(
+            EntryMetaData.TIMESTAMP,TIMESTAMP,
+            EntryMetaData.TTL,TTL,
+            EntryMetaData.VISIBILITY,VISIBILITY);
 
     private final Class<?> datatype;
     private final String name;
     private final long id;
 
     private ImplicitKey(final long id, final String name, final Class<?> datatype) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(name) && datatype != null && id > 0);
+        Preconditions.checkArgument(StringUtils.isNotBlank(name) && datatype!=null && id>0);
         assert Token.isSystemName(name);
-        this.datatype = datatype;
-        this.name = name;
-        this.id = BaseRelationType.getSystemTypeId(id, HugeGraphSchemaCategory.PROPERTYKEY);
+        this.datatype=datatype;
+        this.name=name;
+        this.id= BaseRelationType.getSystemTypeId(id, HugeGraphSchemaCategory.PROPERTYKEY);
     }
 
-    public <O> O computeProperty(InternalElement e) {
-        if (this == ID) {
-            return (O) e.id();
-        } else if (this == JANUSGRAPHID) {
-            return (O) Long.valueOf(e.longId());
-        } else if (this == LABEL) {
-            return (O) e.label();
-        } else if (this == KEY) {
-            if (e instanceof HugeGraphProperty)
-                return (O) ((HugeGraphProperty) e).key();
-            else
-                return null;
-        } else if (this == VALUE) {
-            if (e instanceof HugeGraphProperty)
-                return (O) ((HugeGraphProperty) e).value();
-            else
-                return null;
-        } else if (this == TIMESTAMP || this == VISIBILITY) {
+
+    public<O> O computeProperty(InternalElement e) {
+        if (this==ID) {
+            return (O)e.id();
+        } else if (this==hugegraphID) {
+            return (O)Long.valueOf(e.longId());
+        } else if (this==LABEL) {
+            return (O)e.label();
+        } else if (this==KEY) {
+            if (e instanceof HugeGraphProperty) return (O)((HugeGraphProperty)e).key();
+            else return null;
+        } else if (this==VALUE) {
+            if (e instanceof HugeGraphProperty) return (O)((HugeGraphProperty)e).value();
+            else return null;
+        } else if (this==TIMESTAMP || this==VISIBILITY) {
             if (e instanceof InternalRelation) {
                 InternalRelation r = (InternalRelation) e;
-                if (this == VISIBILITY) {
+                if (this==VISIBILITY) {
                     return r.getValueDirect(this);
                 } else {
                     assert this == TIMESTAMP;
                     Long time = r.getValueDirect(this);
-                    if (time == null)
-                        return null; // there is no timestamp
+                    if (time==null) return null; //there is no timestamp
                     return (O) r.tx().getConfiguration().getTimestampProvider().getTime(time);
                 }
             } else {
@@ -107,15 +106,14 @@ public class ImplicitKey extends EmptyRelationType implements SystemRelationType
         } else if (this == TTL) {
             int ttl;
             if (e instanceof InternalRelation) {
-                ttl = ((InternalRelationType) ((InternalRelation) e).getType()).getTTL();
+                ttl = ((InternalRelationType)((InternalRelation) e).getType()).getTTL();
             } else if (e instanceof InternalVertex) {
-                ttl = ((InternalVertexLabel) ((InternalVertex) e).vertexLabel()).getTTL();
+                ttl = ((InternalVertexLabel)((InternalVertex) e).vertexLabel()).getTTL();
             } else {
                 ttl = 0;
             }
             return (O) Duration.ofSeconds(ttl);
-        } else
-            throw new AssertionError("Implicit key property is undefined: " + this.name());
+        } else throw new AssertionError("Implicit key property is undefined: " + this.name());
     }
 
     @Override
@@ -160,7 +158,7 @@ public class ImplicitKey extends EmptyRelationType implements SystemRelationType
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return dir == Direction.OUT;
+        return dir==Direction.OUT;
     }
 
     @Override
@@ -170,7 +168,7 @@ public class ImplicitKey extends EmptyRelationType implements SystemRelationType
 
     @Override
     public boolean hasId() {
-        return id > 0;
+        return id>0;
     }
 
     @Override

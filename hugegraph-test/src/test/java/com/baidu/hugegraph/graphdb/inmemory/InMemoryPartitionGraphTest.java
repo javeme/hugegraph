@@ -28,13 +28,13 @@ public class InMemoryPartitionGraphTest extends HugeGraphPartitionGraphTest {
     @Override
     public WriteConfiguration getBaseConfiguration() {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
-        config.set(GraphDatabaseConfiguration.IDS_FLUSH, false);
+        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
+        config.set(GraphDatabaseConfiguration.IDS_FLUSH,false);
         return config.getConfiguration();
     }
 
     @Override
-    public void clopen(Object...settings) {
+    public void clopen(Object... settings) {
         newTx();
     }
 
@@ -47,7 +47,6 @@ public class InMemoryPartitionGraphTest extends HugeGraphPartitionGraphTest {
     }
 
     @Override
-    public void testKeybasedGraphPartitioning() {
-    }
+    public void testKeybasedGraphPartitioning() {}
 
 }

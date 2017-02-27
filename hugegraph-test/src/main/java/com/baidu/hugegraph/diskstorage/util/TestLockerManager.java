@@ -31,7 +31,7 @@ public class TestLockerManager {
     }
 
     public Locker openLocker(String name) {
-        return new TestLocker(name, ERROR_ON_LOCKING);
+        return new TestLocker(name,ERROR_ON_LOCKING);
     }
 
     private static class TestLocker implements Locker {
@@ -43,20 +43,19 @@ public class TestLockerManager {
         }
 
         @Override
-        public void writeLock(KeyColumn lockID, StoreTransaction tx)
-                throws TemporaryLockingException, PermanentLockingException {
+        public void writeLock(KeyColumn lockID, StoreTransaction tx) throws TemporaryLockingException, PermanentLockingException {
             if (errorOnLock)
                 throw new UnsupportedOperationException("Locking is not supported!");
         }
 
         @Override
         public void checkLocks(StoreTransaction tx) throws TemporaryLockingException, PermanentLockingException {
-            // Do nothing since no locks where written
+            //Do nothing since no locks where written
         }
 
         @Override
         public void deleteLocks(StoreTransaction tx) throws TemporaryLockingException, PermanentLockingException {
-            // Do nothing since no locks where written
+            //Do nothing since no locks where written
         }
     }
 }

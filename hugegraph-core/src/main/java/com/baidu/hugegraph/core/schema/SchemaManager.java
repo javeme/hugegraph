@@ -20,9 +20,9 @@ package com.baidu.hugegraph.core.schema;
 public interface SchemaManager extends SchemaInspector {
 
     /**
-     * Returns a {@link com.baidu.hugegraph.core.schema.PropertyKeyMaker} instance to define a new
-     * {@link com.baidu.hugegraph.core.PropertyKey} with the given name. By defining types explicitly (rather than
-     * implicitly through usage) one can control various aspects of the key and associated consistency constraints.
+     * Returns a {@link com.baidu.hugegraph.core.schema.PropertyKeyMaker} instance to define a new {@link com.baidu.hugegraph.core.PropertyKey} with the given name.
+     * By defining types explicitly (rather than implicitly through usage) one can control various
+     * aspects of the key and associated consistency constraints.
      * <p/>
      * The key constructed with this maker will be created in the context of this transaction.
      *
@@ -33,9 +33,9 @@ public interface SchemaManager extends SchemaInspector {
     public PropertyKeyMaker makePropertyKey(String name);
 
     /**
-     * Returns a {@link com.baidu.hugegraph.core.schema.EdgeLabelMaker} instance to define a new
-     * {@link com.baidu.hugegraph.core.EdgeLabel} with the given name. By defining types explicitly (rather than
-     * implicitly through usage) one can control various aspects of the label and associated consistency constraints.
+     * Returns a {@link com.baidu.hugegraph.core.schema.EdgeLabelMaker} instance to define a new {@link com.baidu.hugegraph.core.EdgeLabel} with the given name.
+     * By defining types explicitly (rather than implicitly through usage) one can control various
+     * aspects of the label and associated consistency constraints.
      * <p/>
      * The label constructed with this maker will be created in the context of this transaction.
      *
@@ -46,12 +46,13 @@ public interface SchemaManager extends SchemaInspector {
     public EdgeLabelMaker makeEdgeLabel(String name);
 
     /**
-     * Returns a {@link VertexLabelMaker} to define a new vertex label with the given name. Note, that the name must be
-     * unique.
+     * Returns a {@link VertexLabelMaker} to define a new vertex label with the given name. Note, that the name must
+     * be unique.
      *
      * @param name
      * @return
      */
     public VertexLabelMaker makeVertexLabel(String name);
+
 
 }

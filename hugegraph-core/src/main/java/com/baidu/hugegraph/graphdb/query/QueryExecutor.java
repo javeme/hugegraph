@@ -24,7 +24,7 @@ import java.util.Iterator;
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public interface QueryExecutor<Q extends ElementQuery, R extends HugeGraphElement, B extends BackendQuery> {
+public interface QueryExecutor<Q extends ElementQuery,R extends HugeGraphElement,B extends BackendQuery> {
 
     /**
      * Returns all newly created elements in a transactional context that match the given query.
@@ -35,9 +35,8 @@ public interface QueryExecutor<Q extends ElementQuery, R extends HugeGraphElemen
     public Iterator<R> getNew(Q query);
 
     /**
-     * Whether the transactional context contains any deletions that could potentially affect the result set of the
-     * given query. This is used to determine whether results need to be checked for deletion with
-     * {@link #isDeleted(ElementQuery, com.baidu.hugegraph.core.HugeGraphElement)}.
+     * Whether the transactional context contains any deletions that could potentially affect the result set of the given query.
+     * This is used to determine whether results need to be checked for deletion with {@link #isDeleted(ElementQuery, com.baidu.hugegraph.core.HugeGraphElement)}.
      *
      * @param query
      * @return
@@ -45,8 +44,7 @@ public interface QueryExecutor<Q extends ElementQuery, R extends HugeGraphElemen
     public boolean hasDeletions(Q query);
 
     /**
-     * Whether the given result entry has been deleted in the transactional context and should hence be removed from the
-     * result set.
+     * Whether the given result entry has been deleted in the transactional context and should hence be removed from the result set.
      *
      * @param query
      * @param result
@@ -55,9 +53,9 @@ public interface QueryExecutor<Q extends ElementQuery, R extends HugeGraphElemen
     public boolean isDeleted(Q query, R result);
 
     /**
-     * Executes the given sub-query against a data store and returns an iterator over the results. These results are not
-     * yet adjusted to any modification made in the transactional context which are done by the {@link QueryProcessor}
-     * using the other methods of this interface.
+     * Executes the given sub-query against a data store and returns an iterator over the results. These results are not yet adjusted
+     * to any modification made in the transactional context which are done by the {@link QueryProcessor} using the other methods
+     * of this interface.
      *
      * @param query
      * @param subquery

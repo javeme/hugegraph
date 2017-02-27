@@ -46,8 +46,9 @@ public class CassandraHelper {
     }
 
     /**
-     * Constructs an {@link EntryList} from the Iterable of entries while excluding the end slice (since the method
-     * contract states that the end slice is exclusive, yet Cassandra treats it as inclusive) and respecting the limit.
+     * Constructs an {@link EntryList} from the Iterable of entries while excluding the end slice
+     * (since the method contract states that the end slice is exclusive, yet Cassandra treats it as
+     * inclusive) and respecting the limit.
      *
      * @param entries
      * @param getter
@@ -56,14 +57,15 @@ public class CassandraHelper {
      * @param <E>
      * @return
      */
-    public static <E> EntryList makeEntryList(final Iterable<E> entries,
-            final StaticArrayEntry.GetColVal<E, ByteBuffer> getter, final StaticBuffer lastColumn, final int limit) {
+    public static<E> EntryList makeEntryList(final Iterable<E> entries,
+                                             final StaticArrayEntry.GetColVal<E,ByteBuffer> getter,
+                                             final StaticBuffer lastColumn, final int limit) {
         return StaticArrayEntryList.ofByteBuffer(new Iterable<E>() {
             @Override
             public Iterator<E> iterator() {
-                return Iterators.filter(entries.iterator(), new FilterResultColumns<E>(lastColumn, limit, getter));
+                return Iterators.filter(entries.iterator(),new FilterResultColumns<E>(lastColumn,limit,getter));
             }
-        }, getter);
+        },getter);
     }
 
     private static class FilterResultColumns<E> implements Predicate<E> {
@@ -72,10 +74,9 @@ public class CassandraHelper {
 
         private final int limit;
         private final StaticBuffer lastColumn;
-        private final StaticArrayEntry.GetColVal<E, ByteBuffer> getter;
+        private final StaticArrayEntry.GetColVal<E,ByteBuffer> getter;
 
-        private FilterResultColumns(StaticBuffer lastColumn, int limit,
-                StaticArrayEntry.GetColVal<E, ByteBuffer> getter) {
+        private FilterResultColumns(StaticBuffer lastColumn, int limit, StaticArrayEntry.GetColVal<E, ByteBuffer> getter) {
             this.limit = limit;
             this.lastColumn = lastColumn;
             this.getter = getter;
@@ -83,27 +84,27 @@ public class CassandraHelper {
 
         @Override
         public boolean apply(@Nullable E e) {
-            assert e != null;
-            if (count >= limit || BufferUtil.equals(lastColumn, getter.getColumn(e)))
-                return false;
+            assert e!=null;
+            if (count>=limit || BufferUtil.equals(lastColumn, getter.getColumn(e))) return false;
             count++;
             return true;
         }
 
     }
 
-    public static <E> Iterator<Entry> makeEntryIterator(final Iterable<E> entries,
-            final StaticArrayEntry.GetColVal<E, ByteBuffer> getter, final StaticBuffer lastColumn, final int limit) {
-        return Iterators.transform(
-                Iterators.filter(entries.iterator(), new FilterResultColumns<E>(lastColumn, limit, getter)),
-                new Function<E, Entry>() {
-                    @Nullable
-                    @Override
-                    public Entry apply(@Nullable E e) {
-                        return StaticArrayEntry.ofByteBuffer(e, getter);
-                    }
-                });
+    public static<E> Iterator<Entry> makeEntryIterator(final Iterable<E> entries,
+                                             final StaticArrayEntry.GetColVal<E,ByteBuffer> getter,
+                                             final StaticBuffer lastColumn, final int limit) {
+        return Iterators.transform(Iterators.filter(entries.iterator(),
+                new FilterResultColumns<E>(lastColumn, limit, getter)), new Function<E, Entry>() {
+            @Nullable
+            @Override
+            public Entry apply(@Nullable E e) {
+                return StaticArrayEntry.ofByteBuffer(e,getter);
+            }
+        });
     }
+
 
     public static KeyRange transformRange(Range<Token> range) {
         return transformRange(range.left, range.right);
@@ -126,7 +127,7 @@ public class CassandraHelper {
         Preconditions.checkArgument(leftTokenValue.length == rightTokenValue.length, "Tokens have unequal length");
         int tokenLength = leftTokenValue.length;
 
-        byte[][] tokens = new byte[][] { leftTokenValue, rightTokenValue };
+        byte[][] tokens = new byte[][]{leftTokenValue, rightTokenValue};
         byte[][] plusOne = new byte[2][tokenLength];
 
         for (int j = 0; j < 2; j++) {
@@ -137,8 +138,7 @@ public class CassandraHelper {
                     b++;
                     carry = false;
                 }
-                if (b == 0)
-                    carry = true;
+                if (b == 0) carry = true;
                 plusOne[j][i] = b;
             }
         }

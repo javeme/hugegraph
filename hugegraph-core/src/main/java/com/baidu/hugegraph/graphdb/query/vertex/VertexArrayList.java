@@ -25,8 +25,8 @@ import com.baidu.hugegraph.util.datastructures.IterablesUtil;
 import java.util.*;
 
 /**
- * An implementation of {@link VertexListInternal} that stores the actual vertex references and simply wraps an
- * {@link ArrayList} and keeps a boolean flag to remember whether this list is in sort order.
+ * An implementation of {@link VertexListInternal} that stores the actual vertex references
+ * and simply wraps an {@link ArrayList} and keeps a boolean flag to remember whether this list is in sort order.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -35,7 +35,7 @@ public class VertexArrayList implements VertexListInternal {
     public static final Comparator<HugeGraphVertex> VERTEX_ID_COMPARATOR = new Comparator<HugeGraphVertex>() {
         @Override
         public int compare(HugeGraphVertex o1, HugeGraphVertex o2) {
-            return Long.compare(o1.longId(), o2.longId());
+            return Long.compare(o1.longId(),o2.longId());
         }
     };
 
@@ -44,23 +44,23 @@ public class VertexArrayList implements VertexListInternal {
     private boolean sorted;
 
     private VertexArrayList(StandardHugeGraphTx tx, List<HugeGraphVertex> vertices, boolean sorted) {
-        Preconditions.checkArgument(tx != null && vertices != null);
+        Preconditions.checkArgument(tx!=null && vertices!=null);
         this.tx = tx;
-        this.vertices = vertices;
-        this.sorted = sorted;
+        this.vertices=vertices;
+        this.sorted=sorted;
     }
 
     public VertexArrayList(StandardHugeGraphTx tx) {
         Preconditions.checkNotNull(tx);
-        this.tx = tx;
+        this.tx=tx;
         vertices = new ArrayList<HugeGraphVertex>();
         sorted = true;
     }
 
+
     @Override
     public void add(HugeGraphVertex n) {
-        if (!vertices.isEmpty())
-            sorted = sorted && (vertices.get(vertices.size() - 1).longId() <= n.longId());
+        if (!vertices.isEmpty()) sorted = sorted && (vertices.get(vertices.size()-1).longId()<=n.longId());
         vertices.add(n);
     }
 
@@ -81,9 +81,8 @@ public class VertexArrayList implements VertexListInternal {
 
     @Override
     public void sort() {
-        if (sorted)
-            return;
-        Collections.sort(vertices, VERTEX_ID_COMPARATOR);
+        if (sorted) return;
+        Collections.sort(vertices,VERTEX_ID_COMPARATOR);
         sorted = true;
     }
 
@@ -94,7 +93,7 @@ public class VertexArrayList implements VertexListInternal {
 
     @Override
     public VertexList subList(int fromPosition, int length) {
-        return new VertexArrayList(tx, vertices.subList(fromPosition, fromPosition + length), sorted);
+        return new VertexArrayList(tx,vertices.subList(fromPosition,fromPosition+length),sorted);
     }
 
     @Override
@@ -105,12 +104,11 @@ public class VertexArrayList implements VertexListInternal {
     @Override
     public void addAll(VertexList vertexlist) {
         Preconditions.checkArgument(vertexlist instanceof VertexArrayList, "Only supporting union of identical lists.");
-        VertexArrayList other = (vertexlist instanceof VertexArrayList) ? (VertexArrayList) vertexlist
-                : ((VertexLongList) vertexlist).toVertexArrayList();
+        VertexArrayList other = (vertexlist instanceof VertexArrayList)?(VertexArrayList)vertexlist:
+                ((VertexLongList)vertexlist).toVertexArrayList();
         if (sorted && other.isSorted()) {
-            // Merge sort
-            vertices = (ArrayList<HugeGraphVertex>) IterablesUtil.mergeSort(vertices, other.vertices,
-                    VERTEX_ID_COMPARATOR);
+            //Merge sort
+            vertices = (ArrayList<HugeGraphVertex>) IterablesUtil.mergeSort(vertices, other.vertices, VERTEX_ID_COMPARATOR);
         } else {
             sorted = false;
             vertices.addAll(other.vertices);
@@ -119,7 +117,7 @@ public class VertexArrayList implements VertexListInternal {
 
     public VertexLongList toVertexLongList() {
         LongArrayList list = toLongList(vertices);
-        return new VertexLongList(tx, list, sorted);
+        return new VertexLongList(tx,list,sorted);
     }
 
     @Override

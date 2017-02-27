@@ -31,22 +31,22 @@ public class InMemoryGraphTest extends HugeGraphTest {
 
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
+        config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
         return config.getConfiguration();
     }
 
     @Override
-    public void clopen(Object...settings) {
-        if (settings != null && settings.length > 0) {
-            if (graph != null && graph.isOpen()) {
-                Preconditions.checkArgument(!graph.vertices().hasNext() && !graph.edges().hasNext(),
-                        "Graph cannot be re-initialized for InMemory since that would delete all data");
+    public void clopen(Object... settings) {
+        if (settings!=null && settings.length>0) {
+            if (graph!=null && graph.isOpen()) {
+                Preconditions.checkArgument(!graph.vertices().hasNext() &&
+                    !graph.edges().hasNext(),"Graph cannot be re-initialized for InMemory since that would delete all data");
                 graph.close();
             }
-            Map<TestConfigOption, Object> options = validateConfigOptions(settings);
+            Map<TestConfigOption,Object> options = validateConfigOptions(settings);
             ModifiableConfiguration config = GraphDatabaseConfiguration.buildGraphConfiguration();
-            config.set(GraphDatabaseConfiguration.STORAGE_BACKEND, "inmemory");
-            for (Map.Entry<TestConfigOption, Object> option : options.entrySet()) {
+            config.set(GraphDatabaseConfiguration.STORAGE_BACKEND,"inmemory");
+            for (Map.Entry<TestConfigOption,Object> option : options.entrySet()) {
                 config.set(option.getKey().option, option.getValue(), option.getKey().umbrella);
             }
             open(config.getConfiguration());
@@ -55,64 +55,49 @@ public class InMemoryGraphTest extends HugeGraphTest {
     }
 
     @Test
-    public void testLocalGraphConfiguration() {
-    }
+    public void testLocalGraphConfiguration() {}
 
     @Test
-    public void testMaskableGraphConfig() {
-    }
+    public void testMaskableGraphConfig() {}
 
     @Test
-    public void testGlobalGraphConfig() {
-    }
+    public void testGlobalGraphConfig() {}
 
     @Test
-    public void testGlobalOfflineGraphConfig() {
-    }
+    public void testGlobalOfflineGraphConfig() {}
 
     @Test
-    public void testFixedGraphConfig() {
-    }
+    public void testFixedGraphConfig() {}
 
     @Override
-    public void testManagedOptionMasking() {
-    }
+    public void testManagedOptionMasking() {}
 
     @Override
-    public void testTransactionConfiguration() {
-    }
+    public void testTransactionConfiguration() {}
 
     @Override
-    public void testTinkerPopOptimizationStrategies() {
-    }
+    public void testTinkerPopOptimizationStrategies() {}
 
     @Override
-    public void testDataTypes() {
-    }
+    public void testDataTypes() {}
 
     @Override
-    public void testForceIndexUsage() {
-    }
+    public void testForceIndexUsage() {}
 
     @Override
-    public void testAutomaticTypeCreation() {
-    }
+    public void testAutomaticTypeCreation() {}
 
     @Override
-    public void simpleLogTest() {
-    }
+    public void simpleLogTest() {}
 
     @Override
-    public void simpleLogTestWithFailure() {
-    }
+    public void simpleLogTestWithFailure() {}
 
     @Override
-    public void testIndexUpdatesWithReindexAndRemove() {
-    }
+    public void testIndexUpdatesWithReindexAndRemove() {}
 
     @Override
-    public void testIndexUpdateSyncWithMultipleInstances() {
-    }
+    public void testIndexUpdateSyncWithMultipleInstances() {}
 
     @Override
     protected boolean isLockingOptimistic() {

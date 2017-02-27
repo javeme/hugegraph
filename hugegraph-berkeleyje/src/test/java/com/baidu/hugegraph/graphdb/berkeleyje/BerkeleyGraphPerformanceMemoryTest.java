@@ -25,4 +25,5 @@ public class BerkeleyGraphPerformanceMemoryTest extends HugeGraphPerformanceMemo
         return BerkeleyStorageSetup.getBerkeleyJEGraphConfiguration();
     }
 
+
 }

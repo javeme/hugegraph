@@ -23,8 +23,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 /**
  * A HugeGraphVertexQuery is a VertexQuery executed for a single vertex.
  * <p />
- * Calling {@link com.baidu.hugegraph.core.HugeGraphVertex#query()} builds such a query against the vertex this method
- * is called on. This query builder provides the methods to specify which indicent edges or properties to query for.
+ * Calling {@link com.baidu.hugegraph.core.HugeGraphVertex#query()} builds such a query against the vertex
+ * this method is called on. This query builder provides the methods to specify which indicent edges or
+ * properties to query for.
  *
  *
  * @see BaseVertexQuery
@@ -32,25 +33,25 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
  */
 public interface HugeGraphVertexQuery<Q extends HugeGraphVertexQuery<Q>> extends BaseVertexQuery<Q> {
 
-    /*
-     * --------------------------------------------------------------- Query Specification (overwrite to merge
-     * BaseVertexQuery with Blueprint's VertexQuery) ---------------------------------------------------------------
-     */
+   /* ---------------------------------------------------------------
+    * Query Specification (overwrite to merge BaseVertexQuery with Blueprint's VertexQuery)
+    * ---------------------------------------------------------------
+    */
 
     @Override
     public Q adjacent(Vertex vertex);
 
     @Override
-    public Q types(String...type);
+    public Q types(String... type);
 
     @Override
-    public Q types(RelationType...type);
+    public Q types(RelationType... type);
 
     @Override
-    public Q labels(String...labels);
+    public Q labels(String... labels);
 
     @Override
-    public Q keys(String...keys);
+    public Q keys(String... keys);
 
     @Override
     public Q direction(Direction d);
@@ -79,10 +80,11 @@ public interface HugeGraphVertexQuery<Q extends HugeGraphVertexQuery<Q>> extends
     @Override
     public Q orderBy(String key, Order order);
 
-    /*
-     * --------------------------------------------------------------- Query execution
-     * ---------------------------------------------------------------
-     */
+
+    /* ---------------------------------------------------------------
+    * Query execution
+    * ---------------------------------------------------------------
+    */
 
     /**
      * Returns an iterable over all incident edges that match this query
@@ -90,6 +92,7 @@ public interface HugeGraphVertexQuery<Q extends HugeGraphVertexQuery<Q>> extends
      * @return Iterable over all incident edges that match this query
      */
     public Iterable<HugeGraphEdge> edges();
+
 
     public Iterable<HugeGraphVertex> vertices();
 
@@ -135,13 +138,14 @@ public interface HugeGraphVertexQuery<Q extends HugeGraphVertexQuery<Q>> extends
     }
 
     /**
-     * Retrieves all vertices connected to this query's base vertex by edges matching the conditions defined in this
-     * query.
+     * Retrieves all vertices connected to this query's base vertex by edges
+     * matching the conditions defined in this query.
      * <p/>
      * The query engine will determine the most efficient way to retrieve the vertices that match this query.
      *
      * @return A list of all vertices connected to this query's base vertex by matching edges
      */
     public VertexList vertexIds();
+
 
 }

@@ -70,9 +70,8 @@ public class KCVSManagerProxy implements KeyColumnValueStoreManager {
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
-        manager.mutateMany(mutations, txh);
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
+        manager.mutateMany(mutations,txh);
     }
 
 }

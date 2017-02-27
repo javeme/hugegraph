@@ -38,7 +38,7 @@ public class StandardPropertyKeyMaker extends StandardRelationTypeMaker implemen
     private Class<?> dataType;
 
     public StandardPropertyKeyMaker(StandardHugeGraphTx tx, String name, IndexSerializer indexSerializer,
-            final AttributeHandler attributeHandler) {
+                                    final AttributeHandler attributeHandler) {
         super(tx, name, indexSerializer, attributeHandler);
         dataType = null;
         cardinality(Cardinality.SINGLE);
@@ -62,6 +62,7 @@ public class StandardPropertyKeyMaker extends StandardRelationTypeMaker implemen
         return this;
     }
 
+
     @Override
     public StandardPropertyKeyMaker invisible() {
         super.invisible();
@@ -69,13 +70,13 @@ public class StandardPropertyKeyMaker extends StandardRelationTypeMaker implemen
     }
 
     @Override
-    public StandardPropertyKeyMaker signature(PropertyKey...types) {
+    public StandardPropertyKeyMaker signature(PropertyKey... types) {
         super.signature(types);
         return this;
     }
 
     @Override
-    public StandardPropertyKeyMaker sortKey(PropertyKey...types) {
+    public StandardPropertyKeyMaker sortKey(PropertyKey... types) {
         super.sortKey(types);
         return this;
     }
@@ -89,14 +90,10 @@ public class StandardPropertyKeyMaker extends StandardRelationTypeMaker implemen
     @Override
     public PropertyKey make() {
         Preconditions.checkArgument(dataType != null, "Need to specify a datatype");
-        Preconditions.checkArgument(tx.validDataType(dataType), "Not a supported data type: %s", dataType);
-        Preconditions.checkArgument(!dataType.isPrimitive(),
-                "Primitive types are not supported. Use the corresponding object type, e.g. Integer.class instead of int.class [%s]",
-                dataType);
-        Preconditions.checkArgument(!dataType.isInterface(), "Datatype must be a class and not an interface: %s",
-                dataType);
-        Preconditions.checkArgument(dataType.isArray() || !Modifier.isAbstract(dataType.getModifiers()),
-                "Datatype cannot be an abstract class: %s", dataType);
+        Preconditions.checkArgument(tx.validDataType(dataType), "Not a supported data type: %s",dataType);
+        Preconditions.checkArgument(!dataType.isPrimitive(), "Primitive types are not supported. Use the corresponding object type, e.g. Integer.class instead of int.class [%s]", dataType);
+        Preconditions.checkArgument(!dataType.isInterface(), "Datatype must be a class and not an interface: %s", dataType);
+        Preconditions.checkArgument(dataType.isArray() || !Modifier.isAbstract(dataType.getModifiers()), "Datatype cannot be an abstract class: %s", dataType);
 
         TypeDefinitionMap definition = makeDefinition();
         definition.setValue(DATATYPE, dataType);

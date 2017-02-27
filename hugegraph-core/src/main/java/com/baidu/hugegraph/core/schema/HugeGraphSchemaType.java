@@ -15,12 +15,12 @@
 package com.baidu.hugegraph.core.schema;
 
 /**
- * A HugeGraphSchemaType is a {@link HugeGraphSchemaElement} that represents a label or key used in the graph. As such,
- * a schema type is either a {@link com.baidu.hugegraph.core.RelationType} or a
- * {@link com.baidu.hugegraph.core.VertexLabel}.
+ * A HugeGraphSchemaType is a {@link HugeGraphSchemaElement} that represents a label or key
+ * used in the graph. As such, a schema type is either a {@link com.baidu.hugegraph.core.RelationType}
+ * or a {@link com.baidu.hugegraph.core.VertexLabel}.
  * <p/>
- * HugeGraphSchemaTypes are a special {@link HugeGraphSchemaElement} in that they are referenced from the main graph
- * when creating vertices, edges, and properties.
+ * HugeGraphSchemaTypes are a special {@link HugeGraphSchemaElement} in that they are referenced from the
+ * main graph when creating vertices, edges, and properties.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */

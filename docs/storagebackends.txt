@@ -2,15 +2,15 @@
 Storage Backends
 ================
 
-JanusGraph's data storage layer is pluggable.  Implementations of the
-pluggable storage layer -- that is, the software component tells JanusGraph
+hugegraph's data storage layer is pluggable.  Implementations of the
+pluggable storage layer -- that is, the software component tells hugegraph
 how to talk to its data store -- are called storage backends.
 
-This section describes configuration and administration of JanusGraph's
+This section describes configuration and administration of hugegraph's
 standard storage backends.
 
 This section only addresses configuration of the stock storage
-backends that come with JanusGraph.
+backends that come with hugegraph.
 
 include::cassandra.txt[]
 

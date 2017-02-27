@@ -30,12 +30,13 @@ import java.util.Map;
 /**
  * Wraps a {@link OrderedKeyValueStoreManager} and exposes it as a {@link KeyColumnValueStoreManager}.
  * <p/>
- * An optional mapping of key-length can be defined if it is known that the {@link KeyColumnValueStore} of a given name
- * has a static key length. See {@link OrderedKeyValueStoreAdapter} for more information.
+ * An optional mapping of key-length can be defined if it is known that the {@link KeyColumnValueStore} of a given
+ * name has a static key length. See {@link OrderedKeyValueStoreAdapter} for more information.
  *
  * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreManager {
+
 
     private final OrderedKeyValueStoreManager manager;
 
@@ -48,12 +49,10 @@ public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreMa
     }
 
     public OrderedKeyValueStoreManagerAdapter(OrderedKeyValueStoreManager manager, Map<String, Integer> keyLengths) {
-        Preconditions.checkArgument(manager.getFeatures().isKeyOrdered(), "Expected backing store to be ordered: %s",
-                manager);
+        Preconditions.checkArgument(manager.getFeatures().isKeyOrdered(), "Expected backing store to be ordered: %s", manager);
         this.manager = manager;
         ImmutableMap.Builder<String, Integer> mb = ImmutableMap.builder();
-        if (keyLengths != null && !keyLengths.isEmpty())
-            mb.putAll(keyLengths);
+        if (keyLengths != null && !keyLengths.isEmpty()) mb.putAll(keyLengths);
         this.keyLengths = mb.build();
         this.stores = new HashMap<String, OrderedKeyValueStoreAdapter>();
     }
@@ -94,8 +93,7 @@ public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreMa
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         Map<String, KVMutation> converted = new HashMap<String, KVMutation>(mutations.size());
         for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> storeEntry : mutations.entrySet()) {
             OrderedKeyValueStoreAdapter store = openDatabase(storeEntry.getKey());
@@ -107,7 +105,7 @@ public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreMa
                 KCVMutation mutation = entry.getValue();
                 if (mutation.hasAdditions()) {
                     for (Entry addition : mutation.getAdditions()) {
-                        mut.addition(store.concatenate(key, addition));
+                        mut.addition(store.concatenate(key,addition));
                     }
                 }
 
@@ -122,8 +120,7 @@ public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreMa
         manager.mutateMany(converted, txh);
     }
 
-    private static final OrderedKeyValueStoreAdapter wrapKeyValueStore(OrderedKeyValueStore store,
-            Map<String, Integer> keyLengths) {
+    private static final OrderedKeyValueStoreAdapter wrapKeyValueStore(OrderedKeyValueStore store, Map<String, Integer> keyLengths) {
         String name = store.getName();
         if (keyLengths.containsKey(name)) {
             int keyLength = keyLengths.get(name);

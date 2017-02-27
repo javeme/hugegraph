@@ -26,63 +26,48 @@ import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- */
+* @author Matthias Broecheler (me@matthiasb.com)
+*/
 public enum ElementCategory {
     VERTEX, EDGE, PROPERTY;
 
     public Class<? extends Element> getElementType() {
-        switch (this) {
-            case VERTEX:
-                return HugeGraphVertex.class;
-            case EDGE:
-                return HugeGraphEdge.class;
-            case PROPERTY:
-                return HugeGraphVertexProperty.class;
-            default:
-                throw new IllegalArgumentException();
+        switch(this) {
+            case VERTEX: return HugeGraphVertex.class;
+            case EDGE: return HugeGraphEdge.class;
+            case PROPERTY: return HugeGraphVertexProperty.class;
+            default: throw new IllegalArgumentException();
         }
     }
 
     public boolean isRelation() {
-        switch (this) {
-            case VERTEX:
-                return false;
+        switch(this) {
+            case VERTEX: return false;
             case EDGE:
-            case PROPERTY:
-                return true;
-            default:
-                throw new IllegalArgumentException();
+            case PROPERTY: return true;
+            default: throw new IllegalArgumentException();
         }
     }
 
     public boolean isValidConstraint(HugeGraphSchemaType type) {
         Preconditions.checkNotNull(type);
-        switch (this) {
-            case VERTEX:
-                return (type instanceof VertexLabelVertex);
-            case EDGE:
-                return (type instanceof EdgeLabelVertex);
-            case PROPERTY:
-                return (type instanceof PropertyKeyVertex);
-            default:
-                throw new IllegalArgumentException();
+        switch(this) {
+            case VERTEX: return (type instanceof VertexLabelVertex);
+            case EDGE: return (type instanceof EdgeLabelVertex);
+            case PROPERTY: return (type instanceof PropertyKeyVertex);
+            default: throw new IllegalArgumentException();
         }
     }
 
     public boolean matchesConstraint(HugeGraphSchemaType type, HugeGraphElement element) {
-        Preconditions.checkArgument(type != null && element != null);
+        Preconditions.checkArgument(type != null && element!=null);
         assert isInstance(element);
         assert isValidConstraint(type);
-        switch (this) {
-            case VERTEX:
-                return ((HugeGraphVertex) element).vertexLabel().equals(type);
-            case EDGE:
-                return ((HugeGraphEdge) element).edgeLabel().equals(type);
-            case PROPERTY:
-                return ((HugeGraphVertexProperty) element).propertyKey().equals(type);
-            default:
-                throw new IllegalArgumentException();
+        switch(this) {
+            case VERTEX: return ((HugeGraphVertex)element).vertexLabel().equals(type);
+            case EDGE: return ((HugeGraphEdge)element).edgeLabel().equals(type);
+            case PROPERTY: return ((HugeGraphVertexProperty)element).propertyKey().equals(type);
+            default: throw new IllegalArgumentException();
         }
     }
 
@@ -100,38 +85,32 @@ public enum ElementCategory {
     }
 
     public HugeGraphElement retrieve(Object elementId, HugeGraphTransaction tx) {
-        Preconditions.checkArgument(elementId != null, "Must provide elementId");
+        Preconditions.checkArgument(elementId!=null,"Must provide elementId");
         switch (this) {
             case VERTEX:
                 Preconditions.checkArgument(elementId instanceof Long);
                 return tx.getVertex(((Long) elementId).longValue());
             case EDGE:
                 Preconditions.checkArgument(elementId instanceof RelationIdentifier);
-                return ((RelationIdentifier) elementId).findEdge(tx);
+                return ((RelationIdentifier)elementId).findEdge(tx);
             case PROPERTY:
                 Preconditions.checkArgument(elementId instanceof RelationIdentifier);
-                return ((RelationIdentifier) elementId).findProperty(tx);
-            default:
-                throw new IllegalArgumentException();
+                return ((RelationIdentifier)elementId).findProperty(tx);
+            default: throw new IllegalArgumentException();
         }
     }
 
     public static final ElementCategory getByClazz(Class<? extends Element> clazz) {
-        Preconditions.checkArgument(clazz != null, "Need to provide a element class argument");
-        if (Vertex.class.isAssignableFrom(clazz))
-            return VERTEX;
-        else if (Edge.class.isAssignableFrom(clazz))
-            return EDGE;
-        else if (HugeGraphVertexProperty.class.isAssignableFrom(clazz))
-            return PROPERTY;
-        else
-            throw new IllegalArgumentException("Invalid clazz provided: " + clazz);
+        Preconditions.checkArgument(clazz!=null,"Need to provide a element class argument");
+        if (Vertex.class.isAssignableFrom(clazz)) return VERTEX;
+        else if (Edge.class.isAssignableFrom(clazz)) return EDGE;
+        else if (HugeGraphVertexProperty.class.isAssignableFrom(clazz)) return PROPERTY;
+        else throw new IllegalArgumentException("Invalid clazz provided: " + clazz);
     }
 
     public static final ElementCategory getByName(final String name) {
         for (ElementCategory category : values()) {
-            if (category.toString().equalsIgnoreCase(name))
-                return category;
+            if (category.toString().equalsIgnoreCase(name)) return category;
         }
         throw new IllegalArgumentException("Unrecognized name: " + name);
     }

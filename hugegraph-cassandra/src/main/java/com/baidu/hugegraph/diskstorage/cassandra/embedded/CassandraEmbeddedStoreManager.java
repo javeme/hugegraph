@@ -65,7 +65,8 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
     private static final Logger log = LoggerFactory.getLogger(CassandraEmbeddedStoreManager.class);
 
     /**
-     * The default value for {@link GraphDatabaseConfiguration#STORAGE_CONF_FILE}.
+     * The default value for
+     * {@link GraphDatabaseConfiguration#STORAGE_CONF_FILE}.
      */
     public static final String CASSANDRA_YAML_DEFAULT = "./conf/cassandra.yaml";
 
@@ -102,7 +103,8 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
     }
 
     @Override
-    public IPartitioner getCassandraPartitioner() throws BackendException {
+    public IPartitioner getCassandraPartitioner()
+            throws BackendException {
         try {
             return StorageService.getPartitioner();
         } catch (Exception e) {
@@ -123,8 +125,7 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
     }
 
     @Override
-    public synchronized KeyColumnValueStore openDatabase(String name, StoreMetaData.Container metaData)
-            throws BackendException {
+    public synchronized KeyColumnValueStore openDatabase(String name, StoreMetaData.Container metaData) throws BackendException {
         if (openStores.containsKey(name))
             return openStores.get(name);
 
@@ -138,12 +139,14 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
     }
 
     /*
-     * Raw type warnings are suppressed in this method because {@link StorageService#getLocalPrimaryRanges(String)}
-     * returns a raw (unparameterized) type.
+     * Raw type warnings are suppressed in this method because
+     * {@link StorageService#getLocalPrimaryRanges(String)} returns a raw
+     * (unparameterized) type.
      */
     public List<KeyRange> getLocalKeyPartition() throws BackendException {
         ensureKeyspaceExists(keySpaceName);
 
+        
         Collection<Range<Token>> ranges = StorageService.instance.getPrimaryRanges(keySpaceName);
 
         List<KeyRange> keyRanges = new ArrayList<KeyRange>(ranges.size());
@@ -156,21 +159,19 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
     }
 
     /*
-     * This implementation can't handle counter columns.
-     *
-     * The private method internal_batch_mutate in CassandraServer as of 1.2.0 provided most of the following method
-     * after transaction handling.
-     */
+      * This implementation can't handle counter columns.
+      *
+      * The private method internal_batch_mutate in CassandraServer as of 1.2.0
+      * provided most of the following method after transaction handling.
+      */
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         Preconditions.checkNotNull(mutations);
 
         final MaskedTimestamp commitTime = new MaskedTimestamp(txh);
 
         int size = 0;
-        for (Map<StaticBuffer, KCVMutation> mutation : mutations.values())
-            size += mutation.size();
+        for (Map<StaticBuffer, KCVMutation> mutation : mutations.values()) size += mutation.size();
         Map<StaticBuffer, org.apache.cassandra.db.Mutation> rowMutations = new HashMap<>(size);
 
         for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> mutEntry : mutations.entrySet()) {
@@ -209,14 +210,12 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
             }
         }
 
-        mutate(new ArrayList<org.apache.cassandra.db.Mutation>(rowMutations.values()),
-                getTx(txh).getWriteConsistencyLevel().getDB());
+        mutate(new ArrayList<org.apache.cassandra.db.Mutation>(rowMutations.values()), getTx(txh).getWriteConsistencyLevel().getDB());
 
         sleepAfterWrite(txh, commitTime);
     }
 
-    private void mutate(List<org.apache.cassandra.db.Mutation> cmds, org.apache.cassandra.db.ConsistencyLevel clvl)
-            throws BackendException {
+    private void mutate(List<org.apache.cassandra.db.Mutation> cmds, org.apache.cassandra.db.ConsistencyLevel clvl) throws BackendException {
         try {
             schedule(DatabaseDescriptor.getRpcTimeout());
             try {
@@ -292,25 +291,21 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
         ensureColumnFamilyExists(ksName, cfName, BytesType.instance);
     }
 
-    private void ensureColumnFamilyExists(String keyspaceName, String columnfamilyName, AbstractType<?> comparator)
-            throws BackendException {
+    private void ensureColumnFamilyExists(String keyspaceName, String columnfamilyName, AbstractType<?> comparator) throws BackendException {
         if (null != Schema.instance.getCFMetaData(keyspaceName, columnfamilyName))
             return;
 
         // Column Family not found; create it
-        CFMetaData cfm = new CFMetaData(keyspaceName, columnfamilyName, ColumnFamilyType.Standard,
-                CellNames.fromAbstractType(comparator, true));
+        CFMetaData cfm = new CFMetaData(keyspaceName, columnfamilyName, ColumnFamilyType.Standard, CellNames.fromAbstractType(comparator, true));
         try {
             if (storageConfig.has(COMPACTION_STRATEGY)) {
-                cfm.compactionStrategyClass(
-                        CFMetaData.createCompactionStrategy(storageConfig.get(COMPACTION_STRATEGY)));
+                cfm.compactionStrategyClass(CFMetaData.createCompactionStrategy(storageConfig.get(COMPACTION_STRATEGY)));
             }
             if (!compactionOptions.isEmpty()) {
                 cfm.compactionStrategyOptions(compactionOptions);
             }
         } catch (ConfigurationException e) {
-            throw new PermanentBackendException(
-                    "Failed to create column family metadata for " + keyspaceName + ":" + columnfamilyName, e);
+            throw new PermanentBackendException("Failed to create column family metadata for " + keyspaceName + ":" + columnfamilyName, e);
         }
 
         // Hard-coded caching settings
@@ -324,53 +319,56 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
         final CompressionParameters cp;
         if (compressionEnabled) {
             try {
-                cp = new CompressionParameters(compressionClass, compressionChunkSizeKB * 1024,
-                        Collections.<String, String> emptyMap());
+                cp = new CompressionParameters(compressionClass,
+                        compressionChunkSizeKB * 1024,
+                        Collections.<String, String>emptyMap());
                 // CompressionParameters doesn't override toString(), so be explicit
                 log.debug("Creating CF {}: setting {}={} and {}={} on {}",
-                        new Object[] { columnfamilyName, CompressionParameters.SSTABLE_COMPRESSION, compressionClass,
-                                CompressionParameters.CHUNK_LENGTH_KB, compressionChunkSizeKB, cp });
+                        new Object[]{
+                                columnfamilyName,
+                                CompressionParameters.SSTABLE_COMPRESSION, compressionClass,
+                                CompressionParameters.CHUNK_LENGTH_KB, compressionChunkSizeKB,
+                                cp});
             } catch (ConfigurationException ce) {
                 throw new PermanentBackendException(ce);
             }
         } else {
             cp = new CompressionParameters(null);
-            log.debug("Creating CF {}: setting {} to null to disable compression", columnfamilyName,
-                    CompressionParameters.SSTABLE_COMPRESSION);
+            log.debug("Creating CF {}: setting {} to null to disable compression",
+                    columnfamilyName, CompressionParameters.SSTABLE_COMPRESSION);
         }
         cfm.compressionParameters(cp);
 
         try {
             cfm.addDefaultIndexNames();
         } catch (ConfigurationException e) {
-            throw new PermanentBackendException(
-                    "Failed to create column family metadata for " + keyspaceName + ":" + columnfamilyName, e);
+            throw new PermanentBackendException("Failed to create column family metadata for " + keyspaceName + ":" + columnfamilyName, e);
         }
         try {
             MigrationManager.announceNewColumnFamily(cfm);
             log.info("Created CF {} in KS {}", columnfamilyName, keyspaceName);
         } catch (ConfigurationException e) {
-            throw new PermanentBackendException(
-                    "Failed to create column family " + keyspaceName + ":" + columnfamilyName, e);
+            throw new PermanentBackendException("Failed to create column family " + keyspaceName + ":" + columnfamilyName, e);
         }
 
         /*
-         * I'm chasing a nondetermistic exception that appears only rarely on my machine when executing the embedded
-         * cassandra tests. If these dummy reads ever actually fail and dump a log message, it could help debug the root
-         * cause.
+         * I'm chasing a nondetermistic exception that appears only rarely on my
+         * machine when executing the embedded cassandra tests. If these dummy
+         * reads ever actually fail and dump a log message, it could help debug
+         * the root cause.
          *
-         * java.lang.RuntimeException: java.lang.IllegalArgumentException: Unknown table/cf pair
-         * (InternalCassandraEmbeddedKeyColumnValueTest.testStore1) at
-         * org.apache.cassandra.service.StorageProxy$DroppableRunnable.run(StorageProxy.java:1582) at
-         * java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145) at
-         * java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615) at
-         * java.lang.Thread.run(Thread.java:744) Caused by: java.lang.IllegalArgumentException: Unknown table/cf pair
-         * (InternalCassandraEmbeddedKeyColumnValueTest.testStore1) at
-         * org.apache.cassandra.db.Table.getColumnFamilyStore(Table.java:166) at
-         * org.apache.cassandra.db.Table.getRow(Table.java:354) at
-         * org.apache.cassandra.db.SliceFromReadCommand.getRow(SliceFromReadCommand.java:70) at
-         * org.apache.cassandra.service.StorageProxy$LocalReadRunnable.runMayThrow(StorageProxy.java:1052) at
-         * org.apache.cassandra.service.StorageProxy$DroppableRunnable.run(StorageProxy.java:1578) ... 3 more
+         *   java.lang.RuntimeException: java.lang.IllegalArgumentException: Unknown table/cf pair (InternalCassandraEmbeddedKeyColumnValueTest.testStore1)
+         *          at org.apache.cassandra.service.StorageProxy$DroppableRunnable.run(StorageProxy.java:1582)
+         *           at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+         *           at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+         *           at java.lang.Thread.run(Thread.java:744)
+         *   Caused by: java.lang.IllegalArgumentException: Unknown table/cf pair (InternalCassandraEmbeddedKeyColumnValueTest.testStore1)
+         *           at org.apache.cassandra.db.Table.getColumnFamilyStore(Table.java:166)
+         *           at org.apache.cassandra.db.Table.getRow(Table.java:354)
+         *           at org.apache.cassandra.db.SliceFromReadCommand.getRow(SliceFromReadCommand.java:70)
+         *           at org.apache.cassandra.service.StorageProxy$LocalReadRunnable.runMayThrow(StorageProxy.java:1052)
+         *           at org.apache.cassandra.service.StorageProxy$DroppableRunnable.run(StorageProxy.java:1578)
+         *           ... 3 more
          */
         retryDummyRead(keyspaceName, columnfamilyName);
     }
@@ -393,17 +391,17 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
         while (System.currentTimeMillis() < limit) {
             try {
                 SortedSet<CellName> names = new TreeSet<>(new Comparator<CellName>() {
-                    // This is a singleton set. We need to define a comparator because SimpleDenseCellName is not
+                    // This is a singleton set.  We need to define a comparator because SimpleDenseCellName is not
                     // comparable, but it doesn't have to be a useful comparator
                     @Override
-                    public int compare(CellName o1, CellName o2) {
+                    public int compare(CellName o1, CellName o2)
+                    {
                         return 0;
                     }
                 });
                 names.add(CellNames.simpleDense(ByteBufferUtil.zeroByteBuffer(1)));
                 NamesQueryFilter nqf = new NamesQueryFilter(names);
-                SliceByNamesReadCommand cmd =
-                        new SliceByNamesReadCommand(ks, ByteBufferUtil.zeroByteBuffer(1), cf, 1L, nqf);
+                SliceByNamesReadCommand cmd = new SliceByNamesReadCommand(ks, ByteBufferUtil.zeroByteBuffer(1), cf, 1L, nqf);
                 StorageProxy.read(ImmutableList.<ReadCommand> of(cmd), ConsistencyLevel.QUORUM);
                 log.info("Read on CF {} in KS {} succeeded", cf, ks);
                 return;
@@ -418,7 +416,6 @@ public class CassandraEmbeddedStoreManager extends AbstractCassandraStoreManager
             }
         }
 
-        throw new PermanentBackendException(
-                "Timed out while attempting to read CF " + cf + " in KS " + ks + " following creation");
+        throw new PermanentBackendException("Timed out while attempting to read CF " + cf + " in KS " + ks + " following creation");
     }
 }

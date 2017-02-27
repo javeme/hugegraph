@@ -78,8 +78,7 @@ public class GraphIndexStatusWatcher
 
             String waitingOn = Joiner.on(",").withKeyValueSeparator("=").join(notConverged);
             if (!notConverged.isEmpty()) {
-                LOGGER.info("Some key(s) on index {} do not currently have status {}: {}", graphIndexName, status,
-                        waitingOn);
+                LOGGER.info("Some key(s) on index {} do not currently have status {}: {}", graphIndexName, status, waitingOn);
             } else {
                 LOGGER.info("All {} key(s) on index {} have status {}", converged.size(), graphIndexName, status);
                 return new GraphIndexStatusReport(true, graphIndexName, status, notConverged, converged, t.elapsed());
@@ -88,8 +87,8 @@ public class GraphIndexStatusWatcher
             timedOut = null != timeout && 0 < t.elapsed().compareTo(timeout);
 
             if (timedOut) {
-                LOGGER.info("Timed out ({}) while waiting for index {} to converge on status {}", timeout,
-                        graphIndexName, status);
+                LOGGER.info("Timed out ({}) while waiting for index {} to converge on status {}",
+                        timeout, graphIndexName, status);
                 return new GraphIndexStatusReport(false, graphIndexName, status, notConverged, converged, t.elapsed());
             }
             notConverged.clear();

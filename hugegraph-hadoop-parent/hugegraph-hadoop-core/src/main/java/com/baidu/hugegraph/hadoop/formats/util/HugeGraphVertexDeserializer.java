@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,8 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
     private final IDManager idManager;
     private final boolean verifyVertexExistence = false;
 
-    private static final Logger log = LoggerFactory.getLogger(HugeGraphVertexDeserializer.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(HugeGraphVertexDeserializer.class);
 
     public HugeGraphVertexDeserializer(final HugeGraphHadoopSetup setup) {
         this.setup = setup;
@@ -62,7 +63,7 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
         while (adjacentVertices.hasNext()) {
             Vertex adjacentVertex = adjacentVertices.next();
 
-            if (adjacentVertex.equals(vertex)) {
+            if(adjacentVertex.equals(vertex)){
                 return true;
             }
         }
@@ -102,14 +103,14 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
                 long vertexLabelId = relation.getOtherVertexId();
                 VertexLabel vl = typeManager.getExistingVertexLabel(vertexLabelId);
                 // Create TinkerVertex with this label
-                // tv = (TinkerVertex)tg.addVertex(T.label, vl.label(), T.id, vertexId);
+                //tv = (TinkerVertex)tg.addVertex(T.label, vl.label(), T.id, vertexId);
                 tv = getOrCreateVertex(vertexId, vl.name(), tg);
             }
         }
 
         // Added this following testing
         if (null == tv) {
-            // tv = (TinkerVertex)tg.addVertex(T.id, vertexId);
+            //tv = (TinkerVertex)tg.addVertex(T.id, vertexId);
             tv = getOrCreateVertex(vertexId, null, tg);
         }
 
@@ -124,11 +125,9 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
                     foundVertexState = true;
                 }
 
-                if (systemTypes.isSystemType(relation.typeId))
-                    continue; // Ignore system types
+                if (systemTypes.isSystemType(relation.typeId)) continue; //Ignore system types
                 final RelationType type = typeManager.getExistingRelationType(relation.typeId);
-                if (((InternalRelationType) type).isInvisibleType())
-                    continue; // Ignore hidden types
+                if (((InternalRelationType)type).isInvisibleType()) continue; //Ignore hidden types
 
                 // Decode and create the relation (edge or property)
                 if (type.isPropertyKey()) {
@@ -143,11 +142,10 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
                     // Partitioned vertex handling
                     if (idManager.isPartitionedVertex(relation.getOtherVertexId())) {
                         Preconditions.checkState(setup.getFilterPartitionedVertices(),
-                                "Read edge incident on a partitioned vertex, but partitioned vertex filtering is disabled.  "
-                                        + "Relation ID: %s.  This vertex ID: %s.  Other vertex ID: %s.  Edge label: %s.",
+                                "Read edge incident on a partitioned vertex, but partitioned vertex filtering is disabled.  " +
+                                "Relation ID: %s.  This vertex ID: %s.  Other vertex ID: %s.  Edge label: %s.",
                                 relation.relationId, vertexId, relation.getOtherVertexId(), type.name());
-                        log.debug(
-                                "Skipping edge with ID {} incident on partitioned vertex with ID {} (and nonpartitioned vertex with ID {})",
+                        log.debug("Skipping edge with ID {} incident on partitioned vertex with ID {} (and nonpartitioned vertex with ID {})",
                                 relation.relationId, relation.getOtherVertexId(), vertexId);
                         continue;
                     }
@@ -164,9 +162,9 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
                     }
 
                     if (relation.direction.equals(Direction.IN)) {
-                        te = (TinkerEdge) adjacentVertex.addEdge(type.name(), tv, T.id, relation.relationId);
+                        te = (TinkerEdge)adjacentVertex.addEdge(type.name(), tv, T.id, relation.relationId);
                     } else if (relation.direction.equals(Direction.OUT)) {
-                        te = (TinkerEdge) tv.addEdge(type.name(), adjacentVertex, T.id, relation.relationId);
+                        te = (TinkerEdge)tv.addEdge(type.name(), adjacentVertex, T.id, relation.relationId);
                     } else {
                         throw new RuntimeException("Direction.BOTH is not supported");
                     }
@@ -177,52 +175,50 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
                             assert next.value != null;
                             RelationType rt = typeManager.getExistingRelationType(next.key);
                             if (rt.isPropertyKey()) {
-                                // PropertyKey pkey = (PropertyKey)vertex.getTypeManager().getPropertyKey(rt.name());
-                                // log.debug("Retrieved key {} for name \"{}\"", pkey, rt.name());
-                                // frel.property(pkey.label(), next.value);
+//                                PropertyKey pkey = (PropertyKey)vertex.getTypeManager().getPropertyKey(rt.name());
+//                                log.debug("Retrieved key {} for name \"{}\"", pkey, rt.name());
+//                                frel.property(pkey.label(), next.value);
                                 te.property(rt.name(), next.value);
                             } else {
                                 throw new RuntimeException("Metaedges are not supported");
-                                // assert next.value instanceof Long;
-                                // EdgeLabel el = (EdgeLabel)vertex.getTypeManager().getEdgeLabel(rt.name());
-                                // log.debug("Retrieved ege label {} for name \"{}\"", el, rt.name());
-                                // frel.setProperty(el, new FaunusVertex(configuration,(Long)next.value));
+//                                assert next.value instanceof Long;
+//                                EdgeLabel el = (EdgeLabel)vertex.getTypeManager().getEdgeLabel(rt.name());
+//                                log.debug("Retrieved ege label {} for name \"{}\"", el, rt.name());
+//                                frel.setProperty(el, new FaunusVertex(configuration,(Long)next.value));
                             }
                         }
                     }
                 }
 
-                // // Iterate over and copy the relation's metaproperties
-                // if (relation.hasProperties()) {
-                // // Load relation properties
-                // for (final LongObjectCursor<Object> next : relation) {
-                // assert next.value != null;
-                // RelationType rt = typeManager.getExistingRelationType(next.key);
-                // if (rt.isPropertyKey()) {
-                // PropertyKey pkey = (PropertyKey)vertex.getTypeManager().getPropertyKey(rt.name());
-                // log.debug("Retrieved key {} for name \"{}\"", pkey, rt.name());
-                // frel.property(pkey.label(), next.value);
-                // } else {
-                // assert next.value instanceof Long;
-                // EdgeLabel el = (EdgeLabel)vertex.getTypeManager().getEdgeLabel(rt.name());
-                // log.debug("Retrieved ege label {} for name \"{}\"", el, rt.name());
-                // frel.setProperty(el, new FaunusVertex(configuration,(Long)next.value));
-                // }
-                // }
-                // for (HugeGraphRelation rel : frel.query().queryAll().relations())
-                // ((FaunusRelation)rel).setLifeCycle(ElementLifeCycle.Loaded);
-                // }
-                // frel.setLifeCycle(ElementLifeCycle.Loaded);
+//                // Iterate over and copy the relation's metaproperties
+//                if (relation.hasProperties()) {
+//                    // Load relation properties
+//                    for (final LongObjectCursor<Object> next : relation) {
+//                        assert next.value != null;
+//                        RelationType rt = typeManager.getExistingRelationType(next.key);
+//                        if (rt.isPropertyKey()) {
+//                            PropertyKey pkey = (PropertyKey)vertex.getTypeManager().getPropertyKey(rt.name());
+//                            log.debug("Retrieved key {} for name \"{}\"", pkey, rt.name());
+//                            frel.property(pkey.label(), next.value);
+//                        } else {
+//                            assert next.value instanceof Long;
+//                            EdgeLabel el = (EdgeLabel)vertex.getTypeManager().getEdgeLabel(rt.name());
+//                            log.debug("Retrieved ege label {} for name \"{}\"", el, rt.name());
+//                            frel.setProperty(el, new FaunusVertex(configuration,(Long)next.value));
+//                        }
+//                    }
+//                    for (hugegraphRelation rel : frel.query().queryAll().relations())
+//                        ((FaunusRelation)rel).setLifeCycle(ElementLifeCycle.Loaded);
+//                }
+//                frel.setLifeCycle(ElementLifeCycle.Loaded);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        // vertex.setLifeCycle(ElementLifeCycle.Loaded);
+        //vertex.setLifeCycle(ElementLifeCycle.Loaded);
 
-        /*
-         * Since we are filtering out system relation types, we might end up with vertices that have no incident
-         * relations. This is especially true for schema vertices. Those are filtered out.
-         */
+        /*Since we are filtering out system relation types, we might end up with vertices that have no incident relations.
+         This is especially true for schema vertices. Those are filtered out.     */
         if (!foundVertexState) {
             log.trace("Vertex {} has unknown lifecycle state", vertexId);
             return null;
@@ -237,7 +233,7 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
         TinkerVertex v;
 
         try {
-            v = (TinkerVertex) tg.vertices(vertexId).next();
+            v = (TinkerVertex)tg.vertices(vertexId).next();
         } catch (NoSuchElementException e) {
             if (null != label) {
                 v = (TinkerVertex) tg.addVertex(T.label, label, T.id, vertexId);
@@ -255,14 +251,10 @@ public class HugeGraphVertexDeserializer implements AutoCloseable {
             return VertexProperty.Cardinality.single;
         PropertyKey pk = typeManager.getExistingPropertyKey(rt.longId());
         switch (pk.cardinality()) {
-            case SINGLE:
-                return VertexProperty.Cardinality.single;
-            case LIST:
-                return VertexProperty.Cardinality.list;
-            case SET:
-                return VertexProperty.Cardinality.set;
-            default:
-                throw new IllegalStateException("Unknown cardinality " + pk.cardinality());
+            case SINGLE: return VertexProperty.Cardinality.single;
+            case LIST: return VertexProperty.Cardinality.list;
+            case SET: return VertexProperty.Cardinality.set;
+            default: throw new IllegalStateException("Unknown cardinality " + pk.cardinality());
         }
     }
 

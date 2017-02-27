@@ -34,9 +34,9 @@ public abstract class AbstractVertexProperty<V> extends AbstractTypedRelation im
     public AbstractVertexProperty(long id, PropertyKey type, InternalVertex vertex, Object value) {
         super(id, type);
         Preconditions.checkNotNull(vertex, "null vertex");
-        Preconditions.checkNotNull(value, "null value for property key %s", type);
-        this.vertex = vertex;
-        this.value = value;
+        Preconditions.checkNotNull(value, "null value for property key %s",type);
+        this.vertex=vertex;
+        this.value=value;
     }
 
     @Override
@@ -45,16 +45,14 @@ public abstract class AbstractVertexProperty<V> extends AbstractTypedRelation im
     }
 
     public void setVertexAt(int pos, InternalVertex vertex) {
-        Preconditions.checkArgument(pos == 0 && vertex != null && this.vertex.equals(vertex));
-        this.vertex = vertex;
+        Preconditions.checkArgument(pos==0 && vertex!=null && this.vertex.equals(vertex));
+        this.vertex=vertex;
     }
 
     @Override
     public InternalVertex getVertex(int pos) {
-        if (pos == 0)
-            return vertex;
-        else
-            throw new IllegalArgumentException("Invalid position: " + pos);
+        if (pos==0) return vertex;
+        else throw new IllegalArgumentException("Invalid position: " + pos);
     }
 
     @Override
@@ -63,7 +61,7 @@ public abstract class AbstractVertexProperty<V> extends AbstractTypedRelation im
     }
 
     @Override
-    public <U> Iterator<Property<U>> properties(final String...propertyKeys) {
+    public <U> Iterator<Property<U>> properties(final String... propertyKeys) {
         return super.properties(propertyKeys);
     }
 
@@ -84,7 +82,7 @@ public abstract class AbstractVertexProperty<V> extends AbstractTypedRelation im
 
     @Override
     public V value() {
-        return (V) value;
+        return (V)value;
     }
 
     @Override

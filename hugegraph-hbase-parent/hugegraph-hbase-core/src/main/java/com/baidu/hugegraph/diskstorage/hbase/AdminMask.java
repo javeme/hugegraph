@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,10 +29,11 @@ import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 /**
- * This interface hides ABI/API breaking changes that HBase has made to its Admin/HBaseAdmin over the course of
- * development from 0.94 to 1.0 and beyond.
+ * This interface hides ABI/API breaking changes that HBase has made to its Admin/HBaseAdmin over the course
+ * of development from 0.94 to 1.0 and beyond.
  */
-public interface AdminMask extends Closeable {
+public interface AdminMask extends Closeable
+{
 
     void clearTable(String tableName, long timestamp) throws IOException;
 
@@ -47,8 +48,10 @@ public interface AdminMask extends Closeable {
     /**
      * Estimate the number of regionservers in the HBase cluster.
      *
-     * This is usually implemented by calling {@link HBaseAdmin#getClusterStatus()} and then
-     * {@link ClusterStatus#getServers()} and finally {@code size()} on the returned server list.
+     * This is usually implemented by calling
+     * {@link HBaseAdmin#getClusterStatus()} and then
+     * {@link ClusterStatus#getServers()} and finally {@code size()} on the
+     * returned server list.
      *
      * @return the number of servers in the cluster or -1 if it could not be determined
      */

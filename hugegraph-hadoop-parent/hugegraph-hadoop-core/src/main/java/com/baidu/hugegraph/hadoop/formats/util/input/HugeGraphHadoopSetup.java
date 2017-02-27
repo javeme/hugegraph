@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ public interface HugeGraphHadoopSetup {
     /**
      * Return an input slice across the entire row.
      *
-     * TODO This would ideally slice only columns inside the row needed by the query. The slice must include the hidden
-     * vertex state property (to filter removed vertices).
+     * TODO This would ideally slice only columns inside the row needed by the query.
+     * The slice must include the hidden vertex state property (to filter removed vertices).
      *
      */
     public SliceQuery inputSlice();

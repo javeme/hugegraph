@@ -20,8 +20,8 @@ import java.util.Optional;
 
 public class ShortestDistanceMessageCombiner implements MessageCombiner<Long> {
 
-    private static final Optional<ShortestDistanceMessageCombiner> INSTANCE =
-            Optional.of(new ShortestDistanceMessageCombiner());
+    private static final Optional<ShortestDistanceMessageCombiner> INSTANCE = Optional.of(new
+            ShortestDistanceMessageCombiner());
 
     private ShortestDistanceMessageCombiner() {
 

@@ -1,4 +1,6 @@
-def HugeGraphVertex getOrCreateVertex(FaunusVertex faunusVertex, HugeGraph graph, TaskInputOutputContext context, Logger log) {
+package com.baidu.hugegraph.hadoop.formats.graphson
+
+def hugegraphVertex getOrCreateVertex(FaunusVertex faunusVertex, hugegraph graph, TaskInputOutputContext context, Logger log) {
     String uniqueKey = "name";
     Object uniqueValue = faunusVertex.value(uniqueKey);
     Vertex hugegraphVertex;
@@ -16,7 +18,7 @@ def HugeGraphVertex getOrCreateVertex(FaunusVertex faunusVertex, HugeGraph graph
     return hugegraphVertex;
 }
 
-def HugeGraphEdge getOrCreateEdge(FaunusEdge faunusEdge, HugeGraphVertex inVertex, HugeGraphVertex outVertex, HugeGraph graph, TaskInputOutputContext context, Logger log) {
+def hugegraphEdge getOrCreateEdge(FaunusEdge faunusEdge, hugegraphVertex inVertex, hugegraphVertex outVertex, hugegraph graph, TaskInputOutputContext context, Logger log) {
     final String label = faunusEdge.label();
 
     log.debug("outVertex:{} label:{} inVertex:{}", outVertex, label, inVertex);
@@ -28,13 +30,13 @@ def HugeGraphEdge getOrCreateEdge(FaunusEdge faunusEdge, HugeGraphVertex inVerte
     return hugegraphEdge;
 }
 
-def void getOrCreateVertexProperty(HugeGraphProperty faunusProperty, HugeGraphVertex vertex, HugeGraph graph, TaskInputOutputContext context, Logger log) {
+def void getOrCreateVertexProperty(hugegraphProperty faunusProperty, hugegraphVertex vertex, hugegraph graph, TaskInputOutputContext context, Logger log) {
 
     final com.baidu.hugegraph.core.PropertyKey pkey = faunusProperty.propertyKey();
     if (pkey.cardinality().equals(com.baidu.hugegraph.core.Cardinality.SINGLE)) {
         vertex.property(pkey.name(), faunusProperty.value());
     } else {
-//        Iterator<com.baidu.hugegraph.core.HugeGraphProperty> itty = vertex.getProperties(pkey.getName()).iterator();
+//        Iterator<com.baidu.hugegraph.core.hugegraphProperty> itty = vertex.getProperties(pkey.getName()).iterator();
 //        if (!itty.hasNext()) {
             vertex.property(pkey.name(), faunusProperty.value());
 //        }

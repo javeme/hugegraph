@@ -19,6 +19,7 @@ import org.apache.tinkerpop.gremlin.GraphProviderClass;
 import org.apache.tinkerpop.gremlin.structure.StructureStandardSuite;
 import org.junit.runner.RunWith;
 
+
 @RunWith(StructureStandardSuite.class)
 @GraphProviderClass(provider = InMemoryGraphProvider.class, graph = HugeGraph.class)
 public class InMemoryHugeGraphStructureTest {

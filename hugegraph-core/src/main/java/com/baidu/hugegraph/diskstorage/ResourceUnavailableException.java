@@ -19,8 +19,8 @@ import com.baidu.hugegraph.core.HugeGraphException;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * This exception is thrown if a resource is being accessed that is unavailable. The resource can be an external storage
- * system, indexing system or other component.
+ * This exception is thrown if a resource is being accessed that is unavailable.
+ * The resource can be an external storage system, indexing system or other component.
  * <p/>
  *
  * @author Matthias Broecheler (me@matthiasb.com)
@@ -37,7 +37,7 @@ public class ResourceUnavailableException extends HugeGraphException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public ResourceUnavailableException(String msg, Throwable cause) {
@@ -53,16 +53,15 @@ public class ResourceUnavailableException extends HugeGraphException {
         this("Attempting to access unavailable resource", cause);
     }
 
-    public static final void verifyOpen(boolean isOpen, String resourceName, String...resourceIdentifiers) {
+    public static final void verifyOpen(boolean isOpen, String resourceName, String... resourceIdentifiers) {
         Preconditions.checkArgument(StringUtils.isNotBlank(resourceName));
         if (!isOpen) {
             StringBuilder msg = new StringBuilder();
             msg.append(resourceName).append(" ");
-            if (resourceIdentifiers != null && resourceIdentifiers.length > 0) {
+            if (resourceIdentifiers!=null && resourceIdentifiers.length>0) {
                 msg.append("[");
                 for (int i = 0; i < resourceIdentifiers.length; i++) {
-                    if (i > 0)
-                        msg.append(",");
+                    if (i>0) msg.append(",");
                     msg.append(resourceIdentifiers[i]);
                 }
                 msg.append("] ");
@@ -71,5 +70,6 @@ public class ResourceUnavailableException extends HugeGraphException {
             throw new ResourceUnavailableException(msg.toString());
         }
     }
+
 
 }

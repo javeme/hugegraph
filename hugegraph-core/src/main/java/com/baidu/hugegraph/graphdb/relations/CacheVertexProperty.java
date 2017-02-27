@@ -41,7 +41,7 @@ public class CacheVertexProperty extends AbstractVertexProperty {
         this.data = data;
     }
 
-    // ############## Similar code as CacheEdge but be careful when copying #############################
+    //############## Similar code as CacheEdge but be careful when copying #############################
 
     private final Entry data;
 
@@ -51,13 +51,12 @@ public class CacheVertexProperty extends AbstractVertexProperty {
         InternalVertex startVertex = getVertex(0);
 
         if (startVertex.hasAddedRelations() && startVertex.hasRemovedRelations()) {
-            // Test whether this relation has been replaced
+            //Test whether this relation has been replaced
             final long id = super.longId();
             it = Iterables.getOnlyElement(startVertex.getAddedRelations(new Predicate<InternalRelation>() {
                 @Override
                 public boolean apply(@Nullable InternalRelation internalRelation) {
-                    return (internalRelation instanceof StandardVertexProperty)
-                            && ((StandardVertexProperty) internalRelation).getPreviousID() == id;
+                    return (internalRelation instanceof StandardVertexProperty) && ((StandardVertexProperty) internalRelation).getPreviousID() == id;
                 }
             }), null);
         }
@@ -74,14 +73,12 @@ public class CacheVertexProperty extends AbstractVertexProperty {
     }
 
     private synchronized InternalRelation update() {
-        StandardVertexProperty copy = new StandardVertexProperty(super.longId(), propertyKey(), getVertex(0), value(),
-                ElementLifeCycle.Loaded);
+        StandardVertexProperty copy = new StandardVertexProperty(super.longId(), propertyKey(), getVertex(0), value(), ElementLifeCycle.Loaded);
         copyProperties(copy);
         copy.remove();
 
         StandardVertexProperty u = (StandardVertexProperty) tx().addProperty(getVertex(0), propertyKey(), value());
-        if (type.getConsistencyModifier() != ConsistencyModifier.FORK)
-            u.setId(super.longId());
+        if (type.getConsistencyModifier()!= ConsistencyModifier.FORK) u.setId(super.longId());
         u.setPreviousID(super.longId());
         copyProperties(u);
         return u;
@@ -131,15 +128,15 @@ public class CacheVertexProperty extends AbstractVertexProperty {
     public byte getLifeCycle() {
         if ((getVertex(0).hasRemovedRelations() || getVertex(0).isRemoved()) && tx().isRemovedRelation(super.longId()))
             return ElementLifeCycle.Removed;
-        else
-            return ElementLifeCycle.Loaded;
+        else return ElementLifeCycle.Loaded;
     }
 
     @Override
     public void remove() {
         if (!tx().isRemovedRelation(super.longId())) {
             tx().removeRelation(this);
-        } // else throw InvalidElementException.removedException(this);
+        }// else throw InvalidElementException.removedException(this);
     }
+
 
 }

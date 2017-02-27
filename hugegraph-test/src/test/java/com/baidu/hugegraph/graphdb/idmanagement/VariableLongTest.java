@@ -35,21 +35,23 @@ import static org.junit.Assert.assertEquals;
 
 public class VariableLongTest {
 
-    private static final Logger log = LoggerFactory.getLogger(VariableLongTest.class);
+
+    private static final Logger log =
+            LoggerFactory.getLogger(VariableLongTest.class);
 
     private void readWriteTest(final ReadWriteLong impl, long maxValue, long jump, boolean negative, boolean backward) {
-        Preconditions.checkArgument(maxValue % jump == 0);
-        long allocate = maxValue / jump * 8 * (negative ? 2 : 1);
+        Preconditions.checkArgument(maxValue%jump==0);
+        long allocate = maxValue / jump * 8 * (negative?2:1);
         Preconditions.checkArgument(allocate < (1 << 28));
         WriteBuffer wb = new WriteByteBuffer((int) allocate);
         int num = 0;
         StopWatch w = new StopWatch();
         w.start();
-        for (long i = (negative ? -maxValue : 0); i <= maxValue; i += jump) {
+        for (long i = (negative?-maxValue:0); i <= maxValue; i += jump) {
             impl.write(wb, i);
             num++;
         }
-        // for (int i=0;i<b.remaining();i++) System.out.print(b.get(i)+"|");
+        //for (int i=0;i<b.remaining();i++) System.out.print(b.get(i)+"|");
         w.stop();
         ReadBuffer rb = wb.getStaticBuffer().asReadBuffer();
         log.info("Writing " + num + " longs in " + rb.length() + " bytes. in time: " + w.getTime());
@@ -60,40 +62,37 @@ public class VariableLongTest {
                 int beforePos = rb.getPosition();
                 long value = impl.read(rb);
                 assertEquals(expected, value);
-                int length = Math.abs(rb.getPosition() - beforePos);
-                assertEquals("On: " + expected, length, impl.length(expected));
+                int length = Math.abs(rb.getPosition()-beforePos);
+                assertEquals("On: " + expected,length,impl.length(expected));
             }
         };
 
         if (backward) {
             rb.movePositionTo(rb.length());
-            for (long i = maxValue; i != (negative ? -maxValue : 0); i -= jump) {
-                read.next(rb, i);
+            for (long i = maxValue; i != (negative?-maxValue:0); i -= jump) {
+                read.next(rb,i);
             }
         } else {
-            for (long i = (negative ? -maxValue : 0); i <= maxValue; i += jump) {
+            for (long i = (negative?-maxValue:0); i <= maxValue; i += jump) {
                 read.next(rb, i);
             }
         }
 
-        // Test boundaries
+        //Test boundaries
         wb = new WriteByteBuffer(512);
-        impl.write(wb, 0);
-        impl.write(wb, Long.MAX_VALUE);
-        if (negative)
-            impl.write(wb, -Long.MAX_VALUE);
+        impl.write(wb,0);
+        impl.write(wb,Long.MAX_VALUE);
+        if (negative) impl.write(wb,-Long.MAX_VALUE);
         rb = wb.getStaticBuffer().asReadBuffer();
         if (backward) {
             rb.movePositionTo(rb.length());
-            if (negative)
-                assertEquals(-Long.MAX_VALUE, impl.read(rb));
+            if (negative) assertEquals(-Long.MAX_VALUE, impl.read(rb));
             assertEquals(Long.MAX_VALUE, impl.read(rb));
             assertEquals(0, impl.read(rb));
         } else {
             assertEquals(0, impl.read(rb));
             assertEquals(Long.MAX_VALUE, impl.read(rb));
-            if (negative)
-                assertEquals(-Long.MAX_VALUE, impl.read(rb));
+            if (negative) assertEquals(-Long.MAX_VALUE, impl.read(rb));
         }
     }
 
@@ -101,12 +100,13 @@ public class VariableLongTest {
         public void next(ReadBuffer rb, long expected);
     }
 
+
     public void positiveReadWriteTest(ReadWriteLong impl, long maxValue, long jump) {
-        readWriteTest(impl, maxValue, jump, false, false);
+        readWriteTest(impl,maxValue,jump,false,false);
     }
 
     public void negativeReadWriteTest(ReadWriteLong impl, long maxValue, long jump) {
-        readWriteTest(impl, maxValue, jump, true, false);
+        readWriteTest(impl,maxValue,jump,true,false);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class VariableLongTest {
 
     @Test
     public void testPositiveWriteSmall() {
-        positiveReadWriteTest(new PositiveReadWrite(), 1000000, 1);
+        positiveReadWriteTest(new PositiveReadWrite(),1000000, 1);
     }
 
     @Test
@@ -151,23 +151,24 @@ public class VariableLongTest {
 
     @Test
     public void testPrefix1WriteBig() {
-        positiveReadWriteTest(new PrefixReadWrite(3, 4), 1000000000000L, 1000000L);
+        positiveReadWriteTest(new PrefixReadWrite(3,4), 1000000000000L, 1000000L);
     }
 
     @Test
     public void testPrefix2WriteTiny() {
-        positiveReadWriteTest(new PrefixReadWrite(2, 1), 130, 1);
+        positiveReadWriteTest(new PrefixReadWrite(2,1),130, 1);
     }
 
     @Test
     public void testPrefix2WriteSmall() {
-        positiveReadWriteTest(new PrefixReadWrite(2, 1), 100000, 1);
+        positiveReadWriteTest(new PrefixReadWrite(2,1),100000, 1);
     }
 
     @Test
     public void testPrefix3WriteSmall() {
-        positiveReadWriteTest(new PrefixReadWrite(2, 0), 100000, 1);
+        positiveReadWriteTest(new PrefixReadWrite(2,0),100000, 1);
     }
+
 
     public interface ReadWriteLong {
 
@@ -183,7 +184,7 @@ public class VariableLongTest {
 
         @Override
         public void write(WriteBuffer out, long value) {
-            VariableLong.writePositive(out, value);
+            VariableLong.writePositive(out,value);
         }
 
         @Override
@@ -201,7 +202,7 @@ public class VariableLongTest {
 
         @Override
         public void write(WriteBuffer out, long value) {
-            VariableLong.write(out, value);
+            VariableLong.write(out,value);
         }
 
         @Override
@@ -219,7 +220,7 @@ public class VariableLongTest {
 
         @Override
         public void write(WriteBuffer out, long value) {
-            VariableLong.writePositiveBackward(out, value);
+            VariableLong.writePositiveBackward(out,value);
         }
 
         @Override
@@ -237,7 +238,7 @@ public class VariableLongTest {
 
         @Override
         public void write(WriteBuffer out, long value) {
-            VariableLong.writeBackward(out, value);
+            VariableLong.writeBackward(out,value);
         }
 
         @Override
@@ -251,53 +252,57 @@ public class VariableLongTest {
         }
     }
 
+
     public static class PrefixReadWrite implements ReadWriteLong {
 
         private final int prefixLen;
         private final int prefix;
 
         public PrefixReadWrite(int prefixLen, int prefix) {
-            Preconditions.checkArgument(prefixLen > 0);
-            Preconditions.checkArgument(prefix >= 0 && prefix < (1 << prefixLen));
+            Preconditions.checkArgument(prefixLen>0);
+            Preconditions.checkArgument(prefix>=0 && prefix<(1<<prefixLen));
             this.prefixLen = prefixLen;
             this.prefix = prefix;
         }
 
+
         @Override
         public void write(WriteBuffer out, long value) {
-            VariableLong.writePositiveWithPrefix(out, value, prefix, prefixLen);
+            VariableLong.writePositiveWithPrefix(out,value,prefix,prefixLen);
         }
 
         @Override
         public int length(long value) {
-            return VariableLong.positiveWithPrefixLength(value, prefixLen);
+            return VariableLong.positiveWithPrefixLength(value,prefixLen);
         }
 
         @Override
         public long read(ReadBuffer in) {
-            long[] result = VariableLong.readPositiveWithPrefix(in, prefixLen);
-            assertEquals(prefix, result[1]);
+            long[] result = VariableLong.readPositiveWithPrefix(in,prefixLen);
+            assertEquals(prefix,result[1]);
             return result[0];
         }
     }
 
+
+
     @Test
     public void byteOrderPreservingPositiveBackward() {
-        long[] scalingFactors = { Long.MAX_VALUE, 1000, 1000000000l };
-        for (int t = 0; t < 10000000; t++) {
+        long[] scalingFactors = { Long.MAX_VALUE, 1000, 1000000000l};
+        for (int t=0;t<10000000;t++) {
             StaticBuffer[] b = new StaticBuffer[2];
             long[] l = new long[2];
-            for (int i = 0; i < 2; i++) {
+            for (int i=0;i<2;i++) {
                 l[i] = randomPosLong(scalingFactors[random.nextInt(scalingFactors.length)]);
                 WriteBuffer out = new WriteByteBuffer(11);
-                VariableLong.writePositiveBackward(out, l[i]);
-                b[i] = out.getStaticBuffer();
+                VariableLong.writePositiveBackward(out,l[i]);
+                b[i]=out.getStaticBuffer();
                 ReadBuffer res = b[i].asReadBuffer();
                 res.movePositionTo(res.length());
                 assertEquals(l[i], VariableLong.readPositiveBackward(res));
             }
-            // System.out.println(l[0] + " vs " + l[1]);
-            assertEquals(Math.signum(Long.compare(l[0], l[1])), Math.signum(b[0].compareTo(b[1])), 0.01);
+//            System.out.println(l[0] + " vs " + l[1]);
+            assertEquals(Math.signum(Long.compare(l[0],l[1])),Math.signum(b[0].compareTo(b[1])), 0.01);
         }
 
     }
@@ -305,10 +310,9 @@ public class VariableLongTest {
     private static final Random random = new Random();
 
     public static long randomPosLong(long scaling) {
-        long l = Math.round(random.nextGaussian() / 3 * scaling);
-        if (l < 0)
-            l = Math.abs(l + 1);
-        assert l >= 0;
+        long l = Math.round(random.nextGaussian()/3*scaling);
+        if (l<0) l=Math.abs(l+1);
+        assert l>=0;
         return l;
     }
 

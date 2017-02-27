@@ -23,16 +23,14 @@ public interface MetaAnnotated {
 
     /**
      * Returns true if this entry has associated meta data
-     * 
      * @return
      */
     public boolean hasMetaData();
 
     /**
      * Returns all meta data associated with this entry
-     * 
      * @return
      */
-    public Map<EntryMetaData, Object> getMetaData();
+    public Map<EntryMetaData,Object> getMetaData();
 
 }

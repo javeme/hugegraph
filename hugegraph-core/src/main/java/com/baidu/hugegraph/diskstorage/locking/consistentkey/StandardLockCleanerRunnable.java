@@ -34,10 +34,12 @@ import static com.baidu.hugegraph.diskstorage.locking.consistentkey.ConsistentKe
 import static com.baidu.hugegraph.diskstorage.locking.consistentkey.ConsistentKeyLocker.LOCK_COL_END;
 
 /**
- * Attempt to delete locks before a configurable timestamp cutoff using the provided store, transaction, and serializer.
+ * Attempt to delete locks before a configurable timestamp cutoff using the
+ * provided store, transaction, and serializer.
  *
- * This implementation is "best-effort." If the store or transaction closes in the middle of its operation, or if the
- * backend emits a storage exception, it will fail without retrying and log the exception.
+ * This implementation is "best-effort." If the store or transaction closes in
+ * the middle of its operation, or if the backend emits a storage exception, it
+ * will fail without retrying and log the exception.
  */
 public class StandardLockCleanerRunnable implements Runnable {
 
@@ -50,8 +52,7 @@ public class StandardLockCleanerRunnable implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(StandardLockCleanerRunnable.class);
 
-    public StandardLockCleanerRunnable(KeyColumnValueStore store, KeyColumn target, StoreTransaction tx,
-            ConsistentKeyLockerSerializer serializer, Instant cutoff, TimestampProvider times) {
+    public StandardLockCleanerRunnable(KeyColumnValueStore store, KeyColumn target, StoreTransaction tx, ConsistentKeyLockerSerializer serializer, Instant cutoff, TimestampProvider times) {
         this.store = store;
         this.target = target;
         this.serializer = serializer;
@@ -71,10 +72,7 @@ public class StandardLockCleanerRunnable implements Runnable {
 
     private void runWithExceptions() throws BackendException {
         StaticBuffer lockKey = serializer.toLockKey(target.getKey(), target.getColumn());
-        List<Entry> locks = store.getSlice(new KeySliceQuery(lockKey, LOCK_COL_START, LOCK_COL_END), tx); // TODO reduce
-                                                                                                          // LOCK_COL_END
-                                                                                                          // based on
-                                                                                                          // cutoff
+        List<Entry> locks = store.getSlice(new KeySliceQuery(lockKey, LOCK_COL_START, LOCK_COL_END), tx); // TODO reduce LOCK_COL_END based on cutoff
 
         ImmutableList.Builder<StaticBuffer> b = ImmutableList.builder();
 
@@ -93,7 +91,7 @@ public class StandardLockCleanerRunnable implements Runnable {
         List<StaticBuffer> dels = b.build();
 
         if (!dels.isEmpty()) {
-            store.mutate(lockKey, ImmutableList.<Entry> of(), dels, tx);
+            store.mutate(lockKey, ImmutableList.<Entry>of(), dels, tx);
             log.info("Deleted {} expired locks (before or at cutoff {})", dels.size(), cutoff);
         }
     }

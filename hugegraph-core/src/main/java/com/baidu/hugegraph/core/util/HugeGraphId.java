@@ -26,17 +26,15 @@ import com.baidu.hugegraph.graphdb.idmanagement.IDManager;
 public class HugeGraphId {
 
     /**
-     * Converts a user provided long id into a HugeGraph vertex id. The id must be positive and can be at most 61 bits
-     * long. This method is useful when providing ids during vertex creation via
-     * {@link com.tinkerpop.gremlin.structure.Graph#addVertex(Object)}.
+     * Converts a user provided long id into a HugeGraph vertex id. The id must be positive and can be at most 61 bits long.
+     * This method is useful when providing ids during vertex creation via {@link com.tinkerpop.gremlin.structure.Graph#addVertex(Object)}.
      *
      * @param id long id
      * @return a corresponding HugeGraph vertex id
      */
     public static final long toVertexId(long id) {
         Preconditions.checkArgument(id > 0, "Vertex id must be positive: %s", id);
-        Preconditions.checkArgument(IDManager.VertexIDType.NormalVertex.removePadding(Long.MAX_VALUE) >= id,
-                "Vertex id is too large: %s", id);
+        Preconditions.checkArgument(IDManager.VertexIDType.NormalVertex.removePadding(Long.MAX_VALUE) >= id, "Vertex id is too large: %s", id);
         return IDManager.VertexIDType.NormalVertex.addPadding(id);
     }
 
@@ -52,8 +50,7 @@ public class HugeGraphId {
     }
 
     /**
-     * Converts a HugeGraph vertex id of a given vertex to the user provided id as the inverse mapping of
-     * {@link #toVertexId(long)}.
+     * Converts a HugeGraph vertex id of a given vertex to the user provided id as the inverse mapping of {@link #toVertexId(long)}.
      *
      * @param v Vertex
      * @return original user provided id
@@ -62,5 +59,6 @@ public class HugeGraphId {
         Preconditions.checkArgument(v.hasId(), "Invalid vertex provided: %s", v);
         return fromVertexId(v.longId());
     }
+
 
 }

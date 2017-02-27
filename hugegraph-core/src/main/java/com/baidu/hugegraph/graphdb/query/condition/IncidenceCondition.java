@@ -51,15 +51,15 @@ public class IncidenceCondition<E extends HugeGraphRelation> extends Literal<E> 
         if (this == other)
             return true;
 
-        if (other == null || !getClass().isInstance(other))
+        if (other==null || !getClass().isInstance(other))
             return false;
 
-        IncidenceCondition oth = (IncidenceCondition) other;
+        IncidenceCondition oth = (IncidenceCondition)other;
         return baseVertex.equals(oth.baseVertex) && otherVertex.equals(oth.otherVertex);
     }
 
     @Override
     public String toString() {
-        return "incidence[" + baseVertex + "-" + otherVertex + "]";
+        return "incidence["+ baseVertex + "-" + otherVertex + "]";
     }
 }

@@ -27,13 +27,13 @@ public class IntegerSerializer implements OrderPreservingSerializer<Integer> {
     @Override
     public Integer read(ScanBuffer buffer) {
         long l = VariableLong.read(buffer);
-        Preconditions.checkArgument(l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE, "Invalid serialization [%s]", l);
-        return (int) l;
+        Preconditions.checkArgument(l>=Integer.MIN_VALUE && l<=Integer.MAX_VALUE,"Invalid serialization [%s]",l);
+        return (int)l;
     }
 
     @Override
     public void write(WriteBuffer out, Integer attribute) {
-        VariableLong.write(out, attribute);
+        VariableLong.write(out,attribute);
     }
 
     @Override
@@ -47,24 +47,21 @@ public class IntegerSerializer implements OrderPreservingSerializer<Integer> {
     }
 
     /*
-     * ====== These methods apply to all whole numbers with minor modifications ======== ====== byte, short, int, long
-     * ======
+    ====== These methods apply to all whole numbers with minor modifications ========
+    ====== byte, short, int, long ======
      */
+
 
     @Override
     public Integer convert(Object value) {
         if (value instanceof Number) {
-            double d = ((Number) value).doubleValue();
-            if (Double.isNaN(d) || Math.round(d) != d)
-                throw new IllegalArgumentException("Not a valid integer: " + value);
-            long l = ((Number) value).longValue();
-            if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
-                return Integer.valueOf((int) l);
-            else
-                throw new IllegalArgumentException("Value too large for integer: " + value);
+            double d = ((Number)value).doubleValue();
+            if (Double.isNaN(d) || Math.round(d)!=d) throw new IllegalArgumentException("Not a valid integer: " + value);
+            long l = ((Number)value).longValue();
+            if (l>=Integer.MIN_VALUE && l<=Integer.MAX_VALUE) return Integer.valueOf((int)l);
+            else throw new IllegalArgumentException("Value too large for integer: " + value);
         } else if (value instanceof String) {
-            return Integer.parseInt((String) value);
-        } else
-            return null;
+            return Integer.parseInt((String)value);
+        } else return null;
     }
 }

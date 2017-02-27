@@ -28,15 +28,13 @@ import com.baidu.hugegraph.diskstorage.util.WriteByteBuffer;
 
 public class KeyColumnValueStoreUtil {
 
-    public static void delete(KeyColumnValueStore store, StoreTransaction txn, long key, String col)
-            throws BackendException {
+    public static void delete(KeyColumnValueStore store, StoreTransaction txn, long key, String col) throws BackendException {
         StaticBuffer k = longToByteBuffer(key);
         StaticBuffer c = stringToByteBuffer(col);
         store.mutate(k, KeyColumnValueStore.NO_ADDITIONS, Arrays.asList(c), txn);
     }
 
-    public static String get(KeyColumnValueStore store, StoreTransaction txn, long key, String col)
-            throws BackendException {
+    public static String get(KeyColumnValueStore store, StoreTransaction txn, long key, String col) throws BackendException {
         StaticBuffer k = longToByteBuffer(key);
         StaticBuffer c = stringToByteBuffer(col);
         StaticBuffer valBytes = KCVSUtil.get(store, k, c, txn);
@@ -45,21 +43,19 @@ public class KeyColumnValueStoreUtil {
         return byteBufferToString(valBytes);
     }
 
-    public static void insert(KeyColumnValueStore store, StoreTransaction txn, long key, String col, String val)
-            throws BackendException {
+    public static void insert(KeyColumnValueStore store, StoreTransaction txn, long key, String col, String val) throws BackendException {
         StaticBuffer k = longToByteBuffer(key);
         StaticBuffer c = stringToByteBuffer(col);
         StaticBuffer v = stringToByteBuffer(val);
-        store.mutate(k, Arrays.<Entry> asList(StaticArrayEntry.of(c, v)), KeyColumnValueStore.NO_DELETIONS, txn);
+        store.mutate(k, Arrays.<Entry>asList(StaticArrayEntry.of(c, v)), KeyColumnValueStore.NO_DELETIONS, txn);
     }
 
-    public static void loadValues(KeyColumnValueStore store, StoreTransaction tx, String[][] values)
-            throws BackendException {
+    public static void loadValues(KeyColumnValueStore store, StoreTransaction tx, String[][] values) throws BackendException {
         loadValues(store, tx, values, -1, -1);
     }
 
-    public static void loadValues(KeyColumnValueStore store, StoreTransaction tx, String[][] values,
-            int shiftEveryNthRow, int shiftSliceLength) throws BackendException {
+    public static void loadValues(KeyColumnValueStore store, StoreTransaction tx, String[][] values, int shiftEveryNthRow,
+                           int shiftSliceLength) throws BackendException {
         for (int i = 0; i < values.length; i++) {
 
             List<Entry> entries = new ArrayList<Entry>();
@@ -79,10 +75,12 @@ public class KeyColumnValueStoreUtil {
                 } else {
                     col = KeyValueStoreUtil.getBuffer(j);
                 }
-                entries.add(StaticArrayEntry.of(col, KeyValueStoreUtil.getBuffer(values[i][j])));
+                entries.add(StaticArrayEntry.of(col, KeyValueStoreUtil
+                        .getBuffer(values[i][j])));
             }
             if (!entries.isEmpty()) {
-                store.mutate(KeyValueStoreUtil.getBuffer(i), entries, KeyColumnValueStore.NO_DELETIONS, tx);
+                store.mutate(KeyValueStoreUtil.getBuffer(i), entries,
+                        KeyColumnValueStore.NO_DELETIONS, tx);
             }
         }
     }
@@ -115,7 +113,7 @@ public class KeyColumnValueStoreUtil {
     public static StaticBuffer longToByteBuffer(long l) {
         return new WriteByteBuffer(8).putLong(l).getStaticBuffer();
     }
-
+    
     public static long bufferToLong(StaticBuffer b) {
         return b.getLong(0);
     }

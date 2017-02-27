@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import java.io.IOException;
 
 public class CassandraHadoopScanRunner extends AbstractHadoopScanRunner<CassandraHadoopScanRunner> {
 
-    private static final Logger log = LoggerFactory.getLogger(CassandraHadoopScanRunner.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(CassandraHadoopScanRunner.class);
 
     private static final String CASSANDRA_PARTITIONER_KEY = "cassandra.input.partitioner.class";
 
@@ -53,14 +54,15 @@ public class CassandraHadoopScanRunner extends AbstractHadoopScanRunner<Cassandr
 
     public ScanMetrics run() throws InterruptedException, IOException, ClassNotFoundException {
 
-        org.apache.hadoop.conf.Configuration hadoopConf =
-                null != baseHadoopConf ? baseHadoopConf : new org.apache.hadoop.conf.Configuration();
+        org.apache.hadoop.conf.Configuration hadoopConf = null != baseHadoopConf ?
+                baseHadoopConf : new org.apache.hadoop.conf.Configuration();
 
         if (null != hugegraphConf) {
             for (String k : hugegraphConf.getKeys("")) {
                 String prefix = ConfigElement.getPath(HugeGraphHadoopConfiguration.GRAPH_CONFIG_KEYS, true) + ".";
                 hadoopConf.set(prefix + k, hugegraphConf.get(k, Object.class).toString());
-                log.debug("Set: {}={}", prefix + k, hugegraphConf.<Object> get(k, Object.class).toString());
+                log.debug("Set: {}={}", prefix + k,
+                        hugegraphConf.<Object>get(k, Object.class).toString());
             }
         }
 
@@ -69,20 +71,19 @@ public class CassandraHadoopScanRunner extends AbstractHadoopScanRunner<Cassandr
         }
 
         if (null == hadoopConf.get(CASSANDRA_PARTITIONER_KEY)) {
-            throw new IllegalArgumentException(CASSANDRA_PARTITIONER_KEY
-                    + " must be provided in either the base Hadoop Configuration object or by the partitionerOverride method");
+            throw new IllegalArgumentException(CASSANDRA_PARTITIONER_KEY +
+                    " must be provided in either the base Hadoop Configuration object or by the partitionerOverride method");
         } else {
-            log.debug("Partitioner: {}={}", CASSANDRA_PARTITIONER_KEY, hadoopConf.get(CASSANDRA_PARTITIONER_KEY));
+            log.debug("Partitioner: {}={}",
+                    CASSANDRA_PARTITIONER_KEY, hadoopConf.get(CASSANDRA_PARTITIONER_KEY));
         }
 
         Preconditions.checkNotNull(hadoopConf);
 
         if (null != scanJob) {
-            return HadoopScanRunner.runScanJob(scanJob, scanJobConf, scanJobConfRoot, hadoopConf,
-                    CassandraBinaryInputFormat.class);
+            return HadoopScanRunner.runScanJob(scanJob, scanJobConf, scanJobConfRoot, hadoopConf, CassandraBinaryInputFormat.class);
         } else {
-            return HadoopScanRunner.runVertexScanJob(vertexScanJob, scanJobConf, scanJobConfRoot, hadoopConf,
-                    CassandraBinaryInputFormat.class);
+            return HadoopScanRunner.runVertexScanJob(vertexScanJob, scanJobConf, scanJobConfRoot, hadoopConf, CassandraBinaryInputFormat.class);
         }
     }
 }

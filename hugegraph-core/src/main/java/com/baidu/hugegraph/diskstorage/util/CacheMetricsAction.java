@@ -15,8 +15,8 @@
 package com.baidu.hugegraph.diskstorage.util;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- */
+* @author Matthias Broecheler (me@matthiasb.com)
+*/
 public enum CacheMetricsAction {
 
     RETRIEVAL("retrievals"), MISS("misses"), EXPIRE("expire");
@@ -27,7 +27,5 @@ public enum CacheMetricsAction {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 }

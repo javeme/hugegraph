@@ -32,18 +32,18 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.util.Comparator;
 
 /**
- * An executable {@link ElementQuery} for {@link com.baidu.hugegraph.core.HugeGraphQuery}. This query contains the
- * condition, and only one sub-query {@link JointIndexQuery}. It also maintains the ordering for the query result which
- * is needed by the {@link com.baidu.hugegraph.graphdb.query.QueryProcessor} to correctly order the result.
+ * An executable {@link ElementQuery} for {@link com.baidu.hugegraph.core.HugeGraphQuery}. This query contains
+ * the condition, and only one sub-query {@link JointIndexQuery}.
+ * It also maintains the ordering for the query result which is needed by the {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}
+ * to correctly order the result.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
-public class GraphCentricQuery extends BaseQuery
-        implements ElementQuery<HugeGraphElement, JointIndexQuery>, ProfileObservable {
+public class GraphCentricQuery extends BaseQuery implements ElementQuery<HugeGraphElement, JointIndexQuery>, ProfileObservable {
 
     /**
-     * The condition of this query, the result set is the set of all elements in the graph for which this condition
-     * evaluates to true.
+     * The condition of this query, the result set is the set of all elements in the graph for which this
+     * condition evaluates to true.
      */
     private final Condition<HugeGraphElement> condition;
     /**
@@ -60,7 +60,7 @@ public class GraphCentricQuery extends BaseQuery
     private final ElementCategory resultType;
 
     public GraphCentricQuery(ElementCategory resultType, Condition<HugeGraphElement> condition, OrderList orders,
-            BackendQueryHolder<JointIndexQuery> indexQuery, int limit) {
+                             BackendQueryHolder<JointIndexQuery> indexQuery, int limit) {
         super(limit);
         Preconditions.checkNotNull(condition);
         Preconditions.checkArgument(orders != null && orders.isImmutable());
@@ -76,7 +76,8 @@ public class GraphCentricQuery extends BaseQuery
     public static final GraphCentricQuery emptyQuery(ElementCategory resultType) {
         Condition<HugeGraphElement> cond = new FixedCondition<HugeGraphElement>(false);
         return new GraphCentricQuery(resultType, cond, OrderList.NO_ORDER,
-                new BackendQueryHolder<JointIndexQuery>(new JointIndexQuery(), true, false), 0);
+                new BackendQueryHolder<JointIndexQuery>(new JointIndexQuery(),
+                        true, false), 0);
     }
 
     public Condition<HugeGraphElement> getCondition() {
@@ -95,31 +96,25 @@ public class GraphCentricQuery extends BaseQuery
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append("[").append(condition.toString()).append("]");
-        if (!orders.isEmpty())
-            b.append(getLimit());
-        if (hasLimit())
-            b.append("(").append(getLimit()).append(")");
+        if (!orders.isEmpty()) b.append(getLimit());
+        if (hasLimit()) b.append("(").append(getLimit()).append(")");
         b.append(":").append(resultType.toString());
         return b.toString();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(condition).append(resultType).append(orders).append(getLimit())
-                .toHashCode();
+        return new HashCodeBuilder().append(condition).append(resultType).append(orders).append(getLimit()).toHashCode();
     }
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (other == null)
-            return false;
-        else if (!getClass().isInstance(other))
-            return false;
+        if (this == other) return true;
+        else if (other == null) return false;
+        else if (!getClass().isInstance(other)) return false;
         GraphCentricQuery oth = (GraphCentricQuery) other;
-        return resultType == oth.resultType && condition.equals(oth.condition) && orders.equals(oth.getOrder())
-                && getLimit() == oth.getLimit();
+        return resultType == oth.resultType && condition.equals(oth.condition) &&
+                orders.equals(oth.getOrder()) && getLimit() == oth.getLimit();
     }
 
     @Override
@@ -134,10 +129,8 @@ public class GraphCentricQuery extends BaseQuery
 
     @Override
     public BackendQueryHolder<JointIndexQuery> getSubQuery(int position) {
-        if (position == 0)
-            return indexQuery;
-        else
-            throw new IndexOutOfBoundsException();
+        if (position == 0) return indexQuery;
+        else throw new IndexOutOfBoundsException();
     }
 
     @Override
@@ -147,10 +140,8 @@ public class GraphCentricQuery extends BaseQuery
 
     @Override
     public Comparator<HugeGraphElement> getSortOrder() {
-        if (orders.isEmpty())
-            return new ComparableComparator();
-        else
-            return orders;
+        if (orders.isEmpty()) return new ComparableComparator();
+        else return orders;
     }
 
     @Override
@@ -163,12 +154,12 @@ public class GraphCentricQuery extends BaseQuery
         return condition.evaluate(element);
     }
 
+
     @Override
     public void observeWith(QueryProfiler profiler) {
-        profiler.setAnnotation(QueryProfiler.CONDITION_ANNOTATION, condition);
-        profiler.setAnnotation(QueryProfiler.ORDERS_ANNOTATION, orders);
-        if (hasLimit())
-            profiler.setAnnotation(QueryProfiler.LIMIT_ANNOTATION, getLimit());
+        profiler.setAnnotation(QueryProfiler.CONDITION_ANNOTATION,condition);
+        profiler.setAnnotation(QueryProfiler.ORDERS_ANNOTATION,orders);
+        if (hasLimit()) profiler.setAnnotation(QueryProfiler.LIMIT_ANNOTATION,getLimit());
         indexQuery.observeWith(profiler);
     }
 }

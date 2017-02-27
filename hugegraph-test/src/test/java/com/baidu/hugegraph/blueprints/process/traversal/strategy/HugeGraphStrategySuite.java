@@ -27,8 +27,14 @@ public class HugeGraphStrategySuite extends AbstractGremlinSuite {
 
     public HugeGraphStrategySuite(final Class<?> klass, final RunnerBuilder builder) throws InitializationError {
 
-        super(klass, builder, new Class<?>[] { HugeGraphStepStrategyTest.class },
-                new Class<?>[] { HugeGraphStepStrategyTest.class }, false, TraversalEngine.Type.STANDARD);
+        super(klass, builder,
+                new Class<?>[]{
+                        HugeGraphStepStrategyTest.class
+                }, new Class<?>[]{
+                        HugeGraphStepStrategyTest.class
+                },
+                false,
+                TraversalEngine.Type.STANDARD);
     }
 
 }

@@ -38,7 +38,6 @@ public interface InternalRelation extends HugeGraphRelation, InternalElement {
 
     /**
      * Returns the vertex at the given position (0=OUT, 1=IN) of this relation
-     * 
      * @param pos
      * @return
      */
@@ -52,11 +51,13 @@ public interface InternalRelation extends HugeGraphRelation, InternalElement {
     public int getArity();
 
     /**
-     * Number of vertices on this relation that are aware of its existence. This number will differ from
-     * {@link #getArity()}
+     * Number of vertices on this relation that are aware of its existence. This number will
+     * differ from {@link #getArity()}
      *
      */
     public int getLen();
+
+
 
     public <O> O getValueDirect(PropertyKey key);
 

@@ -20,7 +20,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Extends {@link SliceQuery} by a key that identifies the location of the slice in the key-ring.
- * 
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
@@ -31,13 +30,13 @@ public class KeySliceQuery extends SliceQuery {
     public KeySliceQuery(StaticBuffer key, StaticBuffer sliceStart, StaticBuffer sliceEnd) {
         super(sliceStart, sliceEnd);
         Preconditions.checkNotNull(key);
-        this.key = key;
+        this.key=key;
     }
 
     public KeySliceQuery(StaticBuffer key, SliceQuery query) {
         super(query);
         Preconditions.checkNotNull(key);
-        this.key = key;
+        this.key=key;
     }
 
     /**
@@ -56,8 +55,9 @@ public class KeySliceQuery extends SliceQuery {
 
     @Override
     public KeySliceQuery updateLimit(int newLimit) {
-        return new KeySliceQuery(key, this).setLimit(newLimit);
+        return new KeySliceQuery(key,this).setLimit(newLimit);
     }
+
 
     @Override
     public int hashCode() {
@@ -66,13 +66,10 @@ public class KeySliceQuery extends SliceQuery {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        else if (other == null)
-            return false;
-        else if (!getClass().isInstance(other))
-            return false;
-        KeySliceQuery oth = (KeySliceQuery) other;
+        if (this==other) return true;
+        else if (other==null) return false;
+        else if (!getClass().isInstance(other)) return false;
+        KeySliceQuery oth = (KeySliceQuery)other;
         return key.equals(oth.key) && super.equals(oth);
     }
 
@@ -82,7 +79,6 @@ public class KeySliceQuery extends SliceQuery {
 
     @Override
     public String toString() {
-        return String.format("KeySliceQuery(key: %s, start: %s, end: %s, limit:%d)", key, getSliceStart(),
-                getSliceEnd(), getLimit());
+        return String.format("KeySliceQuery(key: %s, start: %s, end: %s, limit:%d)", key, getSliceStart(), getSliceEnd(), getLimit());
     }
 }

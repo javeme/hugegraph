@@ -38,15 +38,14 @@ public class KCVSConfigTest extends WritableConfigurationTest {
             return new KCVSConfiguration(new BackendOperation.TransactionalProvider() {
                 @Override
                 public StoreTransaction openTx() throws BackendException {
-                    return manager.beginTransaction(StandardBaseTransactionConfig.of(TimestampProviders.MICRO,
-                            manager.getFeatures().getKeyConsistentTxConfig()));
+                    return manager.beginTransaction(StandardBaseTransactionConfig.of(TimestampProviders.MICRO, manager.getFeatures().getKeyConsistentTxConfig()));
                 }
 
                 @Override
                 public void close() throws BackendException {
                     manager.close();
                 }
-            }, config, manager.openDatabase("hugegraph"), "general");
+            }, config, manager.openDatabase("hugegraph"),"general");
         } catch (BackendException e) {
             throw new RuntimeException(e);
         }

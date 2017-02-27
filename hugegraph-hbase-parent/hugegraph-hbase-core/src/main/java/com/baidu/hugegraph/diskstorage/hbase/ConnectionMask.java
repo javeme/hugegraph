@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * This interface hides ABI/API breaking changes that HBase has made to its (H)Connection class over the course of
- * development from 0.94 to 1.0 and beyond.
+ * This interface hides ABI/API breaking changes that HBase has made to its (H)Connection class over the course
+ * of development from 0.94 to 1.0 and beyond.
  */
-public interface ConnectionMask extends Closeable {
+public interface ConnectionMask extends Closeable
+{
 
     TableMask getTable(String name) throws IOException;
 

@@ -26,6 +26,7 @@ public class ThriftOLAPTest extends OLAPTest {
         return CassandraStorageSetup.getCassandraThriftGraphConfiguration(getClass().getSimpleName());
     }
 
+
     @BeforeClass
     public static void beforeClass() {
         CassandraStorageSetup.startCleanEmbedded();

@@ -31,13 +31,13 @@ public class TestCoreElements {
 
     @Test
     public void testMultiplicityCardinality() {
-        assertEquals(Multiplicity.MULTI, Multiplicity.convert(Cardinality.LIST));
-        assertEquals(Multiplicity.SIMPLE, Multiplicity.convert(Cardinality.SET));
-        assertEquals(Multiplicity.MANY2ONE, Multiplicity.convert(Cardinality.SINGLE));
+        assertEquals(Multiplicity.MULTI,Multiplicity.convert(Cardinality.LIST));
+        assertEquals(Multiplicity.SIMPLE,Multiplicity.convert(Cardinality.SET));
+        assertEquals(Multiplicity.MANY2ONE,Multiplicity.convert(Cardinality.SINGLE));
 
-        assertEquals(Multiplicity.MULTI.getCardinality(), Cardinality.LIST);
-        assertEquals(Multiplicity.SIMPLE.getCardinality(), Cardinality.SET);
-        assertEquals(Multiplicity.MANY2ONE.getCardinality(), Cardinality.SINGLE);
+        assertEquals(Multiplicity.MULTI.getCardinality(),Cardinality.LIST);
+        assertEquals(Multiplicity.SIMPLE.getCardinality(),Cardinality.SET);
+        assertEquals(Multiplicity.MANY2ONE.getCardinality(),Cardinality.SINGLE);
 
         assertFalse(Multiplicity.MULTI.isConstrained());
         assertTrue(Multiplicity.SIMPLE.isConstrained());
@@ -52,8 +52,9 @@ public class TestCoreElements {
 
     @Test
     public void testOrder() {
-        assertTrue(Order.ASC.modulateNaturalOrder("A".compareTo("B")) < 0);
-        assertTrue(Order.DESC.modulateNaturalOrder("A".compareTo("B")) > 0);
+        assertTrue(Order.ASC.modulateNaturalOrder("A".compareTo("B"))<0);
+        assertTrue(Order.DESC.modulateNaturalOrder("A".compareTo("B"))>0);
     }
+
 
 }

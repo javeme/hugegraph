@@ -77,63 +77,56 @@ public class IndexSerializer {
     private final boolean hashKeys;
     private final HashingUtil.HashLength hashLength = HashingUtil.HashLength.SHORT;
 
-    public IndexSerializer(Configuration config, Serializer serializer, Map<String, ? extends IndexInformation> indexes,
-            final boolean hashKeys) {
+    public IndexSerializer(Configuration config, Serializer serializer, Map<String, ? extends IndexInformation> indexes, final boolean hashKeys) {
         this.serializer = serializer;
         this.configuration = config;
         this.mixedIndexes = indexes;
-        this.hashKeys = hashKeys;
-        if (hashKeys)
-            log.info("Hashing index keys");
+        this.hashKeys=hashKeys;
+        if (hashKeys) log.info("Hashing index keys");
     }
 
-    /*
-     * ################################################ Index Information
-     * ###################################################
-     */
+
+    /* ################################################
+               Index Information
+    ################################################### */
 
     public boolean containsIndex(final String indexName) {
         return mixedIndexes.containsKey(indexName);
     }
 
     public String getDefaultFieldName(final PropertyKey key, final Parameter[] parameters, final String indexName) {
-        Preconditions.checkArgument(!ParameterType.MAPPED_NAME.hasParameter(parameters),
-                "A field name mapping has been specified for key: %s", key);
-        Preconditions.checkArgument(containsIndex(indexName), "Unknown backing index: %s", indexName);
-        String fieldname = configuration.get(INDEX_NAME_MAPPING, indexName) ? key.name() : keyID2Name(key);
-        return mixedIndexes.get(indexName).mapKey2Field(fieldname, new StandardKeyInformation(key, parameters));
+        Preconditions.checkArgument(!ParameterType.MAPPED_NAME.hasParameter(parameters),"A field name mapping has been specified for key: %s",key);
+        Preconditions.checkArgument(containsIndex(indexName),"Unknown backing index: %s",indexName);
+        String fieldname = configuration.get(INDEX_NAME_MAPPING,indexName)?key.name():keyID2Name(key);
+        return mixedIndexes.get(indexName).mapKey2Field(fieldname,
+                new StandardKeyInformation(key,parameters));
     }
 
-    public static void register(final MixedIndexType index, final PropertyKey key, final BackendTransaction tx)
-            throws BackendException {
-        tx.getIndexTransaction(index.getBackingIndexName()).register(index.getStoreName(), key2Field(index, key),
-                getKeyInformation(index.getField(key)));
+    public static void register(final MixedIndexType index, final PropertyKey key, final BackendTransaction tx) throws BackendException {
+        tx.getIndexTransaction(index.getBackingIndexName()).register(index.getStoreName(), key2Field(index,key), getKeyInformation(index.getField(key)));
 
     }
 
-    // public boolean supports(final String indexName, final Class<?> dataType, final Parameter[] parameters) {
-    // IndexInformation indexinfo = indexes.get(indexName);
-    // Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s", indexName);
-    // return indexinfo.supports(new StandardKeyInformation(dataType,parameters));
-    // }
+//    public boolean supports(final String indexName, final Class<?> dataType, final Parameter[] parameters) {
+//        IndexInformation indexinfo = indexes.get(indexName);
+//        Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s", indexName);
+//        return indexinfo.supports(new StandardKeyInformation(dataType,parameters));
+//    }
 
     public boolean supports(final MixedIndexType index, final ParameterIndexField field) {
         IndexInformation indexinfo = mixedIndexes.get(index.getBackingIndexName());
-        Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s",
-                index.getBackingIndexName());
+        Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s", index.getBackingIndexName());
         return indexinfo.supports(getKeyInformation(field));
     }
 
-    public boolean supports(final MixedIndexType index, final ParameterIndexField field,
-            final HugeGraphPredicate predicate) {
+    public boolean supports(final MixedIndexType index, final ParameterIndexField field, final HugeGraphPredicate predicate) {
         IndexInformation indexinfo = mixedIndexes.get(index.getBackingIndexName());
-        Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s",
-                index.getBackingIndexName());
-        return indexinfo.supports(getKeyInformation(field), predicate);
+        Preconditions.checkArgument(indexinfo != null, "Index is unknown or not configured: %s", index.getBackingIndexName());
+        return indexinfo.supports(getKeyInformation(field),predicate);
     }
 
     private static StandardKeyInformation getKeyInformation(final ParameterIndexField field) {
-        return new StandardKeyInformation(field.getFieldKey(), field.getParameters());
+        return new StandardKeyInformation(field.getFieldKey(),field.getParameters());
     }
 
     public IndexInfoRetriever getIndexInfoRetriever(StandardHugeGraphTx tx) {
@@ -146,15 +139,14 @@ public class IndexSerializer {
 
         private IndexInfoRetriever(StandardHugeGraphTx tx) {
             Preconditions.checkNotNull(tx);
-            transaction = tx;
+            transaction=tx;
         }
 
         @Override
         public KeyInformation.IndexRetriever get(final String index) {
             return new KeyInformation.IndexRetriever() {
 
-                Map<String, KeyInformation.StoreRetriever> indexes =
-                        new ConcurrentHashMap<String, KeyInformation.StoreRetriever>();
+                Map<String,KeyInformation.StoreRetriever> indexes = new ConcurrentHashMap<String, KeyInformation.StoreRetriever>();
 
                 @Override
                 public KeyInformation get(String store, String key) {
@@ -163,14 +155,13 @@ public class IndexSerializer {
 
                 @Override
                 public KeyInformation.StoreRetriever get(final String store) {
-                    if (indexes.get(store) == null) {
-                        Preconditions.checkState(transaction != null, "Retriever has not been initialized");
+                    if (indexes.get(store)==null) {
+                        Preconditions.checkState(transaction!=null,"Retriever has not been initialized");
                         final MixedIndexType extIndex = getMixedIndex(store, transaction);
                         assert extIndex.getBackingIndexName().equals(index);
-                        ImmutableMap.Builder<String, KeyInformation> b = ImmutableMap.builder();
-                        for (ParameterIndexField field : extIndex.getFieldKeys())
-                            b.put(key2Field(field), getKeyInformation(field));
-                        final ImmutableMap<String, KeyInformation> infoMap = b.build();
+                        ImmutableMap.Builder<String,KeyInformation> b = ImmutableMap.builder();
+                        for (ParameterIndexField field : extIndex.getFieldKeys()) b.put(key2Field(field),getKeyInformation(field));
+                        final ImmutableMap<String,KeyInformation> infoMap = b.build();
                         KeyInformation.StoreRetriever storeRetriever = new KeyInformation.StoreRetriever() {
 
                             @Override
@@ -178,7 +169,7 @@ public class IndexSerializer {
                                 return infoMap.get(key);
                             }
                         };
-                        indexes.put(store, storeRetriever);
+                        indexes.put(store,storeRetriever);
                     }
                     return indexes.get(store);
                 }
@@ -187,16 +178,13 @@ public class IndexSerializer {
         }
     }
 
-    /*
-     * ################################################ Index Updates
-     * ###################################################
-     */
+    /* ################################################
+               Index Updates
+    ################################################### */
 
-    public static class IndexUpdate<K, E> {
+    public static class IndexUpdate<K,E> {
 
-        private enum Type {
-            ADD, DELETE
-        };
+        private enum Type { ADD, DELETE };
 
         private final IndexType index;
         private final Type mutationType;
@@ -205,7 +193,7 @@ public class IndexSerializer {
         private final HugeGraphElement element;
 
         private IndexUpdate(IndexType index, Type mutationType, K key, E entry, HugeGraphElement element) {
-            assert index != null && mutationType != null && key != null && entry != null && element != null;
+            assert index!=null && mutationType!=null && key!=null && entry!=null && element!=null;
             assert !index.isCompositeIndex() || (key instanceof StaticBuffer && entry instanceof Entry);
             assert !index.isMixedIndex() || (key instanceof String && entry instanceof IndexEntry);
             this.index = index;
@@ -236,11 +224,11 @@ public class IndexSerializer {
         }
 
         public boolean isAddition() {
-            return mutationType == Type.ADD;
+            return mutationType==Type.ADD;
         }
 
         public boolean isDeletion() {
-            return mutationType == Type.DELETE;
+            return mutationType==Type.DELETE;
         }
 
         public boolean isCompositeIndex() {
@@ -252,8 +240,8 @@ public class IndexSerializer {
         }
 
         public void setTTL(int ttl) {
-            Preconditions.checkArgument(ttl > 0 && mutationType == Type.ADD);
-            ((MetaAnnotatable) entry).setMetaData(EntryMetaData.TTL, ttl);
+            Preconditions.checkArgument(ttl>0 && mutationType==Type.ADD);
+            ((MetaAnnotatable)entry).setMetaData(EntryMetaData.TTL,ttl);
         }
 
         @Override
@@ -263,58 +251,47 @@ public class IndexSerializer {
 
         @Override
         public boolean equals(Object other) {
-            if (this == other)
-                return true;
-            else if (other == null || !(other instanceof IndexUpdate))
-                return false;
-            IndexUpdate oth = (IndexUpdate) other;
-            return index.equals(oth.index) && mutationType == oth.mutationType && key.equals(oth.key)
-                    && entry.equals(oth.entry);
+            if (this==other) return true;
+            else if (other==null || !(other instanceof IndexUpdate)) return false;
+            IndexUpdate oth = (IndexUpdate)other;
+            return index.equals(oth.index) && mutationType==oth.mutationType && key.equals(oth.key) && entry.equals(oth.entry);
         }
     }
 
     private static final IndexUpdate.Type getUpateType(InternalRelation relation) {
         assert relation.isNew() || relation.isRemoved();
-        return (relation.isNew() ? IndexUpdate.Type.ADD : IndexUpdate.Type.DELETE);
+        return (relation.isNew()? IndexUpdate.Type.ADD : IndexUpdate.Type.DELETE);
     }
 
     private static boolean indexAppliesTo(IndexType index, HugeGraphElement element) {
-        return index.getElement().isInstance(element)
-                && (!(index instanceof CompositeIndexType)
-                        || ((CompositeIndexType) index).getStatus() != SchemaStatus.DISABLED)
-                && (!index.hasSchemaTypeConstraint()
-                        || index.getElement().matchesConstraint(index.getSchemaTypeConstraint(), element));
+        return index.getElement().isInstance(element) &&
+                (!(index instanceof CompositeIndexType) || ((CompositeIndexType)index).getStatus()!=SchemaStatus.DISABLED) &&
+                (!index.hasSchemaTypeConstraint() ||
+                        index.getElement().matchesConstraint(index.getSchemaTypeConstraint(),element));
     }
 
     public Collection<IndexUpdate> getIndexUpdates(InternalRelation relation) {
         assert relation.isNew() || relation.isRemoved();
         Set<IndexUpdate> updates = Sets.newHashSet();
         IndexUpdate.Type updateType = getUpateType(relation);
-        int ttl = updateType == IndexUpdate.Type.ADD ? StandardHugeGraph.getTTL(relation) : 0;
+        int ttl = updateType==IndexUpdate.Type.ADD?StandardHugeGraph.getTTL(relation):0;
         for (RelationType type : relation.getPropertyKeysDirect()) {
-            if (!(type instanceof PropertyKey))
-                continue;
-            PropertyKey key = (PropertyKey) type;
-            for (IndexType index : ((InternalRelationType) key).getKeyIndexes()) {
-                if (!indexAppliesTo(index, relation))
-                    continue;
+            if (!(type instanceof PropertyKey)) continue;
+            PropertyKey key = (PropertyKey)type;
+            for (IndexType index : ((InternalRelationType)key).getKeyIndexes()) {
+                if (!indexAppliesTo(index,relation)) continue;
                 IndexUpdate update;
                 if (index instanceof CompositeIndexType) {
-                    CompositeIndexType iIndex = (CompositeIndexType) index;
+                    CompositeIndexType iIndex= (CompositeIndexType) index;
                     RecordEntry[] record = indexMatch(relation, iIndex);
-                    if (record == null)
-                        continue;
-                    update = new IndexUpdate<StaticBuffer, Entry>(iIndex, updateType, getIndexKey(iIndex, record),
-                            getIndexEntry(iIndex, record, relation), relation);
+                    if (record==null) continue;
+                    update = new IndexUpdate<StaticBuffer,Entry>(iIndex,updateType,getIndexKey(iIndex,record),getIndexEntry(iIndex,record,relation), relation);
                 } else {
-                    assert relation.valueOrNull(key) != null;
-                    if (((MixedIndexType) index).getField(key).getStatus() == SchemaStatus.DISABLED)
-                        continue;
-                    update = getMixedIndexUpdate(relation, key, relation.valueOrNull(key), (MixedIndexType) index,
-                            updateType);
+                    assert relation.valueOrNull(key)!=null;
+                    if (((MixedIndexType)index).getField(key).getStatus()== SchemaStatus.DISABLED) continue;
+                    update = getMixedIndexUpdate(relation, key, relation.valueOrNull(key), (MixedIndexType) index, updateType);
                 }
-                if (ttl > 0)
-                    update.setTTL(ttl);
+                if (ttl>0) update.setTTL(ttl);
                 updates.add(update);
             }
         }
@@ -323,57 +300,45 @@ public class IndexSerializer {
 
     private static PropertyKey[] getKeysOfRecords(RecordEntry[] record) {
         PropertyKey[] keys = new PropertyKey[record.length];
-        for (int i = 0; i < record.length; i++)
-            keys[i] = record[i].key;
+        for (int i=0;i<record.length;i++) keys[i]=record[i].key;
         return keys;
     }
 
-    private static int getIndexTTL(InternalVertex vertex, PropertyKey...keys) {
+    private static int getIndexTTL(InternalVertex vertex, PropertyKey... keys) {
         int ttl = StandardHugeGraph.getTTL(vertex);
-        for (int i = 0; i < keys.length; i++) {
+        for (int i=0;i<keys.length;i++) {
             PropertyKey key = keys[i];
-            int kttl = ((InternalRelationType) key).getTTL();
-            if (kttl > 0 && (kttl < ttl || ttl <= 0))
-                ttl = kttl;
+            int kttl = ((InternalRelationType)key).getTTL();
+            if (kttl>0 && (kttl<ttl || ttl<=0)) ttl=kttl;
         }
         return ttl;
     }
 
-    public Collection<IndexUpdate> getIndexUpdates(InternalVertex vertex,
-            Collection<InternalRelation> updatedProperties) {
-        if (updatedProperties.isEmpty())
-            return Collections.EMPTY_LIST;
+    public Collection<IndexUpdate> getIndexUpdates(InternalVertex vertex, Collection<InternalRelation> updatedProperties) {
+        if (updatedProperties.isEmpty()) return Collections.EMPTY_LIST;
         Set<IndexUpdate> updates = Sets.newHashSet();
 
         for (InternalRelation rel : updatedProperties) {
             assert rel.isProperty();
-            HugeGraphVertexProperty p = (HugeGraphVertexProperty) rel;
-            assert rel.isNew() || rel.isRemoved();
-            assert rel.getVertex(0).equals(vertex);
+            HugeGraphVertexProperty p = (HugeGraphVertexProperty)rel;
+            assert rel.isNew() || rel.isRemoved(); assert rel.getVertex(0).equals(vertex);
             IndexUpdate.Type updateType = getUpateType(rel);
-            for (IndexType index : ((InternalRelationType) p.propertyKey()).getKeyIndexes()) {
-                if (!indexAppliesTo(index, vertex))
-                    continue;
-                if (index.isCompositeIndex()) { // Gather composite indexes
-                    CompositeIndexType cIndex = (CompositeIndexType) index;
-                    IndexRecords updateRecords = indexMatches(vertex, cIndex, updateType == IndexUpdate.Type.DELETE,
-                            p.propertyKey(), new RecordEntry(p));
+            for (IndexType index : ((InternalRelationType)p.propertyKey()).getKeyIndexes()) {
+                if (!indexAppliesTo(index,vertex)) continue;
+                if (index.isCompositeIndex()) { //Gather composite indexes
+                    CompositeIndexType cIndex = (CompositeIndexType)index;
+                    IndexRecords updateRecords = indexMatches(vertex,cIndex,updateType==IndexUpdate.Type.DELETE,p.propertyKey(),new RecordEntry(p));
                     for (RecordEntry[] record : updateRecords) {
-                        IndexUpdate update = new IndexUpdate<StaticBuffer, Entry>(cIndex, updateType,
-                                getIndexKey(cIndex, record), getIndexEntry(cIndex, record, vertex), vertex);
-                        int ttl = getIndexTTL(vertex, getKeysOfRecords(record));
-                        if (ttl > 0 && updateType == IndexUpdate.Type.ADD)
-                            update.setTTL(ttl);
+                        IndexUpdate update = new IndexUpdate<StaticBuffer,Entry>(cIndex,updateType,getIndexKey(cIndex,record),getIndexEntry(cIndex,record,vertex), vertex);
+                        int ttl = getIndexTTL(vertex,getKeysOfRecords(record));
+                        if (ttl>0 && updateType== IndexUpdate.Type.ADD) update.setTTL(ttl);
                         updates.add(update);
                     }
-                } else { // Update mixed indexes
-                    if (((MixedIndexType) index).getField(p.propertyKey()).getStatus() == SchemaStatus.DISABLED)
-                        continue;
-                    IndexUpdate update =
-                            getMixedIndexUpdate(vertex, p.propertyKey(), p.value(), (MixedIndexType) index, updateType);
-                    int ttl = getIndexTTL(vertex, p.propertyKey());
-                    if (ttl > 0 && updateType == IndexUpdate.Type.ADD)
-                        update.setTTL(ttl);
+                } else { //Update mixed indexes
+                    if (((MixedIndexType)index).getField(p.propertyKey()).getStatus()== SchemaStatus.DISABLED) continue;
+                    IndexUpdate update = getMixedIndexUpdate(vertex, p.propertyKey(), p.value(), (MixedIndexType) index, updateType);
+                    int ttl = getIndexTTL(vertex,p.propertyKey());
+                    if (ttl>0 && updateType== IndexUpdate.Type.ADD) update.setTTL(ttl);
                     updates.add(update);
                 }
             }
@@ -381,70 +346,57 @@ public class IndexSerializer {
         return updates;
     }
 
-    private IndexUpdate<String, IndexEntry> getMixedIndexUpdate(HugeGraphElement element, PropertyKey key, Object value,
-            MixedIndexType index, IndexUpdate.Type updateType) {
-        return new IndexUpdate<String, IndexEntry>(index, updateType, element2String(element),
-                new IndexEntry(key2Field(index.getField(key)), value), element);
+    private IndexUpdate<String,IndexEntry> getMixedIndexUpdate(HugeGraphElement element, PropertyKey key, Object value,
+                                                               MixedIndexType index, IndexUpdate.Type updateType)  {
+        return new IndexUpdate<String,IndexEntry>(index,updateType,element2String(element),new IndexEntry(key2Field(index.getField(key)), value), element);
     }
 
-    public void reindexElement(HugeGraphElement element, MixedIndexType index,
-            Map<String, Map<String, List<IndexEntry>>> documentsPerStore) {
-        if (!indexAppliesTo(index, element))
-            return;
+    public void reindexElement(HugeGraphElement element, MixedIndexType index, Map<String,Map<String,List<IndexEntry>>> documentsPerStore) {
+        if (!indexAppliesTo(index,element)) return;
         List<IndexEntry> entries = Lists.newArrayList();
-        for (ParameterIndexField field : index.getFieldKeys()) {
+        for (ParameterIndexField field: index.getFieldKeys()) {
             PropertyKey key = field.getFieldKey();
-            if (field.getStatus() == SchemaStatus.DISABLED)
-                continue;
+            if (field.getStatus()==SchemaStatus.DISABLED) continue;
             if (element.properties(key.name()).hasNext()) {
-                element.values(key.name())
-                        .forEachRemaining(value -> entries.add(new IndexEntry(key2Field(field), value)));
+                element.values(key.name()).forEachRemaining(value->entries.add(new IndexEntry(key2Field(field), value)));
             }
         }
-        Map<String, List<IndexEntry>> documents = documentsPerStore.get(index.getStoreName());
-        if (documents == null) {
+        Map<String,List<IndexEntry>> documents = documentsPerStore.get(index.getStoreName());
+        if (documents==null) {
             documents = Maps.newHashMap();
-            documentsPerStore.put(index.getStoreName(), documents);
+            documentsPerStore.put(index.getStoreName(),documents);
         }
-        getDocuments(documentsPerStore, index).put(element2String(element), entries);
+        getDocuments(documentsPerStore,index).put(element2String(element),entries);
     }
 
-    private Map<String, List<IndexEntry>> getDocuments(Map<String, Map<String, List<IndexEntry>>> documentsPerStore,
-            MixedIndexType index) {
-        Map<String, List<IndexEntry>> documents = documentsPerStore.get(index.getStoreName());
-        if (documents == null) {
+    private Map<String,List<IndexEntry>> getDocuments(Map<String,Map<String,List<IndexEntry>>> documentsPerStore, MixedIndexType index) {
+        Map<String,List<IndexEntry>> documents = documentsPerStore.get(index.getStoreName());
+        if (documents==null) {
             documents = Maps.newHashMap();
-            documentsPerStore.put(index.getStoreName(), documents);
+            documentsPerStore.put(index.getStoreName(),documents);
         }
         return documents;
     }
 
-    public void removeElement(Object elementId, MixedIndexType index,
-            Map<String, Map<String, List<IndexEntry>>> documentsPerStore) {
-        Preconditions.checkArgument(
-                (index.getElement() == ElementCategory.VERTEX && elementId instanceof Long)
-                        || (index.getElement().isRelation() && elementId instanceof RelationIdentifier),
-                "Invalid element id [%s] provided for index: %s", elementId, index);
-        getDocuments(documentsPerStore, index).put(element2String(elementId), Lists.<IndexEntry> newArrayList());
+    public void removeElement(Object elementId, MixedIndexType index, Map<String,Map<String,List<IndexEntry>>> documentsPerStore) {
+        Preconditions.checkArgument((index.getElement()==ElementCategory.VERTEX && elementId instanceof Long) ||
+                (index.getElement().isRelation() && elementId instanceof RelationIdentifier),"Invalid element id [%s] provided for index: %s",elementId,index);
+        getDocuments(documentsPerStore,index).put(element2String(elementId),Lists.<IndexEntry>newArrayList());
     }
 
-    public Set<IndexUpdate<StaticBuffer, Entry>> reindexElement(HugeGraphElement element, CompositeIndexType index) {
-        Set<IndexUpdate<StaticBuffer, Entry>> indexEntries = Sets.newHashSet();
-        if (!indexAppliesTo(index, element))
-            return indexEntries;
+    public Set<IndexUpdate<StaticBuffer,Entry>> reindexElement(HugeGraphElement element, CompositeIndexType index) {
+        Set<IndexUpdate<StaticBuffer,Entry>> indexEntries = Sets.newHashSet();
+        if (!indexAppliesTo(index,element)) return indexEntries;
         Iterable<RecordEntry[]> records;
-        if (element instanceof HugeGraphVertex)
-            records = indexMatches((HugeGraphVertex) element, index);
+        if (element instanceof HugeGraphVertex) records = indexMatches((HugeGraphVertex)element,index);
         else {
             assert element instanceof HugeGraphRelation;
             records = Collections.EMPTY_LIST;
-            RecordEntry[] record = indexMatch((HugeGraphRelation) element, index);
-            if (record != null)
-                records = ImmutableList.of(record);
+            RecordEntry[] record = indexMatch((HugeGraphRelation)element,index);
+            if (record!=null) records = ImmutableList.of(record);
         }
         for (RecordEntry[] record : records) {
-            indexEntries.add(new IndexUpdate<StaticBuffer, Entry>(index, IndexUpdate.Type.ADD,
-                    getIndexKey(index, record), getIndexEntry(index, record, element), element));
+            indexEntries.add(new IndexUpdate<StaticBuffer,Entry>(index, IndexUpdate.Type.ADD,getIndexKey(index,record),getIndexEntry(index,record,element), element));
         }
         return indexEntries;
     }
@@ -452,12 +404,11 @@ public class IndexSerializer {
     public static RecordEntry[] indexMatch(HugeGraphRelation relation, CompositeIndexType index) {
         IndexField[] fields = index.getFieldKeys();
         RecordEntry[] match = new RecordEntry[fields.length];
-        for (int i = 0; i < fields.length; i++) {
+        for (int i = 0; i <fields.length; i++) {
             IndexField f = fields[i];
             Object value = relation.valueOrNull(f.getFieldKey());
-            if (value == null)
-                return null; // No match
-            match[i] = new RecordEntry(relation.longId(), value, f.getFieldKey());
+            if (value==null) return null; //No match
+            match[i] = new RecordEntry(relation.longId(),value,f.getFieldKey());
         }
         return match;
     }
@@ -465,7 +416,7 @@ public class IndexSerializer {
     public static class IndexRecords extends ArrayList<RecordEntry[]> {
 
         public boolean add(RecordEntry[] record) {
-            return super.add(Arrays.copyOf(record, record.length));
+            return super.add(Arrays.copyOf(record,record.length));
         }
 
         public Iterable<Object[]> getRecordValues() {
@@ -481,7 +432,7 @@ public class IndexSerializer {
         private static Object[] getValues(RecordEntry[] record) {
             Object[] values = new Object[record.length];
             for (int i = 0; i < values.length; i++) {
-                values[i] = record[i].value;
+                values[i]=record[i].value;
             }
             return values;
         }
@@ -501,36 +452,37 @@ public class IndexSerializer {
         }
 
         private RecordEntry(HugeGraphVertexProperty property) {
-            this(property.longId(), property.value(), property.propertyKey());
+            this(property.longId(),property.value(),property.propertyKey());
         }
     }
 
     public static IndexRecords indexMatches(HugeGraphVertex vertex, CompositeIndexType index) {
-        return indexMatches(vertex, index, null, null);
+        return indexMatches(vertex,index,null,null);
     }
 
-    public static IndexRecords indexMatches(HugeGraphVertex vertex, CompositeIndexType index, PropertyKey replaceKey,
-            Object replaceValue) {
+    public static IndexRecords indexMatches(HugeGraphVertex vertex, CompositeIndexType index,
+                                            PropertyKey replaceKey, Object replaceValue) {
         IndexRecords matches = new IndexRecords();
         IndexField[] fields = index.getFieldKeys();
-        if (indexAppliesTo(index, vertex)) {
-            indexMatches(vertex, new RecordEntry[fields.length], matches, fields, 0, false, replaceKey,
-                    new RecordEntry(0, replaceValue, replaceKey));
+        if (indexAppliesTo(index,vertex)) {
+            indexMatches(vertex,new RecordEntry[fields.length],matches,fields,0,false,
+                                            replaceKey,new RecordEntry(0,replaceValue,replaceKey));
         }
         return matches;
     }
 
-    private static IndexRecords indexMatches(HugeGraphVertex vertex, CompositeIndexType index, boolean onlyLoaded,
-            PropertyKey replaceKey, RecordEntry replaceValue) {
+    private static IndexRecords indexMatches(HugeGraphVertex vertex, CompositeIndexType index,
+                                              boolean onlyLoaded, PropertyKey replaceKey, RecordEntry replaceValue) {
         IndexRecords matches = new IndexRecords();
         IndexField[] fields = index.getFieldKeys();
-        indexMatches(vertex, new RecordEntry[fields.length], matches, fields, 0, onlyLoaded, replaceKey, replaceValue);
+        indexMatches(vertex,new RecordEntry[fields.length],matches,fields,0,onlyLoaded,replaceKey,replaceValue);
         return matches;
     }
 
     private static void indexMatches(HugeGraphVertex vertex, RecordEntry[] current, IndexRecords matches,
-            IndexField[] fields, int pos, boolean onlyLoaded, PropertyKey replaceKey, RecordEntry replaceValue) {
-        if (pos >= fields.length) {
+                                     IndexField[] fields, int pos,
+                                     boolean onlyLoaded, PropertyKey replaceKey, RecordEntry replaceValue) {
+        if (pos>= fields.length) {
             matches.add(current);
             return;
         }
@@ -543,12 +495,12 @@ public class IndexSerializer {
         } else {
             values = new ArrayList<RecordEntry>();
             Iterable<HugeGraphVertexProperty> props;
-            if (onlyLoaded || (!vertex.isNew() && IDManager.VertexIDType.PartitionedVertex.is(vertex.longId()))) {
-                // going through transaction so we can query deleted vertices
-                VertexCentricQueryBuilder qb = ((InternalVertex) vertex).tx().query(vertex);
+            if (onlyLoaded ||
+                    (!vertex.isNew() && IDManager.VertexIDType.PartitionedVertex.is(vertex.longId()))) {
+                //going through transaction so we can query deleted vertices
+                VertexCentricQueryBuilder qb = ((InternalVertex)vertex).tx().query(vertex);
                 qb.noPartitionRestriction().type(key);
-                if (onlyLoaded)
-                    qb.queryOnlyLoaded();
+                if (onlyLoaded) qb.queryOnlyLoaded();
                 props = qb.properties();
             } else {
                 props = vertex.query().keys(key.name()).properties();
@@ -560,14 +512,15 @@ public class IndexSerializer {
             }
         }
         for (RecordEntry value : values) {
-            current[pos] = value;
-            indexMatches(vertex, current, matches, fields, pos + 1, onlyLoaded, replaceKey, replaceValue);
+            current[pos]=value;
+            indexMatches(vertex,current,matches,fields,pos+1,onlyLoaded,replaceKey,replaceValue);
         }
     }
 
-    /*
-     * ################################################ Querying ###################################################
-     */
+
+    /* ################################################
+                Querying
+    ################################################### */
 
     public List<Object> query(final JointIndexQuery.Subquery query, final BackendTransaction tx) {
         IndexType index = query.getIndex();
@@ -576,11 +529,11 @@ public class IndexSerializer {
             List<EntryList> rs = sq.execute(tx);
             List<Object> results = new ArrayList<Object>(rs.get(0).size());
             for (EntryList r : rs) {
-                for (java.util.Iterator<Entry> iterator = r.reuseIterator(); iterator.hasNext();) {
+                for (java.util.Iterator<Entry> iterator = r.reuseIterator(); iterator.hasNext(); ) {
                     Entry entry = iterator.next();
                     ReadBuffer entryValue = entry.asReadBuffer();
                     entryValue.movePositionTo(entry.getValuePosition());
-                    switch (index.getElement()) {
+                    switch(index.getElement()) {
                         case VERTEX:
                             results.add(VariableLong.readPositive(entryValue));
                             break;
@@ -593,8 +546,7 @@ public class IndexSerializer {
         } else {
             List<String> r = tx.indexQuery(((MixedIndexType) index).getBackingIndexName(), query.getMixedQuery());
             List<Object> result = new ArrayList<Object>(r.size());
-            for (String id : r)
-                result.add(string2ElementId(id));
+            for (String id : r) result.add(string2ElementId(id));
             return result;
         }
     }
@@ -602,7 +554,7 @@ public class IndexSerializer {
     public MultiKeySliceQuery getQuery(final CompositeIndexType index, List<Object[]> values) {
         List<KeySliceQuery> ksqs = new ArrayList<KeySliceQuery>(values.size());
         for (Object[] value : values) {
-            ksqs.add(new KeySliceQuery(getIndexKey(index, value), BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(1)));
+            ksqs.add(new KeySliceQuery(getIndexKey(index,value), BufferUtil.zeroBuffer(1), BufferUtil.oneBuffer(1)));
         }
         return new MultiKeySliceQuery(ksqs);
     }
@@ -616,141 +568,130 @@ public class IndexSerializer {
                         Preconditions.checkArgument(condition instanceof PredicateCondition);
                         PredicateCondition pc = (PredicateCondition) condition;
                         PropertyKey key = (PropertyKey) pc.getKey();
-                        return new PredicateCondition<String, HugeGraphElement>(key2Field(index, key),
-                                pc.getPredicate(), pc.getValue());
+                        return new PredicateCondition<String, HugeGraphElement>(key2Field(index,key), pc.getPredicate(), pc.getValue());
                     }
                 });
         ImmutableList<IndexQuery.OrderEntry> newOrders = IndexQuery.NO_ORDER;
-        if (!orders.isEmpty() && GraphCentricQueryBuilder.indexCoversOrder(index, orders)) {
+        if (!orders.isEmpty() && GraphCentricQueryBuilder.indexCoversOrder(index,orders)) {
             ImmutableList.Builder<IndexQuery.OrderEntry> lb = ImmutableList.builder();
             for (int i = 0; i < orders.size(); i++) {
-                lb.add(new IndexQuery.OrderEntry(key2Field(index, orders.getKey(i)), orders.getOrder(i),
-                        orders.getKey(i).dataType()));
+                lb.add(new IndexQuery.OrderEntry(key2Field(index,orders.getKey(i)), orders.getOrder(i), orders.getKey(i).dataType()));
             }
             newOrders = lb.build();
         }
         return new IndexQuery(index.getStoreName(), newCondition, newOrders);
     }
-    //
-    //
-    //
-    // public IndexQuery getQuery(String index, final ElementCategory resultType, final Condition condition, final
-    // OrderList orders) {
-    // if (isStandardIndex(index)) {
-    // Preconditions.checkArgument(orders.isEmpty());
-    // return new IndexQuery(getStoreName(resultType), condition, IndexQuery.NO_ORDER);
-    // } else {
-    // Condition newCondition = ConditionUtil.literalTransformation(condition,
-    // new Function<Condition<HugeGraphElement>, Condition<HugeGraphElement>>() {
-    // @Nullable
-    // @Override
-    // public Condition<HugeGraphElement> apply(@Nullable Condition<HugeGraphElement> condition) {
-    // Preconditions.checkArgument(condition instanceof PredicateCondition);
-    // PredicateCondition pc = (PredicateCondition) condition;
-    // HugeGraphKey key = (HugeGraphKey) pc.getKey();
-    // return new PredicateCondition<String, HugeGraphElement>(key2Field(key), pc.getPredicate(), pc.getValue());
-    // }
-    // });
-    // ImmutableList<IndexQuery.OrderEntry> newOrders = IndexQuery.NO_ORDER;
-    // if (!orders.isEmpty()) {
-    // ImmutableList.Builder<IndexQuery.OrderEntry> lb = ImmutableList.builder();
-    // for (int i = 0; i < orders.size(); i++) {
-    // lb.add(new IndexQuery.OrderEntry(key2Field(orders.getKey(i)), orders.getOrder(i),
-    // orders.getKey(i).getDataType()));
-    // }
-    // newOrders = lb.build();
-    // }
-    // return new IndexQuery(getStoreName(resultType), newCondition, newOrders);
-    // }
-    // }
+//
+//
+//
+//    public IndexQuery getQuery(String index, final ElementCategory resultType, final Condition condition, final OrderList orders) {
+//        if (isStandardIndex(index)) {
+//            Preconditions.checkArgument(orders.isEmpty());
+//            return new IndexQuery(getStoreName(resultType), condition, IndexQuery.NO_ORDER);
+//        } else {
+//            Condition newCondition = ConditionUtil.literalTransformation(condition,
+//                    new Function<Condition<HugeGraphElement>, Condition<HugeGraphElement>>() {
+//                        @Nullable
+//                        @Override
+//                        public Condition<HugeGraphElement> apply(@Nullable Condition<HugeGraphElement> condition) {
+//                            Preconditions.checkArgument(condition instanceof PredicateCondition);
+//                            PredicateCondition pc = (PredicateCondition) condition;
+//                            HugeGraphKey key = (HugeGraphKey) pc.getKey();
+//                            return new PredicateCondition<String, HugeGraphElement>(key2Field(key), pc.getPredicate(), pc.getValue());
+//                        }
+//                    });
+//            ImmutableList<IndexQuery.OrderEntry> newOrders = IndexQuery.NO_ORDER;
+//            if (!orders.isEmpty()) {
+//                ImmutableList.Builder<IndexQuery.OrderEntry> lb = ImmutableList.builder();
+//                for (int i = 0; i < orders.size(); i++) {
+//                    lb.add(new IndexQuery.OrderEntry(key2Field(orders.getKey(i)), orders.getOrder(i), orders.getKey(i).getDataType()));
+//                }
+//                newOrders = lb.build();
+//            }
+//            return new IndexQuery(getStoreName(resultType), newCondition, newOrders);
+//        }
+//    }
 
     public Iterable<RawQuery.Result> executeQuery(IndexQueryBuilder query, final ElementCategory resultType,
-            final BackendTransaction backendTx, final StandardHugeGraphTx transaction) {
+                                                  final BackendTransaction backendTx, final StandardHugeGraphTx transaction) {
         MixedIndexType index = getMixedIndex(query.getIndex(), transaction);
-        Preconditions.checkArgument(index.getElement() == resultType,
-                "Index is not configured for the desired result type: %s", resultType);
+        Preconditions.checkArgument(index.getElement()==resultType,"Index is not configured for the desired result type: %s",resultType);
         String backingIndexName = index.getBackingIndexName();
         IndexProvider indexInformation = (IndexProvider) mixedIndexes.get(backingIndexName);
 
         StringBuffer qB = new StringBuffer(query.getQuery());
         final String prefix = query.getPrefix();
         Preconditions.checkNotNull(prefix);
-        // Convert query string by replacing
+        //Convert query string by replacing
         int replacements = 0;
         int pos = 0;
-        while (pos < qB.length()) {
-            pos = qB.indexOf(prefix, pos);
-            if (pos < 0)
-                break;
+        while (pos<qB.length()) {
+            pos = qB.indexOf(prefix,pos);
+            if (pos<0) break;
 
             int startPos = pos;
             pos += prefix.length();
             StringBuilder keyBuilder = new StringBuilder();
-            boolean quoteTerminated = qB.charAt(pos) == '"';
-            if (quoteTerminated)
-                pos++;
-            while (pos < qB.length() && (Character.isLetterOrDigit(qB.charAt(pos))
-                    || (quoteTerminated && qB.charAt(pos) != '"') || qB.charAt(pos) == '*')) {
+            boolean quoteTerminated = qB.charAt(pos)=='"';
+            if (quoteTerminated) pos++;
+            while (pos<qB.length() &&
+                    (Character.isLetterOrDigit(qB.charAt(pos))
+                            || (quoteTerminated && qB.charAt(pos)!='"') || qB.charAt(pos) == '*' ) ) {
                 keyBuilder.append(qB.charAt(pos));
                 pos++;
             }
-            if (quoteTerminated)
-                pos++;
+            if (quoteTerminated) pos++;
             int endPos = pos;
             String keyname = keyBuilder.toString();
             Preconditions.checkArgument(StringUtils.isNotBlank(keyname),
-                    "Found reference to empty key at position [%s]", startPos);
+                    "Found reference to empty key at position [%s]",startPos);
             String replacement;
-            if (keyname.equals("*")) {
+            if(keyname.equals("*")) {
                 replacement = indexInformation.getFeatures().getWildcardField();
-            } else if (transaction.containsRelationType(keyname)) {
+            }
+            else if (transaction.containsRelationType(keyname)) {
                 PropertyKey key = transaction.getPropertyKey(keyname);
                 Preconditions.checkNotNull(key);
                 Preconditions.checkArgument(index.indexesKey(key),
-                        "The used key [%s] is not indexed in the targeted index [%s]", key.name(), query.getIndex());
-                replacement = key2Field(index, key);
+                        "The used key [%s] is not indexed in the targeted index [%s]",key.name(),query.getIndex());
+                replacement = key2Field(index,key);
             } else {
-                Preconditions.checkArgument(query.getUnknownKeyName() != null,
-                        "Found reference to non-existant property key in query at position [%s]: %s", startPos,
-                        keyname);
+                Preconditions.checkArgument(query.getUnknownKeyName()!=null,
+                        "Found reference to non-existant property key in query at position [%s]: %s",startPos,keyname);
                 replacement = query.getUnknownKeyName();
             }
             Preconditions.checkArgument(StringUtils.isNotBlank(replacement));
 
-            qB.replace(startPos, endPos, replacement);
-            pos = startPos + replacement.length();
+            qB.replace(startPos,endPos,replacement);
+            pos = startPos+replacement.length();
             replacements++;
         }
 
         String queryStr = qB.toString();
-        if (replacements <= 0)
-            log.warn("Could not convert given {} index query: [{}]", resultType, query.getQuery());
-        log.info("Converted query string with {} replacements: [{}] => [{}]", replacements, query.getQuery(), queryStr);
-        RawQuery rawQuery = new RawQuery(index.getStoreName(), queryStr, query.getParameters());
-        if (query.hasLimit())
-            rawQuery.setLimit(query.getLimit());
+        if (replacements<=0) log.warn("Could not convert given {} index query: [{}]",resultType, query.getQuery());
+        log.info("Converted query string with {} replacements: [{}] => [{}]",replacements,query.getQuery(),queryStr);
+        RawQuery rawQuery=new RawQuery(index.getStoreName(),queryStr,query.getParameters());
+        if (query.hasLimit()) rawQuery.setLimit(query.getLimit());
         rawQuery.setOffset(query.getOffset());
-        return Iterables.transform(backendTx.rawQuery(index.getBackingIndexName(), rawQuery),
-                new Function<RawQuery.Result<String>, RawQuery.Result>() {
-                    @Nullable
-                    @Override
-                    public RawQuery.Result apply(@Nullable RawQuery.Result<String> result) {
-                        return new RawQuery.Result(string2ElementId(result.getResult()), result.getScore());
-                    }
-                });
+        return Iterables.transform(backendTx.rawQuery(index.getBackingIndexName(), rawQuery), new Function<RawQuery.Result<String>, RawQuery.Result>() {
+            @Nullable
+            @Override
+            public RawQuery.Result apply(@Nullable RawQuery.Result<String> result) {
+                return new RawQuery.Result(string2ElementId(result.getResult()), result.getScore());
+            }
+        });
     }
 
-    /*
-     * ################################################ Utility Functions
-     * ###################################################
-     */
+
+    /* ################################################
+                Utility Functions
+    ################################################### */
 
     private static final MixedIndexType getMixedIndex(String indexName, StandardHugeGraphTx transaction) {
         IndexType index = ManagementSystem.getGraphIndexDirect(indexName, transaction);
-        Preconditions.checkArgument(index != null, "Index with name [%s] is unknown or not configured properly",
-                indexName);
+        Preconditions.checkArgument(index!=null,"Index with name [%s] is unknown or not configured properly",indexName);
         Preconditions.checkArgument(index.isMixedIndex());
-        return (MixedIndexType) index;
+        return (MixedIndexType)index;
     }
 
     private static final String element2String(HugeGraphElement element) {
@@ -759,17 +700,13 @@ public class IndexSerializer {
 
     private static final String element2String(Object elementId) {
         Preconditions.checkArgument(elementId instanceof Long || elementId instanceof RelationIdentifier);
-        if (elementId instanceof Long)
-            return longID2Name((Long) elementId);
-        else
-            return ((RelationIdentifier) elementId).toString();
+        if (elementId instanceof Long) return longID2Name((Long)elementId);
+        else return ((RelationIdentifier) elementId).toString();
     }
 
     private static final Object string2ElementId(String str) {
-        if (str.contains(RelationIdentifier.TOSTRING_DELIMITER))
-            return RelationIdentifier.parse(str);
-        else
-            return name2LongID(str);
+        if (str.contains(RelationIdentifier.TOSTRING_DELIMITER)) return RelationIdentifier.parse(str);
+        else return name2LongID(str);
     }
 
     private static final String key2Field(MixedIndexType index, PropertyKey key) {
@@ -777,8 +714,8 @@ public class IndexSerializer {
     }
 
     private static final String key2Field(ParameterIndexField field) {
-        assert field != null;
-        return ParameterType.MAPPED_NAME.findParameter(field.getParameters(), keyID2Name(field.getFieldKey()));
+        assert field!=null;
+        return ParameterType.MAPPED_NAME.findParameter(field.getParameters(),keyID2Name(field.getFieldKey()));
     }
 
     private static final String keyID2Name(PropertyKey key) {
@@ -794,15 +731,16 @@ public class IndexSerializer {
         return LongEncoding.decode(name);
     }
 
+
     private final StaticBuffer getIndexKey(CompositeIndexType index, RecordEntry[] record) {
-        return getIndexKey(index, IndexRecords.getValues(record));
+        return getIndexKey(index,IndexRecords.getValues(record));
     }
 
     private final StaticBuffer getIndexKey(CompositeIndexType index, Object[] values) {
-        DataOutput out = serializer.getDataOutput(8 * DEFAULT_OBJECT_BYTELEN + 8);
+        DataOutput out = serializer.getDataOutput(8*DEFAULT_OBJECT_BYTELEN + 8);
         VariableLong.writePositive(out, index.getID());
         IndexField[] fields = index.getFieldKeys();
-        Preconditions.checkArgument(fields.length > 0 && fields.length == values.length);
+        Preconditions.checkArgument(fields.length>0 && fields.length==values.length);
         for (int i = 0; i < fields.length; i++) {
             IndexField f = fields[i];
             Object value = values[i];
@@ -810,57 +748,51 @@ public class IndexSerializer {
             if (AttributeUtil.hasGenericDataType(f.getFieldKey())) {
                 out.writeClassAndObject(value);
             } else {
-                assert value.getClass().equals(f.getFieldKey().dataType()) : value.getClass() + " - "
-                        + f.getFieldKey().dataType();
+                assert value.getClass().equals(f.getFieldKey().dataType()) : value.getClass() + " - " + f.getFieldKey().dataType();
                 out.writeObjectNotNull(value);
             }
         }
         StaticBuffer key = out.getStaticBuffer();
-        if (hashKeys)
-            key = HashingUtil.hashPrefixKey(hashLength, key);
+        if (hashKeys) key = HashingUtil.hashPrefixKey(hashLength,key);
         return key;
     }
 
     public long getIndexIdFromKey(StaticBuffer key) {
-        if (hashKeys)
-            key = HashingUtil.getKey(hashLength, key);
+        if (hashKeys) key = HashingUtil.getKey(hashLength,key);
         return VariableLong.readPositive(key.asReadBuffer());
     }
 
     private final Entry getIndexEntry(CompositeIndexType index, RecordEntry[] record, HugeGraphElement element) {
-        DataOutput out = serializer.getDataOutput(1 + 8 + 8 * record.length + 4 * 8);
+        DataOutput out = serializer.getDataOutput(1+8+8*record.length+4*8);
         out.putByte(FIRST_INDEX_COLUMN_BYTE);
-        if (index.getCardinality() != Cardinality.SINGLE) {
-            VariableLong.writePositive(out, element.longId());
-            if (index.getCardinality() != Cardinality.SET) {
+        if (index.getCardinality()!=Cardinality.SINGLE) {
+            VariableLong.writePositive(out,element.longId());
+            if (index.getCardinality()!=Cardinality.SET) {
                 for (RecordEntry re : record) {
-                    VariableLong.writePositive(out, re.relationId);
+                    VariableLong.writePositive(out,re.relationId);
                 }
             }
         }
-        int valuePosition = out.getPosition();
+        int valuePosition=out.getPosition();
         if (element instanceof HugeGraphVertex) {
-            VariableLong.writePositive(out, element.longId());
+            VariableLong.writePositive(out,element.longId());
         } else {
             assert element instanceof HugeGraphRelation;
-            RelationIdentifier rid = (RelationIdentifier) element.id();
+            RelationIdentifier rid = (RelationIdentifier)element.id();
             long[] longs = rid.getLongRepresentation();
             Preconditions.checkArgument(longs.length == 3 || longs.length == 4);
-            for (int i = 0; i < longs.length; i++)
-                VariableLong.writePositive(out, longs[i]);
+            for (int i = 0; i < longs.length; i++) VariableLong.writePositive(out, longs[i]);
         }
-        return new StaticArrayEntry(out.getStaticBuffer(), valuePosition);
+        return new StaticArrayEntry(out.getStaticBuffer(),valuePosition);
     }
 
     private static final RelationIdentifier bytebuffer2RelationId(ReadBuffer b) {
         long[] relationId = new long[4];
-        for (int i = 0; i < 3; i++)
-            relationId[i] = VariableLong.readPositive(b);
-        if (b.hasRemaining())
-            relationId[3] = VariableLong.readPositive(b);
-        else
-            relationId = Arrays.copyOfRange(relationId, 0, 3);
+        for (int i = 0; i < 3; i++) relationId[i] = VariableLong.readPositive(b);
+        if (b.hasRemaining()) relationId[3] = VariableLong.readPositive(b);
+        else relationId = Arrays.copyOfRange(relationId,0,3);
         return RelationIdentifier.get(relationId);
     }
+
 
 }

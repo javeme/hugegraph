@@ -32,7 +32,7 @@ public class InMemoryLockKeyColumnValueStoreTest extends LockKeyColumnValueStore
 
     @Override
     public void testRemoteLockContention() {
-        // Does not apply to non-persisting in-memory store
+        //Does not apply to non-persisting in-memory store
     }
 
 }

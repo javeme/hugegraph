@@ -28,9 +28,9 @@ public class WorkerPool implements AutoCloseable {
     private final ThreadPoolExecutor processor;
     private final long shutdownWaitMS = 10000;
 
+
     public WorkerPool(int numThreads) {
-        processor = new ThreadPoolExecutor(numThreads, numThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(128));
+        processor = new ThreadPoolExecutor(numThreads, numThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(128));
         processor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
@@ -41,9 +41,9 @@ public class WorkerPool implements AutoCloseable {
     @Override
     public void close() throws Exception {
         processor.shutdown();
-        processor.awaitTermination(shutdownWaitMS, TimeUnit.MILLISECONDS);
+        processor.awaitTermination(shutdownWaitMS,TimeUnit.MILLISECONDS);
         if (!processor.isTerminated()) {
-            // log.error("Processor did not terminate in time");
+            //log.error("Processor did not terminate in time");
             processor.shutdownNow();
         }
 

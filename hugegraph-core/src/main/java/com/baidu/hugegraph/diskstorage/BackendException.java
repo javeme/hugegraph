@@ -33,7 +33,7 @@ public abstract class BackendException extends Exception {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public BackendException(String msg, Throwable cause) {
@@ -48,5 +48,6 @@ public abstract class BackendException extends Exception {
     public BackendException(Throwable cause) {
         this("Exception in storage backend.", cause);
     }
+
 
 }

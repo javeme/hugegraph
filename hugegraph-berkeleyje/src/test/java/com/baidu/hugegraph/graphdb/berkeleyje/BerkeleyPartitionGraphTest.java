@@ -18,6 +18,8 @@ import com.baidu.hugegraph.BerkeleyStorageSetup;
 import com.baidu.hugegraph.diskstorage.configuration.WriteConfiguration;
 import com.baidu.hugegraph.graphdb.HugeGraphPartitionGraphTest;
 
+
+
 public class BerkeleyPartitionGraphTest extends HugeGraphPartitionGraphTest {
 
     @Override

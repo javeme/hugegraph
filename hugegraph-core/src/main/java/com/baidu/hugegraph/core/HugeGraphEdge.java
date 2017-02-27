@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.baidu.hugegraph.core;
 
 import com.google.common.collect.ImmutableList;
@@ -23,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A HugeGraphEdge connects two {@link HugeGraphVertex}. It extends the functionality provided by Blueprint's
- * {@link Edge} and is a special case of a {@link HugeGraphRelation}.
+ * A HugeGraphEdge connects two {@link HugeGraphVertex}. It extends the functionality provided by Blueprint's {@link Edge} and
+ * is a special case of a {@link HugeGraphRelation}.
  *
  * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see Edge
@@ -40,11 +41,12 @@ public interface HugeGraphEdge extends HugeGraphRelation, Edge {
      */
     public default EdgeLabel edgeLabel() {
         assert getType() instanceof EdgeLabel;
-        return (EdgeLabel) getType();
+        return (EdgeLabel)getType();
     }
 
     /**
-     * Returns the vertex for the specified direction. The direction cannot be Direction.BOTH.
+     * Returns the vertex for the specified direction.
+     * The direction cannot be Direction.BOTH.
      *
      * @return the vertex for the specified direction
      */
@@ -60,6 +62,7 @@ public interface HugeGraphEdge extends HugeGraphRelation, Edge {
         return vertex(Direction.IN);
     }
 
+
     /**
      * Returns the vertex at the opposite end of the edge.
      *
@@ -69,10 +72,11 @@ public interface HugeGraphEdge extends HugeGraphRelation, Edge {
      */
     public HugeGraphVertex otherVertex(Vertex vertex);
 
+
     @Override
     public default Iterator<Vertex> vertices(Direction direction) {
         List<Vertex> vertices;
-        if (direction == Direction.BOTH) {
+        if (direction==Direction.BOTH) {
             vertices = ImmutableList.of((Vertex) vertex(Direction.OUT), vertex(Direction.IN));
         } else {
             vertices = ImmutableList.of((Vertex) vertex(direction));

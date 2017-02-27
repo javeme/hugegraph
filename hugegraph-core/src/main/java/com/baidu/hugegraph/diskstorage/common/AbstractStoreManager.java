@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage.common;
 
+
 import com.google.common.collect.Lists;
 import com.baidu.hugegraph.diskstorage.EntryMetaData;
 import com.baidu.hugegraph.diskstorage.configuration.Configuration;
@@ -26,8 +27,8 @@ import java.util.List;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.*;
 
 /**
- * Abstract Store Manager used as the basis for concrete StoreManager implementations. Simplifies common configuration
- * management.
+ * Abstract Store Manager used as the basis for concrete StoreManager implementations.
+ * Simplifies common configuration management.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -55,15 +56,14 @@ public abstract class AbstractStoreManager implements StoreManager {
     public EntryMetaData[] getMetaDataSchema(String storeName) {
         List<EntryMetaData> schemaBuilder = Lists.newArrayList();
         StoreFeatures features = getFeatures();
-        if (features.hasTimestamps() && storageConfig.get(STORE_META_TIMESTAMPS, storeName))
+        if (features.hasTimestamps() && storageConfig.get(STORE_META_TIMESTAMPS,storeName))
             schemaBuilder.add(EntryMetaData.TIMESTAMP);
-        if (features.hasCellTTL() && storageConfig.get(STORE_META_TTL, storeName))
+        if (features.hasCellTTL() && storageConfig.get(STORE_META_TTL,storeName))
             schemaBuilder.add(EntryMetaData.TTL);
-        if (features.hasVisibility() && storageConfig.get(STORE_META_VISIBILITY, storeName))
+        if (features.hasVisibility() && storageConfig.get(STORE_META_VISIBILITY,storeName))
             schemaBuilder.add(EntryMetaData.VISIBILITY);
 
-        if (schemaBuilder.isEmpty())
-            return StaticArrayEntry.EMPTY_SCHEMA;
+        if (schemaBuilder.isEmpty()) return StaticArrayEntry.EMPTY_SCHEMA;
         return schemaBuilder.toArray(new EntryMetaData[schemaBuilder.size()]);
     }
 

@@ -46,7 +46,7 @@ public abstract class IndexTypeWrapper implements IndexType {
 
     @Override
     public ElementCategory getElement() {
-        return base.getDefinition().getValue(TypeDefinitionCategory.ELEMENT_CATEGORY, ElementCategory.class);
+        return base.getDefinition().getValue(TypeDefinitionCategory.ELEMENT_CATEGORY,ElementCategory.class);
     }
 
     @Override
@@ -56,11 +56,9 @@ public abstract class IndexTypeWrapper implements IndexType {
 
     @Override
     public boolean equals(Object oth) {
-        if (this == oth)
-            return true;
-        else if (oth == null || !getClass().isInstance(oth))
-            return false;
-        IndexTypeWrapper other = (IndexTypeWrapper) oth;
+        if (this==oth) return true;
+        else if (oth==null || !getClass().isInstance(oth)) return false;
+        IndexTypeWrapper other = (IndexTypeWrapper)oth;
         return base.equals(other.base);
     }
 
@@ -74,19 +72,18 @@ public abstract class IndexTypeWrapper implements IndexType {
         return base.name();
     }
 
-    private volatile Map<PropertyKey, IndexField> fieldMap = null;
+    private volatile Map<PropertyKey,IndexField> fieldMap = null;
 
     @Override
     public IndexField getField(PropertyKey key) {
-        Map<PropertyKey, IndexField> result = fieldMap;
-        if (result == null) {
-            ImmutableMap.Builder<PropertyKey, IndexField> b = ImmutableMap.builder();
-            for (IndexField f : getFieldKeys())
-                b.put(f.getFieldKey(), f);
-            result = b.build();
-            fieldMap = result;
+        Map<PropertyKey,IndexField> result = fieldMap;
+        if (result==null) {
+            ImmutableMap.Builder<PropertyKey,IndexField> b = ImmutableMap.builder();
+            for (IndexField f : getFieldKeys()) b.put(f.getFieldKey(),f);
+            result=b.build();
+            fieldMap=result;
         }
-        assert result != null;
+        assert result!=null;
         return result.get(key);
     }
 
@@ -95,20 +92,20 @@ public abstract class IndexTypeWrapper implements IndexType {
 
     @Override
     public boolean hasSchemaTypeConstraint() {
-        return getSchemaTypeConstraint() != null;
+        return getSchemaTypeConstraint()!=null;
     }
 
     @Override
     public HugeGraphSchemaType getSchemaTypeConstraint() {
         HugeGraphSchemaType constraint;
         if (!cachedTypeConstraint) {
-            Iterable<SchemaSource.Entry> related =
-                    base.getRelated(TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, Direction.OUT);
+            Iterable<SchemaSource.Entry> related = base.getRelated(TypeDefinitionCategory.INDEX_SCHEMA_CONSTRAINT, Direction.OUT);
             if (Iterables.isEmpty(related)) {
-                constraint = null;
+                constraint=null;
             } else {
-                constraint = (HugeGraphSchemaType) Iterables.getOnlyElement(related, null).getSchemaType();
-                assert constraint != null;
+                constraint =
+                        (HugeGraphSchemaType)Iterables.getOnlyElement(related,null).getSchemaType();
+                assert constraint!=null;
             }
             schemaTypeConstraint = constraint;
             cachedTypeConstraint = true;
@@ -121,17 +118,17 @@ public abstract class IndexTypeWrapper implements IndexType {
     @Override
     public void resetCache() {
         base.resetCache();
-        fieldMap = null;
+        fieldMap=null;
     }
 
     @Override
     public boolean indexesKey(PropertyKey key) {
-        return getField(key) != null;
+        return getField(key)!=null;
     }
 
     @Override
     public String getBackingIndexName() {
-        return base.getDefinition().getValue(TypeDefinitionCategory.BACKING_INDEX, String.class);
+        return base.getDefinition().getValue(TypeDefinitionCategory.BACKING_INDEX,String.class);
     }
 
 }

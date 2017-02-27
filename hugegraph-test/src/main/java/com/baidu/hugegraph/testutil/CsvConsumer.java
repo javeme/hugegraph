@@ -31,7 +31,8 @@ import com.google.common.base.Joiner;
 
 public class CsvConsumer implements IResultsConsumer {
 
-    private static final Logger log = LoggerFactory.getLogger(CsvConsumer.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(CsvConsumer.class);
 
     private final Writer csv;
 
@@ -41,14 +42,12 @@ public class CsvConsumer implements IResultsConsumer {
 
     public enum Column {
         CLASS_NAME("class.name") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return r.getShortTestClassName();
             }
         },
         METHOD_NAME("method.name") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return r.getTestMethodName();
             }
         },
@@ -59,76 +58,64 @@ public class CsvConsumer implements IResultsConsumer {
             }
         },
         ROUND_WARMUP("round.warmup") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.warmupRounds);
             }
         },
         // Called "round" in JUB's standard WriterConsumer,
         // but that's ambiguous with round counts above
         ROUND_AVG("round.time") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.roundAverage.avg); // ms
             }
         },
         ROUND_AVG_STDEV("round.time.stdev") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.roundAverage.stddev);
             }
         },
         ROUND_BLOCK("round.block") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.blockedAverage.avg); // ms
             }
         },
         ROUND_BLOCK_STDEV("round.block.stdev") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.roundAverage.stddev);
             }
         },
         ROUND_GC("round.gc") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.gcAverage.avg); // ms
             }
         },
         ROUND_GC_STDEV("round.gc.stdev") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.gcAverage.stddev);
             }
         },
         GC_CALLS("gc.calls") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.gcInfo.accumulatedInvocations());
             }
         },
         GC_TIME("gc.time") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.gcInfo.accumulatedTime() / 1000); // ms
             }
         },
         TIME_TOTAL("time.total") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf((r.benchmarkTime + r.warmupTime) / 1000); // ms
             }
         },
         TIME_WARMUP("time.warmup") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.warmupTime / 1000); // ms
             }
         },
         TIME_BENCH("time.bench") {
-            @Override
-            public String get(Result r) {
+            @Override public String get(Result r) {
                 return String.valueOf(r.benchmarkTime / 1000); // ms
             }
         };

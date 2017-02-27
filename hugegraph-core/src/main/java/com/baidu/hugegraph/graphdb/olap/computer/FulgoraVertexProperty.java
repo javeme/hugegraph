@@ -66,7 +66,7 @@ public class FulgoraVertexProperty<V> implements HugeGraphVertexProperty<V> {
     @Override
     public void remove() {
         mixinParent.removeKey(key);
-        isRemoved = true;
+        isRemoved=true;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class FulgoraVertexProperty<V> implements HugeGraphVertexProperty<V> {
 
     @Override
     public <V> V valueOrNull(PropertyKey key) {
-        return (V) property(key.name()).orElse(null);
+        return (V)property(key.name()).orElse(null);
     }
 
     @Override
@@ -106,18 +106,15 @@ public class FulgoraVertexProperty<V> implements HugeGraphVertexProperty<V> {
 
     @Override
     public <V> V value(String key) {
-        throw Property.Exceptions.propertyDoesNotExist(this, key);
+        throw Property.Exceptions.propertyDoesNotExist(this,key);
     }
 
     @Override
-    public RelationType getType() {
-        throw new UnsupportedOperationException();
-    }
+    public RelationType getType() { throw new UnsupportedOperationException(); }
 
     @Override
     public Direction direction(Vertex vertex) {
-        if (isIncidentOn(vertex))
-            return Direction.OUT;
+        if (isIncidentOn(vertex)) return Direction.OUT;
         throw new IllegalArgumentException("Property is not incident on vertex");
     }
 
@@ -142,7 +139,7 @@ public class FulgoraVertexProperty<V> implements HugeGraphVertexProperty<V> {
     }
 
     @Override
-    public <V> Iterator<Property<V>> properties(String...propertyKeys) {
+    public <V> Iterator<Property<V>> properties(String... propertyKeys) {
         return Collections.emptyIterator();
     }
 }

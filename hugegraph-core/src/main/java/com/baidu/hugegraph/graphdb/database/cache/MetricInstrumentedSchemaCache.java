@@ -37,32 +37,31 @@ public class MetricInstrumentedSchemaCache implements SchemaCache {
         cache = new StandardSchemaCache(new StoreRetrieval() {
             @Override
             public Long retrieveSchemaByName(String typeName) {
-                incAction(METRICS_TYPENAME, CacheMetricsAction.MISS);
+                incAction(METRICS_TYPENAME,CacheMetricsAction.MISS);
                 return retriever.retrieveSchemaByName(typeName);
             }
 
             @Override
             public EntryList retrieveSchemaRelations(long schemaId, BaseRelationType type, Direction dir) {
-                incAction(METRICS_RELATIONS, CacheMetricsAction.MISS);
+                incAction(METRICS_RELATIONS,CacheMetricsAction.MISS);
                 return retriever.retrieveSchemaRelations(schemaId, type, dir);
             }
         });
     }
 
     private void incAction(String type, CacheMetricsAction action) {
-        MetricManager.INSTANCE.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, type,
-                action.getName()).inc();
+        MetricManager.INSTANCE.getCounter(GraphDatabaseConfiguration.METRICS_SYSTEM_PREFIX_DEFAULT, METRICS_NAME, type, action.getName()).inc();
     }
 
     @Override
     public Long getSchemaId(String schemaName) {
-        incAction(METRICS_TYPENAME, CacheMetricsAction.RETRIEVAL);
+        incAction(METRICS_TYPENAME,CacheMetricsAction.RETRIEVAL);
         return cache.getSchemaId(schemaName);
     }
 
     @Override
     public EntryList getSchemaRelations(long schemaId, BaseRelationType type, Direction dir) {
-        incAction(METRICS_RELATIONS, CacheMetricsAction.RETRIEVAL);
+        incAction(METRICS_RELATIONS,CacheMetricsAction.RETRIEVAL);
         return cache.getSchemaRelations(schemaId, type, dir);
     }
 

@@ -21,8 +21,8 @@ import org.apache.thrift.transport.TTransport;
 import java.io.Closeable;
 
 /**
- * Wraps a {@code Cassandra.Client} instance, its underlying {@code TTransport} instance, and the
- * {@link com.baidu.hugegraph.diskstorage.cassandra.thrift.thriftpool.CTConnectionFactory.Config} instance used to setup
+ * Wraps a {@code Cassandra.Client} instance, its underlying {@code TTransport}
+ * instance, and the {@link com.baidu.hugegraph.diskstorage.cassandra.thrift.thriftpool.CTConnectionFactory.Config} instance used to setup
  * the connection.
  * 
  * @see CTConnectionFactory
@@ -30,7 +30,7 @@ import java.io.Closeable;
  * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class CTConnection implements Closeable {
-
+    
     private final TTransport transport;
     private final Cassandra.Client client;
     private final CTConnectionFactory.Config cfg;
@@ -48,15 +48,14 @@ public class CTConnection implements Closeable {
     public Cassandra.Client getClient() {
         return client;
     }
-
+    
     public CTConnectionFactory.Config getConfig() {
-        return cfg;
+     return cfg;
     }
 
     public boolean isOpen() {
         return transport.isOpen();
     }
-
     @Override
     public void close() {
         if (transport != null && transport.isOpen())

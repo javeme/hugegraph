@@ -23,8 +23,8 @@ import java.io.File;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.STORAGE_DIRECTORY;
 
 /**
- * Abstract Store Manager used as the basis for local StoreManager implementations. Simplifies common configuration
- * management.
+ * Abstract Store Manager used as the basis for local StoreManager implementations.
+ * Simplifies common configuration management.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -38,7 +38,7 @@ public abstract class LocalStoreManager extends AbstractStoreManager {
         String storageDir = storageConfig.get(STORAGE_DIRECTORY);
         if (null == storageDir) {
             directory = null;
-        } else {
+        } else { 
             directory = DirectoryUtil.getOrCreateDataDirectory(storageDir);
         }
     }

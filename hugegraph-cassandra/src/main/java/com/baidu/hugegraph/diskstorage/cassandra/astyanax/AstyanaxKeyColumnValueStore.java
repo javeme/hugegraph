@@ -48,8 +48,10 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
     private final AstyanaxStoreManager storeManager;
     private final AstyanaxGetter entryGetter;
 
-    AstyanaxKeyColumnValueStore(String columnFamilyName, Keyspace keyspace, AstyanaxStoreManager storeManager,
-            RetryPolicy retryPolicy) {
+    AstyanaxKeyColumnValueStore(String columnFamilyName,
+                                Keyspace keyspace,
+                                AstyanaxStoreManager storeManager,
+                                RetryPolicy retryPolicy) {
         this.keyspace = keyspace;
         this.columnFamilyName = columnFamilyName;
         this.retryPolicy = retryPolicy;
@@ -57,10 +59,13 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
 
         entryGetter = new AstyanaxGetter(storeManager.getMetaDataSchema(columnFamilyName));
 
-        columnFamily = new ColumnFamily<ByteBuffer, ByteBuffer>(this.columnFamilyName, ByteBufferSerializer.get(),
+        columnFamily = new ColumnFamily<ByteBuffer, ByteBuffer>(
+                this.columnFamilyName,
+                ByteBufferSerializer.get(),
                 ByteBufferSerializer.get());
 
     }
+
 
     ColumnFamily<ByteBuffer, ByteBuffer> getColumnFamily() {
         return columnFamily;
@@ -68,46 +73,53 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
 
     @Override
     public void close() throws BackendException {
-        // Do nothing
+        //Do nothing
     }
 
     @Override
     public EntryList getSlice(KeySliceQuery query, StoreTransaction txh) throws BackendException {
         Map<StaticBuffer, EntryList> result = getNamesSlice(query.getKey(), query, txh);
-        return Iterables.getOnlyElement(result.values(), EntryList.EMPTY_LIST);
+        return Iterables.getOnlyElement(result.values(),EntryList.EMPTY_LIST);
     }
 
     @Override
-    public Map<StaticBuffer, EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
+    public Map<StaticBuffer, EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh) throws BackendException {
         return getNamesSlice(keys, query, txh);
     }
 
-    public Map<StaticBuffer, EntryList> getNamesSlice(StaticBuffer key, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
-        return getNamesSlice(ImmutableList.of(key), query, txh);
+    public Map<StaticBuffer, EntryList> getNamesSlice(StaticBuffer key,
+                                                    SliceQuery query, StoreTransaction txh) throws BackendException {
+        return getNamesSlice(ImmutableList.of(key),query,txh);
     }
 
-    public Map<StaticBuffer, EntryList> getNamesSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
+
+    public Map<StaticBuffer, EntryList> getNamesSlice(List<StaticBuffer> keys,
+                                                      SliceQuery query, StoreTransaction txh) throws BackendException {
         /*
-         * RowQuery<K,C> should be parameterized as RowQuery<ByteBuffer,ByteBuffer>. However, this causes the following
-         * compilation error when attempting to call withColumnRange on a RowQuery<ByteBuffer,ByteBuffer> instance:
+         * RowQuery<K,C> should be parameterized as
+         * RowQuery<ByteBuffer,ByteBuffer>. However, this causes the following
+         * compilation error when attempting to call withColumnRange on a
+         * RowQuery<ByteBuffer,ByteBuffer> instance:
          *
-         * java.lang.Error: Unresolved compilation problem: The method withColumnRange(ByteBuffer, ByteBuffer, boolean,
-         * int) is ambiguous for the type RowQuery<ByteBuffer,ByteBuffer>
+         * java.lang.Error: Unresolved compilation problem: The method
+         * withColumnRange(ByteBuffer, ByteBuffer, boolean, int) is ambiguous
+         * for the type RowQuery<ByteBuffer,ByteBuffer>
          *
-         * The compiler substitutes ByteBuffer=C for both startColumn and endColumn, compares it to its identical twin
-         * with that type hard-coded, and dies.
+         * The compiler substitutes ByteBuffer=C for both startColumn and
+         * endColumn, compares it to its identical twin with that type
+         * hard-coded, and dies.
          *
          */
         RowSliceQuery rq = keyspace.prepareQuery(columnFamily)
                 .setConsistencyLevel(getTx(txh).getReadConsistencyLevel().getAstyanax())
-                .withRetryPolicy(retryPolicy.duplicate()).getKeySlice(CassandraHelper.convert(keys));
+                .withRetryPolicy(retryPolicy.duplicate())
+                .getKeySlice(CassandraHelper.convert(keys));
 
         // Thank you, Astyanax, for making builder pattern useful :(
-        rq.withColumnRange(query.getSliceStart().asByteBuffer(), query.getSliceEnd().asByteBuffer(), false,
-                query.getLimit() + (query.hasLimit() ? 1 : 0)); // Add one for potentially removed last column
+        rq.withColumnRange(query.getSliceStart().asByteBuffer(),
+                query.getSliceEnd().asByteBuffer(),
+                false,
+                query.getLimit() + (query.hasLimit()?1:0)); //Add one for potentially removed last column
 
         OperationResult<Rows<ByteBuffer, ByteBuffer>> r;
         try {
@@ -116,25 +128,26 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
             throw new TemporaryBackendException(e);
         }
 
-        Rows<ByteBuffer, ByteBuffer> rows = r.getResult();
+        Rows<ByteBuffer,ByteBuffer> rows = r.getResult();
         Map<StaticBuffer, EntryList> result = new HashMap<StaticBuffer, EntryList>(rows.size());
 
         for (Row<ByteBuffer, ByteBuffer> row : rows) {
             assert !result.containsKey(row.getKey());
-            result.put(StaticArrayBuffer.of(row.getKey()), CassandraHelper.makeEntryList(row.getColumns(), entryGetter,
-                    query.getSliceEnd(), query.getLimit()));
+            result.put(StaticArrayBuffer.of(row.getKey()),
+                  CassandraHelper.makeEntryList(row.getColumns(),entryGetter, query.getSliceEnd(), query.getLimit()));
         }
 
         return result;
     }
 
-    private static class AstyanaxGetter implements StaticArrayEntry.GetColVal<Column<ByteBuffer>, ByteBuffer> {
+    private static class AstyanaxGetter implements StaticArrayEntry.GetColVal<Column<ByteBuffer>,ByteBuffer> {
 
         private final EntryMetaData[] schema;
 
         private AstyanaxGetter(EntryMetaData[] schema) {
             this.schema = schema;
         }
+
 
         @Override
         public ByteBuffer getColumn(Column<ByteBuffer> element) {
@@ -153,7 +166,7 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
 
         @Override
         public Object getMetaData(Column<ByteBuffer> element, EntryMetaData meta) {
-            switch (meta) {
+            switch(meta) {
                 case TIMESTAMP:
                     return element.getTimestamp();
                 case TTL:
@@ -165,8 +178,7 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         mutateMany(ImmutableMap.of(key, new KCVMutation(additions, deletions)), txh);
     }
 
@@ -175,29 +187,28 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
+    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public KeyIterator getKeys(@Nullable SliceQuery sliceQuery, StoreTransaction txh) throws BackendException {
         if (storeManager.getPartitioner() != Partitioner.RANDOM)
-            throw new PermanentBackendException(
-                    "This operation is only allowed when random partitioner (md5 or murmur3) is used.");
+            throw new PermanentBackendException("This operation is only allowed when random partitioner (md5 or murmur3) is used.");
 
         AllRowsQuery allRowsQuery = keyspace.prepareQuery(columnFamily).getAllRows();
 
         if (sliceQuery != null) {
             allRowsQuery.withColumnRange(sliceQuery.getSliceStart().asByteBuffer(),
-                    sliceQuery.getSliceEnd().asByteBuffer(), false, sliceQuery.getLimit());
+                    sliceQuery.getSliceEnd().asByteBuffer(),
+                    false,
+                    sliceQuery.getLimit());
         }
 
         Rows<ByteBuffer, ByteBuffer> result;
         try {
             /* Note: we need to fetch columns for each row as well to remove "range ghosts" */
-            OperationResult op = allRowsQuery.setRowLimit(storeManager.getPageSize()) // pre-fetch that many rows at a
-                                                                                      // time
+            OperationResult op = allRowsQuery.setRowLimit(storeManager.getPageSize()) // pre-fetch that many rows at a time
                     .setConcurrencyLevel(1) // one execution thread for fetching portion of rows
                     .setExceptionCallback(new ExceptionCallback() {
                         private int retries = 0;
@@ -228,17 +239,19 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
         // returning ambiguous results to the user.
         Partitioner partitioner = storeManager.getPartitioner();
         if (partitioner != Partitioner.BYTEORDER)
-            throw new PermanentBackendException(
-                    "getKeys(KeyRangeQuery could only be used with byte-ordering partitioner.");
+            throw new PermanentBackendException("getKeys(KeyRangeQuery could only be used with byte-ordering partitioner.");
 
         ByteBuffer start = query.getKeyStart().asByteBuffer(), end = query.getKeyEnd().asByteBuffer();
 
         RowSliceQuery rowSlice = keyspace.prepareQuery(columnFamily)
                 .setConsistencyLevel(getTx(txh).getReadConsistencyLevel().getAstyanax())
-                .withRetryPolicy(retryPolicy.duplicate()).getKeyRange(start, end, null, null, Integer.MAX_VALUE);
+                .withRetryPolicy(retryPolicy.duplicate())
+                .getKeyRange(start, end, null, null, Integer.MAX_VALUE);
 
         // Astyanax is bad at builder pattern :(
-        rowSlice.withColumnRange(query.getSliceStart().asByteBuffer(), query.getSliceEnd().asByteBuffer(), false,
+        rowSlice.withColumnRange(query.getSliceStart().asByteBuffer(),
+                query.getSliceEnd().asByteBuffer(),
+                false,
                 query.getLimit());
 
         // Omit final the query's keyend from the result, if present in result
@@ -298,8 +311,10 @@ public class AstyanaxKeyColumnValueStore implements KeyColumnValueStore {
                 throw new IllegalStateException("getEntries() requires SliceQuery to be set.");
 
             return new RecordIterator<Entry>() {
-                private final Iterator<Entry> columns = CassandraHelper.makeEntryIterator(currentRow.getColumns(),
-                        entryGetter, sliceQuery.getSliceEnd(), sliceQuery.getLimit());
+                private final Iterator<Entry> columns =
+                        CassandraHelper.makeEntryIterator(currentRow.getColumns(),
+                                entryGetter,
+                                sliceQuery.getSliceEnd(),sliceQuery.getLimit());
 
                 @Override
                 public boolean hasNext() {

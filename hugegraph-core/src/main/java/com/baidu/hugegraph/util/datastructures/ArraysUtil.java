@@ -28,16 +28,14 @@ public class ArraysUtil {
 
     public static final boolean isSortedInc(long[] arr) {
         for (int i = 0; i < arr.length; i++) {
-            if (i > 0 && arr[i] <= arr[i - 1])
-                return false;
+            if (i > 0 && arr[i] <= arr[i - 1]) return false;
         }
         return true;
     }
 
     public static final boolean isSortedInc(int[] arr) {
         for (int i = 0; i < arr.length; i++) {
-            if (i > 0 && arr[i] <= arr[i - 1])
-                return false;
+            if (i > 0 && arr[i] <= arr[i - 1]) return false;
         }
         return true;
     }
@@ -56,8 +54,7 @@ public class ArraysUtil {
                 newarr[i + offset] = arr[i];
             }
         }
-        if (offset == 0)
-            newarr[newarr.length - 1] = element;
+        if (offset == 0) newarr[newarr.length - 1] = element;
         return newarr;
     }
 
@@ -85,8 +82,7 @@ public class ArraysUtil {
             } else if (b[bi] < a[ai]) {
                 res[ai + bi] = b[bi];
                 bi++;
-            } else
-                throw new IllegalArgumentException(Arrays.toString(a) + "|" + Arrays.toString(b));
+            } else throw new IllegalArgumentException(Arrays.toString(a) + "|" + Arrays.toString(b));
         }
         return res;
     }
@@ -100,8 +96,7 @@ public class ArraysUtil {
     }
 
     public static final int indexOfMin(double[] values) {
-        if (values.length < 1)
-            return -1;
+        if (values.length < 1) return -1;
         int index = 0;
         for (int i = 1; i < values.length; i++) {
             if (values[i] < values[index]) {
@@ -113,8 +108,7 @@ public class ArraysUtil {
 
     public static final int indexOf(int[] array, int value) {
         for (int i = 0; i < array.length; i++) {
-            if (array[i] == value)
-                return i;
+            if (array[i] == value) return i;
         }
         return -1;
     }

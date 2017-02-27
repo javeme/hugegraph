@@ -27,15 +27,16 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class StandardScanMetrics implements ScanMetrics {
 
-    private final EnumMap<Metric, AtomicLong> metrics;
-    private final ConcurrentMap<String, AtomicLong> customMetrics;
+    private final EnumMap<Metric,AtomicLong> metrics;
+    private final ConcurrentMap<String,AtomicLong> customMetrics;
 
-    private static final Logger log = LoggerFactory.getLogger(StandardScanMetrics.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(StandardScanMetrics.class);
 
     public StandardScanMetrics() {
         metrics = new EnumMap<>(ScanMetrics.Metric.class);
         for (Metric m : Metric.values()) {
-            metrics.put(m, new AtomicLong(0));
+            metrics.put(m,new AtomicLong(0));
         }
         customMetrics = new ConcurrentHashMap<>();
     }
@@ -45,8 +46,8 @@ public class StandardScanMetrics implements ScanMetrics {
         AtomicLong counter = customMetrics.get(metric);
         if (counter == null) {
             if (log.isDebugEnabled())
-                log.debug("[{}:{}] Returning zero by default (was null)", System.identityHashCode(customMetrics),
-                        metric);
+                log.debug("[{}:{}] Returning zero by default (was null)",
+                        System.identityHashCode(customMetrics), metric);
             return 0;
         } else {
             long v = counter.get();
@@ -59,8 +60,8 @@ public class StandardScanMetrics implements ScanMetrics {
     @Override
     public void incrementCustom(String metric, long delta) {
         AtomicLong counter = customMetrics.get(metric);
-        if (counter == null) {
-            customMetrics.putIfAbsent(metric, new AtomicLong(0));
+        if (counter==null) {
+            customMetrics.putIfAbsent(metric,new AtomicLong(0));
             counter = customMetrics.get(metric);
         }
         counter.addAndGet(delta);
@@ -70,7 +71,7 @@ public class StandardScanMetrics implements ScanMetrics {
 
     @Override
     public void incrementCustom(String metric) {
-        incrementCustom(metric, 1);
+        incrementCustom(metric,1);
     }
 
     @Override
@@ -82,5 +83,6 @@ public class StandardScanMetrics implements ScanMetrics {
     public void increment(Metric metric) {
         metrics.get(metric).incrementAndGet();
     }
+
 
 }

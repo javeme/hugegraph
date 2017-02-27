@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -102,30 +102,32 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     public static final ConfigNamespace HBASE_NS =
             new ConfigNamespace(GraphDatabaseConfiguration.STORAGE_NS, "hbase", "HBase storage options");
 
-    public static final ConfigOption<Boolean> SHORT_CF_NAMES = new ConfigOption<Boolean>(HBASE_NS, "short-cf-names",
-            "Whether to shorten the names of HugeGraph's column families to one-character mnemonics "
-                    + "to conserve storage space",
-            ConfigOption.Type.FIXED, true);
+    public static final ConfigOption<Boolean> SHORT_CF_NAMES =
+            new ConfigOption<Boolean>(HBASE_NS, "short-cf-names",
+            "Whether to shorten the names of hugegraph's column families to one-character mnemonics " +
+            "to conserve storage space", ConfigOption.Type.FIXED, true);
 
     public static final String COMPRESSION_DEFAULT = "-DEFAULT-";
 
-    public static final ConfigOption<String> COMPRESSION = new ConfigOption<String>(HBASE_NS, "compression-algorithm",
-            "An HBase Compression.Algorithm enum string which will be applied to newly created column families. "
-                    + "The compression algorithm must be installed and available on the HBase cluster.  HugeGraph cannot install "
-                    + "and configure new compression algorithms on the HBase cluster by itself.",
+    public static final ConfigOption<String> COMPRESSION =
+            new ConfigOption<String>(HBASE_NS, "compression-algorithm",
+            "An HBase Compression.Algorithm enum string which will be applied to newly created column families. " +
+            "The compression algorithm must be installed and available on the HBase cluster.  hugegraph cannot install " +
+            "and configure new compression algorithms on the HBase cluster by itself.",
             ConfigOption.Type.MASKABLE, "GZ");
 
-    public static final ConfigOption<Boolean> SKIP_SCHEMA_CHECK = new ConfigOption<Boolean>(HBASE_NS,
-            "skip-schema-check",
-            "Assume that HugeGraph's HBase table and column families already exist. "
-                    + "When this is true, HugeGraph will not check for the existence of its table/CFs, "
-                    + "nor will it attempt to create them under any circumstances.  This is useful "
-                    + "when running HugeGraph without HBase admin privileges.",
+    public static final ConfigOption<Boolean> SKIP_SCHEMA_CHECK =
+            new ConfigOption<Boolean>(HBASE_NS, "skip-schema-check",
+            "Assume that hugegraph's HBase table and column families already exist. " +
+            "When this is true, hugegraph will not check for the existence of its table/CFs, " +
+            "nor will it attempt to create them under any circumstances.  This is useful " +
+            "when running hugegraph without HBase admin privileges.",
             ConfigOption.Type.MASKABLE, false);
 
-    public static final ConfigOption<String> HBASE_TABLE = new ConfigOption<String>(HBASE_NS, "table",
-            "The name of the table HugeGraph will use.  When " + ConfigElement.getPath(SKIP_SCHEMA_CHECK)
-                    + " is false, HugeGraph will automatically create this table if it does not already exist.",
+    public static final ConfigOption<String> HBASE_TABLE =
+            new ConfigOption<String>(HBASE_NS, "table",
+            "The name of the table hugegraph will use.  When " + ConfigElement.getPath(SKIP_SCHEMA_CHECK) +
+            " is false, hugegraph will automatically create this table if it does not already exist.",
             ConfigOption.Type.LOCAL, "hugegraph");
 
     /**
@@ -136,70 +138,93 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     public static final int MIN_REGION_COUNT = 3;
 
     /**
-     * The total number of HBase regions to create with HugeGraph's table. This setting only effects table creation;
-     * this normally happens just once when HugeGraph connects to an HBase backend for the first time.
+     * The total number of HBase regions to create with hugegraph's table. This
+     * setting only effects table creation; this normally happens just once when
+     * hugegraph connects to an HBase backend for the first time.
      */
-    public static final ConfigOption<Integer> REGION_COUNT = new ConfigOption<Integer>(HBASE_NS, "region-count",
-            "The number of initial regions set when creating HugeGraph's HBase table", ConfigOption.Type.MASKABLE,
-            Integer.class, new Predicate<Integer>() {
+    public static final ConfigOption<Integer> REGION_COUNT =
+            new ConfigOption<Integer>(HBASE_NS, "region-count",
+            "The number of initial regions set when creating hugegraph's HBase table",
+            ConfigOption.Type.MASKABLE, Integer.class, new Predicate<Integer>() {
                 @Override
                 public boolean apply(Integer input) {
                     return null != input && MIN_REGION_COUNT <= input;
                 }
-            });
+            }
+    );
 
     /**
      * This setting is used only when {@link #REGION_COUNT} is unset.
      * <p/>
-     * If HugeGraph's HBase table does not exist, then it will be created with total region count = (number of servers
-     * reported by ClusterStatus) * (this value).
+     * If hugegraph's HBase table does not exist, then it will be created with total
+     * region count = (number of servers reported by ClusterStatus) * (this
+     * value).
      * <p/>
-     * The Apache HBase manual suggests an order-of-magnitude range of potential values for this setting:
+     * The Apache HBase manual suggests an order-of-magnitude range of potential
+     * values for this setting:
      *
      * <ul>
-     * <li><a href="https://hbase.apache.org/book/important_configurations.html#disable.splitting">2.5.2.7. Managed
-     * Splitting</a>: <blockquote> What's the optimal number of pre-split regions to create? Mileage will vary depending
-     * upon your application. You could start low with 10 pre-split regions / server and watch as data grows over time.
-     * It's better to err on the side of too little regions and rolling split later. </blockquote></li>
-     * <li><a href="https://hbase.apache.org/book/regions.arch.html">9.7 Regions</a>: <blockquote> In general, HBase is
-     * designed to run with a small (20-200) number of relatively large (5-20Gb) regions per server... Typically you
-     * want to keep your region count low on HBase for numerous reasons. Usually right around 100 regions per
-     * RegionServer has yielded the best results. </blockquote></li>
+     *  <li>
+     *   <a href="https://hbase.apache.org/book/important_configurations.html#disable.splitting">2.5.2.7. Managed Splitting</a>:
+     *   <blockquote>
+     *    What's the optimal number of pre-split regions to create? Mileage will
+     *    vary depending upon your application. You could start low with 10
+     *    pre-split regions / server and watch as data grows over time. It's
+     *    better to err on the side of too little regions and rolling split later.
+     *   </blockquote>
+     *  </li>
+     *  <li>
+     *   <a href="https://hbase.apache.org/book/regions.arch.html">9.7 Regions</a>:
+     *   <blockquote>
+     *    In general, HBase is designed to run with a small (20-200) number of
+     *    relatively large (5-20Gb) regions per server... Typically you want to
+     *    keep your region count low on HBase for numerous reasons. Usually
+     *    right around 100 regions per RegionServer has yielded the best results.
+     *   </blockquote>
+     *  </li>
      * </ul>
      *
      * These considerations may differ for other HBase implementations (e.g. MapR).
      */
     public static final ConfigOption<Integer> REGIONS_PER_SERVER =
             new ConfigOption<Integer>(HBASE_NS, "regions-per-server",
-                    "The number of regions per regionserver to set when creating HugeGraph's HBase table",
-                    ConfigOption.Type.MASKABLE, Integer.class);
+            "The number of regions per regionserver to set when creating hugegraph's HBase table",
+            ConfigOption.Type.MASKABLE, Integer.class);
 
     /**
-     * If this key is present in either the JVM system properties or the process environment (checked in the listed
-     * order, first hit wins), then its value must be the full package and class name of an implementation of
+     * If this key is present in either the JVM system properties or the process
+     * environment (checked in the listed order, first hit wins), then its value
+     * must be the full package and class name of an implementation of
      * {@link HBaseCompat} that has a no-arg public constructor.
      * <p>
-     * When this <b>is not</b> set, HugeGraph attempts to automatically detect the HBase runtime version by calling
-     * {@link VersionInfo#getVersion()}. HugeGraph then checks the returned version string against a hard-coded list of
-     * supported version prefixes and instantiates the associated compat layer if a match is found.
+     * When this <b>is not</b> set, hugegraph attempts to automatically detect the
+     * HBase runtime version by calling {@link VersionInfo#getVersion()}. hugegraph
+     * then checks the returned version string against a hard-coded list of
+     * supported version prefixes and instantiates the associated compat layer
+     * if a match is found.
      * <p>
-     * When this <b>is</b> set, HugeGraph will not call {@code VersionInfo.getVersion()} or read its hard-coded list of
-     * supported version prefixes. HugeGraph will instead attempt to instantiate the class specified (via the no-arg
-     * constructor which must exist) and then attempt to cast it to HBaseCompat and use it as such. HugeGraph will
-     * assume the supplied implementation is compatible with the runtime HBase version and make no attempt to verify
-     * that assumption.
+     * When this <b>is</b> set, hugegraph will not call
+     * {@code VersionInfo.getVersion()} or read its hard-coded list of supported
+     * version prefixes. hugegraph will instead attempt to instantiate the class
+     * specified (via the no-arg constructor which must exist) and then attempt
+     * to cast it to HBaseCompat and use it as such. hugegraph will assume the
+     * supplied implementation is compatible with the runtime HBase version and
+     * make no attempt to verify that assumption.
      * <p>
-     * Setting this key incorrectly could cause runtime exceptions at best or silent data corruption at worst. This
-     * setting is intended for users running exotic HBase implementations that don't support VersionInfo or
-     * implementations which return values from {@code VersionInfo.getVersion()} that are inconsistent with Apache's
-     * versioning convention. It may also be useful to users who want to run against a new release of HBase that
-     * HugeGraph doesn't yet officially support.
+     * Setting this key incorrectly could cause runtime exceptions at best or
+     * silent data corruption at worst. This setting is intended for users
+     * running exotic HBase implementations that don't support VersionInfo or
+     * implementations which return values from {@code VersionInfo.getVersion()}
+     * that are inconsistent with Apache's versioning convention. It may also be
+     * useful to users who want to run against a new release of HBase that hugegraph
+     * doesn't yet officially support.
      *
      */
-    public static final ConfigOption<String> COMPAT_CLASS = new ConfigOption<String>(HBASE_NS, "compat-class",
-            "The package and class name of the HBaseCompat implementation. HBaseCompat masks version-specific HBase API differences. "
-                    + "When this option is unset, HugeGraph calls HBase's VersionInfo.getVersion() and loads the matching compat class "
-                    + "at runtime.  Setting this option forces HugeGraph to instead reflectively load and instantiate the specified class.",
+    public static final ConfigOption<String> COMPAT_CLASS =
+            new ConfigOption<String>(HBASE_NS, "compat-class",
+            "The package and class name of the HBaseCompat implementation. HBaseCompat masks version-specific HBase API differences. " +
+            "When this option is unset, hugegraph calls HBase's VersionInfo.getVersion() and loads the matching compat class " +
+            "at runtime.  Setting this option forces hugegraph to instead reflectively load and instantiate the specified class.",
             ConfigOption.Type.MASKABLE, String.class);
 
     public static final int PORT_DEFAULT = 9160;
@@ -209,11 +234,18 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     public static final ConfigNamespace HBASE_CONFIGURATION_NAMESPACE =
             new ConfigNamespace(HBASE_NS, "ext", "Overrides for hbase-{site,default}.xml options", true);
 
-    private static final BiMap<String, String> SHORT_CF_NAME_MAP = ImmutableBiMap.<String, String> builder()
-            .put(INDEXSTORE_NAME, "g").put(INDEXSTORE_NAME + LOCK_STORE_SUFFIX, "h").put(ID_STORE_NAME, "i")
-            .put(EDGESTORE_NAME, "e").put(EDGESTORE_NAME + LOCK_STORE_SUFFIX, "f")
-            .put(SYSTEM_PROPERTIES_STORE_NAME, "s").put(SYSTEM_PROPERTIES_STORE_NAME + LOCK_STORE_SUFFIX, "t")
-            .put(SYSTEM_MGMT_LOG_NAME, "m").put(SYSTEM_TX_LOG_NAME, "l").build();
+    private static final BiMap<String, String> SHORT_CF_NAME_MAP =
+            ImmutableBiMap.<String, String>builder()
+                    .put(INDEXSTORE_NAME, "g")
+                    .put(INDEXSTORE_NAME + LOCK_STORE_SUFFIX, "h")
+                    .put(ID_STORE_NAME, "i")
+                    .put(EDGESTORE_NAME, "e")
+                    .put(EDGESTORE_NAME + LOCK_STORE_SUFFIX, "f")
+                    .put(SYSTEM_PROPERTIES_STORE_NAME, "s")
+                    .put(SYSTEM_PROPERTIES_STORE_NAME + LOCK_STORE_SUFFIX, "t")
+                    .put(SYSTEM_MGMT_LOG_NAME, "m")
+                    .put(SYSTEM_TX_LOG_NAME, "l")
+                    .build();
 
     private static final StaticBuffer FOUR_ZERO_BYTES = BufferUtil.zeroBuffer(4);
 
@@ -257,29 +289,27 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         this.compat = HBaseCompatLoader.getCompat(compatClass);
 
         /*
-         * Specifying both region count options is permitted but may be indicative of a misunderstanding, so issue a
-         * warning.
+         * Specifying both region count options is permitted but may be
+         * indicative of a misunderstanding, so issue a warning.
          */
         if (config.has(REGIONS_PER_SERVER) && config.has(REGION_COUNT)) {
-            logger.warn(
-                    "Both {} and {} are set in HugeGraph's configuration, but "
-                            + "the former takes precedence and the latter will be ignored.",
-                    REGION_COUNT, REGIONS_PER_SERVER);
+            logger.warn("Both {} and {} are set in hugegraph's configuration, but "
+                      + "the former takes precedence and the latter will be ignored.",
+                        REGION_COUNT, REGIONS_PER_SERVER);
         }
 
-        /*
-         * This static factory calls HBaseConfiguration.addHbaseResources(), which in turn applies the contents of
-         * hbase-default.xml and then applies the contents of hbase-site.xml.
+        /* This static factory calls HBaseConfiguration.addHbaseResources(),
+         * which in turn applies the contents of hbase-default.xml and then
+         * applies the contents of hbase-site.xml.
          */
         this.hconf = HBaseConfiguration.create();
 
         // Copy a subset of our commons config into a Hadoop config
-        int keysLoaded = 0;
-        Map<String, Object> configSub = config.getSubset(HBASE_CONFIGURATION_NAMESPACE);
-        for (Map.Entry<String, Object> entry : configSub.entrySet()) {
+        int keysLoaded=0;
+        Map<String,Object> configSub = config.getSubset(HBASE_CONFIGURATION_NAMESPACE);
+        for (Map.Entry<String,Object> entry : configSub.entrySet()) {
             logger.info("HBase configuration: setting {}={}", entry.getKey(), entry.getValue());
-            if (entry.getValue() == null)
-                continue;
+            if (entry.getValue()==null) continue;
             hconf.set(entry.getKey(), entry.getValue().toString());
             keysLoaded++;
         }
@@ -289,8 +319,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
             String zkQuorumKey = "hbase.zookeeper.quorum";
             String csHostList = Joiner.on(",").join(config.get(GraphDatabaseConfiguration.STORAGE_HOSTS));
             hconf.set(zkQuorumKey, csHostList);
-            logger.info("Copied host list from {} to {}: {}", GraphDatabaseConfiguration.STORAGE_HOSTS, zkQuorumKey,
-                    csHostList);
+            logger.info("Copied host list from {} to {}: {}", GraphDatabaseConfiguration.STORAGE_HOSTS, zkQuorumKey, csHostList);
         }
 
         logger.debug("HBase configuration: set a total of {} configuration values", keysLoaded);
@@ -298,7 +327,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         this.shortCfNames = config.get(SHORT_CF_NAMES);
 
         try {
-            // this.cnx = HConnectionManager.createConnection(hconf);
+            //this.cnx = HConnectionManager.createConnection(hconf);
             this.cnx = compat.createConnection(hconf);
         } catch (IOException e) {
             throw new PermanentBackendException(e);
@@ -357,9 +386,11 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
 
         Configuration c = GraphDatabaseConfiguration.buildGraphConfiguration();
 
-        StandardStoreFeatures.Builder fb = new StandardStoreFeatures.Builder().orderedScan(true).unorderedScan(true)
-                .batchMutation(true).multiQuery(true).distributed(true).keyOrdered(true).storeTTL(true).timestamps(true)
-                .preferredTimestamps(PREFERRED_TIMESTAMPS).keyConsistent(c);
+        StandardStoreFeatures.Builder fb = new StandardStoreFeatures.Builder()
+                .orderedScan(true).unorderedScan(true).batchMutation(true)
+                .multiQuery(true).distributed(true).keyOrdered(true).storeTTL(true)
+                .timestamps(true).preferredTimestamps(PREFERRED_TIMESTAMPS)
+                .keyConsistent(c);
 
         try {
             fb.localKeyPartition(getDeployment() == Deployment.LOCAL);
@@ -371,14 +402,16 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     @Override
-    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh)
-            throws BackendException {
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> mutations, StoreTransaction txh) throws BackendException {
         final MaskedTimestamp commitTime = new MaskedTimestamp(txh);
         // In case of an addition and deletion with identical timestamps, the
         // deletion tombstone wins.
         // http://hbase.apache.org/book/versions.html#d244e4250
         Map<StaticBuffer, Pair<Put, Delete>> commandsPerKey =
-                convertToCommands(mutations, commitTime.getAdditionTime(times), commitTime.getDeletionTime(times));
+                convertToCommands(
+                        mutations,
+                        commitTime.getAdditionTime(times),
+                        commitTime.getDeletionTime(times));
 
         List<Row> batch = new ArrayList<Row>(commandsPerKey.size()); // actual batch operation
 
@@ -448,76 +481,76 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     /**
-     * Deletes the specified table with all its columns. ATTENTION: Invoking this method will delete the table if it
-     * exists and therefore causes data loss.
+     * Deletes the specified table with all its columns.
+     * ATTENTION: Invoking this method will delete the table if it exists and therefore causes data loss.
      */
     @Override
     public void clearStorage() throws BackendException {
         try (AdminMask adm = getAdminInterface()) {
             adm.clearTable(tableName, times.getTime(times.getTime()));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             throw new TemporaryBackendException(e);
         }
-        //
-        //
-        //
-        // try { // first of all, check if table exists, if not - we are done
-        // adm = getAdminInterface();
-        // if (!adm.tableExists(tableName)) {
-        // logger.debug("clearStorage() called before table {} was created, skipping.", tableName);
-        // return;
-        // }
-        // } catch (IOException e) {
-        // throw new TemporaryBackendException(e);
-        // } finally {
-        // IOUtils.closeQuietly(adm);
-        // }
-        //
-        //// long before = System.currentTimeMillis();
-        //// try {
-        //// adm.disableTable(tableName);
-        //// adm.deleteTable(tableName);
-        //// } catch (IOException e) {
-        //// throw new PermanentBackendException(e);
-        //// }
-        //// ensureTableExists(tableName,
-        // getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME), 0);
-        //// long after = System.currentTimeMillis();
-        //// logger.debug("Dropped and recreated table {} in {} ms", tableName, after - before);
-        //
-        // HTable table = null;
-        //
-        // try {
-        // table = new HTable(hconf, tableName);
-        //
-        // Scan scan = new Scan();
-        // scan.setBatch(100);
-        // scan.setCacheBlocks(false);
-        // scan.setCaching(2000);
-        // scan.setTimeRange(0, Long.MAX_VALUE);
-        // scan.setMaxVersions(1);
-        //
-        // ResultScanner scanner = null;
-        //
-        // long timestamp = times.getTime(times.getTime());
-        //
-        // try {
-        // scanner = table.getScanner(scan);
-        //
-        // for (Result res : scanner) {
-        // Delete d = new Delete(res.getRow());
-        //
-        // d.setTimestamp(timestamp);
-        // table.delete(d);
-        // }
-        // } finally {
-        // IOUtils.closeQuietly(scanner);
-        // }
-        // } catch (IOException e) {
-        // throw new TemporaryBackendException(e);
-        // } finally {
-        // IOUtils.closeQuietly(table);
-        // }
+//
+//
+//
+//        try { // first of all, check if table exists, if not - we are done
+//            adm = getAdminInterface();
+//            if (!adm.tableExists(tableName)) {
+//                logger.debug("clearStorage() called before table {} was created, skipping.", tableName);
+//                return;
+//            }
+//        } catch (IOException e) {
+//            throw new TemporaryBackendException(e);
+//        } finally {
+//            IOUtils.closeQuietly(adm);
+//        }
+//
+////        long before = System.currentTimeMillis();
+////        try {
+////            adm.disableTable(tableName);
+////            adm.deleteTable(tableName);
+////        } catch (IOException e) {
+////            throw new PermanentBackendException(e);
+////        }
+////        ensureTableExists(tableName, getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME), 0);
+////        long after = System.currentTimeMillis();
+////        logger.debug("Dropped and recreated table {} in {} ms", tableName, after - before);
+//
+//        HTable table = null;
+//
+//        try {
+//            table = new HTable(hconf, tableName);
+//
+//            Scan scan = new Scan();
+//            scan.setBatch(100);
+//            scan.setCacheBlocks(false);
+//            scan.setCaching(2000);
+//            scan.setTimeRange(0, Long.MAX_VALUE);
+//            scan.setMaxVersions(1);
+//
+//            ResultScanner scanner = null;
+//
+//            long timestamp = times.getTime(times.getTime());
+//
+//            try {
+//                scanner = table.getScanner(scan);
+//
+//                for (Result res : scanner) {
+//                    Delete d = new Delete(res.getRow());
+//
+//                    d.setTimestamp(timestamp);
+//                    table.delete(d);
+//                }
+//            } finally {
+//                IOUtils.closeQuietly(scanner);
+//            }
+//        } catch (IOException e) {
+//            throw new TemporaryBackendException(e);
+//        } finally {
+//            IOUtils.closeQuietly(table);
+//        }
     }
 
     @Override
@@ -527,12 +560,12 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
 
         HTable table = null;
         try {
-            ensureTableExists(tableName, getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME),
-                    0);
+            ensureTableExists(tableName, getCfNameForStoreName(GraphDatabaseConfiguration.SYSTEM_PROPERTIES_STORE_NAME), 0);
 
             table = new HTable(hconf, tableName);
 
-            Map<KeyRange, ServerName> normed = normalizeKeyBounds(table.getRegionLocations());
+            Map<KeyRange, ServerName> normed =
+                    normalizeKeyBounds(table.getRegionLocations());
 
             for (Map.Entry<KeyRange, ServerName> e : normed.entrySet()) {
                 if (NetworkUtil.isLocalConnection(e.getValue().getHostname())) {
@@ -555,37 +588,49 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     /**
-     * Given a map produced by {@link HTable#getRegionLocations()}, transform each key from an {@link HRegionInfo} to a
-     * {@link KeyRange} expressing the region's start and end key bounds using HugeGraph-partitioning-friendly
-     * conventions (start inclusive, end exclusive, zero bytes appended where necessary to make all keys at least 4
-     * bytes long).
+     * Given a map produced by {@link HTable#getRegionLocations()}, transform
+     * each key from an {@link HRegionInfo} to a {@link KeyRange} expressing the
+     * region's start and end key bounds using hugegraph-partitioning-friendly
+     * conventions (start inclusive, end exclusive, zero bytes appended where
+     * necessary to make all keys at least 4 bytes long).
      * <p/>
-     * This method iterates over the entries in its map parameter and performs the following conditional conversions on
-     * its keys. "Require" below means either a {@link Preconditions} invocation or an assertion. HRegionInfo sometimes
-     * returns start and end keys of zero length; this method replaces zero length keys with null before doing any of
-     * the checks described below. The parameter map and the values it contains are only read and never modified.
+     * This method iterates over the entries in its map parameter and performs
+     * the following conditional conversions on its keys. "Require" below means
+     * either a {@link Preconditions} invocation or an assertion. HRegionInfo
+     * sometimes returns start and end keys of zero length; this method replaces
+     * zero length keys with null before doing any of the checks described
+     * below. The parameter map and the values it contains are only read and
+     * never modified.
      *
      * <ul>
-     * <li>If an entry's HRegionInfo has null start and end keys, then first require that the parameter map is a
-     * singleton, and then return a single-entry map whose {@code KeyRange} has start and end buffers that are both four
-     * bytes of zeros.</li>
-     * <li>If the entry has a null end key (but non-null start key), put an equivalent entry in the result map with a
-     * start key identical to the input, except that zeros are appended to values less than 4 bytes long, and an end key
-     * that is four bytes of zeros.
-     * <li>If the entry has a null start key (but non-null end key), put an equivalent entry in the result map where the
-     * start key is four bytes of zeros, and the end key has zeros appended, if necessary, to make it at least 4 bytes
-     * long, after which one is added to the padded value in unsigned 32-bit arithmetic with overflow allowed.</li>
-     * <li>Any entry which matches none of the above criteria results in an equivalent entry in the returned map, except
-     * that zeros are appended to both keys to make each at least 4 bytes long, and the end key is then incremented as
-     * described in the last bullet point.</li>
+     * <li>If an entry's HRegionInfo has null start and end keys, then first
+     * require that the parameter map is a singleton, and then return a
+     * single-entry map whose {@code KeyRange} has start and end buffers that
+     * are both four bytes of zeros.</li>
+     * <li>If the entry has a null end key (but non-null start key), put an
+     * equivalent entry in the result map with a start key identical to the
+     * input, except that zeros are appended to values less than 4 bytes long,
+     * and an end key that is four bytes of zeros.
+     * <li>If the entry has a null start key (but non-null end key), put an
+     * equivalent entry in the result map where the start key is four bytes of
+     * zeros, and the end key has zeros appended, if necessary, to make it at
+     * least 4 bytes long, after which one is added to the padded value in
+     * unsigned 32-bit arithmetic with overflow allowed.</li>
+     * <li>Any entry which matches none of the above criteria results in an
+     * equivalent entry in the returned map, except that zeros are appended to
+     * both keys to make each at least 4 bytes long, and the end key is then
+     * incremented as described in the last bullet point.</li>
      * </ul>
      *
-     * After iterating over the parameter map, this method checks that it either saw no entries with null keys, one
-     * entry with a null start key and a different entry with a null end key, or one entry with both start and end keys
-     * null. If any null keys are observed besides these three cases, the method will die with a precondition failure.
+     * After iterating over the parameter map, this method checks that it either
+     * saw no entries with null keys, one entry with a null start key and a
+     * different entry with a null end key, or one entry with both start and end
+     * keys null. If any null keys are observed besides these three cases, the
+     * method will die with a precondition failure.
      *
-     * @param raw A map of HRegionInfo and ServerName from HBase
-     * @return HugeGraph-friendly expression of each region's rowkey boundaries
+     * @param raw
+     *            A map of HRegionInfo and ServerName from HBase
+     * @return hugegraph-friendly expression of each region's rowkey boundaries
      */
     private Map<KeyRange, ServerName> normalizeKeyBounds(NavigableMap<HRegionInfo, ServerName> raw) {
 
@@ -597,7 +642,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         for (Map.Entry<HRegionInfo, ServerName> e : raw.entrySet()) {
             HRegionInfo regionInfo = e.getKey();
             byte startKey[] = regionInfo.getStartKey();
-            byte endKey[] = regionInfo.getEndKey();
+            byte endKey[]   = regionInfo.getEndKey();
 
             if (0 == startKey.length) {
                 startKey = null;
@@ -632,14 +677,13 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
                 Preconditions.checkState(null != startKey);
                 Preconditions.checkState(null != endKey);
 
-                // Convert HBase's inclusive end keys into exclusive HugeGraph end keys
+                // Convert HBase's inclusive end keys into exclusive hugegraph end keys
                 StaticBuffer startBuf = StaticArrayBuffer.of(zeroExtend(startKey));
                 StaticBuffer endBuf = StaticArrayBuffer.of(zeroExtend(endKey));
 
                 KeyRange kr = new KeyRange(startBuf, endBuf);
                 b.put(kr, e.getValue());
-                logger.debug("Found HRegionInfo with non-null end and start keys on server {}: {}", e.getValue(),
-                        regionInfo);
+                logger.debug("Found HRegionInfo with non-null end and start keys on server {}: {}", e.getValue(), regionInfo);
             }
         }
 
@@ -657,8 +701,9 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     /**
-     * If the parameter is shorter than 4 bytes, then create and return a new 4 byte array with the input array's bytes
-     * followed by zero bytes. Otherwise return the parameter.
+     * If the parameter is shorter than 4 bytes, then create and return a new 4
+     * byte array with the input array's bytes followed by zero bytes. Otherwise
+     * return the parameter.
      *
      * @param dataToPad non-null but possibly zero-length byte array
      * @return either the parameter or a new array
@@ -677,7 +722,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
             padded[i] = dataToPad[i];
 
         for (int i = dataToPad.length; i < padded.length; i++)
-            padded[i] = (byte) 0;
+            padded[i] = (byte)0;
 
         return padded;
     }
@@ -687,14 +732,11 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         if (SHORT_CF_NAME_MAP.containsKey(longName)) {
             s = SHORT_CF_NAME_MAP.get(longName);
             Preconditions.checkNotNull(s);
-            logger.debug("Substituted default CF name \"{}\" with short form \"{}\" to reduce HBase KeyValue size",
-                    longName, s);
+            logger.debug("Substituted default CF name \"{}\" with short form \"{}\" to reduce HBase KeyValue size", longName, s);
         } else {
             if (SHORT_CF_NAME_MAP.containsValue(longName)) {
-                String fmt =
-                        "Must use CF long-form name \"%s\" instead of the short-form name \"%s\" when configured with %s=true";
-                String msg = String.format(fmt, SHORT_CF_NAME_MAP.inverse().get(longName), longName,
-                        SHORT_CF_NAMES.getName());
+                String fmt = "Must use CF long-form name \"%s\" instead of the short-form name \"%s\" when configured with %s=true";
+                String msg = String.format(fmt, SHORT_CF_NAME_MAP.inverse().get(longName), longName, SHORT_CF_NAMES.getName());
                 throw new PermanentBackendException(msg);
             }
             s = longName;
@@ -703,8 +745,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         return s;
     }
 
-    private HTableDescriptor ensureTableExists(String tableName, String initialCFName, int ttlInSeconds)
-            throws BackendException {
+    private HTableDescriptor ensureTableExists(String tableName, String initialCFName, int ttlInSeconds) throws BackendException {
         AdminMask adm = null;
 
         HTableDescriptor desc;
@@ -712,8 +753,9 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         try { // Create our table, if necessary
             adm = getAdminInterface();
             /*
-             * Some HBase versions/impls respond badly to attempts to create a table without at least one CF. See #661.
-             * Creating a CF along with the table avoids HBase carping.
+             * Some HBase versions/impls respond badly to attempts to create a
+             * table without at least one CF. See #661. Creating a CF along with
+             * the table avoids HBase carping.
              */
             if (adm.tableExists(tableName)) {
                 desc = adm.getTableDescriptor(tableName);
@@ -729,8 +771,7 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
         return desc;
     }
 
-    private HTableDescriptor createTable(String tableName, String cfName, int ttlInSeconds, AdminMask adm)
-            throws IOException {
+    private HTableDescriptor createTable(String tableName, String cfName, int ttlInSeconds, AdminMask adm) throws IOException {
         HTableDescriptor desc = compat.newTableDescriptor(tableName);
 
         HColumnDescriptor cdesc = new HColumnDescriptor(cfName);
@@ -743,8 +784,8 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
 
         if (MIN_REGION_COUNT <= (count = regionCount)) {
             src = "region count configuration";
-        } else if (0 < regionsPerServer
-                && MIN_REGION_COUNT <= (count = regionsPerServer * adm.getEstimatedRegionServerCount())) {
+        } else if (0 < regionsPerServer &&
+                   MIN_REGION_COUNT <= (count = regionsPerServer * adm.getEstimatedRegionServerCount())) {
             src = "ClusterStatus server count";
         } else {
             count = -1;
@@ -766,15 +807,18 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
      * This method generates the second argument to
      * {@link HBaseAdmin#createTable(HTableDescriptor, byte[], byte[], int)}.
      * <p/>
-     * From the {@code createTable} javadoc: "The start key specified will become the end key of the first region of the
-     * table, and the end key specified will become the start key of the last region of the table (the first region has
-     * a null start key and the last region has a null end key)"
+     * From the {@code createTable} javadoc:
+     * "The start key specified will become the end key of the first region of
+     * the table, and the end key specified will become the start key of the
+     * last region of the table (the first region has a null start key and
+     * the last region has a null end key)"
      * <p/>
-     * To summarize, the {@code createTable} argument called "startKey" is actually the end key of the first region.
+     * To summarize, the {@code createTable} argument called "startKey" is
+     * actually the end key of the first region.
      */
     private byte[] getStartKey(int regionCount) {
         ByteBuffer regionWidth = ByteBuffer.allocate(4);
-        regionWidth.putInt((int) (((1L << 32) - 1L) / regionCount)).flip();
+        regionWidth.putInt((int)(((1L << 32) - 1L) / regionCount)).flip();
         return StaticArrayBuffer.of(regionWidth).getBytes(0, 4);
     }
 
@@ -783,12 +827,11 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
      */
     private byte[] getEndKey(int regionCount) {
         ByteBuffer regionWidth = ByteBuffer.allocate(4);
-        regionWidth.putInt((int) (((1L << 32) - 1L) / regionCount * (regionCount - 1))).flip();
+        regionWidth.putInt((int)(((1L << 32) - 1L) / regionCount * (regionCount - 1))).flip();
         return StaticArrayBuffer.of(regionWidth).getBytes(0, 4);
     }
 
-    private void ensureColumnFamilyExists(String tableName, String columnFamily, int ttlInSeconds)
-            throws BackendException {
+    private void ensureColumnFamilyExists(String tableName, String columnFamily, int ttlInSeconds) throws BackendException {
         AdminMask adm = null;
         try {
             adm = getAdminInterface();
@@ -848,17 +891,17 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     /**
-     * Convert HugeGraph internal Mutation representation into HBase native commands.
+     * Convert hugegraph internal Mutation representation into HBase native commands.
      *
-     * @param mutations Mutations to convert into HBase commands.
+     * @param mutations    Mutations to convert into HBase commands.
      * @param putTimestamp The timestamp to use for Put commands.
      * @param delTimestamp The timestamp to use for Delete commands.
-     * @return Commands sorted by key converted from HugeGraph internal representation.
+     * @return Commands sorted by key converted from hugegraph internal representation.
      * @throws com.baidu.hugegraph.diskstorage.PermanentBackendException
      */
-    private Map<StaticBuffer, Pair<Put, Delete>> convertToCommands(
-            Map<String, Map<StaticBuffer, KCVMutation>> mutations, final long putTimestamp, final long delTimestamp)
-            throws PermanentBackendException {
+    private Map<StaticBuffer, Pair<Put, Delete>> convertToCommands(Map<String, Map<StaticBuffer, KCVMutation>> mutations,
+                                                                   final long putTimestamp,
+                                                                   final long delTimestamp) throws PermanentBackendException {
         Map<StaticBuffer, Pair<Put, Delete>> commandsPerKey = new HashMap<StaticBuffer, Pair<Put, Delete>>();
 
         for (Map.Entry<String, Map<StaticBuffer, KCVMutation>> entry : mutations.entrySet()) {
@@ -896,7 +939,9 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
                     }
 
                     for (Entry e : mutation.getAdditions()) {
-                        commands.getFirst().add(cfName, e.getColumnAs(StaticBuffer.ARRAY_FACTORY), putTimestamp,
+                        commands.getFirst().add(cfName,
+                                e.getColumnAs(StaticBuffer.ARRAY_FACTORY),
+                                putTimestamp,
                                 e.getValueAs(StaticBuffer.ARRAY_FACTORY));
                     }
                 }
@@ -912,10 +957,8 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
 
     private void checkConfigDeprecation(com.baidu.hugegraph.diskstorage.configuration.Configuration config) {
         if (config.has(GraphDatabaseConfiguration.STORAGE_PORT)) {
-            logger.warn(
-                    "The configuration property {} is ignored for HBase. Set hbase.zookeeper.property.clientPort in hbase-site.xml or {}.hbase.zookeeper.property.clientPort in HugeGraph's configuration file.",
-                    ConfigElement.getPath(GraphDatabaseConfiguration.STORAGE_PORT),
-                    ConfigElement.getPath(HBASE_CONFIGURATION_NAMESPACE));
+            logger.warn("The configuration property {} is ignored for HBase. Set hbase.zookeeper.property.clientPort in hbase-site.xml or {}.hbase.zookeeper.property.clientPort in hugegraph's configuration file.",
+                    ConfigElement.getPath(GraphDatabaseConfiguration.STORAGE_PORT), ConfigElement.getPath(HBASE_CONFIGURATION_NAMESPACE));
         }
     }
 
@@ -928,7 +971,8 @@ public class HBaseStoreManager extends DistributedStoreManager implements KeyCol
     }
 
     /**
-     * Similar to {@link Function}, except that the {@code apply} method is allowed to throw {@link BackendException}.
+     * Similar to {@link Function}, except that the {@code apply} method is allowed
+     * to throw {@link BackendException}.
      */
     private static interface BackendFunction<F, T> {
 

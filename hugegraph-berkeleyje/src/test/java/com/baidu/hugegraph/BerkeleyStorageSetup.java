@@ -22,7 +22,9 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 public class BerkeleyStorageSetup extends StorageSetup {
 
     public static ModifiableConfiguration getBerkeleyJEConfiguration(String dir) {
-        return buildGraphConfiguration().set(STORAGE_BACKEND, "berkeleyje").set(STORAGE_DIRECTORY, dir);
+        return buildGraphConfiguration()
+                .set(STORAGE_BACKEND,"berkeleyje")
+                .set(STORAGE_DIRECTORY, dir);
     }
 
     public static ModifiableConfiguration getBerkeleyJEConfiguration() {
@@ -34,6 +36,8 @@ public class BerkeleyStorageSetup extends StorageSetup {
     }
 
     public static ModifiableConfiguration getBerkeleyJEPerformanceConfiguration() {
-        return getBerkeleyJEConfiguration().set(STORAGE_TRANSACTIONAL, false).set(TX_CACHE_SIZE, 1000);
+        return getBerkeleyJEConfiguration()
+                .set(STORAGE_TRANSACTIONAL,false)
+                .set(TX_CACHE_SIZE,1000);
     }
 }

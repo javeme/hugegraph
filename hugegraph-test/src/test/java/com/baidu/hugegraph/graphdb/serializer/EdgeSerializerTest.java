@@ -27,19 +27,18 @@ import org.junit.Test;
  */
 public class EdgeSerializerTest {
 
+
     @Test
     public void testValueOrdering() {
         StandardHugeGraph graph = (StandardHugeGraph) StorageSetup.getInMemoryGraph();
         HugeGraphManagement mgmt = graph.openManagement();
         mgmt.makeEdgeLabel("father").multiplicity(Multiplicity.MANY2ONE).make();
-        for (int i = 1; i <= 5; i++)
-            mgmt.makePropertyKey("key" + i).dataType(Integer.class).make();
+        for (int i=1;i<=5;i++) mgmt.makePropertyKey("key" + i).dataType(Integer.class).make();
         mgmt.commit();
 
         HugeGraphVertex v1 = graph.addVertex(), v2 = graph.addVertex();
-        HugeGraphEdge e1 = v1.addEdge("father", v2);
-        for (int i = 1; i <= 5; i++)
-            e1.property("key" + i, i);
+        HugeGraphEdge e1 = v1.addEdge("father",v2);
+        for (int i=1;i<=5;i++) e1.property("key"+i,i);
 
         graph.tx().commit();
 

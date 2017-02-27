@@ -19,17 +19,17 @@ import com.baidu.hugegraph.core.HugeGraphElement;
 import java.util.Comparator;
 
 /**
- * A query that returns {@link HugeGraphElement}s. This query can consist of multiple sub-queries that together form the
- * desired result set.
+ * A query that returns {@link HugeGraphElement}s. This query can consist of multiple sub-queries that together
+ * form the desired result set.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
-public interface ElementQuery<R extends HugeGraphElement, B extends BackendQuery<B>> extends Query {
+public interface ElementQuery<R extends HugeGraphElement,B extends BackendQuery<B>> extends Query {
 
     /**
-     * Whether the combination of the individual sub-queries can result in duplicate results. Indicates to the query
-     * executor whether the results need to be de-duplicated
+     * Whether the combination of the individual sub-queries can result in duplicate
+     * results. Indicates to the query executor whether the results need to be de-duplicated
      *
      * @return true, if duplicate results are possible, else false
      */
@@ -51,7 +51,6 @@ public interface ElementQuery<R extends HugeGraphElement, B extends BackendQuery
 
     /**
      * Returns the backend query at the given position that comprises this ElementQuery
-     * 
      * @param position
      * @return
      */
@@ -76,7 +75,6 @@ public interface ElementQuery<R extends HugeGraphElement, B extends BackendQuery
 
     /**
      * Returns the expected sort order of this query if any was specified. Check {@link #isSorted()} first.
-     * 
      * @return
      */
     public Comparator<R> getSortOrder();

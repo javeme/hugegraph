@@ -24,10 +24,13 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 /**
- * AbstractElement is the base class for all elements in HugeGraph. It is defined and uniquely identified by its id.
+ * AbstractElement is the base class for all elements in HugeGraph.
+ * It is defined and uniquely identified by its id.
  * </p>
- * For the id, it holds that: id<0: Temporary id, will be assigned id>0 when the transaction is committed id=0: Virtual
- * or implicit element that does not physically exist in the database id>0: Physically persisted element
+ * For the id, it holds that:
+ * id<0: Temporary id, will be assigned id>0 when the transaction is committed
+ * id=0: Virtual or implicit element that does not physically exist in the database
+ * id>0: Physically persisted element
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -50,38 +53,37 @@ public abstract class AbstractElement implements InternalElement, Comparable<Hug
 
     @Override
     public boolean equals(Object other) {
-        if (other == null)
+        if (other==null)
             return false;
 
-        if (this == other)
+        if (this==other)
             return true;
-        if (!((this instanceof Vertex && other instanceof Vertex) || (this instanceof Edge && other instanceof Edge)
-                || (this instanceof VertexProperty && other instanceof VertexProperty)))
+        if (!((this instanceof Vertex && other instanceof Vertex) ||
+                (this instanceof Edge && other instanceof Edge) ||
+                (this instanceof VertexProperty && other instanceof VertexProperty)))
             return false;
-        // Same type => they are the same if they have identical ids.
+        //Same type => they are the same if they have identical ids.
         if (other instanceof AbstractElement) {
-            return getCompareId() == ((AbstractElement) other).getCompareId();
+            return getCompareId()==((AbstractElement)other).getCompareId();
         } else if (other instanceof HugeGraphElement) {
-            return ((HugeGraphElement) other).hasId() && getCompareId() == ((HugeGraphElement) other).longId();
+            return ((HugeGraphElement) other).hasId() && getCompareId()==((HugeGraphElement)other).longId();
         } else if (other instanceof Element) {
-            Object otherId = ((Element) other).id();
-            if (otherId instanceof RelationIdentifier)
-                return ((RelationIdentifier) otherId).getRelationId() == getCompareId();
-            else
-                return otherId.equals(getCompareId());
-        } else
-            return false;
+            Object otherId = ((Element)other).id();
+            if (otherId instanceof RelationIdentifier) return ((RelationIdentifier) otherId).getRelationId()==getCompareId();
+            else return otherId.equals(getCompareId());
+        } else return false;
     }
+
 
     @Override
     public int compareTo(HugeGraphElement other) {
-        return compare(this, other);
+        return compare(this,other);
     }
 
     public static int compare(HugeGraphElement e1, HugeGraphElement e2) {
-        long e1id = (e1 instanceof AbstractElement) ? ((AbstractElement) e1).getCompareId() : e1.longId();
-        long e2id = (e2 instanceof AbstractElement) ? ((AbstractElement) e2).getCompareId() : e2.longId();
-        return Longs.compare(e1id, e2id);
+        long e1id = (e1 instanceof AbstractElement)?((AbstractElement)e1).getCompareId():e1.longId();
+        long e2id = (e2 instanceof AbstractElement)?((AbstractElement)e2).getCompareId():e2.longId();
+        return Longs.compare(e1id,e2id);
     }
 
     @Override
@@ -89,16 +91,15 @@ public abstract class AbstractElement implements InternalElement, Comparable<Hug
         throw new CloneNotSupportedException();
     }
 
-    /*
-     * --------------------------------------------------------------- ID and LifeCycle methods
-     * ---------------------------------------------------------------
-     */
+    /* ---------------------------------------------------------------
+	 * ID and LifeCycle methods
+	 * ---------------------------------------------------------------
+	 */
 
     /**
-     * Long identifier used to compare elements. Often, this is the same as {@link #longId()} but some instances of
-     * elements may be considered the same even if their ids differ. In that case, this method should be overwritten to
-     * return an id that can be used for comparison.
-     * 
+     * Long identifier used to compare elements. Often, this is the same as {@link #longId()}
+     * but some instances of elements may be considered the same even if their ids differ. In that case,
+     * this method should be overwritten to return an id that can be used for comparison.
      * @return
      */
     protected long getCompareId() {
@@ -117,7 +118,7 @@ public abstract class AbstractElement implements InternalElement, Comparable<Hug
     @Override
     public void setId(long id) {
         assert id > 0;
-        this.id = id;
+        this.id=id;
     }
 
     @Override

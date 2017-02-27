@@ -42,8 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds a {@link com.baidu.hugegraph.core.BaseVertexQuery}, optimizes the query and compiles the result into a
- * {@link BaseVertexCentricQuery} which is then executed by one of the extending classes.
+ * Builds a {@link com.baidu.hugegraph.core.BaseVertexQuery}, optimizes the query and compiles the result into a {@link BaseVertexCentricQuery} which
+ * is then executed by one of the extending classes.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -65,8 +65,7 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
      */
     protected List<PredicateCondition<String, HugeGraphRelation>> constraints = NO_CONSTRAINTS;
     /**
-     * The vertex to be used for the adjacent vertex constraint. If null, that means no such constraint. Null by
-     * default.
+     * The vertex to be used for the adjacent vertex constraint. If null, that means no such constraint. Null by default.
      */
     protected HugeGraphVertex adjacentVertex = null;
     /**
@@ -88,22 +87,23 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
 
     protected abstract HugeGraphVertex getVertex(long vertexid);
 
-    /*
-     * --------------------------------------------------------------- Query Construction
-     * ---------------------------------------------------------------
-     */
+
+    /* ---------------------------------------------------------------
+     * Query Construction
+	 * ---------------------------------------------------------------
+	 */
+
 
     @Override
     public Q adjacent(Vertex vertex) {
-        Preconditions.checkArgument(vertex != null && (vertex instanceof HugeGraphVertex),
-                "Not a valid vertex provided for adjacency constraint");
+        Preconditions.checkArgument(vertex != null && (vertex instanceof HugeGraphVertex), "Not a valid vertex provided for adjacency constraint");
         this.adjacentVertex = (HugeGraphVertex) vertex;
         return getThis();
     }
 
     private Q addConstraint(String type, HugeGraphPredicate rel, Object value) {
         Preconditions.checkArgument(type != null && StringUtils.isNotBlank(type) && rel != null);
-        // Treat special cases
+        //Treat special cases
         if (type.equals(ImplicitKey.ADJACENT_ID.name())) {
             Preconditions.checkArgument(rel == Cmp.EQUAL, "Only equality constraints are supported for %s", type);
             long vertexId = ElementUtils.getVertexId(value);
@@ -112,12 +112,11 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
         } else if (type.equals(ImplicitKey.ID.name())) {
             RelationIdentifier rid = ElementUtils.getEdgeId(value);
             Preconditions.checkArgument(rid != null, "Expected valid relation id: %s", value);
-            return addConstraint(ImplicitKey.JANUSGRAPHID.name(), rel, rid.getRelationId());
+            return addConstraint(ImplicitKey.hugegraphID.name(), rel, rid.getRelationId());
         } else {
             Preconditions.checkArgument(rel.isValidCondition(value), "Invalid condition provided: " + value);
         }
-        if (constraints == NO_CONSTRAINTS)
-            constraints = new ArrayList<PredicateCondition<String, HugeGraphRelation>>(5);
+        if (constraints == NO_CONSTRAINTS) constraints = new ArrayList<PredicateCondition<String, HugeGraphRelation>>(5);
         constraints.add(new PredicateCondition<String, HugeGraphRelation>(type, rel, value));
         return getThis();
     }
@@ -154,7 +153,7 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
     }
 
     @Override
-    public Q types(RelationType...types) {
+    public Q types(RelationType... types) {
         String[] ts = new String[types.length];
         for (int i = 0; i < types.length; i++) {
             ts[i] = types[i].name();
@@ -162,13 +161,14 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
         return types(ts);
     }
 
+
     @Override
-    public Q labels(String...labels) {
+    public Q labels(String... labels) {
         return types(labels);
     }
 
     @Override
-    public Q keys(String...keys) {
+    public Q keys(String... keys) {
         return types(keys);
     }
 
@@ -177,11 +177,9 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
     }
 
     @Override
-    public Q types(String...types) {
-        if (types == null)
-            types = NO_TYPES;
-        for (String type : types)
-            Preconditions.checkArgument(StringUtils.isNotBlank(type), "Invalid type: %s", type);
+    public Q types(String... types) {
+        if (types == null) types = NO_TYPES;
+        for (String type : types) Preconditions.checkArgument(StringUtils.isNotBlank(type), "Invalid type: %s", type);
         this.types = types;
         return getThis();
     }
@@ -202,26 +200,24 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
 
     @Override
     public Q orderBy(String keyName, org.apache.tinkerpop.gremlin.process.traversal.Order order) {
-        Preconditions.checkArgument(schemaInspector.containsPropertyKey(keyName), "Provided key does not exist: %s",
-                keyName);
+        Preconditions.checkArgument(schemaInspector.containsPropertyKey(keyName), "Provided key does not exist: %s", keyName);
         PropertyKey key = schemaInspector.getPropertyKey(keyName);
         Preconditions.checkArgument(key != null && order != null, "Need to specify and key and an order");
         Preconditions.checkArgument(Comparable.class.isAssignableFrom(key.dataType()),
                 "Can only order on keys with comparable data type. [%s] has datatype [%s]", key.name(), key.dataType());
-        Preconditions.checkArgument(key.cardinality() == Cardinality.SINGLE,
-                "Ordering is undefined on multi-valued key [%s]", key.name());
-        Preconditions.checkArgument(!(key instanceof SystemRelationType), "Cannot use system types in ordering: %s",
-                key);
+        Preconditions.checkArgument(key.cardinality() == Cardinality.SINGLE, "Ordering is undefined on multi-valued key [%s]", key.name());
+        Preconditions.checkArgument(!(key instanceof SystemRelationType), "Cannot use system types in ordering: %s", key);
         Preconditions.checkArgument(!orders.containsKey(key));
         Preconditions.checkArgument(orders.isEmpty(), "Only a single sort order is supported on vertex queries");
         orders.add(key, Order.convert(order));
         return getThis();
     }
 
-    /*
-     * --------------------------------------------------------------- Inspection Methods
-     * ---------------------------------------------------------------
-     */
+
+    /* ---------------------------------------------------------------
+     * Inspection Methods
+	 * ---------------------------------------------------------------
+	 */
 
     protected final boolean hasTypes() {
         return types.length > 0;
@@ -239,16 +235,16 @@ public abstract class BaseVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>
     /**
      * Whether this query is asking for the value of an {@link com.baidu.hugegraph.graphdb.types.system.ImplicitKey}.
      * </p>
-     * Handling of implicit keys is completely distinct from "normal" query execution and handled extra for completeness
-     * reasons.
+     * Handling of implicit keys is completely distinct from "normal" query execution and handled extra
+     * for completeness reasons.
      *
      * @param returnType
      * @return
      */
     protected final boolean isImplicitKeyQuery(RelationCategory returnType) {
-        if (returnType == RelationCategory.EDGE || types.length != 1 || !constraints.isEmpty())
-            return false;
+        if (returnType == RelationCategory.EDGE || types.length != 1 || !constraints.isEmpty()) return false;
         return schemaInspector.getRelationType(types[0]) instanceof ImplicitKey;
     }
+
 
 }

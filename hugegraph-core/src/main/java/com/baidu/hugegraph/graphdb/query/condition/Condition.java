@@ -19,17 +19,15 @@ import com.baidu.hugegraph.core.HugeGraphElement;
 /**
  * A logical condition which evaluates against a provided element to true or false.
  * </p>
- * A condition can be nested to form complex logical expressions with AND, OR and NOT. A condition is either a literal,
- * a negation of a condition, or a logical combination of conditions (AND, OR). If a condition has sub-conditions we
- * consider those to be children.
+ * A condition can be nested to form complex logical expressions with AND, OR and NOT.
+ * A condition is either a literal, a negation of a condition, or a logical combination of conditions (AND, OR).
+ * If a condition has sub-conditions we consider those to be children.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface Condition<E extends HugeGraphElement> {
 
-    public enum Type {
-        AND, OR, NOT, LITERAL
-    }
+    public enum Type { AND, OR, NOT, LITERAL}
 
     public Type getType();
 

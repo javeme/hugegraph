@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,43 +28,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base class for {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer} implementations that use
- * Hadoop's distributed cache to store push classfiles to the cluster.
+ * Abstract base class for {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer}
+ * implementations that use Hadoop's distributed cache to store push classfiles to the cluster.
  */
 public abstract class AbstractDistCacheConfigurer {
 
-    // public static enum FileCopyMode {
-    //
-    // /**
-    // * Copy a jar unless a file with the same name already exists in the staging
-    // * directory of the Hadoop FileSystem.
-    // */
-    // FILENAME,
-    //
-    // /**
-    // * Copy a jar unless a file with the same name and same modtime already exists
-    // * in the staging directory of the Hadoop FileSystem.
-    // */
-    // MODTIME,
-    //
-    // /**
-    // * Unconditionally copy all jars to the Hadoop FileSystem, even if they
-    // * already exist at the destination and have up-to-date modtimes.
-    // */
-    // ALWAYS;
-    // }
-    //
-    // public static final ConfigOption<Boolean> SKIP_LOCAL_COPIES =
-    // new ConfigOption<Boolean>(HugeGraphHadoopConfiguration.JARCACHE_NS, "skip-local-copies",
-    // "When this option is true and Hadoop is configured to use a LocalFileSystem as " +
-    // "its default, HugeGraph will not attempt to copy jars from the classpath to the " +
-    // "LocalFileSystem (which is redundant when using the local JobRunner)", ConfigOption.Type.MASKABLE, true);
+//    public static enum FileCopyMode {
+//
+//        /**
+//         * Copy a jar unless a file with the same name already exists in the staging
+//         * directory of the Hadoop FileSystem.
+//         */
+//        FILENAME,
+//
+//        /**
+//         * Copy a jar unless a file with the same name and same modtime already exists
+//         * in the staging directory of the Hadoop FileSystem.
+//         */
+//        MODTIME,
+//
+//        /**
+//         * Unconditionally copy all jars to the Hadoop FileSystem, even if they
+//         * already exist at the destination and have up-to-date modtimes.
+//         */
+//        ALWAYS;
+//    }
+//
+//    public static final ConfigOption<Boolean> SKIP_LOCAL_COPIES =
+//            new ConfigOption<Boolean>(hugegraphHadoopConfiguration.JARCACHE_NS, "skip-local-copies",
+//            "When this option is true and Hadoop is configured to use a LocalFileSystem as " +
+//            "its default, hugegraph will not attempt to copy jars from the classpath to the " +
+//            "LocalFileSystem (which is redundant when using the local JobRunner)", ConfigOption.Type.MASKABLE, true);
 
     private final Conf conf;
 
     private static final String HDFS_TMP_LIB_DIR = "hugegraphlib";
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractDistCacheConfigurer.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(AbstractDistCacheConfigurer.class);
 
     public AbstractDistCacheConfigurer(String mapredJarFilename) {
         this.conf = configureByClasspath(mapredJarFilename);
@@ -82,8 +83,8 @@ public abstract class AbstractDistCacheConfigurer {
 
         // Fast path for local FS -- DistributedCache + local JobRunner seems copy/link files automatically
         if (destFS.equals(localFS)) {
-            log.debug("Skipping file upload for {} (destination filesystem {} equals local filesystem)", localPath,
-                    destFS);
+            log.debug("Skipping file upload for {} (destination filesystem {} equals local filesystem)",
+                    localPath, destFS);
             return localPath;
         }
 
@@ -94,7 +95,8 @@ public abstract class AbstractDistCacheConfigurer {
         try {
             fileStats = compareModtimes(localFS, localPath, destFS, destPath);
         } catch (IOException e) {
-            log.warn("Unable to read or stat file: localPath={}, destPath={}, destFS={}", localPath, destPath, destFS);
+            log.warn("Unable to read or stat file: localPath={}, destPath={}, destFS={}",
+                    localPath, destPath, destFS);
         }
 
         if (!fileStats.isRemoteCopyCurrent()) {
@@ -110,8 +112,7 @@ public abstract class AbstractDistCacheConfigurer {
         return destPath;
     }
 
-    private Stats compareModtimes(FileSystem localFS, Path localPath, FileSystem destFS, Path destPath)
-            throws IOException {
+    private Stats compareModtimes(FileSystem localFS, Path localPath, FileSystem destFS, Path destPath) throws IOException {
         Stats s = new Stats();
         s.local = localFS.getFileStatus(localPath);
         if (destFS.exists(destPath)) {
@@ -128,8 +129,8 @@ public abstract class AbstractDistCacheConfigurer {
                     log.debug("Remote file {} exists but is out-of-date: local={} dest={}", destPath, l, d);
                 }
             } else {
-                log.debug("Unable to stat file(s): [LOCAL: path={} stat={}] [DEST: path={} stat={}]", localPath,
-                        s.local, destPath, s.dest);
+                log.debug("Unable to stat file(s): [LOCAL: path={} stat={}] [DEST: path={} stat={}]",
+                        localPath, s.local, destPath, s.dest);
             }
         } else {
             log.debug("File {} does not exist", destPath);
@@ -145,9 +146,8 @@ public abstract class AbstractDistCacheConfigurer {
         for (String cpentry : classpath.split(File.pathSeparator)) {
             if (cpentry.toLowerCase().endsWith(".jar") || cpentry.toLowerCase().endsWith(".properties")) {
                 paths.add(new Path(cpentry));
-                if (cpentry.toLowerCase().endsWith(mrj))
-                    ;
-                mapredJarPath = cpentry;
+                if (cpentry.toLowerCase().endsWith(mrj));
+                    mapredJarPath = cpentry;
             }
         }
         return new Conf(paths, mapredJarPath);
@@ -164,6 +164,7 @@ public abstract class AbstractDistCacheConfigurer {
         }
     }
 
+
     private static class Stats {
         private FileStatus local;
         private FileStatus dest;
@@ -174,28 +175,27 @@ public abstract class AbstractDistCacheConfigurer {
     }
 
     // LocalFileSystem doesn't checksum, it just returns null, so this is useless
-    // private boolean compareChecksums(FileSystem localFS, Path localPath, FileSystem destFS, Path destPath) throws
-    // IOException {
-    // if (destFS.exists(destPath)) {
-    // FileChecksum localCheck = localFS.getFileChecksum(localPath);
-    // FileChecksum destCheck = destFS.getFileChecksum(destPath);
-    // if (null != destCheck && null != localCheck) {
-    // byte[] db = destCheck.getBytes();
-    // byte[] lb = localCheck.getBytes();
-    // if (null != db && null != lb && Arrays.equals(db, lb)) {
-    // if (log.isDebugEnabled())
-    // log.debug("Checksum {} for file {} is up-to-date", Arrays.toString(db), destPath);
-    // return true;
-    // } else {
-    // log.debug("Checksum mismatch on file {}: local={} dest={}", destPath, lb, db);
-    // }
-    // } else {
-    // log.debug("Unable to checksum files: localPath={} localCheck={}, destPath={} destCheck={}",
-    // localPath, localCheck, destPath, destCheck);
-    // }
-    // } else {
-    // log.debug("File {} does not exist", destPath);
-    // }
-    // return false;
-    // }
+//    private boolean compareChecksums(FileSystem localFS, Path localPath, FileSystem destFS, Path destPath) throws IOException {
+//        if (destFS.exists(destPath)) {
+//            FileChecksum localCheck = localFS.getFileChecksum(localPath);
+//            FileChecksum destCheck = destFS.getFileChecksum(destPath);
+//            if (null != destCheck && null != localCheck) {
+//                byte[] db = destCheck.getBytes();
+//                byte[] lb = localCheck.getBytes();
+//                if (null != db && null != lb && Arrays.equals(db, lb)) {
+//                    if (log.isDebugEnabled())
+//                        log.debug("Checksum {} for file {} is up-to-date", Arrays.toString(db), destPath);
+//                    return true;
+//                } else {
+//                    log.debug("Checksum mismatch on file {}: local={} dest={}", destPath, lb, db);
+//                }
+//            } else {
+//                log.debug("Unable to checksum files: localPath={} localCheck={}, destPath={} destCheck={}",
+//                        localPath, localCheck, destPath, destCheck);
+//            }
+//        } else {
+//            log.debug("File {} does not exist", destPath);
+//        }
+//        return false;
+//    }
 }

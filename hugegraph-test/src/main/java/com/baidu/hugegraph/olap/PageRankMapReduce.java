@@ -27,8 +27,7 @@ import java.util.Iterator;
 /**
  * This a copy of the TinkerPop 3 PR MR implementation.
  */
-public class PageRankMapReduce
-        extends StaticMapReduce<Object, Double, Object, Double, Iterator<KeyValue<Object, Double>>> {
+public class PageRankMapReduce extends StaticMapReduce<Object, Double, Object, Double, Iterator<KeyValue<Object, Double>>> {
 
     public static final String PAGE_RANK_MEMORY_KEY = "hugegraph.pageRank.memoryKey";
     public static final String DEFAULT_MEMORY_KEY = "pageRank";

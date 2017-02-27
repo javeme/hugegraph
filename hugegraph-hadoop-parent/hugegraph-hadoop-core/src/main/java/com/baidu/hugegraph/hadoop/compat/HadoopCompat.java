@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,16 @@ import org.apache.hadoop.mapreduce.*;
 import com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer;
 
 /**
- * This interface encapsulates both API and bytecode-level IncompatibleClassChanges in Hadoop core. In theory,
- * hugegraph-hadoop-core should only touch parts of Hadoop core ABI that have remained stable since 1.0, and everything
- * else should be hidden behind the compat layer.
+ * This interface encapsulates both API and bytecode-level
+ * IncompatibleClassChanges in Hadoop core. In theory, hugegraph-hadoop-core should
+ * only touch parts of Hadoop core ABI that have remained stable since 1.0, and
+ * everything else should be hidden behind the compat layer.
  * <p>
- * This interface is public, but should be considered unstable and likely to change in the future as new Hadoop versions
- * are released, or as hugegraph-hadoop-core uses additional Hadoop features, or as bugs are discovered. It's possible
- * to write and use a third-party implementation, but be prepared to update it when upgrading to a newer HugeGraph
- * release.
+ * This interface is public, but should be considered unstable and likely to
+ * change in the future as new Hadoop versions are released, or as
+ * hugegraph-hadoop-core uses additional Hadoop features, or as bugs are discovered.
+ * It's possible to write and use a third-party implementation, but be prepared
+ * to update it when upgrading to a newer hugegraph release.
  */
 public interface HadoopCompat {
 
@@ -41,16 +43,16 @@ public interface HadoopCompat {
     public TaskAttemptContext newTask(Configuration c, TaskAttemptID t);
 
     /**
-     * Return the Hadoop configuration key which takes a boolean value and controls whether Hadoop will attempt
-     * speculative execution of mappers.
+     * Return the Hadoop configuration key which takes a boolean value and
+     * controls whether Hadoop will attempt speculative execution of mappers.
      *
      * @return string config key
      */
     public String getSpeculativeMapConfigKey();
 
     /**
-     * Return the Hadoop configuration key which takes a boolean value and controls whether Hadoop will attempt
-     * speculative execution of reducers.
+     * Return the Hadoop configuration key which takes a boolean value and
+     * controls whether Hadoop will attempt speculative execution of reducers.
      *
      * @return string config key
      */
@@ -58,8 +60,7 @@ public interface HadoopCompat {
 
     public String getMapredJarConfigKey();
 
-    // public boolean runVertexScan(String vertexScanJobClass, Configuration jobConf) throws IOException,
-    // ClassNotFoundException, InterruptedException;
+//    public boolean runVertexScan(String vertexScanJobClass, Configuration jobConf) throws IOException, ClassNotFoundException, InterruptedException;
 
     /**
      * Add {@code incr} to the counter designated by {@code counter} on {@code context}.
@@ -98,9 +99,9 @@ public interface HadoopCompat {
     public Configuration getJobContextConfiguration(JobContext context);
 
     /**
-     * Construct a {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer} that sets the Mapreduce job jar
-     * config key to the supplied value. The job jar should contain Faunus's classes plus its entire dependency tree
-     * ("fat" jar).
+     * Construct a {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer}
+     * that sets the Mapreduce job jar config key to the supplied value.  The job jar
+     * should contain Faunus's classes plus its entire dependency tree ("fat" jar).
      *
      * @param mapredJarPath path to the mapreduce job jar
      * @return a configurer
@@ -108,8 +109,9 @@ public interface HadoopCompat {
     public JobClasspathConfigurer newMapredJarConfigurer(String mapredJarPath);
 
     /**
-     * Construct a {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer} that walks the classpath and adds all
-     * jars its finds to the Hadoop Jobs's classpaths via the Hadoop Distributed Cache.
+     * Construct a {@link com.baidu.hugegraph.hadoop.config.job.JobClasspathConfigurer}
+     * that walks the classpath and adds all jars its finds to the Hadoop Jobs's
+     * classpaths via the Hadoop Distributed Cache.
      *
      * @return a configurer
      */
@@ -117,8 +119,8 @@ public interface HadoopCompat {
 
     /**
      * Construct a {@link org.apache.hadoop.conf.Configuration} instance which throws
-     * {@link java.lang.UnsupportedOperationException} on any attempt to modify its state, but which forwards to its
-     * parameter all method calls that don't mutate state (i.e. reads).
+     * {@link java.lang.UnsupportedOperationException} on any attempt to modify its state,
+     * but which forwards to its parameter all method calls that don't mutate state (i.e. reads).
      *
      * @param base the configuration to encapsulate behind an immutable forwarder class
      * @return an immutable forwarder class that encapsulates {@code base}

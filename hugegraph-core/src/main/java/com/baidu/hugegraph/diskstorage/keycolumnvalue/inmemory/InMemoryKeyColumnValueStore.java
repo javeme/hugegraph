@@ -34,9 +34,9 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * An in-memory implementation of {@link KeyColumnValueStore}. This implementation is thread-safe. All data is held in
- * memory, which means that the capacity of this store is determined by the available heap space. No data is persisted
- * and all data lost when the jvm terminates or store closed.
+ * An in-memory implementation of {@link KeyColumnValueStore}.
+ * This implementation is thread-safe. All data is held in memory, which means that the capacity of this store is
+ * determined by the available heap space. No data is persisted and all data lost when the jvm terminates or store closed.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -55,24 +55,19 @@ public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {
     @Override
     public EntryList getSlice(KeySliceQuery query, StoreTransaction txh) throws BackendException {
         ColumnValueStore cvs = kcv.get(query.getKey());
-        if (cvs == null)
-            return EntryList.EMPTY_LIST;
-        else
-            return cvs.getSlice(query, txh);
+        if (cvs == null) return EntryList.EMPTY_LIST;
+        else return cvs.getSlice(query, txh);
     }
 
     @Override
-    public Map<StaticBuffer, EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh)
-            throws BackendException {
-        Map<StaticBuffer, EntryList> result = Maps.newHashMap();
-        for (StaticBuffer key : keys)
-            result.put(key, getSlice(new KeySliceQuery(key, query), txh));
+    public Map<StaticBuffer,EntryList> getSlice(List<StaticBuffer> keys, SliceQuery query, StoreTransaction txh) throws BackendException {
+        Map<StaticBuffer,EntryList> result = Maps.newHashMap();
+        for (StaticBuffer key : keys) result.put(key,getSlice(new KeySliceQuery(key,query),txh));
         return result;
     }
 
     @Override
-    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh)
-            throws BackendException {
+    public void mutate(StaticBuffer key, List<Entry> additions, List<StaticBuffer> deletions, StoreTransaction txh) throws BackendException {
         ColumnValueStore cvs = kcv.get(key);
         if (cvs == null) {
             kcv.putIfAbsent(key, new ColumnValueStore());
@@ -82,8 +77,7 @@ public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {
     }
 
     @Override
-    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh)
-            throws BackendException {
+    public void acquireLock(StaticBuffer key, StaticBuffer column, StaticBuffer expectedValue, StoreTransaction txh) throws BackendException {
         throw new UnsupportedOperationException();
     }
 
@@ -111,6 +105,7 @@ public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {
         kcv.clear();
     }
 
+
     private static class RowIterator implements KeyIterator {
         private final Iterator<Map.Entry<StaticBuffer, ColumnValueStore>> rows;
         private final SliceQuery columnSlice;
@@ -120,8 +115,9 @@ public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {
         private Map.Entry<StaticBuffer, ColumnValueStore> nextRow;
         private boolean isClosed;
 
-        public RowIterator(Iterator<Map.Entry<StaticBuffer, ColumnValueStore>> rows, @Nullable SliceQuery columns,
-                final StoreTransaction transaction) {
+        public RowIterator(Iterator<Map.Entry<StaticBuffer, ColumnValueStore>> rows,
+                           @Nullable SliceQuery columns,
+                           final StoreTransaction transaction) {
             this.rows = Iterators.filter(rows, new Predicate<Map.Entry<StaticBuffer, ColumnValueStore>>() {
                 @Override
                 public boolean apply(@Nullable Map.Entry<StaticBuffer, ColumnValueStore> entry) {
@@ -177,8 +173,7 @@ public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {
 
             while (rows.hasNext()) {
                 nextRow = rows.next();
-                List<Entry> ents =
-                        nextRow.getValue().getSlice(new KeySliceQuery(nextRow.getKey(), columnSlice), transaction);
+                List<Entry> ents = nextRow.getValue().getSlice(new KeySliceQuery(nextRow.getKey(), columnSlice), transaction);
                 if (null != ents && 0 < ents.size())
                     break;
             }

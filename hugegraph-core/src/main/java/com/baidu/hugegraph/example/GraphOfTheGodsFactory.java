@@ -32,8 +32,8 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import java.io.File;
 
 /**
- * Example Graph factory that creates a {@link HugeGraph} based on roman mythology. Used in the documentation examples
- * and tutorials.
+ * Example Graph factory that creates a {@link HugeGraph} based on roman mythology.
+ * Used in the documentation examples and tutorials.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -65,7 +65,7 @@ public class GraphOfTheGodsFactory {
 
     public static void load(final HugeGraph graph, String mixedIndexName, boolean uniqueNameCompositeIndex) {
 
-        // Create Schema
+        //Create Schema
         HugeGraphManagement mgmt = graph.openManagement();
         final PropertyKey name = mgmt.makePropertyKey("name").dataType(String.class).make();
         HugeGraphManagement.IndexBuilder nameIndexBuilder = mgmt.buildIndex("name", Vertex.class).addKey(name);
@@ -145,14 +145,17 @@ public class GraphOfTheGodsFactory {
     }
 
     /**
-     * Calls {@link HugeGraphFactory#open(String)}, passing the HugeGraph configuration file path which must be the sole
-     * element in the {@code args} array, then calls {@link #load(com.baidu.hugegraph.core.HugeGraph)} on the opened
-     * graph, then calls {@link com.baidu.hugegraph.core.HugeGraph#close()} and returns.
+     * Calls {@link HugeGraphFactory#open(String)}, passing the HugeGraph configuration file path
+     * which must be the sole element in the {@code args} array, then calls
+     * {@link #load(com.baidu.hugegraph.core.HugeGraph)} on the opened graph,
+     * then calls {@link com.baidu.hugegraph.core.HugeGraph#close()}
+     * and returns.
      * <p/>
-     * This method may call {@link System#exit(int)} if it encounters an error, such as failure to parse its arguments.
-     * Only use this method when executing main from a command line. Use one of the other methods on this class
-     * ({@link #create(String)} or {@link #load(com.baidu.hugegraph.core.HugeGraph)}) when calling from an enclosing
-     * application.
+     * This method may call {@link System#exit(int)} if it encounters an error, such as
+     * failure to parse its arguments.  Only use this method when executing main from
+     * a command line.  Use one of the other methods on this class ({@link #create(String)}
+     * or {@link #load(com.baidu.hugegraph.core.HugeGraph)}) when calling from
+     * an enclosing application.
      *
      * @param args a singleton array containing a path to a HugeGraph config properties file
      */

@@ -35,9 +35,7 @@ import java.util.Set;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  * @author Matthias Broecheler (http://matthiasb.com)
  */
-public class HugeGraphLocalQueryOptimizerStrategy
-        extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy>
-        implements TraversalStrategy.ProviderOptimizationStrategy {
+public class HugeGraphLocalQueryOptimizerStrategy extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy> implements TraversalStrategy.ProviderOptimizationStrategy {
 
     private static final HugeGraphLocalQueryOptimizerStrategy INSTANCE = new HugeGraphLocalQueryOptimizerStrategy();
 
@@ -51,23 +49,22 @@ public class HugeGraphLocalQueryOptimizerStrategy
 
         Graph graph = traversal.getGraph().get();
 
-        // If this is a compute graph then we can't apply local traversal optimisation at this stage.
-        StandardHugeGraph hugeGraph = graph instanceof StandardHugeGraphTx ? ((StandardHugeGraphTx) graph).getGraph()
-                : (StandardHugeGraph) graph;
-        final boolean useMultiQuery =
-                !TraversalHelper.onGraphComputer(traversal) && hugeGraph.getConfiguration().useMultiQuery();
+        //If this is a compute graph then we can't apply local traversal optimisation at this stage.
+        StandardHugeGraph hugeGraph = graph instanceof StandardHugeGraphTx ? ((StandardHugeGraphTx) graph).getGraph() : (StandardHugeGraph) graph;
+        final boolean useMultiQuery = !TraversalHelper.onGraphComputer(traversal) && hugeGraph.getConfiguration().useMultiQuery();
 
         /*
-         * ====== VERTEX STEP ======
+                ====== VERTEX STEP ======
          */
 
         TraversalHelper.getStepsOfClass(VertexStep.class, traversal).forEach(originalStep -> {
             HugeGraphVertexStep vstep = new HugeGraphVertexStep(originalStep);
             TraversalHelper.replaceStep(originalStep, vstep, traversal);
 
+
             if (HugeGraphTraversalUtil.isEdgeReturnStep(vstep)) {
                 HasStepFolder.foldInHasContainer(vstep, traversal);
-                // We cannot fold in orders or ranges since they are not local
+                //We cannot fold in orders or ranges since they are not local
             }
 
             assert HugeGraphTraversalUtil.isEdgeReturnStep(vstep) || HugeGraphTraversalUtil.isVertexReturnStep(vstep);
@@ -82,17 +79,20 @@ public class HugeGraphLocalQueryOptimizerStrategy
             }
         });
 
+
         /*
-         * ====== PROPERTIES STEP ======
+                ====== PROPERTIES STEP ======
          */
+
 
         TraversalHelper.getStepsOfClass(PropertiesStep.class, traversal).forEach(originalStep -> {
             HugeGraphPropertiesStep vstep = new HugeGraphPropertiesStep(originalStep);
             TraversalHelper.replaceStep(originalStep, vstep, traversal);
 
+
             if (vstep.getReturnType().forProperties()) {
                 HasStepFolder.foldInHasContainer(vstep, traversal);
-                // We cannot fold in orders or ranges since they are not local
+                //We cannot fold in orders or ranges since they are not local
             }
 
             if (useMultiQuery) {
@@ -101,7 +101,7 @@ public class HugeGraphLocalQueryOptimizerStrategy
         });
 
         /*
-         * ====== EITHER INSIDE LOCAL ======
+                ====== EITHER INSIDE LOCAL ======
          */
 
         TraversalHelper.getStepsOfClass(LocalStep.class, traversal).forEach(localStep -> {
@@ -118,7 +118,8 @@ public class HugeGraphLocalQueryOptimizerStrategy
                 }
                 HasStepFolder.foldInRange(vstep, localTraversal);
 
-                unfoldLocalTraversal(traversal, localStep, localTraversal, vstep, useMultiQuery);
+
+                unfoldLocalTraversal(traversal,localStep,localTraversal,vstep,useMultiQuery);
             }
 
             if (localStart instanceof PropertiesStep) {
@@ -131,17 +132,19 @@ public class HugeGraphLocalQueryOptimizerStrategy
                 }
                 HasStepFolder.foldInRange(vstep, localTraversal);
 
-                unfoldLocalTraversal(traversal, localStep, localTraversal, vstep, useMultiQuery);
+
+                unfoldLocalTraversal(traversal,localStep,localTraversal,vstep,useMultiQuery);
             }
 
         });
     }
 
-    private static void unfoldLocalTraversal(final Traversal.Admin<?, ?> traversal, LocalStep<?, ?> localStep,
-            Traversal.Admin localTraversal, MultiQueriable vstep, boolean useMultiQuery) {
+    private static void unfoldLocalTraversal(final Traversal.Admin<?, ?> traversal,
+                                             LocalStep<?,?> localStep, Traversal.Admin localTraversal,
+                                             MultiQueriable vstep, boolean useMultiQuery) {
         assert localTraversal.asAdmin().getSteps().size() > 0;
         if (localTraversal.asAdmin().getSteps().size() == 1) {
-            // Can replace the entire localStep by the vertex step in the outer traversal
+            //Can replace the entire localStep by the vertex step in the outer traversal
             assert localTraversal.getStartStep() == vstep;
             vstep.setTraversal(traversal);
             TraversalHelper.replaceStep(localStep, vstep, traversal);
@@ -152,8 +155,8 @@ public class HugeGraphLocalQueryOptimizerStrategy
         }
     }
 
-    private static final Set<Class<? extends ProviderOptimizationStrategy>> PRIORS =
-            Collections.singleton(AdjacentVertexFilterOptimizerStrategy.class);
+    private static final Set<Class<? extends ProviderOptimizationStrategy>> PRIORS = Collections.singleton(AdjacentVertexFilterOptimizerStrategy.class);
+
 
     @Override
     public Set<Class<? extends ProviderOptimizationStrategy>> applyPrior() {

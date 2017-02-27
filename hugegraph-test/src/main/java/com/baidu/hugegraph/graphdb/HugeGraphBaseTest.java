@@ -67,7 +67,7 @@ public abstract class HugeGraphBaseTest {
     public HugeGraphTransaction tx;
     public HugeGraphManagement mgmt;
 
-    public Map<String, LogManager> logManagers;
+    public Map<String,LogManager> logManagers;
 
     public HugeGraphBaseTest() {
     }
@@ -75,13 +75,11 @@ public abstract class HugeGraphBaseTest {
     public abstract WriteConfiguration getConfiguration();
 
     public Configuration getConfig() {
-        return new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS, config.copy(),
-                BasicConfiguration.Restriction.NONE);
+        return new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS,config.copy(), BasicConfiguration.Restriction.NONE);
     }
 
     public static void clearGraph(WriteConfiguration config) throws BackendException {
-        ModifiableConfiguration adjustedConfig = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,
-                config.copy(), BasicConfiguration.Restriction.NONE);
+        ModifiableConfiguration adjustedConfig = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,config.copy(), BasicConfiguration.Restriction.NONE);
         adjustedConfig.set(GraphDatabaseConfiguration.LOCK_LOCAL_MEDIATOR_GROUP, "tmp");
         adjustedConfig.set(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID, "inst");
         Backend backend = new Backend(adjustedConfig);
@@ -95,10 +93,9 @@ public abstract class HugeGraphBaseTest {
         TestGraphConfigs.applyOverrides(config);
         Preconditions.checkNotNull(config);
         clearGraph(config);
-        readConfig =
-                new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS, config, BasicConfiguration.Restriction.NONE);
+        readConfig = new BasicConfiguration(GraphDatabaseConfiguration.ROOT_NS, config, BasicConfiguration.Restriction.NONE);
         open(config);
-        logManagers = new HashMap<String, LogManager>();
+        logManagers = new HashMap<String,LogManager>();
     }
 
     public void open(WriteConfiguration config) {
@@ -115,18 +112,18 @@ public abstract class HugeGraphBaseTest {
     }
 
     public void finishSchema() {
-        if (mgmt != null && mgmt.isOpen())
+        if (mgmt!=null && mgmt.isOpen())
             mgmt.commit();
-        mgmt = graph.openManagement();
+        mgmt=graph.openManagement();
         newTx();
         graph.tx().commit();
     }
 
     public void close() {
-        if (mgmt != null && mgmt.isOpen())
-            mgmt.rollback();
+        if (mgmt!=null && mgmt.isOpen()) mgmt.rollback();
         if (null != tx && tx.isOpen())
             tx.commit();
+
 
         if (null != graph && graph.isOpen())
             graph.close();
@@ -135,46 +132,39 @@ public abstract class HugeGraphBaseTest {
     public void newTx() {
         if (null != tx && tx.isOpen())
             tx.commit();
-        // tx = graph.newThreadBoundTransaction();
+        //tx = graph.newThreadBoundTransaction();
         tx = graph.newTransaction();
     }
 
-    public static Map<TestConfigOption, Object> validateConfigOptions(Object...settings) {
-        // Parse settings
-        Preconditions.checkArgument(settings.length % 2 == 0, "Expected even number of settings: %s", settings);
-        Map<TestConfigOption, Object> options = Maps.newHashMap();
-        for (int i = 0; i < settings.length; i = i + 2) {
-            Preconditions.checkArgument(settings[i] instanceof TestConfigOption,
-                    "Expected configuration option but got: %s", settings[i]);
-            Preconditions.checkNotNull(settings[i + 1], "Null setting at position [%s]", i + 1);
-            options.put((TestConfigOption) settings[i], settings[i + 1]);
+    public static Map<TestConfigOption,Object> validateConfigOptions(Object... settings) {
+        //Parse settings
+        Preconditions.checkArgument(settings.length%2==0,"Expected even number of settings: %s",settings);
+        Map<TestConfigOption,Object> options = Maps.newHashMap();
+        for (int i=0;i<settings.length;i=i+2) {
+            Preconditions.checkArgument(settings[i] instanceof TestConfigOption,"Expected configuration option but got: %s",settings[i]);
+            Preconditions.checkNotNull(settings[i+1],"Null setting at position [%s]",i+1);
+            options.put((TestConfigOption)settings[i],settings[i+1]);
         }
         return options;
     }
 
-    public void clopen(Object...settings) {
+    public void clopen(Object... settings) {
         config = getConfiguration();
-        if (mgmt != null && mgmt.isOpen())
-            mgmt.rollback();
-        if (null != tx && tx.isOpen())
-            tx.commit();
-        if (settings != null && settings.length > 0) {
-            Map<TestConfigOption, Object> options = validateConfigOptions(settings);
+        if (mgmt!=null && mgmt.isOpen()) mgmt.rollback();
+        if (null != tx && tx.isOpen()) tx.commit();
+        if (settings!=null && settings.length>0) {
+            Map<TestConfigOption,Object> options = validateConfigOptions(settings);
             HugeGraphManagement gconf = null;
-            ModifiableConfiguration lconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS, config,
-                    BasicConfiguration.Restriction.LOCAL);
-            for (Map.Entry<TestConfigOption, Object> option : options.entrySet()) {
+            ModifiableConfiguration lconf = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,config, BasicConfiguration.Restriction.LOCAL);
+            for (Map.Entry<TestConfigOption,Object> option : options.entrySet()) {
                 if (option.getKey().option.isLocal()) {
-                    lconf.set(option.getKey().option, option.getValue(), option.getKey().umbrella);
+                    lconf.set(option.getKey().option,option.getValue(),option.getKey().umbrella);
                 } else {
-                    if (gconf == null)
-                        gconf = graph.openManagement();
-                    gconf.set(ConfigElement.getPath(option.getKey().option, option.getKey().umbrella),
-                            option.getValue());
+                    if (gconf==null) gconf = graph.openManagement();
+                    gconf.set(ConfigElement.getPath(option.getKey().option,option.getKey().umbrella),option.getValue());
                 }
             }
-            if (gconf != null)
-                gconf.commit();
+            if (gconf!=null) gconf.commit();
             lconf.close();
         }
         if (null != graph && null != graph.tx() && graph.tx().isOpen())
@@ -185,8 +175,9 @@ public abstract class HugeGraphBaseTest {
         open(config);
     }
 
-    public static final TestConfigOption option(ConfigOption option, String...umbrella) {
-        return new TestConfigOption(option, umbrella);
+
+    public static final TestConfigOption option(ConfigOption option, String... umbrella) {
+        return new TestConfigOption(option,umbrella);
     }
 
     public static final class TestConfigOption {
@@ -194,29 +185,27 @@ public abstract class HugeGraphBaseTest {
         public final ConfigOption option;
         public final String[] umbrella;
 
-        public TestConfigOption(ConfigOption option, String...umbrella) {
+        public TestConfigOption(ConfigOption option, String... umbrella) {
             Preconditions.checkNotNull(option);
             this.option = option;
-            if (umbrella == null)
-                umbrella = new String[0];
+            if (umbrella==null) umbrella=new String[0];
             this.umbrella = umbrella;
         }
     }
 
     /*
-     * ========= Log Helpers ============
+    ========= Log Helpers ============
      */
 
     private KeyColumnValueStoreManager logStoreManager = null;
 
     private void closeLogs() {
         try {
-            for (LogManager lm : logManagers.values())
-                lm.close();
+            for (LogManager lm : logManagers.values()) lm.close();
             logManagers.clear();
-            if (logStoreManager != null) {
+            if (logStoreManager!=null) {
                 logStoreManager.close();
-                logStoreManager = null;
+                logStoreManager=null;
             }
         } catch (BackendException e) {
             throw new HugeGraphException(e);
@@ -228,13 +217,13 @@ public abstract class HugeGraphBaseTest {
             try {
                 logManagers.remove(logManagerName).close();
             } catch (BackendException e) {
-                throw new HugeGraphException("Could not close log manager " + logManagerName, e);
+                throw new HugeGraphException("Could not close log manager " + logManagerName,e);
             }
         }
     }
 
     public Log openUserLog(String identifier) {
-        return openLog(USER_LOG, GraphDatabaseConfiguration.USER_LOG_PREFIX + identifier);
+        return openLog(USER_LOG, GraphDatabaseConfiguration.USER_LOG_PREFIX +identifier);
     }
 
     public Log openTxLog() {
@@ -243,78 +232,73 @@ public abstract class HugeGraphBaseTest {
 
     private Log openLog(String logManagerName, String logName) {
         try {
-            ModifiableConfiguration configuration = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,
-                    config.copy(), BasicConfiguration.Restriction.NONE);
+            ModifiableConfiguration configuration = new ModifiableConfiguration(GraphDatabaseConfiguration.ROOT_NS,config.copy(), BasicConfiguration.Restriction.NONE);
             configuration.set(GraphDatabaseConfiguration.UNIQUE_INSTANCE_ID, "reader");
             configuration.set(GraphDatabaseConfiguration.LOG_READ_INTERVAL, Duration.ofMillis(500L), logManagerName);
-            if (logStoreManager == null) {
+            if (logStoreManager==null) {
                 logStoreManager = Backend.getStorageManager(configuration);
             }
             StoreFeatures f = logStoreManager.getFeatures();
             boolean part = f.isDistributed() && f.isKeyOrdered();
             if (part) {
-                for (String logname : new String[] { USER_LOG, TRANSACTION_LOG, MANAGEMENT_LOG })
-                    configuration.set(KCVSLogManager.LOG_MAX_PARTITIONS, 8, logname);
+                for (String logname : new String[]{USER_LOG,TRANSACTION_LOG,MANAGEMENT_LOG})
+                configuration.set(KCVSLogManager.LOG_MAX_PARTITIONS,8,logname);
             }
-            assert logStoreManager != null;
+            assert logStoreManager!=null;
             if (!logManagers.containsKey(logManagerName)) {
-                // Open log manager - only supports KCVSLog
+                //Open log manager - only supports KCVSLog
                 Configuration logConfig = configuration.restrictTo(logManagerName);
                 Preconditions.checkArgument(logConfig.get(LOG_BACKEND).equals(LOG_BACKEND.getDefaultValue()));
-                logManagers.put(logManagerName, new KCVSLogManager(logStoreManager, logConfig));
+                logManagers.put(logManagerName,new KCVSLogManager(logStoreManager,logConfig));
             }
             assert logManagers.containsKey(logManagerName);
             return logManagers.get(logManagerName).openLog(logName);
         } catch (BackendException e) {
-            throw new HugeGraphException("Could not open log: " + logName, e);
+            throw new HugeGraphException("Could not open log: "+ logName,e);
         }
     }
 
     /*
-     * ========= Schema Type Definition Helpers ============
+    ========= Schema Type Definition Helpers ============
      */
 
     public PropertyKey makeVertexIndexedKey(String name, Class datatype) {
         PropertyKey key = mgmt.makePropertyKey(name).dataType(datatype).cardinality(Cardinality.SINGLE).make();
-        mgmt.buildIndex(name, Vertex.class).addKey(key).buildCompositeIndex();
+        mgmt.buildIndex(name,Vertex.class).addKey(key).buildCompositeIndex();
         return key;
     }
 
     public PropertyKey makeVertexIndexedUniqueKey(String name, Class datatype) {
         PropertyKey key = mgmt.makePropertyKey(name).dataType(datatype).cardinality(Cardinality.SINGLE).make();
-        mgmt.buildIndex(name, Vertex.class).addKey(key).unique().buildCompositeIndex();
+        mgmt.buildIndex(name,Vertex.class).addKey(key).unique().buildCompositeIndex();
         return key;
     }
 
     public void createExternalVertexIndex(PropertyKey key, String backingIndex) {
-        createExternalIndex(key, Vertex.class, backingIndex);
+        createExternalIndex(key,Vertex.class,backingIndex);
     }
 
     public void createExternalEdgeIndex(PropertyKey key, String backingIndex) {
-        createExternalIndex(key, Edge.class, backingIndex);
+        createExternalIndex(key,Edge.class,backingIndex);
     }
 
     public HugeGraphIndex getExternalIndex(Class<? extends Element> clazz, String backingIndex) {
         String prefix;
-        if (Vertex.class.isAssignableFrom(clazz))
-            prefix = "v";
-        else if (Edge.class.isAssignableFrom(clazz))
-            prefix = "e";
-        else if (HugeGraphVertexProperty.class.isAssignableFrom(clazz))
-            prefix = "p";
-        else
-            throw new AssertionError(clazz.toString());
+        if (Vertex.class.isAssignableFrom(clazz)) prefix = "v";
+        else if (Edge.class.isAssignableFrom(clazz)) prefix = "e";
+        else if (HugeGraphVertexProperty.class.isAssignableFrom(clazz)) prefix = "p";
+        else throw new AssertionError(clazz.toString());
 
-        String indexName = prefix + backingIndex;
+        String indexName = prefix+backingIndex;
         HugeGraphIndex index = mgmt.getGraphIndex(indexName);
-        if (index == null) {
-            index = mgmt.buildIndex(indexName, clazz).buildMixedIndex(backingIndex);
+        if (index==null) {
+            index = mgmt.buildIndex(indexName,clazz).buildMixedIndex(backingIndex);
         }
         return index;
     }
 
     private void createExternalIndex(PropertyKey key, Class<? extends Element> clazz, String backingIndex) {
-        mgmt.addIndexKey(getExternalIndex(clazz, backingIndex), key);
+        mgmt.addIndexKey(getExternalIndex(clazz,backingIndex),key);
     }
 
     public PropertyKey makeKey(String name, Class datatype) {
@@ -327,13 +311,13 @@ public abstract class HugeGraphBaseTest {
     }
 
     public EdgeLabel makeKeyedEdgeLabel(String name, PropertyKey sort, PropertyKey signature) {
-        EdgeLabel relType =
-                ((StandardEdgeLabelMaker) tx.makeEdgeLabel(name)).sortKey(sort).signature(signature).directed().make();
+        EdgeLabel relType = ((StandardEdgeLabelMaker)tx.makeEdgeLabel(name)).
+                sortKey(sort).signature(signature).directed().make();
         return relType;
     }
 
     /*
-     * ========= General Helpers ===========
+    ========= General Helpers ===========
      */
 
     public static final int DEFAULT_THREAD_COUNT = 4;
@@ -348,21 +332,20 @@ public abstract class HugeGraphBaseTest {
 
     public static int wrapAround(int value, int maxValue) {
         value = value % maxValue;
-        if (value < 0)
-            value = value + maxValue;
+        if (value < 0) value = value + maxValue;
         return value;
     }
 
     public HugeGraphVertex getVertex(String key, Object value) {
-        return getVertex(tx, key, value);
+        return getVertex(tx,key,value);
     }
 
     public HugeGraphVertex getVertex(PropertyKey key, Object value) {
-        return getVertex(tx, key, value);
+        return getVertex(tx,key,value);
     }
 
     public static HugeGraphVertex getVertex(HugeGraphTransaction tx, String key, Object value) {
-        return (HugeGraphVertex) getOnlyElement(tx.query().has(key, value).vertices(), null);
+        return (HugeGraphVertex)getOnlyElement(tx.query().has(key,value).vertices(),null);
     }
 
     public static HugeGraphVertex getVertex(HugeGraphTransaction tx, PropertyKey key, Object value) {
@@ -370,88 +353,77 @@ public abstract class HugeGraphBaseTest {
     }
 
     public static double round(double d) {
-        return Math.round(d * 1000.0) / 1000.0;
+        return Math.round(d*1000.0)/1000.0;
     }
 
     public static HugeGraphVertex getOnlyVertex(HugeGraphQuery<?> query) {
-        return (HugeGraphVertex) getOnlyElement(query.vertices());
+        return (HugeGraphVertex)getOnlyElement(query.vertices());
     }
 
     public static HugeGraphEdge getOnlyEdge(HugeGraphVertexQuery<?> query) {
-        return (HugeGraphEdge) getOnlyElement(query.edges());
+        return (HugeGraphEdge)getOnlyElement(query.edges());
     }
 
-    public static <E> E getOnlyElement(Iterable<E> traversal) {
+    public static<E> E getOnlyElement(Iterable<E> traversal) {
         return getOnlyElement(traversal.iterator());
     }
 
-    public static <E> E getOnlyElement(Iterator<E> traversal) {
-        if (!traversal.hasNext())
-            throw new NoSuchElementException();
-        return getOnlyElement(traversal, null);
+    public static<E> E getOnlyElement(Iterator<E> traversal) {
+        if (!traversal.hasNext()) throw new NoSuchElementException();
+        return getOnlyElement(traversal,null);
     }
 
-    public static <E> E getOnlyElement(Iterable<E> traversal, E defaultElement) {
-        return getOnlyElement(traversal.iterator(), defaultElement);
+    public static<E> E getOnlyElement(Iterable<E> traversal, E defaultElement) {
+        return getOnlyElement(traversal.iterator(),defaultElement);
     }
 
-    public static <E> E getOnlyElement(Iterator<E> traversal, E defaultElement) {
-        if (!traversal.hasNext())
-            return defaultElement;
+    public static<E> E getOnlyElement(Iterator<E> traversal, E defaultElement) {
+        if (!traversal.hasNext()) return defaultElement;
         E result = traversal.next();
-        if (traversal.hasNext())
-            throw new IllegalArgumentException(
-                    "Traversal contains more than 1 element: " + result + ", " + traversal.next());
+        if (traversal.hasNext()) throw new IllegalArgumentException("Traversal contains more than 1 element: " + result + ", " + traversal.next());
         return result;
     }
 
-    // public static<E> E getOnlyElement(GraphTraversal<?,E> traversal) {
-    // if (!traversal.hasNext()) throw new NoSuchElementException();
-    // return getOnlyElement(traversal,null);
-    // }
-    //
-    // public static<E> E getOnlyElement(GraphTraversal<?,E> traversal, E defaultElement) {
-    // if (!traversal.hasNext()) return defaultElement;
-    // E result = traversal.next();
-    // if (traversal.hasNext()) throw new IllegalArgumentException("Traversal contains more than 1 element: " + result +
-    // ", " + traversal.next());
-    // return result;
-    // }
+//    public static<E> E getOnlyElement(GraphTraversal<?,E> traversal) {
+//        if (!traversal.hasNext()) throw new NoSuchElementException();
+//        return getOnlyElement(traversal,null);
+//    }
+//
+//    public static<E> E getOnlyElement(GraphTraversal<?,E> traversal, E defaultElement) {
+//        if (!traversal.hasNext()) return defaultElement;
+//        E result = traversal.next();
+//        if (traversal.hasNext()) throw new IllegalArgumentException("Traversal contains more than 1 element: " + result + ", " + traversal.next());
+//        return result;
+//    }
 
     public static void assertMissing(Transaction g, Object vid) {
         assertFalse(g.vertices(vid).hasNext());
     }
 
     public static HugeGraphVertex getV(Transaction g, Object vid) {
-        if (!g.vertices(vid).hasNext())
-            return null;
-        return (HugeGraphVertex) g.vertices(vid).next();
+        if (!g.vertices(vid).hasNext()) return null;
+        return (HugeGraphVertex)g.vertices(vid).next();
     }
 
     public static HugeGraphEdge getE(Transaction g, Object eid) {
-        if (!g.edges(eid).hasNext())
-            return null;
-        return (HugeGraphEdge) g.edges(eid).next();
+        if (!g.edges(eid).hasNext()) return null;
+        return (HugeGraphEdge)g.edges(eid).next();
     }
 
     public static String n(Object obj) {
-        if (obj instanceof RelationType)
-            return ((RelationType) obj).name();
-        else
-            return obj.toString();
+        if (obj instanceof RelationType) return ((RelationType)obj).name();
+        else return obj.toString();
     }
 
     public static long getId(Element e) {
-        return ((HugeGraphElement) e).longId();
+        return ((HugeGraphElement)e).longId();
     }
 
-    public static void verifyElementOrder(Iterable<? extends Element> elements, String key, Order order,
-            int expectedCount) {
+    public static void verifyElementOrder(Iterable<? extends Element> elements, String key, Order order, int expectedCount) {
         verifyElementOrder(elements.iterator(), key, order, expectedCount);
     }
 
-    public static void verifyElementOrder(Iterator<? extends Element> elements, String key, Order order,
-            int expectedCount) {
+    public static void verifyElementOrder(Iterator<? extends Element> elements, String key, Order order, int expectedCount) {
         Comparable previous = null;
         int count = 0;
         while (elements.hasNext()) {
@@ -459,7 +431,8 @@ public abstract class HugeGraphBaseTest {
             Comparable current = element.value(key);
             if (previous != null) {
                 int cmp = previous.compareTo(current);
-                assertTrue(previous + " <> " + current + " @ " + count, order == Order.ASC ? cmp <= 0 : cmp >= 0);
+                assertTrue(previous + " <> " + current + " @ " + count,
+                        order == Order.ASC ? cmp <= 0 : cmp >= 0);
             }
             previous = current;
             count++;
@@ -469,7 +442,7 @@ public abstract class HugeGraphBaseTest {
 
     public static <T> Stream<T> asStream(final Iterator<T> source) {
         final Iterable<T> iterable = () -> source;
-        return StreamSupport.stream(iterable.spliterator(), false);
+        return StreamSupport.stream(iterable.spliterator(),false);
     }
 
 }

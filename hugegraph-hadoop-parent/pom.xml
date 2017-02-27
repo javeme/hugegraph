@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-hadoop-parent</artifactId>
-    <name>JanusGraph-Hadoop: Parent Module</name>
+    <artifactId>hugegraph-hadoop-parent</artifactId>
+    <name>hugegraph-Hadoop: Parent Module</name>
     <packaging>pom</packaging>
-    <url>http://janusgraph.org</url>
+    <url>http://hugegraph.org</url>
 
     <properties>
         <top.level.basedir>${project.parent.basedir}</top.level.basedir>
@@ -19,9 +19,9 @@
     </properties>
 
     <modules>
-        <module>janusgraph-hadoop-core</module>
-        <module>janusgraph-hadoop-2</module>
-        <module>janusgraph-hadoop</module>
+        <module>hugegraph-hadoop-core</module>
+        <module>hugegraph-hadoop-2</module>
+        <module>hugegraph-hadoop</module>
     </modules>
 
     <developers>
@@ -79,38 +79,38 @@
             </exclusions>
         </dependency>
 
-        <!-- JANUSGRAPH -->
+        <!-- hugegraph -->
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-core</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-cassandra</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-cassandra</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-hbase</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-hbase</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-es</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-es</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-test</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-hbase-core</artifactId>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-hbase-core</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -145,7 +145,7 @@
         <!-- Logging backends.
              Enforce a classpath ordering constraint to ensure slf4j-log4j12
              binding appears on the classpath before logback-classic.
-             See comments in janusgraph-cassandra/pom.xml for more information. -->
+             See comments in hugegraph-cassandra/pom.xml for more information. -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -180,7 +180,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>${project.groupId}</groupId>
-                                        <artifactId>janusgraph-hadoop-core</artifactId>
+                                        <artifactId>hugegraph-hadoop-core</artifactId>
                                         <version>${project.version}</version>
                                         <classifier>shared-resources</classifier>
                                         <outputDirectory>${project.build.directory}/shared-resources</outputDirectory>
@@ -198,7 +198,7 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>${project.groupId}</groupId>
-                                        <artifactId>janusgraph-hadoop-core</artifactId>
+                                        <artifactId>hugegraph-hadoop-core</artifactId>
                                         <version>${project.version}</version>
                                         <classifier>tests</classifier>
                                         <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
@@ -238,11 +238,11 @@
                             <configuration>
                                 <outputDirectory>${project.build.directory}/cassandra/conf/localhost-murmur</outputDirectory>
                                 <filters>
-                                    <filter>${top.level.basedir}/janusgraph-cassandra/config/cassandra-filters/localhost-murmur.properties</filter>
+                                    <filter>${top.level.basedir}/hugegraph-cassandra/config/cassandra-filters/localhost-murmur.properties</filter>
                                 </filters>
                                 <resources>
                                     <resource>
-                                        <directory>${top.level.basedir}/janusgraph-cassandra/config/cassandra</directory>
+                                        <directory>${top.level.basedir}/hugegraph-cassandra/config/cassandra</directory>
                                         <filtering>true</filtering>
                                     </resource>
                                 </resources>
@@ -279,10 +279,10 @@
                             <configuration>
                                 <excludes>
                                     <exclude>**/*PipelineTest.java</exclude>
-                                    <exclude>**/JanusGraphCassandraOutputFormatTest.java</exclude>
+                                    <exclude>**/hugegraphCassandraOutputFormatTest.java</exclude>
                                     <exclude>**/*ReindexTest.java</exclude>
                                     <exclude>**/*ScanJobTest.java</exclude>
-                                    <exclude>**/JanusGraphHBaseOutputFormatTest.java</exclude>
+                                    <exclude>**/hugegraphHBaseOutputFormatTest.java</exclude>
                                 </excludes>
                             </configuration>
                         </execution>
@@ -294,7 +294,7 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <executions>
                         <execution>
-                            <id>janusgraph-cassandra-test</id>
+                            <id>hugegraph-cassandra-test</id>
                             <goals>
                                 <goal>integration-test</goal>
                             </goals>
@@ -304,36 +304,36 @@
                                 </includes>
                                 <skipTests>${skipCassandra}</skipTests>
                                 <reuseForks>false</reuseForks>
-                                <summaryFile>target/failsafe-reports/failsafe-janusgraph-cassandra.xml</summaryFile>
+                                <summaryFile>target/failsafe-reports/failsafe-hugegraph-cassandra.xml</summaryFile>
                                 <argLine>-Dtest.cassandra.confdir=${project.build.directory}/cassandra/conf/localhost-murmur -Dtest.cassandra.datadir=${project.build.directory}/cassandra/data/localhost-murmur</argLine>
                             </configuration>
                         </execution>
                         <execution>
-                            <id>janusgraph-hbase-test</id>
+                            <id>hugegraph-hbase-test</id>
                             <goals>
                                 <goal>integration-test</goal>
                             </goals>
                             <configuration>
-                                <argLine>-Dtest.hbase.parentdir=${top.level.basedir}/janusgraph-hbase-parent/</argLine>
+                                <argLine>-Dtest.hbase.parentdir=${top.level.basedir}/hugegraph-hbase-parent/</argLine>
                                 <includes>
                                     <include>**/*HBase*IT.java</include>
                                 </includes>
                                 <skipTests>${skipHBase}</skipTests>
-                                <summaryFile>target/failsafe-reports/failsafe-janusgraph-hbase.xml</summaryFile>
+                                <summaryFile>target/failsafe-reports/failsafe-hugegraph-hbase.xml</summaryFile>
                             </configuration>
                         </execution>
                         <!-- ************ -->
                         <!-- VERIFICATION -->
                         <!-- ************ -->
                         <execution>
-                            <id>verify-janusgraph-cassandra-test</id>
+                            <id>verify-hugegraph-cassandra-test</id>
                             <goals>
                                 <goal>verify</goal>
                             </goals>
                             <configuration>
                                 <skipTests>${skipCassandra}</skipTests>
                                 <summaryFiles>
-                                    <summaryFile>target/failsafe-reports/failsafe-janusgraph-cassandra.xml</summaryFile>
+                                    <summaryFile>target/failsafe-reports/failsafe-hugegraph-cassandra.xml</summaryFile>
                                 </summaryFiles>
                             </configuration>
                         </execution>
@@ -345,7 +345,7 @@
                             <configuration>
                                 <skipTests>${skipHBase}</skipTests>
                                 <summaryFiles>
-                                    <summaryFile>target/failsafe-reports/failsafe-janusgraph-hbase.xml</summaryFile>
+                                    <summaryFile>target/failsafe-reports/failsafe-hugegraph-hbase.xml</summaryFile>
                                 </summaryFiles>
                             </configuration>
                         </execution>

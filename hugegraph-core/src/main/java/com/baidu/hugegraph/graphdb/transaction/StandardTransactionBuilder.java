@@ -89,10 +89,8 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
     public StandardTransactionBuilder(GraphDatabaseConfiguration graphConfig, StandardHugeGraph graph) {
         Preconditions.checkNotNull(graphConfig);
         Preconditions.checkNotNull(graph);
-        if (graphConfig.isReadOnly())
-            readOnly();
-        if (graphConfig.isBatchLoading())
-            enableBatchLoading();
+        if (graphConfig.isReadOnly()) readOnly();
+        if (graphConfig.isBatchLoading()) enableBatchLoading();
         this.graph = graph;
         this.defaultSchemaMaker = graphConfig.getDefaultSchemaMaker();
         this.assignIDsImmediately = graphConfig.hasFlushIDs();
@@ -106,14 +104,11 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
         dirtyVertexSize(graphConfig.getTxDirtyVertexSize());
     }
 
-    public StandardTransactionBuilder(GraphDatabaseConfiguration graphConfig, StandardHugeGraph graph,
-            Configuration customOptions) {
+    public StandardTransactionBuilder(GraphDatabaseConfiguration graphConfig, StandardHugeGraph graph, Configuration customOptions) {
         Preconditions.checkNotNull(graphConfig);
         Preconditions.checkNotNull(graph);
-        if (graphConfig.isReadOnly())
-            readOnly();
-        if (graphConfig.isBatchLoading())
-            enableBatchLoading();
+        if (graphConfig.isReadOnly()) readOnly();
+        if (graphConfig.isBatchLoading()) enableBatchLoading();
         this.graph = graph;
         this.defaultSchemaMaker = graphConfig.getDefaultSchemaMaker();
         this.assignIDsImmediately = graphConfig.hasFlushIDs();
@@ -214,7 +209,7 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
     @Override
     public TransactionBuilder restrictedPartitions(int[] partitions) {
         Preconditions.checkNotNull(partitions);
-        this.restrictedPartitions = partitions;
+        this.restrictedPartitions=partitions;
         return this;
     }
 
@@ -223,28 +218,31 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
         return this;
     }
 
+
     @Override
     public TransactionBuilder customOption(String k, Object v) {
         if (null == writableCustomOptions)
             throw new IllegalStateException("This builder was not constructed with setCustomOption support");
-        writableCustomOptions.set((ConfigOption<Object>) ConfigElement.parse(ROOT_NS, k).element, v);
+        writableCustomOptions.set((ConfigOption<Object>)ConfigElement.parse(ROOT_NS, k).element, v);
         return this;
     }
 
     @Override
     public HugeGraphTransaction start() {
-        TransactionConfiguration immutable =
-                new ImmutableTxCfg(isReadOnly, hasEnabledBatchLoading, assignIDsImmediately, preloadedData,
-                        forceIndexUsage, verifyExternalVertexExistence, verifyInternalVertexExistence, acquireLocks,
-                        verifyUniqueness, propertyPrefetching, singleThreaded, threadBound, getTimestampProvider(),
-                        userCommitTime, indexCacheWeight, getVertexCacheSize(), getDirtyVertexSize(), logIdentifier,
-                        restrictedPartitions, groupName, defaultSchemaMaker, customOptions);
+        TransactionConfiguration immutable = new ImmutableTxCfg(isReadOnly, hasEnabledBatchLoading,
+                assignIDsImmediately, preloadedData, forceIndexUsage, verifyExternalVertexExistence,
+                verifyInternalVertexExistence, acquireLocks, verifyUniqueness,
+                propertyPrefetching, singleThreaded, threadBound, getTimestampProvider(), userCommitTime,
+                indexCacheWeight, getVertexCacheSize(), getDirtyVertexSize(),
+                logIdentifier, restrictedPartitions, groupName,
+                defaultSchemaMaker, customOptions);
         return graph.newTransaction(immutable);
     }
 
-    /*
-     * ############################################## TransactionConfig ##############################################
-     */
+    /* ##############################################
+                    TransactionConfig
+    ############################################## */
+
 
     @Override
     public final boolean isReadOnly() {
@@ -257,9 +255,7 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
     }
 
     @Override
-    public boolean hasPreloadedData() {
-        return preloadedData;
-    }
+    public boolean hasPreloadedData() { return preloadedData; }
 
     @Override
     public final boolean hasForceIndexUsage() {
@@ -337,7 +333,7 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
 
     @Override
     public boolean hasRestrictedPartitions() {
-        return restrictedPartitions.length > 0;
+        return restrictedPartitions.length>0;
     }
 
     @Override
@@ -357,7 +353,7 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
 
     @Override
     public boolean hasCommitTime() {
-        return userCommitTime != null;
+        return userCommitTime!=null;
     }
 
     @Override
@@ -398,13 +394,20 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
 
         private final BaseTransactionConfig handleConfig;
 
-        public ImmutableTxCfg(boolean isReadOnly, boolean hasEnabledBatchLoading, boolean hasAssignIDsImmediately,
-                boolean hasPreloadedData, boolean hasForceIndexUsage, boolean hasVerifyExternalVertexExistence,
-                boolean hasVerifyInternalVertexExistence, boolean hasAcquireLocks, boolean hasVerifyUniqueness,
-                boolean hasPropertyPrefetching, boolean isSingleThreaded, boolean isThreadBound,
-                TimestampProvider times, Instant commitTime, long indexCacheWeight, int vertexCacheSize,
-                int dirtyVertexSize, String logIdentifier, int[] restrictedPartitions, String groupName,
-                DefaultSchemaMaker defaultSchemaMaker, Configuration customOptions) {
+        public ImmutableTxCfg(boolean isReadOnly,
+                boolean hasEnabledBatchLoading,
+                boolean hasAssignIDsImmediately,
+                boolean hasPreloadedData,
+                boolean hasForceIndexUsage,
+                boolean hasVerifyExternalVertexExistence,
+                boolean hasVerifyInternalVertexExistence,
+                boolean hasAcquireLocks, boolean hasVerifyUniqueness,
+                boolean hasPropertyPrefetching, boolean isSingleThreaded,
+                boolean isThreadBound, TimestampProvider times, Instant commitTime,
+                long indexCacheWeight, int vertexCacheSize, int dirtyVertexSize, String logIdentifier,
+                int[] restrictedPartitions,
+                String groupName, DefaultSchemaMaker defaultSchemaMaker,
+                Configuration customOptions) {
             this.isReadOnly = isReadOnly;
             this.hasEnabledBatchLoading = hasEnabledBatchLoading;
             this.hasAssignIDsImmediately = hasAssignIDsImmediately;
@@ -421,10 +424,13 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
             this.vertexCacheSize = vertexCacheSize;
             this.dirtyVertexSize = dirtyVertexSize;
             this.logIdentifier = logIdentifier;
-            this.restrictedPartitions = restrictedPartitions;
+            this.restrictedPartitions=restrictedPartitions;
             this.defaultSchemaMaker = defaultSchemaMaker;
-            this.handleConfig = new StandardBaseTransactionConfig.Builder().commitTime(commitTime)
-                    .timestampProvider(times).groupName(groupName).customOptions(customOptions).build();
+            this.handleConfig = new StandardBaseTransactionConfig.Builder()
+                    .commitTime(commitTime)
+                    .timestampProvider(times)
+                    .groupName(groupName)
+                    .customOptions(customOptions).build();
         }
 
         @Override
@@ -519,7 +525,7 @@ public class StandardTransactionBuilder implements TransactionConfiguration, Tra
 
         @Override
         public boolean hasRestrictedPartitions() {
-            return restrictedPartitions.length > 0;
+            return restrictedPartitions.length>0;
         }
 
         @Override

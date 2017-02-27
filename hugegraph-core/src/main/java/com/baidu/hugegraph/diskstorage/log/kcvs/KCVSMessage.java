@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage.log.kcvs;
 
+
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 import com.baidu.hugegraph.diskstorage.log.util.AbstractMessage;
 

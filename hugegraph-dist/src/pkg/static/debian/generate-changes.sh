@@ -7,7 +7,7 @@ set -e
 . pkgcommon/etc/version.sh
 
 cat > debian/changelog <<EOF
-janusgraph ($DEB_VERSION-$DEB_RELEASE) unstable; urgency=low
+hugegraph ($DEB_VERSION-$DEB_RELEASE) unstable; urgency=low
 
   * New release
 

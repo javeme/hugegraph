@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.core;
 
+
 import com.baidu.hugegraph.util.datastructures.ExceptionUtil;
 
 /**
@@ -33,7 +34,7 @@ public class HugeGraphException extends RuntimeException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public HugeGraphException(String msg, Throwable cause) {

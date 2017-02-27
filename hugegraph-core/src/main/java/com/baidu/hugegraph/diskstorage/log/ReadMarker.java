@@ -28,6 +28,8 @@ public class ReadMarker {
     private final String identifier;
     private Instant startTime;
 
+
+
     private ReadMarker(String identifier, Instant startTime) {
         this.identifier = identifier;
         this.startTime = startTime;
@@ -35,34 +37,31 @@ public class ReadMarker {
 
     /**
      * Whether this read marker has a configured identifier
-     * 
      * @return
      */
     public boolean hasIdentifier() {
-        return identifier != null;
+        return identifier!=null;
     }
 
     /**
      * Returns the configured identifier of this marker or throws an exception if none exists.
-     * 
      * @return
      */
     public String getIdentifier() {
-        Preconditions.checkArgument(identifier != null, "ReadMarker does not have a configured identifier");
+        Preconditions.checkArgument(identifier!=null,"ReadMarker does not have a configured identifier");
         return identifier;
     }
 
     public boolean hasStartTime() {
-        return startTime != null;
+        return startTime!=null;
     }
 
     /**
      * Returns the start time of this marker if such has been defined or the current time if not
-     * 
      * @return
      */
     public synchronized Instant getStartTime(TimestampProvider times) {
-        if (startTime == null) {
+        if (startTime==null) {
             startTime = times.getTime();
         }
         return startTime;
@@ -77,8 +76,7 @@ public class ReadMarker {
         if (newMarker.hasIdentifier()) {
             return hasIdentifier() && identifier.equals(newMarker.identifier);
         }
-        if (newMarker.hasStartTime())
-            return false;
+        if (newMarker.hasStartTime()) return false;
         return true;
     }
 
@@ -93,7 +91,6 @@ public class ReadMarker {
 
     /**
      * Starts reading the log from the given timestamp onward. The specified timestamp is included.
-     * 
      * @param timestamp
      * @return
      */
@@ -102,13 +99,13 @@ public class ReadMarker {
     }
 
     /**
-     * Starts reading the log from the last recorded point in the log for the given id. If the log has a record of such
-     * an id, it will use it as the starting point. If not, it will start from the given timestamp and set it as the
-     * first read record for the given id.
+     * Starts reading the log from the last recorded point in the log for the given id.
+     * If the log has a record of such an id, it will use it as the starting point.
+     * If not, it will start from the given timestamp and set it as the first read record for the given id.
      * <p/>
-     * Identified read markers of this kind are useful to continuously read from the log. In the case of failure, the
-     * last read record can be recovered for the id and log reading can be resumed from there. Note, that some records
-     * might be read twice in that event depending on the guarantees made by a particular implementation.
+     * Identified read markers of this kind are useful to continuously read from the log. In the case of failure,
+     * the last read record can be recovered for the id and log reading can be resumed from there. Note, that some
+     * records might be read twice in that event depending on the guarantees made by a particular implementation.
      *
      * @param id
      * @param timestamp

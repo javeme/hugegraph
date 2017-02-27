@@ -15,10 +15,10 @@
 package com.baidu.hugegraph.diskstorage;
 
 /**
- * This exception signifies a permanent exception in a HugeGraph storage backend, that is, an exception that is due to a
- * permanent failure while persisting data.
+ * This exception signifies a permanent exception in a HugeGraph storage backend,
+ * that is, an exception that is due to a permanent failure while persisting
+ * data.
  * <p/>
- * 
  * @author Matthias Broecheler (me@matthiasb.com)
  */
 
@@ -34,7 +34,7 @@ public class PermanentBackendException extends BackendException {
     }
 
     /**
-     * @param msg Exception message
+     * @param msg   Exception message
      * @param cause Cause of the exception
      */
     public PermanentBackendException(String msg, Throwable cause) {
@@ -49,5 +49,6 @@ public class PermanentBackendException extends BackendException {
     public PermanentBackendException(Throwable cause) {
         this("Permanent failure in storage backend", cause);
     }
+
 
 }

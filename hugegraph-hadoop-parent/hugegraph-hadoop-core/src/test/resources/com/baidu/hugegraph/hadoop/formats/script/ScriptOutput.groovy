@@ -1,3 +1,5 @@
+package com.baidu.hugegraph.hadoop.formats.script
+
 import com.baidu.hugegraph.hadoop.FaunusVertex
 import com.tinkerpop.blueprints.Edge
 

@@ -28,8 +28,7 @@ public class NoLock implements Lock {
 
     public static final Lock INSTANCE = new NoLock();
 
-    private NoLock() {
-    }
+    private NoLock() {}
 
     public static final Lock getLock() {
         return INSTANCE;

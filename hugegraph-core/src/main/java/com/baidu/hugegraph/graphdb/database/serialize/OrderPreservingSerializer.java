@@ -28,6 +28,7 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
  */
 public interface OrderPreservingSerializer<V> extends AttributeSerializer<V> {
 
+
     /**
      * Reads an attribute from the given ReadBuffer assuming it was written in byte order.
      * <p/>
@@ -44,7 +45,7 @@ public interface OrderPreservingSerializer<V> extends AttributeSerializer<V> {
      * <p/>
      * It is expected that this write operation adjusts the position in the WriteBuffer to after the attribute value.
      *
-     * @param buffer WriteBuffer to write attribute to
+     * @param buffer    WriteBuffer to write attribute to
      * @param attribute Attribute to write to WriteBuffer
      */
     public void writeByteOrder(WriteBuffer buffer, V attribute);

@@ -34,45 +34,41 @@ import java.util.List;
 public class StandardVertex extends AbstractVertex {
 
     private byte lifecycle;
-    private volatile AddedRelationsContainer addedRelations = AddedRelationsContainer.EMPTY;
+    private volatile AddedRelationsContainer addedRelations=AddedRelationsContainer.EMPTY;
 
     public StandardVertex(final StandardHugeGraphTx tx, final long id, byte lifecycle) {
         super(tx, id);
-        this.lifecycle = lifecycle;
+        this.lifecycle=lifecycle;
     }
 
     public synchronized final void updateLifeCycle(ElementLifeCycle.Event event) {
-        this.lifecycle = ElementLifeCycle.update(lifecycle, event);
+        this.lifecycle = ElementLifeCycle.update(lifecycle,event);
     }
 
     @Override
     public void removeRelation(InternalRelation r) {
-        if (r.isNew())
-            addedRelations.remove(r);
-        else if (r.isLoaded())
-            updateLifeCycle(ElementLifeCycle.Event.REMOVED_RELATION);
-        else
-            throw new IllegalArgumentException("Unexpected relation status: " + r.isRemoved());
+        if (r.isNew()) addedRelations.remove(r);
+        else if (r.isLoaded()) updateLifeCycle(ElementLifeCycle.Event.REMOVED_RELATION);
+        else throw new IllegalArgumentException("Unexpected relation status: " + r.isRemoved());
     }
 
     @Override
     public boolean addRelation(InternalRelation r) {
         Preconditions.checkArgument(r.isNew());
-        if (addedRelations == AddedRelationsContainer.EMPTY) {
+        if (addedRelations==AddedRelationsContainer.EMPTY) {
             if (tx().getConfiguration().isSingleThreaded()) {
-                addedRelations = new SimpleAddedRelations();
+                addedRelations=new SimpleAddedRelations();
             } else {
                 synchronized (this) {
-                    if (addedRelations == AddedRelationsContainer.EMPTY)
-                        addedRelations = new ConcurrentAddedRelations();
+                    if (addedRelations==AddedRelationsContainer.EMPTY)
+                        addedRelations=new ConcurrentAddedRelations();
                 }
             }
         }
         if (addedRelations.add(r)) {
             updateLifeCycle(ElementLifeCycle.Event.ADDED_RELATION);
             return true;
-        } else
-            return false;
+        } else return false;
     }
 
     @Override
@@ -103,7 +99,7 @@ public class StandardVertex extends AbstractVertex {
     @Override
     public synchronized void remove() {
         super.remove();
-        ((StandardVertex) it()).updateLifeCycle(ElementLifeCycle.Event.REMOVED);
+        ((StandardVertex)it()).updateLifeCycle(ElementLifeCycle.Event.REMOVED);
     }
 
     @Override

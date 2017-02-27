@@ -20,6 +20,7 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStoreManager
 import com.baidu.hugegraph.diskstorage.keycolumnvalue.keyvalue.OrderedKeyValueStoreManagerAdapter;
 import com.baidu.hugegraph.diskstorage.log.KCVSLogTest;
 
+
 public class BerkeleyLogTest extends KCVSLogTest {
 
     public KeyColumnValueStoreManager openStorageManager() throws BackendException {

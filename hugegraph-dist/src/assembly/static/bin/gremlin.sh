@@ -28,11 +28,11 @@ EXT=$(pwd)
 CP="$CFG"
 # Add the slf4j-log4j12 binding
 CP="$CP":$(find -L $LIB -name 'slf4j-log4j12*.jar' | sort | tr '\n' ':')
-# Add the jars in $BIN/../lib that start with "janusgraph"
-CP="$CP":$(find -L $LIB -name 'janusgraph*.jar' | sort | tr '\n' ':')
+# Add the jars in $BIN/../lib that start with "hugegraph"
+CP="$CP":$(find -L $LIB -name 'hugegraph*.jar' | sort | tr '\n' ':')
 # Add the remaining jars in $BIN/../lib.
 CP="$CP":$(find -L $LIB -name '*.jar' \
-                \! -name 'janusgraph*' \
+                \! -name 'hugegraph*' \
                 \! -name 'slf4j-log4j12*.jar' | sort | tr '\n' ':')
 # Add the jars in $BIN/../ext (at any subdirectory depth)
 CP="$CP":$(find -L $EXT -name '*.jar' | sort | tr '\n' ':')
@@ -86,7 +86,7 @@ while getopts "elpv" opt; do
        ;;
     p) PROFILING_ENABLED=true
        ;;
-    v) MAIN_CLASS=org.janusgraph.core.JanusGraph
+    v) MAIN_CLASS=com.baidu.hugegraph.core.hugegraph
     esac
 done
 

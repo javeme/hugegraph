@@ -28,9 +28,8 @@ public class GraphDatabaseConfigurationTest {
 
     @Test
     public void testUniqueNames() {
-        assertFalse(
-                StringUtils.containsAny(GraphDatabaseConfiguration.getOrGenerateUniqueInstanceId(Configuration.EMPTY),
-                        ConfigElement.ILLEGAL_CHARS));
+        assertFalse(StringUtils.containsAny(GraphDatabaseConfiguration.getOrGenerateUniqueInstanceId(Configuration.EMPTY), ConfigElement.ILLEGAL_CHARS));
     }
+
 
 }

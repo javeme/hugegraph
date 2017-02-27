@@ -21,6 +21,7 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 
 import java.nio.ByteBuffer;
 
+
 /**
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -28,7 +29,7 @@ import java.nio.ByteBuffer;
 public class WriteByteBuffer implements WriteBuffer {
 
     public static final int DEFAULT_CAPACITY = 64;
-    public static final int MAX_BUFFER_CAPACITY = 128 * 1024 * 1024; // 128 MB
+    public static final int MAX_BUFFER_CAPACITY = 128 * 1024 * 1024; //128 MB
 
     private ByteBuffer buffer;
 
@@ -37,21 +38,19 @@ public class WriteByteBuffer implements WriteBuffer {
     }
 
     public WriteByteBuffer(int capacity) {
-        Preconditions.checkArgument(capacity <= MAX_BUFFER_CAPACITY, "Capacity exceeds max buffer capacity: %s",
-                MAX_BUFFER_CAPACITY);
+        Preconditions.checkArgument(capacity<=MAX_BUFFER_CAPACITY,"Capacity exceeds max buffer capacity: %s",MAX_BUFFER_CAPACITY);
         buffer = ByteBuffer.allocate(capacity);
     }
 
     private void require(int size) {
-        if (buffer.capacity() - buffer.position() < size) {
-            // Need to resize
-            int newcapacity = buffer.position() + size + buffer.capacity(); // extra capacity as buffer
-            Preconditions.checkArgument(newcapacity <= MAX_BUFFER_CAPACITY, "Capacity exceeds max buffer capacity: %s",
-                    MAX_BUFFER_CAPACITY);
+        if (buffer.capacity()-buffer.position()<size) {
+            //Need to resize
+            int newcapacity = buffer.position() + size + buffer.capacity(); //extra capacity as buffer
+            Preconditions.checkArgument(newcapacity<=MAX_BUFFER_CAPACITY,"Capacity exceeds max buffer capacity: %s",MAX_BUFFER_CAPACITY);
             ByteBuffer newBuffer = ByteBuffer.allocate(newcapacity);
             buffer.flip();
             newBuffer.put(buffer);
-            buffer = newBuffer;
+            buffer=newBuffer;
         }
     }
 
@@ -78,7 +77,7 @@ public class WriteByteBuffer implements WriteBuffer {
 
     @Override
     public WriteBuffer putBoolean(boolean val) {
-        return putByte((byte) (val ? 1 : 0));
+        return putByte((byte)(val?1:0));
     }
 
     @Override
@@ -90,18 +89,18 @@ public class WriteByteBuffer implements WriteBuffer {
 
     @Override
     public WriteBuffer putBytes(byte[] val) {
-        require(BYTE_LEN * val.length);
+        require(BYTE_LEN*val.length);
         buffer.put(val);
         return this;
     }
 
     @Override
     public WriteBuffer putBytes(final StaticBuffer val) {
-        require(BYTE_LEN * val.length());
+        require(BYTE_LEN*val.length());
         val.as(new Factory<Boolean>() {
             @Override
             public Boolean get(byte[] array, int offset, int limit) {
-                buffer.put(array, offset, val.length());
+                buffer.put(array,offset,val.length());
                 return Boolean.TRUE;
             }
         });
@@ -136,17 +135,16 @@ public class WriteByteBuffer implements WriteBuffer {
 
     @Override
     public StaticBuffer getStaticBuffer() {
-        return getStaticBufferFlipBytes(0, 0);
+        return getStaticBufferFlipBytes(0,0);
     }
 
     @Override
     public StaticBuffer getStaticBufferFlipBytes(int from, int to) {
         ByteBuffer b = buffer.duplicate();
         b.flip();
-        Preconditions.checkArgument(from >= 0 && from <= to);
-        Preconditions.checkArgument(to <= b.limit());
-        for (int i = from; i < to; i++)
-            b.put(i, (byte) ~b.get(i));
+        Preconditions.checkArgument(from>=0 && from<=to);
+        Preconditions.checkArgument(to<=b.limit());
+        for (int i=from;i<to;i++) b.put(i,(byte)~b.get(i));
         return StaticArrayBuffer.of(b);
     }
 }

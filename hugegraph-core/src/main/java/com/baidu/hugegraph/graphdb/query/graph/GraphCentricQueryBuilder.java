@@ -83,14 +83,14 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
         this.constraints = new ArrayList<PredicateCondition<String, HugeGraphElement>>(5);
     }
 
-    /*
-     * --------------------------------------------------------------- Query Construction
-     * ---------------------------------------------------------------
-     */
+    /* ---------------------------------------------------------------
+     * Query Construction
+	 * ---------------------------------------------------------------
+	 */
 
     public GraphCentricQueryBuilder profiler(QueryProfiler profiler) {
         Preconditions.checkNotNull(profiler);
-        this.profiler = profiler;
+        this.profiler=profiler;
         return this;
     }
 
@@ -105,7 +105,7 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
 
     public GraphCentricQueryBuilder has(PropertyKey key, HugeGraphPredicate predicate, Object condition) {
         Preconditions.checkNotNull(key);
-        return has(key.name(), predicate, condition);
+        return has(key.name(),predicate,condition);
     }
 
     @Override
@@ -142,53 +142,46 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
     }
 
     @Override
-    public GraphCentricQueryBuilder orderBy(String keyName,
-            org.apache.tinkerpop.gremlin.process.traversal.Order order) {
-        Preconditions.checkArgument(tx.containsPropertyKey(keyName), "Provided key does not exist: %s", keyName);
+    public GraphCentricQueryBuilder orderBy(String keyName,  org.apache.tinkerpop.gremlin.process.traversal.Order order) {
+        Preconditions.checkArgument(tx.containsPropertyKey(keyName),"Provided key does not exist: %s",keyName);
         PropertyKey key = tx.getPropertyKey(keyName);
-        Preconditions.checkArgument(key != null && order != null, "Need to specify and key and an order");
+        Preconditions.checkArgument(key!=null && order!=null,"Need to specify and key and an order");
         Preconditions.checkArgument(Comparable.class.isAssignableFrom(key.dataType()),
                 "Can only order on keys with comparable data type. [%s] has datatype [%s]", key.name(), key.dataType());
-        Preconditions.checkArgument(key.cardinality() == Cardinality.SINGLE,
-                "Ordering is undefined on multi-valued key [%s]", key.name());
+        Preconditions.checkArgument(key.cardinality()== Cardinality.SINGLE, "Ordering is undefined on multi-valued key [%s]", key.name());
         Preconditions.checkArgument(!orders.containsKey(key));
         orders.add(key, Order.convert(order));
         return this;
     }
 
-    /*
-     * --------------------------------------------------------------- Query Execution
-     * ---------------------------------------------------------------
-     */
+    /* ---------------------------------------------------------------
+     * Query Execution
+	 * ---------------------------------------------------------------
+	 */
 
     @Override
     public Iterable<HugeGraphVertex> vertices() {
         GraphCentricQuery query = constructQuery(ElementCategory.VERTEX);
-        return Iterables.filter(
-                new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor),
-                HugeGraphVertex.class);
+        return Iterables.filter(new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor), HugeGraphVertex.class);
     }
 
     @Override
     public Iterable<HugeGraphEdge> edges() {
         GraphCentricQuery query = constructQuery(ElementCategory.EDGE);
-        return Iterables.filter(
-                new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor),
-                HugeGraphEdge.class);
+        return Iterables.filter(new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor), HugeGraphEdge.class);
     }
 
     @Override
     public Iterable<HugeGraphVertexProperty> properties() {
         GraphCentricQuery query = constructQuery(ElementCategory.PROPERTY);
-        return Iterables.filter(
-                new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor),
-                HugeGraphVertexProperty.class);
+        return Iterables.filter(new QueryProcessor<GraphCentricQuery, HugeGraphElement, JointIndexQuery>(query, tx.elementProcessor), HugeGraphVertexProperty.class);
     }
 
-    /*
-     * --------------------------------------------------------------- Query Construction
-     * ---------------------------------------------------------------
-     */
+
+    /* ---------------------------------------------------------------
+     * Query Construction
+	 * ---------------------------------------------------------------
+	 */
 
     private static final int DEFAULT_NO_LIMIT = 1000;
     private static final int MAX_BASE_LIMIT = 20000;
@@ -201,6 +194,7 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
     private static final double CARDINALITY_SINGE_SCORE = 1000;
     private static final double CARDINALITY_OTHER_SCORE = 1000;
 
+
     public GraphCentricQuery constructQuery(final ElementCategory resultType) {
         QueryProfiler optProfiler = profiler.addNested(QueryProfiler.OPTIMIZATION);
         optProfiler.startTimer();
@@ -212,44 +206,40 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
 
     public GraphCentricQuery constructQueryWithoutProfile(final ElementCategory resultType) {
         Preconditions.checkNotNull(resultType);
-        if (limit == 0)
-            return GraphCentricQuery.emptyQuery(resultType);
+        if (limit == 0) return GraphCentricQuery.emptyQuery(resultType);
 
-        // Prepare constraints
+        //Prepare constraints
         And<HugeGraphElement> conditions = QueryUtil.constraints2QNF(tx, constraints);
-        if (conditions == null)
-            return GraphCentricQuery.emptyQuery(resultType);
+        if (conditions == null) return GraphCentricQuery.emptyQuery(resultType);
 
-        // Prepare orders
+        //Prepare orders
         orders.makeImmutable();
-        if (orders.isEmpty())
-            orders = OrderList.NO_ORDER;
+        if (orders.isEmpty()) orders = OrderList.NO_ORDER;
 
-        // Compile all indexes that cover at least one of the query conditions
+        //Compile all indexes that cover at least one of the query conditions
         final Set<IndexType> indexCandidates = new HashSet<IndexType>();
-        ConditionUtil.traversal(conditions, new Predicate<Condition<HugeGraphElement>>() {
+        ConditionUtil.traversal(conditions,new Predicate<Condition<HugeGraphElement>>() {
             @Override
             public boolean apply(@Nullable Condition<HugeGraphElement> condition) {
                 if (condition instanceof PredicateCondition) {
-                    RelationType type = ((PredicateCondition<RelationType, HugeGraphElement>) condition).getKey();
-                    Preconditions.checkArgument(type != null && type.isPropertyKey());
-                    Iterables.addAll(indexCandidates,
-                            Iterables.filter(((InternalRelationType) type).getKeyIndexes(), new Predicate<IndexType>() {
-                                @Override
-                                public boolean apply(@Nullable IndexType indexType) {
-                                    return indexType.getElement() == resultType;
-                                }
-                            }));
+                    RelationType type = ((PredicateCondition<RelationType,HugeGraphElement>)condition).getKey();
+                    Preconditions.checkArgument(type!=null && type.isPropertyKey());
+                    Iterables.addAll(indexCandidates,Iterables.filter(((InternalRelationType) type).getKeyIndexes(), new Predicate<IndexType>() {
+                        @Override
+                        public boolean apply(@Nullable IndexType indexType) {
+                            return indexType.getElement()==resultType;
+                        }
+                    }));
                 }
                 return true;
             }
         });
 
         /*
-         * Determine the best join index query to answer this query: Iterate over all potential indexes (as compiled
-         * above) and compute a score based on how many clauses this index covers. The index with the highest score (as
-         * long as it covers at least one additional clause) is picked and added to the joint query for as long as such
-         * exist.
+        Determine the best join index query to answer this query:
+        Iterate over all potential indexes (as compiled above) and compute a score based on how many clauses
+        this index covers. The index with the highest score (as long as it covers at least one additional clause)
+        is picked and added to the joint query for as long as such exist.
          */
         JointIndexQuery jointQuery = new JointIndexQuery();
         boolean isSorted = orders.isEmpty();
@@ -265,80 +255,69 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
                 Set<Condition> subcover = Sets.newHashSet();
                 Object subcondition;
                 boolean supportsSort = orders.isEmpty();
-                // Check that this index actually applies in case of a schema constraint
+                //Check that this index actually applies in case of a schema constraint
                 if (index.hasSchemaTypeConstraint()) {
                     HugeGraphSchemaType type = index.getSchemaTypeConstraint();
-                    Map.Entry<Condition, Collection<Object>> equalCon =
-                            getEqualityConditionValues(conditions, ImplicitKey.LABEL);
-                    if (equalCon == null)
-                        continue;
+                    Map.Entry<Condition,Collection<Object>> equalCon = getEqualityConditionValues(conditions,ImplicitKey.LABEL);
+                    if (equalCon==null) continue;
                     Collection<Object> labels = equalCon.getValue();
-                    assert labels.size() >= 1;
-                    if (labels.size() > 1) {
-                        log.warn(
-                                "The query optimizer currently does not support multiple label constraints in query: {}",
-                                this);
+                    assert labels.size()>=1;
+                    if (labels.size()>1) {
+                        log.warn("The query optimizer currently does not support multiple label constraints in query: {}",this);
                         continue;
                     }
-                    if (!type.name().equals((String) Iterables.getOnlyElement(labels)))
-                        continue;
+                    if (!type.name().equals((String)Iterables.getOnlyElement(labels))) continue;
                     subcover.add(equalCon.getKey());
                 }
 
                 if (index.isCompositeIndex()) {
-                    subcondition = indexCover((CompositeIndexType) index, conditions, subcover);
+                    subcondition = indexCover((CompositeIndexType) index,conditions,subcover);
                 } else {
-                    subcondition = indexCover((MixedIndexType) index, conditions, serializer, subcover);
-                    if (coveredClauses.isEmpty() && !supportsSort && indexCoversOrder((MixedIndexType) index, orders))
-                        supportsSort = true;
+                    subcondition = indexCover((MixedIndexType) index,conditions,serializer,subcover);
+                    if (coveredClauses.isEmpty() && !supportsSort
+                            && indexCoversOrder((MixedIndexType)index,orders)) supportsSort=true;
                 }
-                if (subcondition == null)
-                    continue;
+                if (subcondition==null) continue;
                 assert !subcover.isEmpty();
                 double score = 0.0;
                 boolean coversAdditionalClause = false;
                 for (Condition c : subcover) {
-                    double s = (c instanceof PredicateCondition && ((PredicateCondition) c).getPredicate() == Cmp.EQUAL)
-                            ? EQUAL_CONDITION_SCORE : OTHER_CONDITION_SCORE;
-                    if (coveredClauses.contains(c))
-                        s = s * ALREADY_MATCHED_ADJUSTOR;
-                    else
-                        coversAdditionalClause = true;
-                    score += s;
+                    double s = (c instanceof PredicateCondition && ((PredicateCondition)c).getPredicate()==Cmp.EQUAL)?
+                            EQUAL_CONDITION_SCORE:OTHER_CONDITION_SCORE;
+                    if (coveredClauses.contains(c)) s=s*ALREADY_MATCHED_ADJUSTOR;
+                    else coversAdditionalClause = true;
+                    score+=s;
                     if (index.isCompositeIndex())
-                        score += ((CompositeIndexType) index).getCardinality() == Cardinality.SINGLE
-                                ? CARDINALITY_SINGE_SCORE : CARDINALITY_OTHER_SCORE;
+                        score+=((CompositeIndexType)index).getCardinality()==Cardinality.SINGLE?
+                                CARDINALITY_SINGE_SCORE:CARDINALITY_OTHER_SCORE;
                 }
-                if (supportsSort)
-                    score += ORDER_MATCH;
-                if (coversAdditionalClause && score > candidateScore) {
-                    candidateScore = score;
-                    bestCandidate = index;
+                if (supportsSort) score+=ORDER_MATCH;
+                if (coversAdditionalClause && score>candidateScore) {
+                    candidateScore=score;
+                    bestCandidate=index;
                     candidateSubcover = subcover;
                     candidateSubcondition = subcondition;
                     candidateSupportsSort = supportsSort;
                 }
             }
-            if (bestCandidate != null) {
-                if (coveredClauses.isEmpty())
-                    isSorted = candidateSupportsSort;
+            if (bestCandidate!=null) {
+                if (coveredClauses.isEmpty()) isSorted=candidateSupportsSort;
                 coveredClauses.addAll(candidateSubcover);
                 if (bestCandidate.isCompositeIndex()) {
-                    jointQuery.add((CompositeIndexType) bestCandidate, serializer
-                            .getQuery((CompositeIndexType) bestCandidate, (List<Object[]>) candidateSubcondition));
+                    jointQuery.add((CompositeIndexType)bestCandidate,
+                            serializer.getQuery((CompositeIndexType)bestCandidate,(List<Object[]>)candidateSubcondition));
                 } else {
-                    jointQuery.add((MixedIndexType) bestCandidate, serializer.getQuery((MixedIndexType) bestCandidate,
-                            (Condition) candidateSubcondition, orders));
+                    jointQuery.add((MixedIndexType)bestCandidate,
+                            serializer.getQuery((MixedIndexType)bestCandidate,(Condition)candidateSubcondition,orders));
                 }
             } else {
                 break;
             }
-            /*
-             * TODO: smarter optimization: - use in-memory histograms to estimate selectivity of PredicateConditions and
-             * filter out low-selectivity ones if they would result in an individual index call (better to filter
-             * afterwards in memory) - move OR's up and extend GraphCentricQuery to allow multiple JointIndexQuery for
-             * proper or'ing of queries
-             */
+            /* TODO: smarter optimization:
+            - use in-memory histograms to estimate selectivity of PredicateConditions and filter out low-selectivity ones
+                    if they would result in an individual index call (better to filter afterwards in memory)
+            - move OR's up and extend GraphCentricQuery to allow multiple JointIndexQuery for proper or'ing of queries
+            */
         }
 
         BackendQueryHolder<JointIndexQuery> query;
@@ -347,11 +326,9 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
             if (tx.getGraph().getConfiguration().adjustQueryLimit()) {
                 indexLimit = limit == Query.NO_LIMIT ? DEFAULT_NO_LIMIT : Math.min(MAX_BASE_LIMIT, limit);
             }
-            indexLimit = Math.min(HARD_MAX_LIMIT,
-                    QueryUtil.adjustLimitForTxModifications(tx, coveredClauses.size(), indexLimit));
+            indexLimit = Math.min(HARD_MAX_LIMIT, QueryUtil.adjustLimitForTxModifications(tx, coveredClauses.size(), indexLimit));
             jointQuery.setLimit(indexLimit);
-            query = new BackendQueryHolder<JointIndexQuery>(jointQuery,
-                    coveredClauses.size() == conditions.numChildren(), isSorted);
+            query = new BackendQueryHolder<JointIndexQuery>(jointQuery, coveredClauses.size()==conditions.numChildren(), isSorted);
         } else {
             query = new BackendQueryHolder<JointIndexQuery>(new JointIndexQuery(), false, isSorted);
         }
@@ -360,65 +337,59 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
 
     public static final boolean indexCoversOrder(MixedIndexType index, OrderList orders) {
         for (int i = 0; i < orders.size(); i++) {
-            if (!index.indexesKey(orders.getKey(i)))
-                return false;
+            if (!index.indexesKey(orders.getKey(i))) return false;
         }
         return true;
     }
 
-    public static List<Object[]> indexCover(final CompositeIndexType index, Condition<HugeGraphElement> condition,
-            Set<Condition> covered) {
+    public static List<Object[]> indexCover(final CompositeIndexType index, Condition<HugeGraphElement> condition, Set<Condition> covered) {
         assert QueryUtil.isQueryNormalForm(condition);
         assert condition instanceof And;
-        if (index.getStatus() != SchemaStatus.ENABLED)
-            return null;
+        if (index.getStatus()!= SchemaStatus.ENABLED) return null;
         IndexField[] fields = index.getFieldKeys();
         Object[] indexValues = new Object[fields.length];
         Set<Condition> coveredClauses = new HashSet<Condition>(fields.length);
         List<Object[]> indexCovers = new ArrayList<Object[]>(4);
 
-        constructIndexCover(indexValues, 0, fields, condition, indexCovers, coveredClauses);
+        constructIndexCover(indexValues,0,fields,condition,indexCovers,coveredClauses);
         if (!indexCovers.isEmpty()) {
             covered.addAll(coveredClauses);
             return indexCovers;
-        } else
-            return null;
+        } else return null;
     }
 
     private static void constructIndexCover(Object[] indexValues, int position, IndexField[] fields,
-            Condition<HugeGraphElement> condition, List<Object[]> indexCovers, Set<Condition> coveredClauses) {
-        if (position >= fields.length) {
+                                            Condition<HugeGraphElement> condition,
+                                            List<Object[]> indexCovers, Set<Condition> coveredClauses) {
+        if (position>=fields.length) {
             indexCovers.add(indexValues);
         } else {
             IndexField field = fields[position];
-            Map.Entry<Condition, Collection<Object>> equalCon =
-                    getEqualityConditionValues(condition, field.getFieldKey());
-            if (equalCon != null) {
+            Map.Entry<Condition,Collection<Object>> equalCon = getEqualityConditionValues(condition,field.getFieldKey());
+            if (equalCon!=null) {
                 coveredClauses.add(equalCon.getKey());
-                assert equalCon.getValue().size() > 0;
+                assert equalCon.getValue().size()>0;
                 for (Object value : equalCon.getValue()) {
-                    Object[] newValues = Arrays.copyOf(indexValues, fields.length);
-                    newValues[position] = value;
-                    constructIndexCover(newValues, position + 1, fields, condition, indexCovers, coveredClauses);
+                    Object[] newValues = Arrays.copyOf(indexValues,fields.length);
+                    newValues[position]=value;
+                    constructIndexCover(newValues,position+1,fields,condition,indexCovers,coveredClauses);
                 }
-            } else
-                return;
+            } else return;
         }
 
     }
 
-    private static final Map.Entry<Condition, Collection<Object>> getEqualityConditionValues(
-            Condition<HugeGraphElement> condition, RelationType type) {
+    private static final Map.Entry<Condition,Collection<Object>> getEqualityConditionValues(Condition<HugeGraphElement> condition, RelationType type) {
         for (Condition c : condition.getChildren()) {
             if (c instanceof Or) {
-                Map.Entry<RelationType, Collection> orEqual = QueryUtil.extractOrCondition((Or) c);
-                if (orEqual != null && orEqual.getKey().equals(type) && !orEqual.getValue().isEmpty()) {
-                    return new AbstractMap.SimpleImmutableEntry(c, orEqual.getValue());
+                Map.Entry<RelationType,Collection> orEqual = QueryUtil.extractOrCondition((Or)c);
+                if (orEqual!=null && orEqual.getKey().equals(type) && !orEqual.getValue().isEmpty()) {
+                    return new AbstractMap.SimpleImmutableEntry(c,orEqual.getValue());
                 }
             } else if (c instanceof PredicateCondition) {
-                PredicateCondition<RelationType, HugeGraphRelation> atom = (PredicateCondition) c;
-                if (atom.getKey().equals(type) && atom.getPredicate() == Cmp.EQUAL && atom.getValue() != null) {
-                    return new AbstractMap.SimpleImmutableEntry(c, ImmutableList.of(atom.getValue()));
+                PredicateCondition<RelationType, HugeGraphRelation> atom = (PredicateCondition)c;
+                if (atom.getKey().equals(type) && atom.getPredicate()==Cmp.EQUAL && atom.getValue()!=null) {
+                    return new AbstractMap.SimpleImmutableEntry(c,ImmutableList.of(atom.getValue()));
                 }
             }
 
@@ -426,49 +397,43 @@ public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQuer
         return null;
     }
 
-    public static final Condition<HugeGraphElement> indexCover(final MixedIndexType index,
-            Condition<HugeGraphElement> condition, final IndexSerializer indexInfo, final Set<Condition> covered) {
+    public static final Condition<HugeGraphElement> indexCover(final MixedIndexType index, Condition<HugeGraphElement> condition,
+                                                           final IndexSerializer indexInfo, final Set<Condition> covered) {
         assert QueryUtil.isQueryNormalForm(condition);
         assert condition instanceof And;
         And<HugeGraphElement> subcondition = new And<HugeGraphElement>(condition.numChildren());
         for (Condition<HugeGraphElement> subclause : condition.getChildren()) {
-            if (coversAll(index, subclause, indexInfo)) {
+            if (coversAll(index,subclause,indexInfo)) {
                 subcondition.add(subclause);
                 covered.add(subclause);
             }
         }
-        return subcondition.isEmpty() ? null : subcondition;
+        return subcondition.isEmpty()?null:subcondition;
     }
 
-    private static final boolean coversAll(final MixedIndexType index, Condition<HugeGraphElement> condition,
-            IndexSerializer indexInfo) {
-        if (condition.getType() == Condition.Type.LITERAL) {
-            if (!(condition instanceof PredicateCondition))
-                return false;
+    private static final boolean coversAll(final MixedIndexType index, Condition<HugeGraphElement> condition, IndexSerializer indexInfo) {
+        if (condition.getType()==Condition.Type.LITERAL) {
+            if (!(condition instanceof  PredicateCondition)) return false;
             PredicateCondition<RelationType, HugeGraphElement> atom = (PredicateCondition) condition;
-            if (atom.getValue() == null)
-                return false;
+            if (atom.getValue()==null) return false;
 
             Preconditions.checkArgument(atom.getKey().isPropertyKey());
             PropertyKey key = (PropertyKey) atom.getKey();
             ParameterIndexField[] fields = index.getFieldKeys();
             ParameterIndexField match = null;
             for (int i = 0; i < fields.length; i++) {
-                if (fields[i].getStatus() != SchemaStatus.ENABLED)
-                    continue;
-                if (fields[i].getFieldKey().equals(key))
-                    match = fields[i];
+                if (fields[i].getStatus()!= SchemaStatus.ENABLED) continue;
+                if (fields[i].getFieldKey().equals(key)) match = fields[i];
             }
-            if (match == null)
-                return false;
-            return indexInfo.supports(index, match, atom.getPredicate());
+            if (match==null) return false;
+            return indexInfo.supports(index,match,atom.getPredicate());
         } else {
             for (Condition<HugeGraphElement> child : condition.getChildren()) {
-                if (!coversAll(index, child, indexInfo))
-                    return false;
+                if (!coversAll(index,child,indexInfo)) return false;
             }
             return true;
         }
     }
+
 
 }

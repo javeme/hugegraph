@@ -37,7 +37,7 @@ public class RelationTypeCondition<E extends HugeGraphElement> extends Literal<E
     @Override
     public boolean evaluate(E element) {
         Preconditions.checkArgument(element instanceof HugeGraphRelation);
-        return relationType.equals(((HugeGraphRelation) element).getType());
+        return relationType.equals(((HugeGraphRelation)element).getType());
     }
 
     @Override
@@ -47,12 +47,11 @@ public class RelationTypeCondition<E extends HugeGraphElement> extends Literal<E
 
     @Override
     public boolean equals(Object other) {
-        return this == other || !(other == null || !getClass().isInstance(other))
-                && relationType.equals(((RelationTypeCondition) other).relationType);
+        return this == other || !(other == null || !getClass().isInstance(other)) && relationType.equals(((RelationTypeCondition) other).relationType);
     }
 
     @Override
     public String toString() {
-        return "type[" + relationType.toString() + "]";
+        return "type["+ relationType.toString()+"]";
     }
 }

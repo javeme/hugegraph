@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ import java.nio.file.Paths;
 public class CassandraInputFormatIT extends AbstractInputFormatIT {
 
     protected Graph getGraph() throws ConfigurationException, IOException {
-        final PropertiesConfiguration config =
-                new PropertiesConfiguration("target/test-classes/cassandra-read.properties");
+        final PropertiesConfiguration config = new PropertiesConfiguration("target/test-classes/cassandra-read.properties");
         Path baseOutDir = Paths.get((String) config.getProperty("gremlin.hadoop.outputLocation"));
         baseOutDir.toFile().mkdirs();
         String outDir = Files.createTempDirectory(baseOutDir, null).toAbsolutePath().toString();

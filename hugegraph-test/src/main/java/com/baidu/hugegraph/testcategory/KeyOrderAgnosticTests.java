@@ -14,5 +14,4 @@
 
 package com.baidu.hugegraph.testcategory;
 
-public interface KeyOrderAgnosticTests {
-}
+public interface KeyOrderAgnosticTests { }

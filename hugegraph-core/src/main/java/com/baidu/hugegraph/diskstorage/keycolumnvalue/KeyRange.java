@@ -37,13 +37,10 @@ public class KeyRange {
     }
 
     public StaticBuffer getAt(int position) {
-        switch (position) {
-            case 0:
-                return start;
-            case 1:
-                return end;
-            default:
-                throw new IndexOutOfBoundsException("Exceed length of 2: " + position);
+        switch(position) {
+            case 0: return start;
+            case 1: return end;
+            default: throw new IndexOutOfBoundsException("Exceed length of 2: " + position);
         }
     }
 

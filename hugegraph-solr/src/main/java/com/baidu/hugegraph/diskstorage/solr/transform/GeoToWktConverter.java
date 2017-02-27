@@ -20,8 +20,8 @@ import com.baidu.hugegraph.diskstorage.PermanentBackendException;
 
 public class GeoToWktConverter {
     /**
-     * {@link com.baidu.hugegraph.core.attribute.Geoshape} stores Points in the String format: point[X.0,Y.0]. Solr
-     * needs it to be in Well-Known Text format: POINT(X.0 Y.0)
+     * {@link com.baidu.hugegraph.core.attribute.Geoshape} stores Points in the String format: point[X.0,Y.0].
+     * Solr needs it to be in Well-Known Text format: POINT(X.0 Y.0)
      */
     public static String convertToWktString(Geoshape fieldValue) throws BackendException {
         if (fieldValue.getType() == Geoshape.Type.POINT) {

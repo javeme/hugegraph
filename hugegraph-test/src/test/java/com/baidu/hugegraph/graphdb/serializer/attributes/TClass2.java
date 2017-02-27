@@ -37,7 +37,7 @@ public class TClass2 {
 
     @Override
     public boolean equals(Object oth) {
-        TClass2 t = (TClass2) oth;
-        return s.equals(t.s) && i == t.i;
+        TClass2 t = (TClass2)oth;
+        return s.equals(t.s) && i==t.i;
     }
 }

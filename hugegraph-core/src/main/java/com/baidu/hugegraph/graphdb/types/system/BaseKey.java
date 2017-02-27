@@ -35,11 +35,9 @@ import java.util.Collections;
 
 public class BaseKey extends BaseRelationType implements PropertyKey {
 
-    private enum Index {
-        NONE, STANDARD, UNIQUE
-    }
+    private enum Index { NONE, STANDARD, UNIQUE }
 
-    // We rely on the vertex-existence property to be the smallest (in byte-order) when iterating over the entire graph
+    //We rely on the vertex-existence property to be the smallest (in byte-order) when iterating over the entire graph
     public static final BaseKey VertexExists =
             new BaseKey("VertexExists", Boolean.class, 1, Index.NONE, Cardinality.SINGLE);
 
@@ -52,11 +50,13 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
     public static final BaseKey SchemaCategory =
             new BaseKey("SchemaCategory", HugeGraphSchemaCategory.class, 34, Index.STANDARD, Cardinality.SINGLE);
 
-    public static final BaseKey SchemaDefinitionDesc = new BaseKey("SchemaDefinitionDescription",
-            TypeDefinitionDescription.class, 35, Index.NONE, Cardinality.SINGLE);
+    public static final BaseKey SchemaDefinitionDesc =
+            new BaseKey("SchemaDefinitionDescription", TypeDefinitionDescription.class, 35, Index.NONE, Cardinality.SINGLE);
 
     public static final BaseKey SchemaUpdateTime =
             new BaseKey("SchemaUpdateTimestamp", Long.class, 36, Index.NONE, Cardinality.SINGLE);
+
+
 
     private final Class<?> dataType;
     private final Index index;
@@ -64,7 +64,7 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
 
     private BaseKey(String name, Class<?> dataType, int id, Index index, Cardinality cardinality) {
         super(name, id, HugeGraphSchemaCategory.PROPERTYKEY);
-        Preconditions.checkArgument(index != null && cardinality != null);
+        Preconditions.checkArgument(index!=null && cardinality!=null);
         this.dataType = dataType;
         this.index = index;
         this.cardinality = cardinality;
@@ -92,7 +92,7 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
 
     @Override
     public boolean isUnidirected(Direction dir) {
-        return dir == Direction.OUT;
+        return dir==Direction.OUT;
     }
 
     @Override
@@ -102,15 +102,14 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
 
     @Override
     public Iterable<IndexType> getKeyIndexes() {
-        if (index == Index.NONE)
-            return Collections.EMPTY_LIST;
-        return ImmutableList.of((IndexType) indexDef);
+        if (index==Index.NONE) return Collections.EMPTY_LIST;
+        return ImmutableList.of((IndexType)indexDef);
     }
 
     private final CompositeIndexType indexDef = new CompositeIndexType() {
 
-        private final IndexField[] fields = { IndexField.of(BaseKey.this) };
-        // private final Set<HugeGraphKey> fieldSet = ImmutableSet.of((HugeGraphKey)SystemKey.this);
+        private final IndexField[] fields = {IndexField.of(BaseKey.this)};
+//        private final Set<HugeGraphKey> fieldSet = ImmutableSet.of((HugeGraphKey)SystemKey.this);
 
         @Override
         public String toString() {
@@ -129,26 +128,21 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
 
         @Override
         public IndexField getField(PropertyKey key) {
-            if (key.equals(BaseKey.this))
-                return fields[0];
-            else
-                return null;
+            if (key.equals(BaseKey.this)) return fields[0];
+            else return null;
         }
 
         @Override
         public boolean indexesKey(PropertyKey key) {
-            return getField(key) != null;
+            return getField(key)!=null;
         }
 
         @Override
         public Cardinality getCardinality() {
-            switch (index) {
-                case UNIQUE:
-                    return Cardinality.SINGLE;
-                case STANDARD:
-                    return Cardinality.LIST;
-                default:
-                    throw new AssertionError();
+            switch(index) {
+                case UNIQUE: return Cardinality.SINGLE;
+                case STANDARD: return Cardinality.LIST;
+                default: throw new AssertionError();
             }
         }
 
@@ -189,7 +183,7 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
 
         @Override
         public String getName() {
-            return "SystemIndex#" + BaseKey.this.name();
+            return "SystemIndex#"+BaseKey.this.name();
         }
 
         @Override
@@ -198,10 +192,9 @@ public class BaseKey extends BaseRelationType implements PropertyKey {
         }
 
         @Override
-        public void resetCache() {
-        }
+        public void resetCache() {}
 
-        // Use default hashcode and equals
+        //Use default hashcode and equals
     };
 
 }

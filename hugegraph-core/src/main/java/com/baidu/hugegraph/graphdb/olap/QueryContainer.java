@@ -64,9 +64,9 @@ public class QueryContainer {
         return new QueryBuilder();
     }
 
-    // Query getQuery(String name) {
-    // return queries.get(name);
-    // }
+//    Query getQuery(String name) {
+//        return queries.get(name);
+//    }
 
     Set<Query> getQueries(SliceQuery slice) {
         return inverseQueries.get(slice);
@@ -80,8 +80,7 @@ public class QueryContainer {
         List<SliceQuery> slices = new ArrayList<>(queries.size() * 2);
         for (QueryContainer.Query q : getQueries()) {
             for (SliceQuery slice : q.getSlices()) {
-                if (!slices.contains(slice))
-                    slices.add(slice);
+                if (!slices.contains(slice)) slices.add(slice);
             }
         }
         return slices;
@@ -90,12 +89,12 @@ public class QueryContainer {
     static class Query {
 
         private final List<SliceQuery> slices;
-        // private final String name;
+        //        private final String name;
         private final RelationCategory returnType;
 
         public Query(List<SliceQuery> slices, RelationCategory returnType) {
             this.slices = slices;
-            // this.name = name;
+//            this.name = name;
             this.returnType = returnType;
         }
 
@@ -103,9 +102,9 @@ public class QueryContainer {
             return slices;
         }
 
-        // public String getName() {
-        // return name;
-        // }
+//        public String getName() {
+//            return name;
+//        }
 
         public RelationCategory getReturnType() {
             return returnType;
@@ -114,18 +113,18 @@ public class QueryContainer {
 
     public class QueryBuilder extends BasicVertexCentricQueryBuilder<QueryBuilder> {
 
-        // private String name = null;
+//        private String name = null;
 
         private QueryBuilder() {
             super(QueryContainer.this.tx);
         }
 
         private Query relations(RelationCategory returnType) {
-            // if (name==null) {
-            // if (hasSingleType()) name = getSingleType().name();
-            // else if (!requiresName) name = QUERY_NAME_PREFIX + queries.size();
-            // else throw new IllegalStateException("Need to specify an explicit name for this query");
-            // }
+//            if (name==null) {
+//                if (hasSingleType()) name = getSingleType().name();
+//                else if (!requiresName) name = QUERY_NAME_PREFIX + queries.size();
+//                else throw new IllegalStateException("Need to specify an explicit name for this query");
+//            }
 
             BaseVertexCentricQuery vq = super.constructQuery(returnType);
             List<SliceQuery> slices = new ArrayList<>(vq.numSubQueries());
@@ -151,16 +150,16 @@ public class QueryContainer {
             return this;
         }
 
-        // /**
-        // * Sets the name for this query
-        // * @param name
-        // * @return
-        // */
-        // public QueryBuilder setName(String name) {
-        // Preconditions.checkArgument(StringUtils.isNotBlank(name), "Invalid name provided: %s", name);
-        // this.name=name;
-        // return getThis();
-        // }
+//        /**
+//         * Sets the name for this query
+//         * @param name
+//         * @return
+//         */
+//        public QueryBuilder setName(String name) {
+//            Preconditions.checkArgument(StringUtils.isNotBlank(name), "Invalid name provided: %s", name);
+//            this.name=name;
+//            return getThis();
+//        }
 
         public void edges() {
             relations(RelationCategory.EDGE);
@@ -175,7 +174,7 @@ public class QueryContainer {
         }
 
         /*
-         * ########### SIMPLE OVERWRITES ##########
+        ########### SIMPLE OVERWRITES ##########
          */
 
         @Override
@@ -215,19 +214,19 @@ public class QueryContainer {
         }
 
         @Override
-        public QueryBuilder types(RelationType...types) {
+        public QueryBuilder types(RelationType... types) {
             super.types(types);
             return this;
         }
 
         @Override
-        public QueryBuilder labels(String...labels) {
+        public QueryBuilder labels(String... labels) {
             super.labels(labels);
             return this;
         }
 
         @Override
-        public QueryBuilder keys(String...keys) {
+        public QueryBuilder keys(String... keys) {
             super.keys(keys);
             return this;
         }
@@ -255,6 +254,8 @@ public class QueryContainer {
             return this;
         }
 
+
     }
+
 
 }

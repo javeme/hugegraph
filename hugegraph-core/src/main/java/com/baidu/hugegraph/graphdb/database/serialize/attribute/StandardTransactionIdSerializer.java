@@ -34,13 +34,14 @@ public class StandardTransactionIdSerializer implements AttributeSerializer<Stan
 
     @Override
     public StandardTransactionId read(ScanBuffer buffer) {
-        return new StandardTransactionId(serializer.readObjectNotNull(buffer, String.class),
-                serializer.readObjectNotNull(buffer, Long.class), serializer.readObjectNotNull(buffer, Instant.class));
+        return new StandardTransactionId(serializer.readObjectNotNull(buffer,String.class),
+                serializer.readObjectNotNull(buffer,Long.class),
+                serializer.readObjectNotNull(buffer,Instant.class));
     }
 
     @Override
     public void write(WriteBuffer buffer, StandardTransactionId attribute) {
-        DataOutput out = (DataOutput) buffer;
+        DataOutput out = (DataOutput)buffer;
         out.writeObjectNotNull(attribute.getInstanceId());
         out.writeObjectNotNull(attribute.getTransactionId());
         out.writeObjectNotNull(attribute.getTransactionTime());
@@ -48,6 +49,6 @@ public class StandardTransactionIdSerializer implements AttributeSerializer<Stan
 
     @Override
     public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
+        this.serializer=serializer;
     }
 }

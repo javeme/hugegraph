@@ -1,1 +1,1 @@
-${janusgraph.hbase.mvn.opts}
+${hugegraph.hbase.mvn.opts}

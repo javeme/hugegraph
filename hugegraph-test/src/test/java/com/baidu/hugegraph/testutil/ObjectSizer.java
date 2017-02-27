@@ -22,7 +22,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * Measures the approximate size of an object in memory, given a Class which has a no-argument constructor.
+ * Measures the approximate size of an object in memory, given a Class which
+ * has a no-argument constructor.
  */
 public final class ObjectSizer {
 
@@ -72,10 +73,10 @@ public final class ObjectSizer {
         }
     };
 
-    // public static Factory emptyArrayAdjacency = new Factory() {
-    // @Override
-    // public Object newInstance() { return new ArrayAdjacencyList(); }
-    // };
+//	public static Factory emptyArrayAdjacency = new Factory() {
+//		@Override
+//		public Object newInstance() { return new ArrayAdjacencyList(); }
+//	};
 
     public static Factory emptyCopyArrayList = new Factory() {
         @Override
@@ -84,13 +85,13 @@ public final class ObjectSizer {
         }
     };
 
+
     public static Factory stringConcurrentSet = new Factory() {
         @Override
         public Object newInstance() {
             ConcurrentSkipListSet<String> set = new ConcurrentSkipListSet<String>();
             int size = 100;
-            for (int i = 0; i < size; i++)
-                set.add("String" + i);
+            for (int i = 0; i < size; i++) set.add("String" + i);
             return set;
         }
     };
@@ -100,8 +101,7 @@ public final class ObjectSizer {
         public Object newInstance() {
             ConcurrentHashMap<String, Boolean> set = new ConcurrentHashMap<String, Boolean>(1, 1);
             int size = 1000;
-            for (int i = 0; i < size; i++)
-                set.put("String" + i, Boolean.TRUE);
+            for (int i = 0; i < size; i++) set.put("String" + i, Boolean.TRUE);
             return set;
         }
     };
@@ -118,40 +118,39 @@ public final class ObjectSizer {
         @Override
         public Object newInstance() {
             int size = 10000;
-            Cache<String, Long> cache =
-                    CacheBuilder.newBuilder().concurrencyLevel(2).initialCapacity(16 * 3).maximumSize(10000).build();
-            // for (int i=0;i<size;i++) {
-            // cache.put(new Nothing(),new Nothing());
-            // }
+            Cache<String,Long> cache = CacheBuilder.newBuilder()
+                    .concurrencyLevel(2).initialCapacity(16*3)
+                    .maximumSize(10000).build();
+//            for (int i=0;i<size;i++) {
+//                cache.put(new Nothing(),new Nothing());
+//            }
             return cache;
         }
     };
 
-    private static class Nothing {
-    }
+    private static class Nothing {}
+
 
     public static Map<Integer, Integer> fill(Map<Integer, Integer> m, int size) {
-        for (int i = 0; i < size; i++)
-            m.put(i, i);
+        for (int i = 0; i < size; i++) m.put(i, i);
         return m;
     }
 
     public static HashMultimap<Integer, Integer> fill(HashMultimap<Integer, Integer> m, int size) {
-        for (int i = 0; i < size; i++)
-            m.put(i, i);
+        for (int i = 0; i < size; i++) m.put(i, i);
         return m;
     }
 
     public static Collection<Integer> fill(Collection<Integer> m, int size) {
-        for (int i = 0; i < size; i++)
-            m.add(i);
+        for (int i = 0; i < size; i++) m.add(i);
         return m;
     }
 
     /**
-     * First and only argument is the package-qualified name of a class which has a no-argument constructor.
+     * First and only argument is the package-qualified name of a class
+     * which has a no-argument constructor.
      */
-    public static void main(String...aArguments) {
+    public static void main(String... aArguments) {
         Factory theClass = null;
         try {
             theClass = guavaFactory;
@@ -163,17 +162,19 @@ public final class ObjectSizer {
         System.out.println("Approximate size of " + theClass + " objects :" + size);
     }
 
+
     /**
-     * Return the approximate size in bytes, and return zero if the class has no default constructor.
+     * Return the approximate size in bytes, and return zero if the class
+     * has no default constructor.
      */
     public static long getObjectSize(Factory factory) {
         long result = 0;
 
-        // this array will simply hold a bunch of references, such that
-        // the objects cannot be garbage-collected
+        //this array will simply hold a bunch of references, such that
+        //the objects cannot be garbage-collected
         Object[] objects = new Object[SAMPLE_SIZE];
         MemoryAssess mem = new MemoryAssess();
-        // build a bunch of identical objects
+        //build a bunch of identical objects
         try {
             Object throwAway = factory.newInstance();
 
@@ -181,7 +182,7 @@ public final class ObjectSizer {
             for (int idx = 0; idx < objects.length; ++idx) {
                 objects[idx] = factory.newInstance();
             }
-            double approximateSize = (mem.end() - 12 - SAMPLE_SIZE * OBJECT_POINTER_SIZE) * 1.0 / SAMPLE_SIZE;
+            double approximateSize = (mem.end() - 12 - SAMPLE_SIZE*OBJECT_POINTER_SIZE) * 1.0 / SAMPLE_SIZE;
             result = Math.round(approximateSize);
         } catch (Exception ex) {
             System.err.println("Cannot create object using " + factory);
@@ -192,5 +193,5 @@ public final class ObjectSizer {
     // PRIVATE //
     private static int SAMPLE_SIZE = 100;
 
-    private static int OBJECT_POINTER_SIZE = 6; // assuming compressed pointers
+    private static int OBJECT_POINTER_SIZE = 6; //assuming compressed pointers
 }

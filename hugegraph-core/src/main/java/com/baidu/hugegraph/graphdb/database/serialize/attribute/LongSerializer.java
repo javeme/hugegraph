@@ -42,27 +42,26 @@ public class LongSerializer implements OrderPreservingSerializer<Long> {
 
     @Override
     public void writeByteOrder(WriteBuffer out, Long attribute) {
-        write(out, attribute);
+        write(out,attribute);
     }
 
     /*
-     * ====== These methods apply to all whole numbers with minor modifications ======== ====== byte, short, int, long
-     * ======
+    ====== These methods apply to all whole numbers with minor modifications ========
+    ====== byte, short, int, long ======
      */
 
     @Override
     public Long convert(Object value) {
         if (value instanceof Number) {
-            double d = ((Number) value).doubleValue();
-            if (Double.isNaN(d) || Math.round(d) != d)
-                throw new IllegalArgumentException("Not a valid long: " + value);
-            return ((Number) value).longValue();
+            double d = ((Number)value).doubleValue();
+            if (Double.isNaN(d) || Math.round(d)!=d) throw new IllegalArgumentException("Not a valid long: " + value);
+            return ((Number)value).longValue();
         } else if (value instanceof String) {
-            return Long.parseLong((String) value);
+            return Long.parseLong((String)value);
         } else if (value instanceof Idfiable) {
-            return ((Idfiable) value).longId();
-        } else
-            return null;
+            return ((Idfiable)value).longId();
+        } else return null;
     }
+
 
 }

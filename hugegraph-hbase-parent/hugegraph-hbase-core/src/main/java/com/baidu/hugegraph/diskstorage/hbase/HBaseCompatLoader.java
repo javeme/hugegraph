@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,9 +26,11 @@ public class HBaseCompatLoader {
 
     private static final String HBASE_VERSION_1_STRING = "1.";
 
-    private static final String DEFAULT_HBASE_COMPAT_CLASS_NAME = "com.baidu.hugegraph.diskstorage.hbase.HBaseCompat1_0";
+    private static final String DEFAULT_HBASE_COMPAT_CLASS_NAME =
+        "com.baidu.hugegraph.diskstorage.hbase.HBaseCompat1_0";
 
-    private static final String[] HBASE_SUPPORTED_VERSIONS = new String[] { "0.98", "1.0", "1.1", "1.2" };
+    private static final String[] HBASE_SUPPORTED_VERSIONS =
+        new String[] { "0.98", "1.0", "1.1", "1.2" };
 
     private static HBaseCompat cachedCompat;
 
@@ -53,19 +55,18 @@ public class HBaseCompatLoader {
                     if (hbaseVersion.startsWith(HBASE_VERSION_1_STRING)) {
                         // All HBase 1.x maps to HBaseCompat1_0 for now.
                         className = DEFAULT_HBASE_COMPAT_CLASS_NAME;
-                    } else {
-                        className = "com.baidu.hugegraph.diskstorage.hbase.HBaseCompat"
-                                + supportedVersion.replaceAll("\\.", "_");
+                    }
+                    else {
+                        className = "com.baidu.hugegraph.diskstorage.hbase.HBaseCompat" + supportedVersion.replaceAll("\\.", "_");
                     }
                     classNameSource = "supporting runtime HBase version " + hbaseVersion;
                     break;
                 }
             }
             if (null == className) {
-                log.info(
-                        "The HBase version {} is not explicitly supported by HugeGraph.  "
-                                + "Loading HugeGraph's compatibility layer for its most recent supported HBase version ({})",
-                        hbaseVersion, DEFAULT_HBASE_COMPAT_VERSION);
+                log.info("The HBase version {} is not explicitly supported by hugegraph.  " +
+                    "Loading hugegraph's compatibility layer for its most recent supported HBase version ({})",
+                    hbaseVersion, DEFAULT_HBASE_COMPAT_VERSION);
                 className = DEFAULT_HBASE_COMPAT_CLASS_NAME;
                 classNameSource = " by default";
             }
@@ -74,9 +75,8 @@ public class HBaseCompatLoader {
         final String errTemplate = " when instantiating HBase compatibility class " + className;
 
         try {
-            compat = (HBaseCompat) Class.forName(className).newInstance();
-            log.info("Instantiated HBase compatibility layer {}: {}", classNameSource,
-                    compat.getClass().getCanonicalName());
+            compat = (HBaseCompat)Class.forName(className).newInstance();
+            log.info("Instantiated HBase compatibility layer {}: {}", classNameSource, compat.getClass().getCanonicalName());
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e.getClass().getSimpleName() + errTemplate, e);
         } catch (InstantiationException e) {

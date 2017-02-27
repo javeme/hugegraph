@@ -55,28 +55,23 @@ public interface HasStepFolder<S, E> extends Step<S, E> {
 
     public static boolean validHugeGraphHas(Iterable<HasContainer> has) {
         for (HasContainer h : has) {
-            if (!validHugeGraphHas(h))
-                return false;
+            if (!validHugeGraphHas(h)) return false;
         }
         return true;
     }
 
-    public static boolean validHugeGraphOrder(OrderGlobalStep ostep, Traversal rootTraversal, boolean isVertexOrder) {
-        for (Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>> comp : (List<Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>>>) ostep
-                .getComparators()) {
-            if (!(comp.getValue1() instanceof ElementValueComparator))
-                return false;
+    public static boolean validHugeGraphOrder(OrderGlobalStep ostep, Traversal rootTraversal,
+                                          boolean isVertexOrder) {
+        for (Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>> comp : (List<Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>>>) ostep.getComparators()) {
+            if (!(comp.getValue1() instanceof ElementValueComparator)) return false;
             ElementValueComparator evc = (ElementValueComparator) comp.getValue1();
-            if (!(evc.getValueComparator() instanceof Order))
-                return false;
+            if (!(evc.getValueComparator() instanceof Order)) return false;
 
             HugeGraphTransaction tx = HugeGraphTraversalUtil.getTx(rootTraversal.asAdmin());
             String key = evc.getPropertyKey();
             PropertyKey pkey = tx.getPropertyKey(key);
-            if (pkey == null || !(Comparable.class.isAssignableFrom(pkey.dataType())))
-                return false;
-            if (isVertexOrder && pkey.cardinality() != Cardinality.SINGLE)
-                return false;
+            if (pkey == null || !(Comparable.class.isAssignableFrom(pkey.dataType()))) return false;
+            if (isVertexOrder && pkey.cardinality() != Cardinality.SINGLE) return false;
         }
         return true;
     }
@@ -101,22 +96,22 @@ public interface HasStepFolder<S, E> extends Step<S, E> {
         }
     }
 
-    // public static boolean addLabeledStepAsIdentity(Step<?,?> currentStep, final Traversal.Admin<?, ?> traversal) {
-    // if (currentStep.getLabel().isPresent()) {
-    // final IdentityStep identityStep = new IdentityStep<>(traversal);
-    // identityStep.setLabel(currentStep.getLabel().get());
-    // TraversalHelper.insertAfterStep(identityStep, currentStep, traversal);
-    // return true;
-    // } else return false;
-    // }
+//    public static boolean addLabeledStepAsIdentity(Step<?,?> currentStep, final Traversal.Admin<?, ?> traversal) {
+//        if (currentStep.getLabel().isPresent()) {
+//            final IdentityStep identityStep = new IdentityStep<>(traversal);
+//            identityStep.setLabel(currentStep.getLabel().get());
+//            TraversalHelper.insertAfterStep(identityStep, currentStep, traversal);
+//            return true;
+//        } else return false;
+//    }
 
     public static void foldInOrder(final HasStepFolder hugegraphStep, final Traversal.Admin<?, ?> traversal,
-            final Traversal<?, ?> rootTraversal, boolean isVertexOrder) {
+                                   final Traversal<?, ?> rootTraversal, boolean isVertexOrder) {
         Step<?, ?> currentStep = hugegraphStep.getNextStep();
         OrderGlobalStep<?, ?> lastOrder = null;
         while (true) {
             if (currentStep instanceof OrderGlobalStep) {
-                if (lastOrder != null) { // Previous orders are rendered irrelevant by next order (since re-ordered)
+                if (lastOrder != null) { //Previous orders are rendered irrelevant by next order (since re-ordered)
                     lastOrder.getLabels().forEach(hugegraphStep::addLabel);
                     traversal.removeStep(lastOrder);
                 }
@@ -133,9 +128,8 @@ public interface HasStepFolder<S, E> extends Step<S, E> {
 
         if (lastOrder != null && lastOrder instanceof OrderGlobalStep) {
             if (validHugeGraphOrder(lastOrder, rootTraversal, isVertexOrder)) {
-                // Add orders to HasStepFolder
-                for (Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>> comp : (List<Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>>>) ((OrderGlobalStep) lastOrder)
-                        .getComparators()) {
+                //Add orders to HasStepFolder
+                for (Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>> comp : (List<Pair<Traversal.Admin<Object, Comparable>, Comparator<Comparable>>>) ((OrderGlobalStep) lastOrder).getComparators()) {
                     ElementValueComparator evc = (ElementValueComparator) comp.getValue1();
                     hugegraphStep.orderBy(evc.getPropertyKey(), (Order) evc.getValueComparator());
                 }
@@ -156,19 +150,19 @@ public interface HasStepFolder<S, E> extends Step<S, E> {
         }
     }
 
-    public static <E extends Ranging> void foldInRange(final HasStepFolder hugegraphStep,
-            final Traversal.Admin<?, ?> traversal) {
+    public static <E extends Ranging> void foldInRange(final HasStepFolder hugegraphStep, final Traversal.Admin<?, ?> traversal) {
         Step<?, ?> nextStep = HugeGraphTraversalUtil.getNextNonIdentityStep(hugegraphStep);
 
         if (nextStep instanceof RangeGlobalStep) {
             RangeGlobalStep range = (RangeGlobalStep) nextStep;
             int limit = QueryUtil.convertLimit(range.getHighRange());
             hugegraphStep.setLimit(QueryUtil.mergeLimits(limit, hugegraphStep.getLimit()));
-            if (range.getLowRange() == 0) { // Range can be removed since there is no offset
+            if (range.getLowRange() == 0) { //Range can be removed since there is no offset
                 nextStep.getLabels().forEach(hugegraphStep::addLabel);
                 traversal.removeStep(nextStep);
             }
         }
     }
+
 
 }

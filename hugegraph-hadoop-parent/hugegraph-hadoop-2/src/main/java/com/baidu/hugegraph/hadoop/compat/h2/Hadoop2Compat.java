@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,7 +53,8 @@ public class Hadoop2Compat implements HadoopCompat {
     }
 
     @Override
-    public void incrementContextCounter(TaskInputOutputContext context, String group, String name, long incr) {
+    public void incrementContextCounter(TaskInputOutputContext context,
+            String group, String name, long incr) {
         context.getCounter(group, name).increment(incr);
     }
 
@@ -74,11 +75,11 @@ public class Hadoop2Compat implements HadoopCompat {
 
     @Override
     public JobClasspathConfigurer newDistCacheConfigurer() {
-        /*
-         * The exact jar passed in here doesn't really matter, as long as it exists. This argument becomes the MapReduce
-         * job jar. It isn't even really necessary to set a job jar since we upload everything to the Hadoop Distributed
-         * Cache, but setting one avoids a warning from JobClient:
-         * "No job jar file set.  User classes may not be found."
+        /* The exact jar passed in here doesn't really matter, as long as it exists.
+         * This argument becomes the MapReduce job jar.  It isn't even really
+         * necessary to set a job jar since we upload everything to the Hadoop
+         * Distributed Cache, but setting one avoids a warning from JobClient:
+         *     "No job jar file set.  User classes may not be found."
          */
         return new DistCacheConfigurer("hugegraph-hadoop-core-" + HugeGraphConstants.VERSION + ".jar");
     }

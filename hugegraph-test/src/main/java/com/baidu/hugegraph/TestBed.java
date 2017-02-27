@@ -32,8 +32,8 @@ public class TestBed {
             public String toString() {
                 return "three";
             }
-        },
-        FOUR;
+        }, FOUR;
+
 
         @Override
         public String toString() {
@@ -41,6 +41,7 @@ public class TestBed {
         }
 
     }
+
 
     static class A {
 
@@ -59,16 +60,14 @@ public class TestBed {
 
     public static class B {
 
-        public B(int a) {
-        }
+        public B(int a) {}
 
     }
 
     private static final void doSomethingExpensive(int milliseconds) {
-        double d = 0.0;
+        double d=0.0;
         Random r = new Random();
-        for (int i = 0; i < 10000 * milliseconds; i++)
-            d += Math.pow(1.1, r.nextDouble());
+        for (int i=0;i<10000*milliseconds;i++) d+=Math.pow(1.1,r.nextDouble());
 
     }
 
@@ -109,15 +108,13 @@ public class TestBed {
         private boolean observed = false;
 
         public void observe(Object o, Observer other) {
-            if (!observed && !other.observes())
-                return;
+            if (!observed && !other.observes()) return;
             observe(o);
             other.observe(o);
         }
 
         public void observe(Object o1, Object o2, Observer other) {
-            if (!observed && !other.observes())
-                return;
+            if (!observed && !other.observes()) return;
             List<Object> combined = new ArrayList<>();
             combined.add(o1);
             combined.add(o2);
@@ -147,12 +144,13 @@ public class TestBed {
         }
 
         public void observe(Object o) {
-            om.observe(o, os);
+            om.observe(o,os);
         }
 
         public void observe(Object o1, Object o2) {
-            om.observe(o1, o2, os);
+            om.observe(o1,o2,os);
         }
+
 
     }
 
@@ -167,15 +165,16 @@ public class TestBed {
     }
 
     public static @Nonnull String getInt(@Nonnull int a, int b) {
-        return String.valueOf(a + b);
+        return String.valueOf(a+b);
     }
+
 
     /**
      * @param args
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws Exception {
-        Method method = TestBed.class.getMethod("getInt", int.class, int.class);
+        Method method = TestBed.class.getMethod("getInt",int.class,int.class);
         AnnotatedType rt = method.getAnnotatedReturnType();
         System.out.println(rt.getType());
         System.out.println(rt.getAnnotations().length);
@@ -184,25 +183,26 @@ public class TestBed {
             System.out.println(method.getAnnotations()[i]);
         }
 
-        // String[] s = {"a","b","c","d","e","f","g","h","i","x","u"};
-        // int len = s.length;
-        // Random random = new Random();
-        //
-        // Context c = new Context(new ObserverManager(),Observer.NO_OP);
-        // //Warmup
-        // for (int i = 0; i < 1000000000; i++) {
-        // c.observe(s[1],s[2]);
-        // }
-        // long before = System.nanoTime();
-        // for (int i = 0; i < 1000000000; i++) {
-        // c.observe(s[1],s[2]);
-        // }
-        // long total = System.nanoTime()-before;
-        // System.out.println("Total time: " + total/1000000);
+
+//        String[] s = {"a","b","c","d","e","f","g","h","i","x","u"};
+//        int len = s.length;
+//        Random random = new Random();
+//
+//        Context c = new Context(new ObserverManager(),Observer.NO_OP);
+//        //Warmup
+//        for (int i = 0; i < 1000000000; i++) {
+//            c.observe(s[1],s[2]);
+//        }
+//        long before = System.nanoTime();
+//        for (int i = 0; i < 1000000000; i++) {
+//            c.observe(s[1],s[2]);
+//        }
+//        long total = System.nanoTime()-before;
+//        System.out.println("Total time: " + total/1000000);
 
         System.exit(0);
 
-        final ScheduledExecutorService exe = new ScheduledThreadPoolExecutor(1, new RejectedExecutionHandler() {
+        final ScheduledExecutorService exe = new ScheduledThreadPoolExecutor(1,new RejectedExecutionHandler() {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                 r.run();
@@ -214,44 +214,44 @@ public class TestBed {
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 10; i++) {
-                        exe.submit(new Runnable() {
+                for (int i=0;i<10;i++) {
+                    exe.submit(new Runnable() {
 
-                            private final int number = atomicInt.incrementAndGet();
+                        private final int number = atomicInt.incrementAndGet();
 
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(150);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                System.out.println(number);
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(150);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        });
-                        System.out.println("Submitted: " + i);
-                        // doSomethingExpensive(20);
-                    }
+                            System.out.println(number);
+                        }
+                    });
+                    System.out.println("Submitted: "+i);
+//                    doSomethingExpensive(20);
+                }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1, TimeUnit.SECONDS);
+        },0,1, TimeUnit.SECONDS);
         Thread.sleep(10000);
-        // future.get(1,TimeUnit.SECONDS);
+//        future.get(1,TimeUnit.SECONDS);
         System.out.println("Cancel: " + future.cancel(false));
         System.out.println("Done: " + future.isDone());
         exe.shutdown();
-        // Thread.sleep(2000);
-        System.out.println("Terminate: " + exe.awaitTermination(5, TimeUnit.SECONDS));
+//        Thread.sleep(2000);
+        System.out.println("Terminate: " + exe.awaitTermination(5,TimeUnit.SECONDS));
         System.out.println("DONE");
     }
 
     public static String toBinary(int b) {
         String res = Integer.toBinaryString(b);
-        while (res.length() < 32)
-            res = "0" + res;
+        while (res.length() < 32) res = "0" + res;
         return res;
+
 
     }
 

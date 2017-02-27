@@ -25,21 +25,24 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementations of {@link TimestampProvider} for different resolutions of time:
  * <ul>
- * <li>NANO: nano-second time resolution based on System.nanoTime using a base-time established by
- * System.currentTimeMillis(). The exact resolution depends on the particular JVM and host machine.</li>
- * <li>MICRO: micro-second time which is actually at milli-second resolution.</li>
- * <li>MILLI: milli-second time resolution</li>
+ *     <li>NANO: nano-second time resolution based on System.nanoTime using a base-time established
+ *     by System.currentTimeMillis(). The exact resolution depends on the particular JVM and host machine.</li>
+ *     <li>MICRO: micro-second time which is actually at milli-second resolution.</li>
+ *     <li>MILLI: milli-second time resolution</li>
  * </ul>
  */
 public enum TimestampProviders implements TimestampProvider {
     NANO {
 
         /**
-         * This returns the approximate number of nanoseconds elapsed since the UNIX Epoch. The least significant bit is
-         * overridden to 1 or 0 depending on whether setLSB is true or false (respectively).
+         * This returns the approximate number of nanoseconds
+         * elapsed since the UNIX Epoch.  The least significant
+         * bit is overridden to 1 or 0 depending on whether
+         * setLSB is true or false (respectively).
          * <p/>
-         * This timestamp rolls over about every 2^63 ns, or just over 292 years. The first rollover starting from the
-         * UNIX Epoch would be sometime in 2262.
+         * This timestamp rolls over about every 2^63 ns, or
+         * just over 292 years.  The first rollover starting
+         * from the UNIX Epoch would be sometime in 2262.
          *
          * @return a timestamp as described above
          */
@@ -82,7 +85,7 @@ public enum TimestampProviders implements TimestampProvider {
 
         @Override
         public long getTime(Instant timestamp) {
-            return timestamp.getEpochSecond() * 1000000L + timestamp.getNano() / 1000;
+            return timestamp.getEpochSecond() * 1000000L + timestamp.getNano()/1000;
 
         }
     },
@@ -109,7 +112,8 @@ public enum TimestampProviders implements TimestampProvider {
         }
     };
 
-    private static final Logger log = LoggerFactory.getLogger(TimestampProviders.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TimestampProviders.class);
 
     @Override
     public Instant sleepPast(Instant futureTime) throws InterruptedException {
@@ -119,12 +123,16 @@ public enum TimestampProviders implements TimestampProvider {
         ChronoUnit unit = getUnit();
 
         /*
-         * Distributed storage managers that rely on timestamps play with the least significant bit in timestamp longs,
-         * turning it on or off to ensure that deletions are logically ordered before additions within a single batch
-         * mutation. This is not a problem at microsecond resolution because we pretendulate microsecond resolution by
-         * multiplying currentTimeMillis by 1000, so the LSB can vary freely. It's also not a problem with nanosecond
-         * resolution because the resolution is just too fine, relative to how long a mutation takes, for it to matter
-         * in practice. But it can lead to corruption at millisecond resolution (and does, in testing).
+         * Distributed storage managers that rely on timestamps play with the
+         * least significant bit in timestamp longs, turning it on or off to
+         * ensure that deletions are logically ordered before additions within a
+         * single batch mutation. This is not a problem at microsecond
+         * resolution because we pretendulate microsecond resolution by
+         * multiplying currentTimeMillis by 1000, so the LSB can vary freely.
+         * It's also not a problem with nanosecond resolution because the
+         * resolution is just too fine, relative to how long a mutation takes,
+         * for it to matter in practice. But it can lead to corruption at
+         * millisecond resolution (and does, in testing).
          */
         if (unit.equals(ChronoUnit.MILLIS))
             futureTime = futureTime.plusMillis(1L);
@@ -137,7 +145,8 @@ public enum TimestampProviders implements TimestampProvider {
                 delta = 1L;
 
             if (log.isTraceEnabled()) {
-                log.trace("Sleeping: now={} targettime={} delta={} {}", new Object[] { now, futureTime, delta, unit });
+                log.trace("Sleeping: now={} targettime={} delta={} {}",
+                        new Object[] { now, futureTime, delta, unit });
             }
 
             Temporals.timeUnit(unit).sleep(delta);
@@ -148,8 +157,7 @@ public enum TimestampProviders implements TimestampProvider {
 
     @Override
     public void sleepFor(Duration duration) throws InterruptedException {
-        if (duration.isZero())
-            return;
+        if (duration.isZero()) return;
 
         TimeUnit.NANOSECONDS.sleep(duration.toNanos());
     }
@@ -163,5 +171,6 @@ public enum TimestampProviders implements TimestampProvider {
     public String toString() {
         return name();
     }
+
 
 }

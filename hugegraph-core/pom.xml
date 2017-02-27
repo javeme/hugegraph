@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.janusgraph</groupId>
+        <groupId>com.baidu.hugegraph</groupId>
         <artifactId>hugegraph</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>janusgraph-core</artifactId>
-    <name>JanusGraph-Core: Core Library for JanusGraph</name>
-    <url>http://janusgraph.org</url>
+    <artifactId>hugegraph-core</artifactId>
+    <name>hugegraph-Core: Core Library for hugegraph</name>
+    <url>http://hugegraph.org</url>
     
     <properties>
         <top.level.basedir>${basedir}/..</top.level.basedir>
@@ -135,7 +135,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Gremlin-Plugin-Dependencies>org.janusgraph:janusgraph-cassandra:${project.version};org.janusgraph:janusgraph-hadoop:${project.version}</Gremlin-Plugin-Dependencies>
+                            <Gremlin-Plugin-Dependencies>com.baidu.hugegraph:hugegraph-cassandra:${project.version};com.baidu.hugegraph:hugegraph-hadoop:${project.version}</Gremlin-Plugin-Dependencies>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -150,8 +150,8 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <windowtitle>JanusGraph ${project.version} API</windowtitle>
-                            <doctitle>JanusGraph ${project.version} API</doctitle>
+                            <windowtitle>hugegraph ${project.version} API</windowtitle>
+                            <doctitle>hugegraph ${project.version} API</doctitle>
                             <!-- Quiet mode still shows warnings and errors -->
                             <quiet>true</quiet>
                         </configuration>
@@ -189,19 +189,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.esotericsoftware.kryo</pattern>
-                                    <shadedPattern>org.janusgraph.shaded.kryo_2_24_0</shadedPattern>
+                                    <shadedPattern>com.baidu.hugegraph.shaded.kryo_2_24_0</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.esotericsoftware.minlog</pattern>
-                                    <shadedPattern>org.janusgraph.shaded.minlog_1_2</shadedPattern>
+                                    <shadedPattern>com.baidu.hugegraph.shaded.minlog_1_2</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.esotericsoftware.reflectasm</pattern>
-                                    <shadedPattern>org.janusgraph.shaded.kryo_2_24_0_reflectasm</shadedPattern>
+                                    <shadedPattern>com.baidu.hugegraph.shaded.kryo_2_24_0_reflectasm</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.objenesis</pattern>
-                                    <shadedPattern>org.janusgraph.shaded.objenesis_2_1</shadedPattern>
+                                    <shadedPattern>com.baidu.hugegraph.shaded.objenesis_2_1</shadedPattern>
                                 </relocation>
                             </relocations>
                             <!-- false below means the shade plugin overwrites the main project artifact (the one with no classifier).
@@ -221,7 +221,7 @@
              Otherwise, Maven will sign the unshaded jar, then shade the jar
              (giving it completely different contents and breaking the sig) -->
         <profile>
-            <id>janusgraph-release</id>
+            <id>hugegraph-release</id>
             <build>
                 <plugins>
                     <plugin>

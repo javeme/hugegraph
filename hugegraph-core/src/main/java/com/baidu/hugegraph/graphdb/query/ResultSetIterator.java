@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Wraps around a result set iterator to return up to the specified limit number of elements and implement the
- * {@link java.util.Iterator#remove()} method based on element's remove method.
+ * Wraps around a result set iterator to return up to the specified limit number of elements
+ * and implement the {@link java.util.Iterator#remove()} method based on element's remove method.
  *
  * @author Matthias Broecheler (me@matthiasb.com)
  */
@@ -33,6 +33,7 @@ public class ResultSetIterator<R extends HugeGraphElement> implements Iterator<R
     private R current;
     private R next;
     private int count;
+
 
     public ResultSetIterator(Iterator<R> inner, int limit) {
         this.iter = inner;
@@ -75,12 +76,12 @@ public class ResultSetIterator<R extends HugeGraphElement> implements Iterator<R
             throw new UnsupportedOperationException();
     }
 
-    public static <R extends HugeGraphElement> Iterable<R> wrap(final Iterable<R> inner, final int limit) {
+    public static<R extends HugeGraphElement> Iterable<R> wrap(final Iterable<R> inner, final int limit) {
         return new Iterable<R>() {
 
             @Override
             public Iterator<R> iterator() {
-                return new ResultSetIterator<R>(inner.iterator(), limit);
+                return new ResultSetIterator<R>(inner.iterator(),limit);
             }
         };
     }

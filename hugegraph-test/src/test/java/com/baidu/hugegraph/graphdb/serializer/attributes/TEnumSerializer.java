@@ -30,6 +30,6 @@ public class TEnumSerializer implements AttributeSerializer<TEnum> {
 
     @Override
     public void write(WriteBuffer buffer, TEnum attribute) {
-        buffer.putShort((short) attribute.ordinal());
+        buffer.putShort((short)attribute.ordinal());
     }
 }

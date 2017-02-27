@@ -36,8 +36,9 @@ public class StandardEdgeLabelMaker extends StandardRelationTypeMaker implements
 
     private Direction unidirectionality;
 
-    public StandardEdgeLabelMaker(final StandardHugeGraphTx tx, final String name,
-            final IndexSerializer indexSerializer, final AttributeHandler attributeHandler) {
+    public StandardEdgeLabelMaker(final StandardHugeGraphTx tx,
+                                  final String name, final IndexSerializer indexSerializer,
+                                  final AttributeHandler attributeHandler) {
         super(tx, name, indexSerializer, attributeHandler);
         unidirectionality = Direction.BOTH;
     }
@@ -71,13 +72,13 @@ public class StandardEdgeLabelMaker extends StandardRelationTypeMaker implements
     }
 
     @Override
-    public StandardEdgeLabelMaker signature(PropertyKey...types) {
+    public StandardEdgeLabelMaker signature(PropertyKey... types) {
         super.signature(types);
         return this;
     }
 
     @Override
-    public StandardEdgeLabelMaker sortKey(PropertyKey...types) {
+    public StandardEdgeLabelMaker sortKey(PropertyKey... types) {
         super.sortKey(types);
         return this;
     }
@@ -97,13 +98,13 @@ public class StandardEdgeLabelMaker extends StandardRelationTypeMaker implements
     @Override
     public EdgeLabel make() {
         TypeDefinitionMap definition = makeDefinition();
-        Preconditions.checkArgument(
-                unidirectionality == Direction.BOTH || !getMultiplicity().isUnique(unidirectionality.opposite()),
+        Preconditions.checkArgument(unidirectionality==Direction.BOTH || !getMultiplicity().isUnique(unidirectionality.opposite()),
                 "Unidirectional labels cannot have restricted multiplicity at the other end");
-        Preconditions.checkArgument(
-                unidirectionality == Direction.BOTH || !hasSortKey() || !getMultiplicity().isUnique(unidirectionality),
+        Preconditions.checkArgument(unidirectionality==Direction.BOTH || !hasSortKey() ||
+                !getMultiplicity().isUnique(unidirectionality),
                 "Unidirectional labels with restricted multiplicity cannot have a sort key");
-        Preconditions.checkArgument(unidirectionality != Direction.IN || definition.getValue(INVISIBLE, Boolean.class));
+        Preconditions.checkArgument(unidirectionality!=Direction.IN || definition.getValue(INVISIBLE,Boolean.class));
+
 
         definition.setValue(UNIDIRECTIONAL, unidirectionality);
         return tx.makeEdgeLabel(getName(), definition);

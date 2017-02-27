@@ -14,6 +14,7 @@
 
 package com.baidu.hugegraph.diskstorage.cassandra.thrift;
 
+
 import com.baidu.hugegraph.CassandraStorageSetup;
 import com.baidu.hugegraph.diskstorage.configuration.ModifiableConfiguration;
 import com.baidu.hugegraph.testcategory.CassandraSSLTests;

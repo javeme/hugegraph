@@ -1,4 +1,4 @@
-// Copyright 2017 HugeGraph Authors
+// Copyright 2017 hugegraph Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import com.baidu.hugegraph.diskstorage.common.AbstractStoreTransaction;
 
 /**
  * This class overrides and adds nothing compared with
- * {@link com.baidu.hugegraph.diskstorage.locking.consistentkey.ExpectedValueCheckingTransaction}; however, it creates a
- * transaction type specific to HBase, which lets us check for user errors like passing a Cassandra transaction into a
- * HBase method.
+ * {@link com.baidu.hugegraph.diskstorage.locking.consistentkey.ExpectedValueCheckingTransaction}; however, it creates a transaction type specific
+ * to HBase, which lets us check for user errors like passing a Cassandra
+ * transaction into a HBase method.
  *
  * @author Dan LaRocque <dalaro@hopcount.org>
  */

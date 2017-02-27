@@ -37,9 +37,10 @@ import com.baidu.hugegraph.diskstorage.util.UncaughtExceptionLogger;
 import com.baidu.hugegraph.diskstorage.util.UncaughtExceptionLogger.UELevel;
 
 /**
- * Encapsulates an ExecutorService that creates and runs {@link StandardLockCleanerRunnable} instances. Updates a
- * timed-expiration Guava strong cache keyed by rows to prevent the user from spamming tens/hundreds/... of cleaner
- * instances in a short time.
+ * Encapsulates an ExecutorService that creates and runs
+ * {@link StandardLockCleanerRunnable} instances. Updates a timed-expiration Guava
+ * strong cache keyed by rows to prevent the user from spamming
+ * tens/hundreds/... of cleaner instances in a short time.
  */
 public class StandardLockCleanerService implements LockCleanerService {
 
@@ -51,8 +52,11 @@ public class StandardLockCleanerService implements LockCleanerService {
     private static final int COOLDOWN_CONCURRENCY_LEVEL = 4;
 
     private static final ThreadFactory THREAD_FACTORY =
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("LockCleaner-%d")
-                    .setUncaughtExceptionHandler(new UncaughtExceptionLogger(UELevel.INFO)).build();
+            new ThreadFactoryBuilder()
+                .setDaemon(true)
+                .setNameFormat("LockCleaner-%d")
+                .setUncaughtExceptionHandler(new UncaughtExceptionLogger(UELevel.INFO))
+                .build();
 
     private final KeyColumnValueStore store;
     private final ExecutorService exec;
@@ -60,21 +64,23 @@ public class StandardLockCleanerService implements LockCleanerService {
     private final ConcurrentMap<KeyColumn, Instant> blocked;
     private final ConsistentKeyLockerSerializer serializer;
 
-    private static final Logger log = LoggerFactory.getLogger(LockCleanerService.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(LockCleanerService.class);
 
-    public StandardLockCleanerService(KeyColumnValueStore store, ConsistentKeyLockerSerializer serializer,
-            ExecutorService exec, Duration cooldown, TimestampProvider times) {
+    public StandardLockCleanerService(KeyColumnValueStore store, ConsistentKeyLockerSerializer serializer, ExecutorService exec, Duration cooldown, TimestampProvider times) {
         this.store = store;
         this.serializer = serializer;
         this.exec = exec;
         this.times = times;
-        blocked = CacheBuilder.newBuilder().expireAfterWrite(cooldown.toNanos(), TimeUnit.NANOSECONDS)
-                .concurrencyLevel(COOLDOWN_CONCURRENCY_LEVEL).<KeyColumn, Instant> build().asMap();
+        blocked = CacheBuilder.newBuilder()
+                .expireAfterWrite(cooldown.toNanos(), TimeUnit.NANOSECONDS)
+                .concurrencyLevel(COOLDOWN_CONCURRENCY_LEVEL)
+                .<KeyColumn, Instant>build()
+                .asMap();
     }
 
-    public StandardLockCleanerService(KeyColumnValueStore store, ConsistentKeyLockerSerializer serializer,
-            TimestampProvider times) {
-        this(store, serializer, getDefaultExecutor(), COOLDOWN_TIME, times);
+    public StandardLockCleanerService(KeyColumnValueStore store, ConsistentKeyLockerSerializer serializer, TimestampProvider times) {
+        this (store, serializer, getDefaultExecutor(), COOLDOWN_TIME, times);
     }
 
     @Override
@@ -96,7 +102,6 @@ public class StandardLockCleanerService implements LockCleanerService {
     }
 
     private static ExecutorService getDefaultExecutor() {
-        return new ThreadPoolExecutor(0, 1, KEEPALIVE_TIME, KEEPALIVE_UNIT, new LinkedBlockingQueue<Runnable>(),
-                THREAD_FACTORY);
+        return new ThreadPoolExecutor(0, 1, KEEPALIVE_TIME, KEEPALIVE_UNIT, new LinkedBlockingQueue<Runnable>(), THREAD_FACTORY);
     }
 }

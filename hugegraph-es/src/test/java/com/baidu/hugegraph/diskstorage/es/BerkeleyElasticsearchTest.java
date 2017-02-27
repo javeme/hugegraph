@@ -42,10 +42,10 @@ public class BerkeleyElasticsearchTest extends HugeGraphIndexTest {
     @Override
     public WriteConfiguration getConfiguration() {
         ModifiableConfiguration config = getBerkeleyJEConfiguration();
-        // Add index
-        config.set(INDEX_BACKEND, "elasticsearch", INDEX);
-        config.set(LOCAL_MODE, true, INDEX);
-        config.set(CLIENT_ONLY, false, INDEX);
+        //Add index
+        config.set(INDEX_BACKEND,"elasticsearch",INDEX);
+        config.set(LOCAL_MODE,true,INDEX);
+        config.set(CLIENT_ONLY,false,INDEX);
         config.set(INDEX_DIRECTORY, StorageSetup.getHomeDir("es"), INDEX);
         return config.getConfiguration();
 
