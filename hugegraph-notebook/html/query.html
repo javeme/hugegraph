@@ -1,0 +1,174 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=9" />
+<link rel="stylesheet" type="text/css" href="static/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="static/assets/css/hugegraph.css" />
+
+<script src="static/vendor/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="static/vendor/codemirror/lib/codemirror.css">
+<script src="static/vendor/codemirror/mode/shell/shell.js"></script>
+
+
+ <style type="text/css">
+     .CodeMirror {
+        border: 1px solid #eee;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        height: 100px;
+      }
+</style>
+
+
+<title>HugeGraph Notebook</title>
+</head>
+<body>
+
+<header class="navbar navbar-default" role="banner">
+<div class="container">
+  <div class="navbar-header">
+    <div class="navbar-brand">HugeGraph <small style="color: red">Notebook</small></div>
+  </div>
+
+  <ul class="nav navbar-nav">
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cluster <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+         <li><a href="Add.html">Add Cluster</a></li>
+        <li><a href="dashbord.html">List</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+</header>
+
+<div class="container">
+        <div class="row">
+            <ol class="breadcrumb">
+              <li><a href="dashbord.html">Cluster</a></li>
+              <li><a href="schema.html">Tinker Graph</a></li>
+              <li class="active">Query</li>
+            </ol>
+        </div>
+        <div class="row">
+                <div class="col-md-12">
+                  <form">
+                    <textarea id="codeArea" name="codeArea" class="CodeMirror" rows="3"></textarea>
+                    <input type="button" class="btn btn-sm btn-primary" value="submit" onclick="preview()" data-toggle="modal" data-target="#loadingModal"/>
+                  </form>
+                </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12" style="margin-top:15px">
+               <ul id="myTab" class="nav nav-tabs">
+                  <li role="presentation" class="active"><a href="#paneGraph"><span class="glyphicon glyphicon-random" aria-hidden="true"></span>
+ Graph</a></li>
+                  <li role="presentation"><a href="#paneData"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Data</a></li>
+                  <li role="presentation"><a href="#paneStacktrace"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> Stacktrace</a></li>
+               </ul>
+               <div class="tab-content" style="padding:10px">
+                 <div id="paneGraph" class="tab-pane active"> 
+                      <div id="graph" style="height:600px;"></div>
+                 </div>
+                 <div id="paneData" class="tab-pane">
+                   
+                   <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr><th>key</th><td>value</td></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>node 1 </td></th><td>Cassandra</td></tr>
+                    
+                    </tbody>
+                  </table>
+
+                 </div>
+                 <div id="paneStacktrace" class="tab-pane"> Stacktrace </div>
+               </div>
+            </div>
+           
+        </div>
+</div>
+
+<div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <h4 class="modal-title" id="myLargeModalLabel">Loading</h4>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+    </div>
+  </div>
+</div>
+
+<script src="static/vendor/jquery/jquery-1.9.1.min.js"></script>
+<script src="static/bootstrap/js/bootstrap.min.js"></script>
+<script src="static/vendor/echarts/echarts.min.js"></script>
+<script>
+  var editor = CodeMirror.fromTextArea(codeArea, {
+    lineNumbers: true
+  });
+
+   $('#myTab a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+    })
+
+</script>
+
+<script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('graph'));
+
+        myChart.showLoading();
+        
+        $.get('sample.json', function (webkitDep) {
+
+        var webkitDep = eval("(" + webkitDep + ')');
+
+
+        myChart.hideLoading();
+
+        option = {
+            legend: {
+                data: ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other']
+            },
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                animation: false,
+                label: {
+                    normal: {
+                        position: 'right',
+                        formatter: '{b}'
+                    }
+                },
+                draggable: true,
+                data: webkitDep.nodes.map(function (node, idx) {
+                    node.id = idx;
+                    return node;
+                }),
+                categories: webkitDep.categories,
+                force: {
+                    // initLayout: 'circular'
+                    // repulsion: 20,
+                    edgeLength: 5,
+                    repulsion: 20,
+                    gravity: 0.2
+                },
+                edges: webkitDep.links
+            }]
+        };
+
+        myChart.setOption(option);
+});
+
+    </script>
+</body>
+</html>
