@@ -1,7 +1,0 @@
-[[internals]]
-hugegraph Internals
-====================
-
-include::datamodel.txt[]
-
-include::building.txt[]

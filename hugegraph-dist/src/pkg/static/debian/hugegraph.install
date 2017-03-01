@@ -1,7 +1,0 @@
-/usr/bin/gremlin.sh
-/usr/sbin/hugegraph
-/usr/share/hugegraph/hugegraph.in.sh
-/etc/hugegraph/hugegraph-env.sh
-/etc/hugegraph/config.properties
-/etc/hugegraph/log4j.properties
-../payload/cassandra.yaml /etc/hugegraph/

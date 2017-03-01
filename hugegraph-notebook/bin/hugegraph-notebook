@@ -1,0 +1,20 @@
+#!/bin/bash 
+set -e
+HOME_PATH=`dirname $0`
+HOME_PATH=`cd $HOME_PATH/.. && pwd`
+BIN_PATH=$HOME_PATH/bin
+if [ $# -lt 1 ];then
+    echo "usage: hugegraph-notebook start/stop"
+    exit 1
+fi
+if [ $1 == "start" ];then
+	shift
+    sh $BIN_PATH/hugegraph.sh notebook "$@"
+elif [ $1 == "stop" ];then
+    pid=`cat $BIN_PATH/notebook.pid`
+    kill $pid || rm $BIN_PATH/notebook.pid
+    ps ux | grep $pid | grep -q notebook
+    [ $? -ne 0 ] && echo "cannot kill $pid, please kill it mannually!"
+else
+    echo "usage: hugegraph-notebook start/stop"
+fi

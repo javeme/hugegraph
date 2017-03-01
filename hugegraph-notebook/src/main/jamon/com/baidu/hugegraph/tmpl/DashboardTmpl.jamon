@@ -1,0 +1,52 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/assets/css/hugegraph.css" />
+    <title>HugeGraph Notebook</title>
+</head>
+<body>
+
+<header class="navbar navbar-default" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <div class="navbar-brand">HugeGraph <small style="color: red">Notebook</small></div>
+        </div>
+
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cluster <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/add">Add Cluster</a></li>
+                    <li><a href="/cluster">List</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<div class="container">
+    <div class="page-header"><h1>Clusters <small>( 5 )</small></h1></div>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr><th>Cluster Name</th><td>Storage Backend</td><td>Index Backend</td><td>Operations</td></tr>
+        </thead>
+        <tbody>
+        <tr><td><a href="/meta">Movie Graph</a></td></th><td>Cassandra</td><td>ES</td><td> <a href="/query">view</a> </td></tr>
+        <tr><td><a href="/meta">Tinker Graph</a></td></th><td>HBase</td><td>ES</td><td> <a href="/query">view</a> </td></tr>
+        <tr><td><a href="/meta">Bank Graph</a></td></th><td>Palo</td><td>ES</td><td> <a href="/query">view</a> </td></tr>
+        <tr><td><a href="/meta">Threat Graph</a></td></th><td>Mola</td><td>Internal</td><td> <a href="/query">view</a> </td></tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+<script src="/static/vendor/jquery/jquery-1.9.1.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
