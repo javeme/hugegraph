@@ -1,0 +1,5 @@
+/etc/default/
+/usr/share/hugegraph/lib/
+/var/lib/hugegraph/
+/var/log/hugegraph/
+/var/run/hugegraph/

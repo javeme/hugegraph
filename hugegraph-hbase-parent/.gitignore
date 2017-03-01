@@ -1,0 +1,10 @@
+/hugegraph-hbase-*/.settings/
+/hugegraph-hbase-*/.project
+/hugegraph-hbase-*/.classpath
+/hugegraph-hbase-*/bin/
+/hugegraph-hbase-*/conf/
+/hugegraph-hbase-*/logs/
+*~
+.classpath
+.project
+.settings/

@@ -1,0 +1,129 @@
+# This specfile needs the hugegraph_version and hugegraph_release macros.
+# These two macros can be defined in two ways:
+#
+# 1. Defined on rpmbuild commandline, e.g.
+#    $ rpmbuild --define='hugegraph_release 2' --define='hugegraph_version 0.1.0'
+#
+# 2. Prepended to this file, e.g.
+#    $ echo '<percent>define hugegraph_version 0.1.0' >  hugegraph.spec.new
+#    $ echo '<percent>define hugegraph_release 2'     >> hugegraph.spec.new
+#    $ cat  hugegraph.spec.base                       >> hugegraph.spec.new
+#    $ mv   hugegraph.spec.new hugegraph.spec
+#
+#    The <percent> strings above should be literal percent symbols, but
+#    rpmbuild appears to parse percents even inside specfile comments like
+#    this one (!), so I can't write a literal percent sign.
+
+%define __jar_repack 0
+%define payload_dir redhat/payload
+
+Name:           hugegraph
+Version:        %{hugegraph_version}
+Release:        %{hugegraph_release}
+Summary:        hugegraph Distributed Graph Database
+Requires:       java >= 1.7.0
+Requires(pre):  shadow-utils
+Group:          Applications/Databases
+License:        ASL 2.0
+URL:            http://hugegraph.org
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+
+%description
+hugegraph is a scalable graph database optimized for storing and querying
+graphs containing hundreds of billions of vertices and edges
+distributed across a multi-machine cluster. hugegraph is a transactional
+database that can support thousands of concurrent users executing
+complex graph traversals.
+
+%prep
+
+%build
+cd %{name}-%{version}
+mvn clean install --batch-mode -Dgpg.skip=true -Phugegraph-release -DskipTests=true
+
+
+%check
+
+
+
+# User & group creation based on Fedora guidelines:
+# https://fedoraproject.org/wiki/Packaging:UsersAndGroups?rd=Packaging/UsersAndGroups
+#
+# N.B. This user and group is deliberately left behind by uninstallation.
+# From the guidelines above:
+# "Do not remove users or groups. We never remove users or groups
+#  created by packages. There's no sane way to check if files owned
+#  by those users/groups are left behind..."
+%pre
+getent group hugegraph >/dev/null || groupadd -r hugegraph
+getent passwd hugegraph >/dev/null || \
+    useradd -r -g hugegraph -d /tmp -s /sbin/nologin \
+    -c "hugegraph graph database" hugegraph
+exit 0
+
+%post
+chown hugegraph:hugegraph /var/lib/hugegraph /var/log/hugegraph /var/run/hugegraph
+
+
+%install
+cd %{name}-%{version}
+
+# create directory structure
+mkdir -p "$RPM_BUILD_ROOT"/etc/sysconfig
+mkdir -p "$RPM_BUILD_ROOT"/etc/rc.d/init.d
+mkdir -p "$RPM_BUILD_ROOT"/etc/hugegraph
+mkdir -p "$RPM_BUILD_ROOT"/usr/bin
+mkdir -p "$RPM_BUILD_ROOT"/usr/sbin
+mkdir -p "$RPM_BUILD_ROOT"/usr/share/doc/%{name}-%{version}
+mkdir -p "$RPM_BUILD_ROOT"/usr/share/hugegraph/lib
+mkdir -p "$RPM_BUILD_ROOT"/var/log/hugegraph
+mkdir -p "$RPM_BUILD_ROOT"/var/lib/hugegraph
+mkdir -p "$RPM_BUILD_ROOT"/var/run/hugegraph
+
+# copy files
+pkgcommon/bin/install-payload.sh "$RPM_BUILD_ROOT"
+pkgcommon/bin/install-jars.sh "$RPM_BUILD_ROOT"/usr/share/hugegraph/lib
+cp %{payload_dir}/hugegraph.init "$RPM_BUILD_ROOT"/etc/rc.d/init.d/hugegraph
+cp %{payload_dir}/hugegraph.sysconfig "$RPM_BUILD_ROOT"/etc/sysconfig/hugegraph
+
+# docs
+#mv doc/ "$RPM_BUILD_ROOT"/usr/share/doc/hugegraph-%{version}/
+#mv CHANGELOG.textile "$RPM_BUILD_ROOT"/usr/share/doc/hugegraph-%{version}/CHANGES.txt
+#mv LICENSE.txt "$RPM_BUILD_ROOT"/usr/share/doc/hugegraph-%{version}/
+## TODO: NEWS.txt ?
+#mv NOTICE.txt "$RPM_BUILD_ROOT"/usr/share/doc/hugegraph-%{version}/
+#mv README.txt "$RPM_BUILD_ROOT"/usr/share/doc/hugegraph-%{version}/README.txt
+for x in CHANGELOG.textile LICENSE.txt NOTICE.txt README.textile UPGRADE.textile; do
+    cp $x  "$RPM_BUILD_ROOT"/usr/share/doc/%{name}-%{version}/
+done
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+#%doc CHANGELOG.textile LICENSE.txt NOTICE.txt README.txt UPGRADE.textile doc/
+%doc /usr/share/doc/%{name}-%{version}/CHANGELOG.textile
+%doc /usr/share/doc/%{name}-%{version}/LICENSE.txt
+%doc /usr/share/doc/%{name}-%{version}/NOTICE.txt
+%doc /usr/share/doc/%{name}-%{version}/README.textile
+%doc /usr/share/doc/%{name}-%{version}/UPGRADE.textile
+%attr(0644, root, root) %config /etc/hugegraph/cassandra.yaml
+%attr(0644, root, root) %config /etc/hugegraph/config.properties
+%attr(0644, root, root) %config /etc/hugegraph/log4j.properties
+%attr(0644, root, root) %config /etc/hugegraph/hugegraph-env.sh
+%attr(0644, root, root) %config /etc/sysconfig/hugegraph
+%attr(0755, root, root) %config /etc/rc.d/init.d/hugegraph
+%attr(0755, hugegraph, hugegraph) %dir /var/log/hugegraph/
+%attr(0755, hugegraph, hugegraph) %dir /var/lib/hugegraph/
+%attr(0755, hugegraph, hugegraph) %dir /var/run/hugegraph/
+%attr(0755, root, root) /usr/bin/gremlin.sh
+%attr(0755, root, root) /usr/sbin/hugegraph
+%attr(0444, root, root) /usr/share/hugegraph/lib/*.jar
+%attr(0644, root, root) /usr/share/hugegraph/hugegraph.in.sh
+
+
+%changelog
