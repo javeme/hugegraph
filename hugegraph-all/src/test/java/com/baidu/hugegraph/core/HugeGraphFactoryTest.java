@@ -13,8 +13,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class HugeGraphFactoryTest {
     public static void main(String[] args) throws ConfigurationException {
 
-        Configuration conf = new PropertiesConfiguration("/home/houzhizhen/git/graphdb/baidu/xbu-data/hugegraph/dist/" +
-                "conf/gremlin-server/hugegraph-cassandra-es-server.properties");
+        Configuration conf = new PropertiesConfiguration("/home/houzhizhen/git/graphdb/baidu/xbu-data/hugegraph/dist/"
+                +  "conf/gremlin-server/hugegraph-cassandra-es-server.properties");
         HugeGraph graph = HugeGraphFactory.open(conf);
     }
 
