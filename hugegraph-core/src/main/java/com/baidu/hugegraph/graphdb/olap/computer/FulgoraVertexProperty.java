@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraVertexProperty<V> implements HugeGraphVertexProperty<V> {
 

@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexRemoveJob extends IndexUpdateJob implements ScanJob {
 

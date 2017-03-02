@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class CommonConfigTest extends WritableConfigurationTest {
 

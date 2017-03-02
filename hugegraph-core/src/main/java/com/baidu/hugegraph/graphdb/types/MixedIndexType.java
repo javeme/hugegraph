@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.types;
 import com.baidu.hugegraph.core.PropertyKey;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface MixedIndexType extends IndexType {
 

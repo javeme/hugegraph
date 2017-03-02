@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderList.OrderEntry> {
@@ -123,7 +122,6 @@ public class OrderList implements Comparator<HugeGraphElement>, Iterable<OrderLi
     }
 
     /**
-     * @author Matthias Broecheler (me@matthiasb.com)
      */
 
     public static class OrderEntry implements Comparator<HugeGraphElement> {

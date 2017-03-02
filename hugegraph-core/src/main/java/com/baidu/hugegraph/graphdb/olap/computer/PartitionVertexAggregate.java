@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class PartitionVertexAggregate<M> extends VertexState<M> {
 

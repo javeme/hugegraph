@@ -29,7 +29,6 @@ import com.baidu.hugegraph.graphdb.transaction.StandardHugeGraphTx;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ModificationDeserializer {
 

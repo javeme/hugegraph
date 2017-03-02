@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.HugeGraphPartitionGraphTest;
 import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class InMemoryPartitionGraphTest extends HugeGraphPartitionGraphTest {

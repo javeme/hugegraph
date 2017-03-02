@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
  * {@link RecordIterator} instances returned from
  * {@link MetricInstrumentedStore#getSlice(com.baidu.hugegraph.diskstorage.keycolumnvalue.KeySliceQuery, com.baidu.hugegraph.diskstorage.keycolumnvalue.StoreTransaction)}.
  * 
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class MetricInstrumentedIterator implements KeyIterator {
     

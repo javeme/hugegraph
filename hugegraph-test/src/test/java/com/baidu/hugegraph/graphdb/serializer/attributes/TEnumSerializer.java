@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.ScanBuffer;
 import com.baidu.hugegraph.diskstorage.WriteBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TEnumSerializer implements AttributeSerializer<TEnum> {
 

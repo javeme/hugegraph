@@ -21,7 +21,6 @@ import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 import static com.baidu.hugegraph.hadoop.compat.HadoopCompatLoader.DEFAULT_COMPAT;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class FormatTools {
 

@@ -33,7 +33,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class CacheTransaction implements StoreTransaction, LoggableTransaction {
 

@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 /**
  * Utility class for merging and sorting lists of longs
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class AbstractLongListUtil {
 

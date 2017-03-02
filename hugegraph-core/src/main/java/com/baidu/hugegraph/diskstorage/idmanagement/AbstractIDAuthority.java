@@ -32,7 +32,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
  * Base Class for {@link IDAuthority} implementations.
  * Handles common aspects such as maintaining the {@link IDBlockSizer} and shared configuration options
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class AbstractIDAuthority implements IDAuthority {

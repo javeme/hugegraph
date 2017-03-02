@@ -18,7 +18,6 @@ package com.baidu.hugegraph.util.encoding;
 import com.google.common.base.Preconditions;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StringEncoding {
 

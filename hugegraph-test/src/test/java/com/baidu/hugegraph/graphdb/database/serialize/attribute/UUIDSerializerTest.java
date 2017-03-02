@@ -22,7 +22,6 @@ import org.junit.Test;
 import java.util.UUID;
 
 /**
- * @author Bryn Cooke (bryn.cooke@datastax.com)
  */
 public class UUIDSerializerTest {
 

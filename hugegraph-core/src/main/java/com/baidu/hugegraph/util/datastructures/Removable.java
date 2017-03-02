@@ -17,7 +17,6 @@ package com.baidu.hugegraph.util.datastructures;
 /**
  * Interface to decorate elements that can be removed
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface Removable {
 

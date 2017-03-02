@@ -44,7 +44,6 @@ import java.util.*;
  * Builds a {@link HugeGraphQuery}, optimizes the query and compiles the result into a {@link GraphCentricQuery} which
  * is then executed through a {@link QueryProcessor}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class GraphCentricQueryBuilder implements HugeGraphQuery<GraphCentricQueryBuilder> {
 

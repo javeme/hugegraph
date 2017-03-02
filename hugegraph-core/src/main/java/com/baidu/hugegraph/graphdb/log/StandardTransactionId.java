@@ -21,7 +21,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.time.Instant;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StandardTransactionId implements TransactionId {
 

@@ -29,7 +29,6 @@ import static com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory.INVISIBLE
 import static com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory.UNIDIRECTIONAL;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardEdgeLabelMaker extends StandardRelationTypeMaker implements EdgeLabelMaker {

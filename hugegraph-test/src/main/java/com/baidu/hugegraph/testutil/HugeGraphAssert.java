@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphAssert {
 

@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 @RunWith(ProcessStandardSuite.class)
 @GraphProviderClass(provider = InMemoryGraphProvider.class, graph = HugeGraph.class)

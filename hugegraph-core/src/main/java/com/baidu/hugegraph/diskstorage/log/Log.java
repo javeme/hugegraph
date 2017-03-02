@@ -23,7 +23,6 @@ import java.util.concurrent.Future;
  * Represents a log that allows content to be added to it in the form of messages and to
  * read messages and their content from the log via registered {@link MessageReader}s.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface Log {
 

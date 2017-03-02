@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.diskstorage.configuration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ConcurrentWriteConfiguration extends WriteConfiguration {
 

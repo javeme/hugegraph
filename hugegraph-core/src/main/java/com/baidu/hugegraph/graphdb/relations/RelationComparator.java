@@ -27,7 +27,6 @@ import java.util.Comparator;
  * A {@link Comparator} for {@link HugeGraphRelation} that uses a defined order to compare the relations with
  * or otherwise uses the natural order of relations.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RelationComparator implements Comparator<InternalRelation> {
 

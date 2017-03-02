@@ -42,7 +42,6 @@ import java.util.function.Consumer;
  * Blueprints specific implementation for {@link HugeGraph}.
  * Handles thread-bound transactions.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphBlueprintsGraph implements HugeGraph {
 

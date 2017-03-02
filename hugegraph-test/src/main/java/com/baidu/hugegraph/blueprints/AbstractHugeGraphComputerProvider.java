@@ -26,7 +26,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.util.stream.Stream;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class AbstractHugeGraphComputerProvider extends AbstractHugeGraphProvider {
 

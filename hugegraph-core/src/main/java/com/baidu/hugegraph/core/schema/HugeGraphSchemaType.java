@@ -22,7 +22,6 @@ package com.baidu.hugegraph.core.schema;
  * HugeGraphSchemaTypes are a special {@link HugeGraphSchemaElement} in that they are referenced from the
  * main graph when creating vertices, edges, and properties.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphSchemaType extends HugeGraphSchemaElement {
 }

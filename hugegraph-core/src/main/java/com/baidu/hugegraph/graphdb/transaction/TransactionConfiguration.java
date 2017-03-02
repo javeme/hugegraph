@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.BaseTransactionConfig;
 /**
  * Provides configuration options for {@link com.baidu.hugegraph.core.HugeGraphTransaction}.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  * @see com.baidu.hugegraph.core.HugeGraphTransaction
  */
 public interface TransactionConfiguration extends BaseTransactionConfig {

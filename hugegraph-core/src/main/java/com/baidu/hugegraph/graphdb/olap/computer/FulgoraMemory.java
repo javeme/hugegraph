@@ -39,8 +39,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraMemory implements Memory.Admin {
 

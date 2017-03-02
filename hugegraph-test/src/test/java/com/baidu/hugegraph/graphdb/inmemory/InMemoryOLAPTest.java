@@ -21,7 +21,6 @@ import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 import com.baidu.hugegraph.olap.OLAPTest;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class InMemoryOLAPTest extends OLAPTest {

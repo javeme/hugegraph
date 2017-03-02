@@ -23,7 +23,6 @@ import com.baidu.hugegraph.graphdb.database.serialize.SupportsNullSerializer;
 import java.lang.reflect.Array;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class ArraySerializer implements SupportsNullSerializer {
 

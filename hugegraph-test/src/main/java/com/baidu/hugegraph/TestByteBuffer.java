@@ -27,7 +27,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class TestByteBuffer {

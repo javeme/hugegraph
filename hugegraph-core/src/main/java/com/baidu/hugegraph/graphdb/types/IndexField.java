@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.PropertyKey;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexField {
 

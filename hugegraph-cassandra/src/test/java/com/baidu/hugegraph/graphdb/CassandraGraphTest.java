@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static com.baidu.hugegraph.diskstorage.cassandra.AbstractCassandraStoreManager.*;
 
 /**
- * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class CassandraGraphTest extends HugeGraphTest {
 

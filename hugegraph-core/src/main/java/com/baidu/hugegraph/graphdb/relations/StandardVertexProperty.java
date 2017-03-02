@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardVertexProperty extends AbstractVertexProperty implements StandardRelation, ReassignableRelation {

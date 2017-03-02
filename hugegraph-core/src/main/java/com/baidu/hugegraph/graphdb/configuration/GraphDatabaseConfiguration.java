@@ -88,7 +88,6 @@ import com.baidu.hugegraph.util.stats.MetricManager;
  * After a graph database has been initialized with respect to a configuration, some parameters of graph database
  * configuration may no longer be modifiable.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class GraphDatabaseConfiguration {
 

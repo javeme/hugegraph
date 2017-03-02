@@ -33,7 +33,6 @@ import java.util.List;
  * A query is comprised of the store identifier against which the query ought to be executed and a query condition
  * which defines which entries match the query.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IndexQuery extends BaseQuery implements BackendQuery<IndexQuery> {

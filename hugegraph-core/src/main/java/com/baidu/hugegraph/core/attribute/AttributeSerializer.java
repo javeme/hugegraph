@@ -33,7 +33,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
  * is configured, then it will use this custom serializer for persistence operations.
  *
  * @param <V> Type of the attribute associated with the AttributeSerializer
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see com.baidu.hugegraph.core.schema.RelationTypeMaker
  * @see <a href="http://s3.thinkaurelius.com/docs/titan/current/serializer.html">
  *      "Datatype and Attribute Serializer Configuration" manual chapter</a>

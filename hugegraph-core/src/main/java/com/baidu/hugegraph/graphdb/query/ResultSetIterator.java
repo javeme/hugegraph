@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
  * Wraps around a result set iterator to return up to the specified limit number of elements
  * and implement the {@link java.util.Iterator#remove()} method based on element's remove method.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ResultSetIterator<R extends HugeGraphElement> implements Iterator<R> {
 

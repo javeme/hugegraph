@@ -17,7 +17,6 @@ package com.baidu.hugegraph.core;
 import org.apache.tinkerpop.gremlin.structure.Property;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphProperty<V> extends Property<V> {
 

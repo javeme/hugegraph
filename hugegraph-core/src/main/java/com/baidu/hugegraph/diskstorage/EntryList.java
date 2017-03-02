@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface EntryList extends List<Entry> {
 

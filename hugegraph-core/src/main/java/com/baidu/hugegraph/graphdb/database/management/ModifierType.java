@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.database.management;
 import com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory;
 
 /**
- * @author Joshua Shinavier (http://fortytwo.net)
  */
 public enum ModifierType {
     CONSISTENCY(TypeDefinitionCategory.CONSISTENCY_LEVEL),

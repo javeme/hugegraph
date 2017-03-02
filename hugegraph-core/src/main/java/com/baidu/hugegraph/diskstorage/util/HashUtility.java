@@ -18,7 +18,6 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum HashUtility {
 

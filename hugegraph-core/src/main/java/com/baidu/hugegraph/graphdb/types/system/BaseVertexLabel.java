@@ -18,7 +18,6 @@ import com.baidu.hugegraph.graphdb.internal.InternalVertexLabel;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class BaseVertexLabel extends EmptyVertex implements InternalVertexLabel {
 

@@ -23,7 +23,6 @@ import java.util.*;
  *
  * @param <T>
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RandomRemovalList<T> implements Collection<T>, Iterator<T> {
 

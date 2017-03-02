@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.PropertyKey;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class PropertyKeyDefinition extends RelationTypeDefinition {
 

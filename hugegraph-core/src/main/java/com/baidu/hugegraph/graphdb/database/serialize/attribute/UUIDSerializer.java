@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import java.util.UUID;
 
 /**
- *  @author Bryn Cooke (bryn.cooke@datastax.com)
  */
 public class UUIDSerializer implements AttributeSerializer<UUID>  {
 

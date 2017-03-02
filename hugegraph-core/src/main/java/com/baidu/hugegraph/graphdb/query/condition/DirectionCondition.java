@@ -23,7 +23,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class DirectionCondition<E extends HugeGraphRelation> extends Literal<E> {

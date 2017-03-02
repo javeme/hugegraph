@@ -24,7 +24,6 @@ package com.baidu.hugegraph.diskstorage.keycolumnvalue.scan;
  * </ul>
  * All counters values automatically start at zero.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ScanMetrics {
 

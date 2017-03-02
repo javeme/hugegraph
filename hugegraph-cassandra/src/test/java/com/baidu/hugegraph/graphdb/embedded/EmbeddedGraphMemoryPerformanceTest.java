@@ -21,7 +21,6 @@ import com.baidu.hugegraph.diskstorage.configuration.WriteConfiguration;
 import com.baidu.hugegraph.graphdb.HugeGraphPerformanceMemoryTest;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class EmbeddedGraphMemoryPerformanceTest extends HugeGraphPerformanceMemoryTest {

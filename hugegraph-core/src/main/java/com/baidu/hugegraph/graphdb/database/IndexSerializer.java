@@ -60,7 +60,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.INDEX_NAME_MAPPING;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IndexSerializer {

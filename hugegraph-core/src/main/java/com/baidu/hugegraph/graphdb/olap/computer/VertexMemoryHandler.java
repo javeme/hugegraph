@@ -34,7 +34,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 class VertexMemoryHandler<M> implements PreloadedVertex.PropertyMixing, Messenger<M> {
 

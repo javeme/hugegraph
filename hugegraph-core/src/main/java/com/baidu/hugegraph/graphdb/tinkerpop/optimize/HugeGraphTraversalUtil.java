@@ -33,7 +33,6 @@ import org.apache.tinkerpop.gremlin.structure.util.wrapped.WrappedVertex;
 import java.util.Optional;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphTraversalUtil {
 

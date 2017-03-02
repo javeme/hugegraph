@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.relations;
 import com.baidu.hugegraph.graphdb.internal.InternalRelation;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface StandardRelation extends InternalRelation {

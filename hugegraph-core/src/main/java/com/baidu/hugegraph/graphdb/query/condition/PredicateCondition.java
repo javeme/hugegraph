@@ -26,7 +26,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.util.Iterator;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class PredicateCondition<K, E extends HugeGraphElement> extends Literal<E> {

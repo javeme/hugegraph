@@ -33,7 +33,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import java.util.Iterator;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RelationConstructor {
 

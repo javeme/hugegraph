@@ -59,7 +59,6 @@ import com.baidu.hugegraph.util.stats.MetricManager;
  * closure, but I'm not sure that the extra complexity and potential performance
  * hit is worth it.
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class MetricInstrumentedStore implements KeyColumnValueStore {
 

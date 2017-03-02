@@ -24,7 +24,6 @@ import com.baidu.hugegraph.util.stats.MetricManager;
 /**
  * Wraps a {@link QueryExecutor} to gather metrics on the query execution and forward them to METRICS.
  *
- * @author Dan LaRocque (dan@thinkaurelius.com)
  */
 public class MetricsQueryExecutor<Q extends ElementQuery,R extends HugeGraphElement,B extends BackendQuery> implements QueryExecutor<Q,R,B> {
 

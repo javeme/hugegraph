@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class AbstractConfiguration implements Configuration {
 

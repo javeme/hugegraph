@@ -25,7 +25,6 @@ import com.carrotsearch.hppc.LongArrayList;
  * VertexList is returned by {@link HugeGraphVertexQuery}. Depending on how the query was executed that returned this VertexList,
  * getting vertex ids might be significantly faster than retrieving vertex objects.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public interface VertexList extends Iterable<HugeGraphVertex> {
 

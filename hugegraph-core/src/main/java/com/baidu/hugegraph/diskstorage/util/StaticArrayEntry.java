@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StaticArrayEntry extends BaseStaticArrayEntry implements Entry, MetaAnnotatable {
 

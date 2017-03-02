@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.schema.SchemaStatus;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SchemaSource {
 

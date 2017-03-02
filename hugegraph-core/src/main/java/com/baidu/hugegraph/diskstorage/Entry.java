@@ -22,7 +22,6 @@ import com.baidu.hugegraph.graphdb.relations.RelationCache;
  * An entry consists of a column and value both of which are general {@link java.nio.ByteBuffer}s.
  * The value may be null but the column may not.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface Entry extends StaticBuffer, MetaAnnotated {
 

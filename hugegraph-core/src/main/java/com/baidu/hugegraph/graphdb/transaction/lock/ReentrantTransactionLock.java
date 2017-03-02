@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ReentrantTransactionLock extends ReentrantLock implements TransactionLock {
 

@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraVertexMemory<M> {
 

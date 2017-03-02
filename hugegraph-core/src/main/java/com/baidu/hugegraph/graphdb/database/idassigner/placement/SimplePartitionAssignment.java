@@ -19,7 +19,6 @@ import com.google.common.base.Preconditions;
 /**
  * Simple implementation of {@link PartitionAssignment}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class SimplePartitionAssignment implements PartitionAssignment {
 

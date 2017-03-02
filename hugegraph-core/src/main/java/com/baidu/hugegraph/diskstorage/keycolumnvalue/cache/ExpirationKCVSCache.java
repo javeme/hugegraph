@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import static com.baidu.hugegraph.util.datastructures.ByteSize.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ExpirationKCVSCache extends KCVSCache {
 

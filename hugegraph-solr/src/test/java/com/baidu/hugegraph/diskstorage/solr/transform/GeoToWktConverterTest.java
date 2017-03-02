@@ -21,7 +21,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Jared Holmberg (jholmberg@bericotechnologies.com)
  */
 public class GeoToWktConverterTest {
 

@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.internal.InternalRelation;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class ConcurrentAddedRelations extends SimpleAddedRelations {

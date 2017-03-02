@@ -18,7 +18,6 @@ package com.baidu.hugegraph.graphdb.transaction.lock;
 import java.time.Duration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class FakeLock implements TransactionLock {

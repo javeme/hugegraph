@@ -34,7 +34,6 @@ import java.util.*;
  * </p>
  * All other methods just prepare or transform that result set to fit the particular method semantics.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class MultiVertexCentricQueryBuilder extends BasicVertexCentricQueryBuilder<MultiVertexCentricQueryBuilder> implements HugeGraphMultiVertexQuery<MultiVertexCentricQueryBuilder> {
 

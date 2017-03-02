@@ -18,7 +18,6 @@ import com.baidu.hugegraph.core.Cardinality;
 import com.baidu.hugegraph.core.schema.DefaultSchemaMaker;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class Tp3DefaultSchemaMaker implements DefaultSchemaMaker {
 

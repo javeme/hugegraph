@@ -21,7 +21,6 @@ import com.baidu.hugegraph.core.HugeGraphVertex;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IncidenceCondition<E extends HugeGraphRelation> extends Literal<E> {

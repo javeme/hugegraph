@@ -24,7 +24,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
  * serialized byte representation representation.
  *
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface OrderPreservingSerializer<V> extends AttributeSerializer<V> {
 

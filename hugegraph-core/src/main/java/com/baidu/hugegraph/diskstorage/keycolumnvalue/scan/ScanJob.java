@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 /**
  * A global computation over
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ScanJob extends Cloneable {
 

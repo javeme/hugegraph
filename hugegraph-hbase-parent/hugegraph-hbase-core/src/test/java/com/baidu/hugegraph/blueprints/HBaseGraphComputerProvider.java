@@ -24,7 +24,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.io.IOException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @GraphProvider.Descriptor(computer = FulgoraGraphComputer.class)
 public class HBaseGraphComputerProvider extends AbstractHugeGraphComputerProvider {

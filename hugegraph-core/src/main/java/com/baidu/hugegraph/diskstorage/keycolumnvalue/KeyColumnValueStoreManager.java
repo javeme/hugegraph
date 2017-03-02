@@ -26,7 +26,6 @@ import java.util.Map;
  * A KeyColumnValueStoreManager provides transaction handles across multiple data stores that
  * are managed by this KeyColumnValueStoreManager.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface KeyColumnValueStoreManager extends StoreManager {
 

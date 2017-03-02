@@ -28,7 +28,6 @@ import com.baidu.hugegraph.util.datastructures.Retriever;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardVertex extends AbstractVertex {

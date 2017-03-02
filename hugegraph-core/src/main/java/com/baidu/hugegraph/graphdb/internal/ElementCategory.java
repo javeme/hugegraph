@@ -26,7 +26,6 @@ import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public enum ElementCategory {
     VERTEX, EDGE, PROPERTY;

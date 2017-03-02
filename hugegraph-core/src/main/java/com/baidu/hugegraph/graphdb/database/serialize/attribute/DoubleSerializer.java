@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.database.serialize.OrderPreservingSerializer;
 import com.baidu.hugegraph.util.encoding.NumericUtils;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class DoubleSerializer implements OrderPreservingSerializer<Double> {

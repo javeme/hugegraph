@@ -21,7 +21,6 @@ import java.util.EnumMap;
 import java.util.Set;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public class TypeDefinitionMap extends EnumMap<TypeDefinitionCategory,Object> {
 

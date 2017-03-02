@@ -24,7 +24,6 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class LongEncodingTest {

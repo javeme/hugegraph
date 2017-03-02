@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage.log;
 /**
  * Implementations of this interface are used to process messages read from the log.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface MessageReader {
 

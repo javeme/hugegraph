@@ -27,7 +27,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.util.Iterator;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphStepStrategy extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy> implements TraversalStrategy.ProviderOptimizationStrategy {
 

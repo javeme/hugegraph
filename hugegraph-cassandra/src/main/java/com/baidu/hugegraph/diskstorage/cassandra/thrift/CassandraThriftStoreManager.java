@@ -62,7 +62,6 @@ import static com.baidu.hugegraph.diskstorage.configuration.ConfigOption.disallo
  * handles Cassandra-backed allocation of vertex IDs for HugeGraph (when so
  * configured).
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 @PreInitializeConfigOptions
 public class CassandraThriftStoreManager extends AbstractCassandraStoreManager {

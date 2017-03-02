@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 /**
  * Representation of a (key,value) pair.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 
 public class KeyValueEntry {

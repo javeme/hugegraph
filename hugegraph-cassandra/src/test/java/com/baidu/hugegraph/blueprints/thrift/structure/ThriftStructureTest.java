@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.StructureStandardSuite;
 import org.junit.runner.RunWith;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @RunWith(StructureStandardSuite.class)
 @GraphProviderClass(provider = ThriftGraphProvider.class, graph = HugeGraph.class)

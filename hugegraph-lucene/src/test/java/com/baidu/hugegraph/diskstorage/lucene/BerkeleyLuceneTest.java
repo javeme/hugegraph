@@ -24,7 +24,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 import static com.baidu.hugegraph.BerkeleyStorageSetup.getBerkeleyJEConfiguration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class BerkeleyLuceneTest extends HugeGraphIndexTest {
 

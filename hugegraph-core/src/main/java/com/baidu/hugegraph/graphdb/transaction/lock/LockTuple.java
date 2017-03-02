@@ -18,7 +18,6 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class LockTuple {
 

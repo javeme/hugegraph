@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import static com.baidu.hugegraph.core.attribute.Text.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class TextTest {

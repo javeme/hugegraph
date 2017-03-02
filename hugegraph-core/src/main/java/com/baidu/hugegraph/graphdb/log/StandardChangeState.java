@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 class StandardChangeState implements ChangeState {
 

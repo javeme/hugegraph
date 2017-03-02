@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.BaseTransactionConfig;
 /**
  * Dummy transaction object that does nothing
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class NoOpStoreTransaction extends AbstractStoreTransaction {

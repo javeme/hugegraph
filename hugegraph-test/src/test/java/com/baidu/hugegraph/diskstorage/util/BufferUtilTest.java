@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class BufferUtilTest {

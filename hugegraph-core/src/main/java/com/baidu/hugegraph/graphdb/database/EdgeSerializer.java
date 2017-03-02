@@ -50,7 +50,6 @@ import static com.baidu.hugegraph.graphdb.database.idhandling.IDHandler.Relation
 import static com.baidu.hugegraph.graphdb.database.idhandling.IDHandler.getBounds;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class EdgeSerializer implements RelationReader {

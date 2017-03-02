@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
  * i.e. the byte values of proper and improper directions may NOT be mixed.
  * This is crucial IN the retrieval for proper edges where we make this assumption.
  *
- * @author Matthias Broecheler (me@matthiasb.com);
  */
 public class EdgeDirection {
     public static final Direction[] PROPER_DIRS = {Direction.IN, Direction.OUT};

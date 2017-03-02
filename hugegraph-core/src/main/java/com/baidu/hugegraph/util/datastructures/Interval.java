@@ -17,7 +17,6 @@ package com.baidu.hugegraph.util.datastructures;
 import java.util.Collection;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface Interval<T> {

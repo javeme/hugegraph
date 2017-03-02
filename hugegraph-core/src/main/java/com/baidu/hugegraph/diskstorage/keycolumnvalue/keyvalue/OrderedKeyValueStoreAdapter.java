@@ -38,7 +38,6 @@ import java.util.*;
  * static, specifying that length will make the representation of a {@link KeyColumnValueStore} in a {@link OrderedKeyValueStore}
  * more concise and more performant.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class OrderedKeyValueStoreAdapter extends BaseKeyColumnValueAdapter {
 

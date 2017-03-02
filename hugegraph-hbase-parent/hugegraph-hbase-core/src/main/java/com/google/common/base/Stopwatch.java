@@ -82,7 +82,6 @@ import java.util.concurrent.TimeUnit;
  *
  * <p><b>Note:</b> This class is not thread-safe.
  *
- * @author Kevin Bourrillion
  * @since 10.0
  */
 @Beta

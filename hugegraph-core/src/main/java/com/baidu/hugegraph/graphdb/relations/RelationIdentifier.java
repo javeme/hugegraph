@@ -33,7 +33,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public final class RelationIdentifier implements Serializable {

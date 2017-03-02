@@ -35,7 +35,6 @@ import com.baidu.hugegraph.graphdb.relations.RelationIdentifier;
  * <li>Aborting and committing transaction</li>
  * </ul>
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public interface HugeGraphTransaction extends Transaction {
 

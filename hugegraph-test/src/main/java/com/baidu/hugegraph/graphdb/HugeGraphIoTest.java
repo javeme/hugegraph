@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 /**
  * Tests HugeGraph specific serialization classes not covered by the TinkerPop suite.
  *
- * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 public abstract class HugeGraphIoTest extends HugeGraphBaseTest {
 

@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.transaction.lock;
 import com.baidu.hugegraph.graphdb.types.CompositeIndexType;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexLockTuple extends LockTuple {
 

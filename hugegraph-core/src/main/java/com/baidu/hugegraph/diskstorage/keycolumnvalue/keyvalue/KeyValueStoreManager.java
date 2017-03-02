@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.StoreManager;
 /**
  * {@link StoreManager} for {@link KeyValueStore}.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface KeyValueStoreManager extends StoreManager {
 

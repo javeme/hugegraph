@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.BaseTransactionConfig;
 import com.baidu.hugegraph.diskstorage.BaseTransactionConfigurable;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class DefaultTransaction implements BaseTransactionConfigurable {
 

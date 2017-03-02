@@ -26,7 +26,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RelationQueryCache implements AutoCloseable {
 

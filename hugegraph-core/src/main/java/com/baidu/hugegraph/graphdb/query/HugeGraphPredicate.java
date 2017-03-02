@@ -28,7 +28,6 @@ import java.util.function.BiPredicate;
  * </p>
  * This class contains a subclass used to convert Tinkerpop's {@link BiPredicate} implementations to the corresponding HugeGraph predicates.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphPredicate extends BiPredicate<Object, Object> {
 

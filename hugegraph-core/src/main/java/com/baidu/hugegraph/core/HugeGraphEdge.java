@@ -27,7 +27,6 @@ import java.util.List;
  * A HugeGraphEdge connects two {@link HugeGraphVertex}. It extends the functionality provided by Blueprint's {@link Edge} and
  * is a special case of a {@link HugeGraphRelation}.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see Edge
  * @see HugeGraphRelation
  * @see EdgeLabel

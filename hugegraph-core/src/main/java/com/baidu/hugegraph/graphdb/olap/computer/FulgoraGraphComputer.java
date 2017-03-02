@@ -59,7 +59,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraGraphComputer implements HugeGraphComputer {
 

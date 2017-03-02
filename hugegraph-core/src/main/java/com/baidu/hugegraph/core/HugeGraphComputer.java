@@ -17,7 +17,6 @@ package com.baidu.hugegraph.core;
 import org.apache.tinkerpop.gremlin.process.computer.GraphComputer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphComputer extends GraphComputer {
 

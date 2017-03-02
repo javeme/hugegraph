@@ -25,7 +25,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Evaluates elements based on their visibility
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VisibilityFilterCondition<E extends HugeGraphElement> extends Literal<E> {
 

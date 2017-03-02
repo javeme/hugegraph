@@ -56,7 +56,6 @@ import com.baidu.hugegraph.graphdb.database.idhandling.VariableLong;
  * The partition id is used as the key and since key operations are considered
  * consistent, this protocol guarantees unique id block assignments.
  * <p/>
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class ConsistentKeyIDAuthority extends AbstractIDAuthority implements BackendOperation.TransactionalProvider {

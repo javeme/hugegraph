@@ -25,7 +25,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.scan.ScanMetrics;
  * (which need to be vertex-centric) for the data that is needed. Only this data is then pulled. If the user attempts
  * to access additional data during processing, the behavior is undefined.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface VertexScanJob extends Cloneable {
 

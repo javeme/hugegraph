@@ -84,7 +84,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 @PreInitializeConfigOptions

@@ -42,7 +42,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ManagementLogger implements MessageReader {
 

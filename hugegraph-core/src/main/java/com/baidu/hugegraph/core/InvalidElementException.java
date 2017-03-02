@@ -23,7 +23,6 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
  * Exception thrown when an element is invalid for the executing operation or when an operation could not be performed
  * on an element.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class InvalidElementException extends HugeGraphException {
 

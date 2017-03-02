@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.database.serialize;
 import com.baidu.hugegraph.core.attribute.AttributeSerializer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface AttributeHandler {
 

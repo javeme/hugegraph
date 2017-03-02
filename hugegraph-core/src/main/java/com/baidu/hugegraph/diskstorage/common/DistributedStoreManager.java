@@ -30,7 +30,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 /**
  * Abstract class that handles configuration options shared by all distributed storage backends
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class DistributedStoreManager extends AbstractStoreManager {

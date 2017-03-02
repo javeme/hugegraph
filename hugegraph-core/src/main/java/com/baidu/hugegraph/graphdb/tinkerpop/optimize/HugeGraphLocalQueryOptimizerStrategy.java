@@ -32,8 +32,6 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- * @author Matthias Broecheler (http://matthiasb.com)
  */
 public class HugeGraphLocalQueryOptimizerStrategy extends AbstractTraversalStrategy<TraversalStrategy.ProviderOptimizationStrategy> implements TraversalStrategy.ProviderOptimizationStrategy {
 

@@ -65,7 +65,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class LuceneIndex implements IndexProvider {

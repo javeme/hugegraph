@@ -18,7 +18,6 @@ package com.baidu.hugegraph.core;
  * Exception thrown when a user defined query (e.g. a {@link HugeGraphVertex} or {@link HugeGraphQuery})
  * is invalid or could not be processed.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public class QueryException extends HugeGraphException {
 

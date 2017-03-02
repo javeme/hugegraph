@@ -19,7 +19,6 @@ package com.baidu.hugegraph.diskstorage;
  * that is, an exception that is due to a permanent failure while persisting
  * data.
  * <p/>
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class PermanentBackendException extends BackendException {

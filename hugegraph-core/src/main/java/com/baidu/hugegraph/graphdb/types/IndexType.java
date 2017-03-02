@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.schema.HugeGraphSchemaType;
 import com.baidu.hugegraph.graphdb.internal.ElementCategory;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface IndexType {
 

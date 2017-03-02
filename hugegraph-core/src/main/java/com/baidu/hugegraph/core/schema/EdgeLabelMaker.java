@@ -23,7 +23,6 @@ import com.baidu.hugegraph.core.PropertyKey;
  * An edge label is defined by its name, {@link Multiplicity}, its directionality, and its signature - all of which
  * can be specified in this builder.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface EdgeLabelMaker extends RelationTypeMaker {
 

@@ -20,7 +20,6 @@ import java.util.Map;
 
 /**
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ModifiableConfiguration extends BasicConfiguration {
 

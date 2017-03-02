@@ -24,7 +24,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RelationTypeIndexWrapper implements RelationTypeIndex {
 

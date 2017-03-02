@@ -30,7 +30,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
  * Abstract Store Manager used as the basis for concrete StoreManager implementations.
  * Simplifies common configuration management.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class AbstractStoreManager implements StoreManager {

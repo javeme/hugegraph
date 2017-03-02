@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.query.profile;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ProfileObservable {
 

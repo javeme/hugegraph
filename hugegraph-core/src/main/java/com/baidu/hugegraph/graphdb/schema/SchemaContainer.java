@@ -25,7 +25,6 @@ import com.baidu.hugegraph.core.schema.HugeGraphManagement;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class SchemaContainer implements SchemaProvider {
 

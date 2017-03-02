@@ -20,7 +20,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Extends {@link SliceQuery} by a key that identifies the location of the slice in the key-ring.
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class KeySliceQuery extends SliceQuery {

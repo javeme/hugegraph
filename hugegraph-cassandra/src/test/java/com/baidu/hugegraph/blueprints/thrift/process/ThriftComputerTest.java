@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.process.ProcessComputerSuite;
 import org.junit.runner.RunWith;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @RunWith(ProcessComputerSuite.class)
 @GraphProviderClass(provider = ThriftGraphComputerProvider.class, graph = HugeGraph.class)

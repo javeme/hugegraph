@@ -31,7 +31,6 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class BackendOperation {

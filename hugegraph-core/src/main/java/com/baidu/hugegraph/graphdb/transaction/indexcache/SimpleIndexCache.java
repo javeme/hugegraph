@@ -23,7 +23,6 @@ import com.baidu.hugegraph.core.HugeGraphVertexProperty;
 import javax.annotation.Nullable;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class SimpleIndexCache implements IndexCache {

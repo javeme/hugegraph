@@ -25,7 +25,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.Order;
  * been defined for the keys. See {@link com.baidu.hugegraph.core.schema.HugeGraphManagement} for more information
  * on how to define index structures in HugeGraph.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  * @since 0.3.0
  */
 

@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  *
  * @param <K> Key type
  * @param <V> Pooled object type
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class CTConnectionPool extends GenericKeyedObjectPool<String, CTConnection> {
     

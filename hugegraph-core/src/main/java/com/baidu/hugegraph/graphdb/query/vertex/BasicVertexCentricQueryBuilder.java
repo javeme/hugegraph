@@ -45,7 +45,6 @@ import java.util.*;
  * Builds a {@link BaseVertexQuery}, optimizes the query and compiles the result into a {@link com.baidu.hugegraph.graphdb.query.vertex.BaseVertexCentricQuery} which
  * is then executed by one of the extending classes.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class BasicVertexCentricQueryBuilder<Q extends BaseVertexQuery<Q>> extends BaseVertexCentricQueryBuilder<Q> {
     @SuppressWarnings("unused")

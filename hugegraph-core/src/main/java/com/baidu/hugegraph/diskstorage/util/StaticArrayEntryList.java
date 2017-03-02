@@ -23,7 +23,6 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StaticArrayEntryList extends AbstractList<Entry> implements EntryList {
 

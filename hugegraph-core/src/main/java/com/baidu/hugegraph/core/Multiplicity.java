@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
  * The multiplicity of edges between vertices for a given label. Multiplicity here is understood in the same sense as
  * for UML class diagrams {@url http://en.wikipedia.org/wiki/Class_diagram#Multiplicity}
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum Multiplicity {
 

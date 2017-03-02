@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import com.baidu.hugegraph.diskstorage.util.WriteByteBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class VariableLong {

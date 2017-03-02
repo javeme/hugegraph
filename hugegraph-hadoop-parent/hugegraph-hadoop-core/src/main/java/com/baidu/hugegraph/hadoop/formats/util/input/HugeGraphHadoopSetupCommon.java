@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.SliceQuery;
 import com.baidu.hugegraph.diskstorage.util.StaticArrayBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphHadoopSetupCommon implements HugeGraphHadoopSetup {
 

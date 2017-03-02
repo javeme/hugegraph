@@ -29,7 +29,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
  *     <li>Retrieving the relations of a schema vertex for predefined {@link com.baidu.hugegraph.graphdb.types.system.SystemRelationType}s</li>
  * </ul>
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SchemaCache {
 

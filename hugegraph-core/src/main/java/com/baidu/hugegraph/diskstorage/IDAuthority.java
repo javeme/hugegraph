@@ -26,7 +26,6 @@ import java.util.List;
  * Handles the unique allocation of ids. Returns blocks of ids that are uniquely allocated to the caller so that
  * they can be used to uniquely identify elements. *
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface IDAuthority {

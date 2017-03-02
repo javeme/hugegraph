@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.hadoop.formats.util.input;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SystemTypeInspector {
 

@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.internal;
 import com.baidu.hugegraph.core.VertexLabel;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface InternalVertexLabel extends VertexLabel {
 

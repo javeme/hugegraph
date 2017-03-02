@@ -32,7 +32,6 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
  * id=0: Virtual or implicit element that does not physically exist in the database
  * id>0: Physically persisted element
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class AbstractElement implements InternalElement, Comparable<HugeGraphElement> {
 

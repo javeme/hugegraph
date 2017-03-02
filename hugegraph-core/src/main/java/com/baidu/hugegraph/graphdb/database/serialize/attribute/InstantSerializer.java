@@ -21,7 +21,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import java.time.Instant;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class InstantSerializer implements AttributeSerializer<Instant> {
 

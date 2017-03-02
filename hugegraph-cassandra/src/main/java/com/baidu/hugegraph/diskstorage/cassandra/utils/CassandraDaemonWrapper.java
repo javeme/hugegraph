@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  * starts and stops each backend at least twice in the course of opening a
  * single database instance. So the old refcounting and killing approach is out.
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class CassandraDaemonWrapper {
 

@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * Internal Vertex interface adding methods that should only be used by HugeGraph
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface InternalVertex extends HugeGraphVertex, InternalElement {
 

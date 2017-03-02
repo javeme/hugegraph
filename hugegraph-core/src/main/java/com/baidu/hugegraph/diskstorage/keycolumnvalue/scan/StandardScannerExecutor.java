@@ -35,7 +35,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 class StandardScannerExecutor extends AbstractFuture<ScanMetrics> implements HugeGraphManagement.IndexJobFuture, Runnable {
 

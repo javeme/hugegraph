@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.database.idassigner;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface IDBlockSizer {

@@ -24,7 +24,6 @@ import java.time.Instant;
  * <p/>
  * Note, that all 3 pieces of information are required for a unique identification of the transaction.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface TransactionId {
 

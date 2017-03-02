@@ -35,7 +35,6 @@ import java.util.Map;
  * Note, that the {@link #limit(int)} constraint applies to each individual result set.
  *
  * @see HugeGraphVertexQuery
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphMultiVertexQuery<Q extends HugeGraphMultiVertexQuery<Q>> extends BaseVertexQuery<Q> {
 

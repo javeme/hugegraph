@@ -45,7 +45,6 @@ import static org.junit.Assert.assertEquals;
  * or at least the primitive backend operations used therein.
  * <p/>
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphIterativeBenchmark extends HugeGraphBaseTest {
 

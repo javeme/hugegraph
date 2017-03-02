@@ -22,7 +22,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Negates the wrapped condition, i.e. semantic NOT
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class Not<E extends HugeGraphElement> implements Condition<E> {
 

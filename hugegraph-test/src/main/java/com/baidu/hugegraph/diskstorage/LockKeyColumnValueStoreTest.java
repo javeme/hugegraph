@@ -482,7 +482,6 @@ public abstract class LockKeyColumnValueStoreTest extends AbstractKCVSTest {
      * <p/>
      * Used by {@link #parallelNoncontendedLockStressTest()}.
      *
-     * @author "Dan LaRocque <dalaro@hopcount.org>"
      */
     private class LockStressor implements Runnable {
 

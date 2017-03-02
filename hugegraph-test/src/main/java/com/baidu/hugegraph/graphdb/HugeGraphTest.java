@@ -161,8 +161,6 @@ import static org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class HugeGraphTest extends HugeGraphBaseTest {
 

@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraUtil {
 

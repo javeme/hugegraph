@@ -37,7 +37,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ExpirationCacheTest extends KCVSCacheTest {
 

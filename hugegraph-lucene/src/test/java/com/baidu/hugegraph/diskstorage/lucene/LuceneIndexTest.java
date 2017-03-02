@@ -40,7 +40,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class LuceneIndexTest extends IndexProviderTest {

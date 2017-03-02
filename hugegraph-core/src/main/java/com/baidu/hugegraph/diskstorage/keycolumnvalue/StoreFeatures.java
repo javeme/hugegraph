@@ -20,8 +20,6 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProviders;
 /**
  * Describes features supported by a storage backend.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 
 public interface StoreFeatures {

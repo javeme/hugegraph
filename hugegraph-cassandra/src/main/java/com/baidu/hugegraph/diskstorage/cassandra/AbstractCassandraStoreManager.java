@@ -37,7 +37,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 import org.apache.cassandra.dht.IPartitioner;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @PreInitializeConfigOptions
 public abstract class AbstractCassandraStoreManager extends DistributedStoreManager implements KeyColumnValueStoreManager {

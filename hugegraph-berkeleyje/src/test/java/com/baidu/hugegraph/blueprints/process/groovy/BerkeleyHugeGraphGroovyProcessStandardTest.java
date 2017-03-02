@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.process.GroovyProcessStandardSuite;
 import org.junit.runner.RunWith;
 
 /**
- * @author Bryn Cooke
  */
 @RunWith(GroovyProcessStandardSuite.class)
 @GraphProviderClass(provider = BerkeleyGraphProvider.class, graph = HugeGraph.class)

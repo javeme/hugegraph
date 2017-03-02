@@ -18,7 +18,6 @@ import com.baidu.hugegraph.core.RelationType;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface RelationFactory {

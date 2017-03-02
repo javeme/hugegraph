@@ -39,7 +39,6 @@ import java.util.List;
  * </p>
  * All other methods just prepare or transform that result set to fit the particular method semantics.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexCentricQueryBuilder extends BasicVertexCentricQueryBuilder<VertexCentricQueryBuilder> implements HugeGraphVertexQuery<VertexCentricQueryBuilder> {
 

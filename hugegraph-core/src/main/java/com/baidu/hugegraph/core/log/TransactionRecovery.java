@@ -23,7 +23,6 @@ import com.baidu.hugegraph.core.HugeGraphException;
  * <p/>
  * This process is started via {@link com.baidu.hugegraph.core.HugeGraphFactory#}
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface TransactionRecovery {
 

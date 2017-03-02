@@ -24,7 +24,6 @@ import com.baidu.hugegraph.diskstorage.log.Message;
  *
  * This class can be used by {@link com.baidu.hugegraph.diskstorage.log.Log} implementations to wrap messages.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FutureMessage<M extends Message> extends AbstractFuture<Message> {
 

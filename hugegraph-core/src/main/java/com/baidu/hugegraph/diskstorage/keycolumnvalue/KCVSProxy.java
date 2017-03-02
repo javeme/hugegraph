@@ -26,7 +26,6 @@ import java.util.Map;
  * Wraps a {@link com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStore} as a proxy as a basis for
  * other wrappers
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class KCVSProxy implements KeyColumnValueStore {
 

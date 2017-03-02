@@ -20,7 +20,6 @@ import org.apache.tinkerpop.gremlin.GraphProviderClass;
 import org.junit.runner.RunWith;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 @RunWith(HugeGraphStrategySuite.class)
 @GraphProviderClass(provider = InMemoryGraphProvider.class, graph = HugeGraph.class)

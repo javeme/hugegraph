@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class GiraphRecordReader extends RecordReader<NullWritable, VertexWritable> {
 

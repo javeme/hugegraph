@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 /**
  * Utility class containing methods that simplify HugeGraph clean-up processes.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphCleanup {
 

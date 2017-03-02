@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexJobConverter implements ScanJob {
 

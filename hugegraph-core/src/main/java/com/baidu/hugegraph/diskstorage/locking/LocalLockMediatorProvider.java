@@ -37,7 +37,6 @@ public interface LocalLockMediatorProvider {
      * @param namespace
      *            the arbitrary identifier for a local lock mediator
      * @return the local lock mediator for {@code namespace}
-     * @author Dan LaRocque <dalaro@hopcount.org>
      * @see LocalLockMediator
      */
     public <T> LocalLockMediator<T> get(String namespace, TimestampProvider times);

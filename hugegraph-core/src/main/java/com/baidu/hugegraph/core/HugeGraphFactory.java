@@ -48,7 +48,6 @@ import java.util.regex.Pattern;
 /**
  * HugeGraphFactory is used to open or instantiate a HugeGraph graph database.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see HugeGraph
  */
 

@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.query;
 /**
  * Standard Query interface specifying that a query may have a limit.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface Query {
 

@@ -19,7 +19,6 @@ import com.baidu.hugegraph.graphdb.query.HugeGraphPredicate;
 /**
  * An IndexInformation gives basic information on what a particular {@link IndexProvider} supports.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface IndexInformation {

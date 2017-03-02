@@ -37,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * transactions in a single process from concurrently writing the same lock to a
  * distributed key-value store.
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 
 public class LocalLockMediator<T> {

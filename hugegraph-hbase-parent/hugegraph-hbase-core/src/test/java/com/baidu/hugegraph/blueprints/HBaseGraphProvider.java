@@ -22,7 +22,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.io.IOException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HBaseGraphProvider extends AbstractHugeGraphProvider {
 

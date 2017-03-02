@@ -31,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @PreInitializeConfigOptions
 public class PropertyPlacementStrategy extends SimpleBulkPlacementStrategy {

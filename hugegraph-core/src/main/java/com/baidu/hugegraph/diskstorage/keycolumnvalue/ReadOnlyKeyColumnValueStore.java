@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * Wraps a {@link KeyColumnValueStore} and throws exceptions when a mutation is attempted.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class ReadOnlyKeyColumnValueStore extends KCVSProxy {
 

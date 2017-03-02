@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.HugeGraphElement;
 /**
  * Combines multiple conditions under semantic OR, i.e. at least one condition must be true for this combination to be true
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class Or<E extends HugeGraphElement> extends MultiCondition<E> {

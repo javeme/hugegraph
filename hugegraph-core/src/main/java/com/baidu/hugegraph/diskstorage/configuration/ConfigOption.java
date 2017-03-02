@@ -37,7 +37,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ConfigOption<O> extends ConfigElement {
 

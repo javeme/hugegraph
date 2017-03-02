@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexProgramScanJob<M> implements VertexScanJob {
 

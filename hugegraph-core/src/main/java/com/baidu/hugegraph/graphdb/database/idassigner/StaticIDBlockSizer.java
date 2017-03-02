@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.database.idassigner;
 import com.google.common.base.Preconditions;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StaticIDBlockSizer implements IDBlockSizer {

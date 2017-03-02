@@ -21,7 +21,6 @@ import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
  * Constructor returned by {@link com.baidu.hugegraph.core.HugeGraph#buildTransaction()} to build a new transaction.
  * The TransactionBuilder allows certain aspects of the resulting transaction to be configured up-front.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface TransactionBuilder {
 

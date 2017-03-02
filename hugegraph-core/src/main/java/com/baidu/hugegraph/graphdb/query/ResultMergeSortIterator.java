@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ResultMergeSortIterator<R> implements Iterator<R> {
 

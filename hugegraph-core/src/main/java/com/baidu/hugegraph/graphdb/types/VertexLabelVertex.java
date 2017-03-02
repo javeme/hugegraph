@@ -19,7 +19,6 @@ import com.baidu.hugegraph.graphdb.transaction.StandardHugeGraphTx;
 import com.baidu.hugegraph.graphdb.types.vertices.HugeGraphSchemaVertex;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexLabelVertex extends HugeGraphSchemaVertex implements InternalVertexLabel {
 

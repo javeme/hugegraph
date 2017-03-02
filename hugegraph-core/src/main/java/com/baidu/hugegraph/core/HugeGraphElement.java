@@ -36,7 +36,6 @@ import org.apache.tinkerpop.gremlin.structure.Property;
  * i.e. it has a unique ID which can be retrieved via {@link #id}
  * (use {@link #hasId} to determine if a given entity has a unique ID).
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see HugeGraphVertex
  * @see HugeGraphRelation
  */

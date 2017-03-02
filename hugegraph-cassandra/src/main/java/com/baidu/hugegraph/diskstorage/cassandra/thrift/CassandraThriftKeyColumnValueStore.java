@@ -46,7 +46,6 @@ import static com.baidu.hugegraph.diskstorage.cassandra.CassandraTransaction.get
  * A HugeGraph {@code KeyColumnValueStore} backed by Cassandra.
  * This uses the Cassandra Thrift API.
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  * @see CassandraThriftStoreManager
  */
 public class CassandraThriftKeyColumnValueStore implements KeyColumnValueStore {

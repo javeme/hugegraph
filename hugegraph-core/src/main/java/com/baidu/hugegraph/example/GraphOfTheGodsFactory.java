@@ -35,7 +35,6 @@ import java.io.File;
  * Example Graph factory that creates a {@link HugeGraph} based on roman mythology.
  * Used in the documentation examples and tutorials.
  *
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class GraphOfTheGodsFactory {
 

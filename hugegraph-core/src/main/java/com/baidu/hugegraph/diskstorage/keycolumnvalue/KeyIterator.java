@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 import com.baidu.hugegraph.diskstorage.util.RecordIterator;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface KeyIterator extends RecordIterator<StaticBuffer> {

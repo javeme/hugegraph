@@ -91,7 +91,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardHugeGraphTx extends HugeGraphBlueprintsTransaction implements TypeInspector, SchemaInspector, VertexFactory {

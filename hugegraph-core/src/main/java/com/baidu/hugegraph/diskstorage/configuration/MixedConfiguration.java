@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class MixedConfiguration extends AbstractConfiguration {
 

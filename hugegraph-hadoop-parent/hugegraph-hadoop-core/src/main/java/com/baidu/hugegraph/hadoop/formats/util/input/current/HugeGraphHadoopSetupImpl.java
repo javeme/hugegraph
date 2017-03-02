@@ -38,7 +38,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.hadoop.conf.Configuration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphHadoopSetupImpl extends HugeGraphHadoopSetupCommon {
 

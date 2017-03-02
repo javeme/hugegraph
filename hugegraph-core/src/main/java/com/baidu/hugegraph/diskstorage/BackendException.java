@@ -19,7 +19,6 @@ package com.baidu.hugegraph.diskstorage;
  * <p/>
  * Such exceptions are typically caused by the underlying storage engine and re-thrown as {@link BackendException}.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public abstract class BackendException extends Exception {
 

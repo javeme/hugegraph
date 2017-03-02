@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * {@link Mutation} type for {@link KeyColumnValueStore}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class KCVMutation extends Mutation<Entry,StaticBuffer> {

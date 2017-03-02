@@ -48,7 +48,6 @@ import java.util.List;
  * This class essentially just acts as a builder, uses the {@link IndexSerializer} to execute the query, and then post-processes
  * the result set to return to the user.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexQueryBuilder extends BaseQuery implements HugeGraphIndexQuery {
 

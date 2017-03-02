@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.HugeGraphTransaction;
  * Allows the user to define custom behavior to process those transactional changes that are recorded in a transaction log.
  * {@link ChangeProcessor}s are registered with a transaction log processor in the {@link LogProcessorBuilder}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ChangeProcessor {
 

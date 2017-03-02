@@ -22,8 +22,6 @@ import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONIo;
 import org.apache.tinkerpop.gremlin.structure.io.gryo.GryoIo;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 public class HugeGraphIoRegistry extends AbstractIoRegistry {
 

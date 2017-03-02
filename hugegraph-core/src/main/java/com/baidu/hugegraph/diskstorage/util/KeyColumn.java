@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 /**
  * Class representing a (key, column) pair.
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 public class KeyColumn {
 

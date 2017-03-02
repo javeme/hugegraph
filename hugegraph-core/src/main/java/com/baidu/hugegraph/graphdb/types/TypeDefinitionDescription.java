@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.types;
 import com.google.common.base.Preconditions;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TypeDefinitionDescription {
 

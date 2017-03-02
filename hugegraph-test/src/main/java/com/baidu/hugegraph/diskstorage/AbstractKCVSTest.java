@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProviders;
 import com.baidu.hugegraph.diskstorage.util.StandardBaseTransactionConfig;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class AbstractKCVSTest {
 

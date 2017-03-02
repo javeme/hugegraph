@@ -33,7 +33,6 @@ import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ManagementUtil {
 

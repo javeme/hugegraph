@@ -36,7 +36,6 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TransactionLogHeader {
 

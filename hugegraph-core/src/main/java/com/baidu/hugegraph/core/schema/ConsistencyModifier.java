@@ -21,7 +21,6 @@ package com.baidu.hugegraph.core.schema;
  * Consistency modifiers are installed on schema elements via {@link HugeGraphManagement#setConsistency(HugeGraphSchemaElement, ConsistencyModifier)}
  * and can be read using {@link HugeGraphManagement#getConsistency(HugeGraphSchemaElement)}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum ConsistencyModifier {
 

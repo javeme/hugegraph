@@ -25,7 +25,6 @@ import org.apache.tinkerpop.gremlin.structure.Element;
  * This interface allows introspecting an existing graph index. Existing graph indexes can be retrieved via
  * {@link HugeGraphManagement#getGraphIndex(String)} or {@link HugeGraphManagement#getGraphIndexes(Class)}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphIndex extends Index {
 

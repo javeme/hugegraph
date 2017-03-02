@@ -23,7 +23,6 @@ import com.baidu.hugegraph.graphdb.database.StandardHugeGraph;
 import org.junit.Test;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class EdgeSerializerTest {
 

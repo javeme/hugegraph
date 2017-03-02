@@ -26,7 +26,6 @@ import java.util.Properties;
 /**
  * Collection of constants used throughput the HugeGraph codebase.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphConstants {
 

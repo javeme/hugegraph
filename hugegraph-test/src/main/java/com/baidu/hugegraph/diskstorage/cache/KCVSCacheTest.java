@@ -42,7 +42,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class KCVSCacheTest {
 

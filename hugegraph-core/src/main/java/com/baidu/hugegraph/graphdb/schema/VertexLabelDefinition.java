@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.schema;
 import com.baidu.hugegraph.core.VertexLabel;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexLabelDefinition extends SchemaElementDefinition {
 

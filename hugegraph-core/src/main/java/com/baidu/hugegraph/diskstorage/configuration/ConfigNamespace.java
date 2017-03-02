@@ -21,7 +21,6 @@ import com.baidu.hugegraph.core.util.ReflectiveConfigOptionLoader;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ConfigNamespace extends ConfigElement {
 

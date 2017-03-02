@@ -18,7 +18,6 @@ package com.baidu.hugegraph.core.schema;
  * Used to read and change the global HugeGraph configuration.
  * The configuration options are read from the graph and affect the entire database.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphConfiguration {
 

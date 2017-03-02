@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class BackgroundThread extends Thread {
 

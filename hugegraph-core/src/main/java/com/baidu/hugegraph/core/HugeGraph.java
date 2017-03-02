@@ -23,7 +23,6 @@ import org.apache.tinkerpop.gremlin.util.Gremlin;
  * HugeGraph graph database implementation of the Blueprint's interface.
  * Use {@link HugeGraphFactory} to open and configure HugeGraph instances.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see HugeGraphFactory
  * @see HugeGraphTransaction
  */

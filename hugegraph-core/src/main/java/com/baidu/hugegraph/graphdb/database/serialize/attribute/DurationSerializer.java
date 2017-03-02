@@ -21,7 +21,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import java.time.Duration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class DurationSerializer implements AttributeSerializer<Duration> {
 

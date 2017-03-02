@@ -21,7 +21,6 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProvider;
 import java.time.Instant;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ReadMarker {
 

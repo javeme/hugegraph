@@ -21,7 +21,6 @@ import com.baidu.hugegraph.graphdb.olap.computer.FulgoraGraphComputer;
 import org.apache.tinkerpop.gremlin.GraphProvider;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @GraphProvider.Descriptor(computer = FulgoraGraphComputer.class)
 public class ThriftGraphComputerProvider extends AbstractHugeGraphComputerProvider {

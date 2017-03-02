@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.util;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class ExceptionFactory {

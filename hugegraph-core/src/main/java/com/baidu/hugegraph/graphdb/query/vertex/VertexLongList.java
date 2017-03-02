@@ -32,7 +32,6 @@ import java.util.NoSuchElementException;
  * This is a more efficient way to represent a vertex result set but only applies to loaded vertices that have ids.
  * So, compared to {@link VertexArrayList} this is an optimization for the special use case that a vertex is loaded.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexLongList implements VertexListInternal {
 

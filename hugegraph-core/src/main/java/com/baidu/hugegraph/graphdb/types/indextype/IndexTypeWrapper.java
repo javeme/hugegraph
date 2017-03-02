@@ -29,7 +29,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class IndexTypeWrapper implements IndexType {
 

@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.idmanagement.IDManager;
 import com.baidu.hugegraph.graphdb.types.TypeInspector;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphHadoopSetup {
 

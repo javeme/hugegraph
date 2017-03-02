@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage.keycolumnvalue;
 /**
  * Consistency Levels for transactions.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum ConsistencyLevel {
 

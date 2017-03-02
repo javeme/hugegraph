@@ -18,7 +18,6 @@ import com.baidu.hugegraph.core.PropertyKey;
 import com.baidu.hugegraph.core.HugeGraphVertexProperty;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface IndexCache {
 

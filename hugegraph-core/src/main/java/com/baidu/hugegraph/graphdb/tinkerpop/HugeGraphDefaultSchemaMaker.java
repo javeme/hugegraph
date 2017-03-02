@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.schema.DefaultSchemaMaker;
 /**
  * {@link com.baidu.hugegraph.core.schema.DefaultSchemaMaker} implementation for Blueprints graphs
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphDefaultSchemaMaker implements DefaultSchemaMaker {
 

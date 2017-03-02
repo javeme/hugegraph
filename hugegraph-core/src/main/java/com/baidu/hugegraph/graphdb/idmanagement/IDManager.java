@@ -25,7 +25,6 @@ import com.baidu.hugegraph.graphdb.database.idhandling.VariableLong;
  * Handles the allocation of ids based on the type of element
  * Responsible for the bit-wise pattern of HugeGraph's internal id scheme.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IDManager {
 

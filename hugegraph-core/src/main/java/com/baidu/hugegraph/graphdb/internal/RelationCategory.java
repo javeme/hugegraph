@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.HugeGraphVertexQuery;
 import com.baidu.hugegraph.graphdb.query.condition.Condition;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public enum RelationCategory implements Condition<HugeGraphRelation> {
 

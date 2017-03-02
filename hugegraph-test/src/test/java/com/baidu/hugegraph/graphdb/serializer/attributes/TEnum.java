@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.serializer.attributes;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum TEnum {
 

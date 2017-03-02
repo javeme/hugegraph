@@ -19,7 +19,6 @@ import com.google.common.base.Preconditions;
 /**
  * ElementLifeCycle enumerates all possible states of the lifecycle of a entity.
  *
- * @author Matthias Broecheler (me@matthiasb.com);
  */
 public class ElementLifeCycle {
 

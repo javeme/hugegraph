@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class CacheEdge extends AbstractEdge {

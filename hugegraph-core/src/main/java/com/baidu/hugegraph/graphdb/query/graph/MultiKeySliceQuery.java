@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class MultiKeySliceQuery extends BaseQuery implements BackendQuery<MultiKeySliceQuery>  {
 

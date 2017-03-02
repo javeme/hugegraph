@@ -25,7 +25,6 @@ import java.util.Set;
 
 /**
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class BasicConfiguration extends AbstractConfiguration {
 

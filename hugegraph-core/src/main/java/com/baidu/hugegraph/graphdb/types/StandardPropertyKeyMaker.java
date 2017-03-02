@@ -30,7 +30,6 @@ import java.lang.reflect.Modifier;
 import static com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory.DATATYPE;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardPropertyKeyMaker extends StandardRelationTypeMaker implements PropertyKeyMaker {

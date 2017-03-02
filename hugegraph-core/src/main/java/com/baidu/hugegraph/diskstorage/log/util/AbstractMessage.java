@@ -28,7 +28,6 @@ import java.time.Instant;
  * of a message.
  * Particular {@link com.baidu.hugegraph.diskstorage.log.Log} implementations can extend this class.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class AbstractMessage implements Message {
 

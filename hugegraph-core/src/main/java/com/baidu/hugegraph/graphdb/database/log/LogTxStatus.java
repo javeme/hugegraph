@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.database.log;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public enum LogTxStatus {
 

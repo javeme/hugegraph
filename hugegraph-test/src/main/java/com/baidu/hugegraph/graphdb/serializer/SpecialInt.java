@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.serializer;
 import java.io.Serializable;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class SpecialInt implements Serializable {

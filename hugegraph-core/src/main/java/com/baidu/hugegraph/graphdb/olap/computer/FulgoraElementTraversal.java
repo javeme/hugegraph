@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.util.Optional;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class FulgoraElementTraversal<S, E>  extends DefaultGraphTraversal<S, E> {
 

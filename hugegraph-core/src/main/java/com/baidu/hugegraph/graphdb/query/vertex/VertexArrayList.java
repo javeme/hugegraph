@@ -28,7 +28,6 @@ import java.util.*;
  * An implementation of {@link VertexListInternal} that stores the actual vertex references
  * and simply wraps an {@link ArrayList} and keeps a boolean flag to remember whether this list is in sort order.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexArrayList implements VertexListInternal {
 

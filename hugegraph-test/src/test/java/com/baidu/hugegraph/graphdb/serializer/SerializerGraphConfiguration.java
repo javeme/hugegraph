@@ -27,7 +27,6 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class SerializerGraphConfiguration {
 

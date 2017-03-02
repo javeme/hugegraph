@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StandardSchemaCache implements SchemaCache {
 

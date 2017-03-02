@@ -40,7 +40,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Jared Holmberg (jholmberg@bericotechnologies.com)
  */
 public class SolrIndexTest extends IndexProviderTest {
 

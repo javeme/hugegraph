@@ -18,7 +18,6 @@ package com.baidu.hugegraph.diskstorage;
  * A Buffer that allows sequential reads and static reads.
  * Should not be used by multiple threads.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ReadBuffer extends ScanBuffer, StaticBuffer {
 

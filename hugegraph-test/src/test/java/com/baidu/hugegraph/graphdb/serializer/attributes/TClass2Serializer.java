@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.WriteBuffer;
 import com.baidu.hugegraph.graphdb.database.serialize.attribute.StringSerializer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TClass2Serializer implements AttributeSerializer<TClass2> {
 

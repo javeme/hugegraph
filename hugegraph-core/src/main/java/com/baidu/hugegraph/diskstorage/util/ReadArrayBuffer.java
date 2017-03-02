@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.ReadBuffer;
  * Note, that the position does not impact the state of the object. Meaning, equals, hashcode,
  * and compare ignore the position.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class ReadArrayBuffer extends StaticArrayBuffer implements ReadBuffer {

@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.BackendException;
 /**
  * Manager interface for opening {@link Log}s against a particular Log implementation.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface LogManager {
 

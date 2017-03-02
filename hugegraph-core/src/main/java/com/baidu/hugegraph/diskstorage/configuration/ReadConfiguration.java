@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage.configuration;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ReadConfiguration {
 

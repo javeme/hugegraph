@@ -26,7 +26,6 @@ import com.baidu.hugegraph.core.VertexLabel;
  *     vertices with very large degrees but is inefficient for vertices with small degree</li>
  * </ul>
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface VertexLabelMaker {
 

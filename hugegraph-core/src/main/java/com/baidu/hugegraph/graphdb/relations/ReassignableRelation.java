@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.relations;
 import com.baidu.hugegraph.graphdb.internal.InternalVertex;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ReassignableRelation {
 

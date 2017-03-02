@@ -28,7 +28,6 @@ import com.baidu.hugegraph.core.RelationType;
  * <p/>
  *
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see com.baidu.hugegraph.core.RelationType
  */
 public interface RelationTypeMaker {

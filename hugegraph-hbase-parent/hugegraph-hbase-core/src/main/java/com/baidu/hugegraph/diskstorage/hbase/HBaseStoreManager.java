@@ -92,7 +92,6 @@ import com.baidu.hugegraph.util.system.NetworkUtil;
 /**
  * Storage Manager for HBase
  *
- * @author Dan LaRocque <dalaro@hopcount.org>
  */
 @PreInitializeConfigOptions
 public class HBaseStoreManager extends DistributedStoreManager implements KeyColumnValueStoreManager {

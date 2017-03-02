@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * Contains static utility methods for operating on {@link KeyColumnValueStore}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class KCVSUtil {

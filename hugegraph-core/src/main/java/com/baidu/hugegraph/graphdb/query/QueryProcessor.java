@@ -43,7 +43,6 @@ import java.util.*;
  * filters out immediate duplicates.
  *
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class QueryProcessor<Q extends ElementQuery<R, B>, R extends HugeGraphElement, B extends BackendQuery<B>> implements Iterable<R> {
 

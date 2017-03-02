@@ -22,7 +22,6 @@ import java.util.Comparator;
  * A query that returns {@link HugeGraphElement}s. This query can consist of multiple sub-queries that together
  * form the desired result set.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface ElementQuery<R extends HugeGraphElement,B extends BackendQuery<B>> extends Query {

@@ -25,7 +25,6 @@ import java.util.Map;
 /**
  * A {@link KeyValueStore} where the keys are ordered such that keys can be retrieved in order.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface OrderedKeyValueStore extends KeyValueStore {
 

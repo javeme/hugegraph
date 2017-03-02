@@ -26,7 +26,6 @@ import java.time.Duration;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @GraphProvider.Descriptor(computer = FulgoraGraphComputer.class)
 public class BerkeleyGraphComputerProvider extends AbstractHugeGraphComputerProvider {

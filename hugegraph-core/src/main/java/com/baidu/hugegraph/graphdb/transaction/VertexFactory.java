@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.transaction;
 import com.baidu.hugegraph.graphdb.internal.InternalVertex;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface VertexFactory {
 

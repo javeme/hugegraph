@@ -22,7 +22,6 @@ import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
- * @author Bryn Cooke
  */
 @Ignore
 @RunWith(GroovyEnvironmentIntegrateSuite.class)

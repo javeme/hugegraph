@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.schema.ConsistencyModifier;
 import com.baidu.hugegraph.core.schema.SchemaStatus;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public interface CompositeIndexType extends IndexType {
 

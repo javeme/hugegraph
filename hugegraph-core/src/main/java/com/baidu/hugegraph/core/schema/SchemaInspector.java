@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.RelationType;
 import com.baidu.hugegraph.core.VertexLabel;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SchemaInspector {
 

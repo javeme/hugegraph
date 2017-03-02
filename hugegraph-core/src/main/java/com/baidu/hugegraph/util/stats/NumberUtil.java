@@ -17,7 +17,6 @@ package com.baidu.hugegraph.util.stats;
 import com.google.common.base.Preconditions;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class NumberUtil {
 

@@ -17,7 +17,6 @@ package com.baidu.hugegraph.core.schema;
 /**
  * Designates the status of a {@link Index} in a graph.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum SchemaStatus {
 

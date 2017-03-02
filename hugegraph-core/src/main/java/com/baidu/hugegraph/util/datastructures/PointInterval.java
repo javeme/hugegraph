@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class PointInterval<T> implements Interval<T> {

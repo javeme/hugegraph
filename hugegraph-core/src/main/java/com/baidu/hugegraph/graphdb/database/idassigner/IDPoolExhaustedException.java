@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.database.idassigner;
 import com.baidu.hugegraph.core.HugeGraphException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IDPoolExhaustedException extends HugeGraphException {

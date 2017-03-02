@@ -28,7 +28,6 @@ import com.baidu.hugegraph.core.VertexLabel;
  * A DefaultTypeMaker implementation is specified in the graph configuration using the full path which means the
  * implementation must be on the classpath.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see RelationTypeMaker
  */
 public interface DefaultSchemaMaker {

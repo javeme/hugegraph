@@ -21,7 +21,6 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class HugeGraphStrategySuite extends AbstractGremlinSuite {
 

@@ -67,7 +67,6 @@ import java.util.*;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.*;
 
 /**
- * @author Jared Holmberg (jholmberg@bericotechnoLogies.com), Pavel Yaskevich (pavel@thinkaurelius.com)
  */
 @PreInitializeConfigOptions
 public class SolrIndex implements IndexProvider {

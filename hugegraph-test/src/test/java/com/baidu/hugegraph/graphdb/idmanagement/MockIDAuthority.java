@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class MockIDAuthority implements IDAuthority {

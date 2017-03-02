@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class SimpleQueryProfiler implements QueryProfiler, Iterable<SimpleQueryProfiler> {
 

@@ -34,7 +34,6 @@ import java.util.Map;
  * <p/>
  * See {@linktourl http://en.wikipedia.org/wiki/BigTable}
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface KeyColumnValueStore {
 

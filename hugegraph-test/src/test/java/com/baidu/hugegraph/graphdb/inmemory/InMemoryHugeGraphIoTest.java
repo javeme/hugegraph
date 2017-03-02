@@ -24,7 +24,6 @@ import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 import java.util.Map;
 
 /**
- * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 public class InMemoryHugeGraphIoTest extends HugeGraphIoTest {
     public WriteConfiguration getConfiguration() {

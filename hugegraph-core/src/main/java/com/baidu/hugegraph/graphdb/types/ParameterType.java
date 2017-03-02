@@ -19,7 +19,6 @@ import com.baidu.hugegraph.core.schema.Parameter;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum ParameterType {
 

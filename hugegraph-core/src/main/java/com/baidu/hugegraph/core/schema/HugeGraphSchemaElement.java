@@ -23,7 +23,6 @@ import com.baidu.hugegraph.core.Namifiable;
  * A HugeGraph Schema element is either a {@link HugeGraphSchemaType} or an index definition, i.e.
  * {@link HugeGraphIndex} or {@link RelationTypeIndex}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HugeGraphSchemaElement extends Namifiable {
 

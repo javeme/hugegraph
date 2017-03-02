@@ -117,8 +117,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 import static com.baidu.hugegraph.graphdb.database.management.RelationTypeIndexWrapper.RELATION_INDEX_SEPARATOR;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
- * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class ManagementSystem implements HugeGraphManagement {
 

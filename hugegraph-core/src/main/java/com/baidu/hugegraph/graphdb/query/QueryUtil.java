@@ -27,7 +27,6 @@ import java.util.*;
 /**
  * Utility methods used in query optimization and processing.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class QueryUtil {
 

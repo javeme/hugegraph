@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class GhostVertexRemover extends VertexJobConverter {
 

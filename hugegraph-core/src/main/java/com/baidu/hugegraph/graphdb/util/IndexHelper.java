@@ -25,7 +25,6 @@ import com.baidu.hugegraph.graphdb.types.system.ImplicitKey;
 import org.apache.tinkerpop.gremlin.structure.Element;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexHelper {
     public static Iterable<? extends Element> getQueryResults(CompositeIndexType index, Object[] values, StandardHugeGraphTx tx) {

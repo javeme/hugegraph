@@ -25,7 +25,6 @@ import java.util.Set;
  * as retrieving the number of times and object has been counted.
  *
  * @param <K>
- * @author Matthias Broecheler
  */
 
 public class ObjectAccumulator<K extends Object> {

@@ -46,7 +46,6 @@ import static org.junit.Assert.*;
 /**
  * Tests graph and vertex partitioning
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphPartitionGraphTest extends HugeGraphBaseTest {
 

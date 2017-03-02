@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
  * Helper class for processing read messages with the registered message readers.
  * Simple implementation of a {@link Runnable}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ProcessMessageJob implements Runnable {
 

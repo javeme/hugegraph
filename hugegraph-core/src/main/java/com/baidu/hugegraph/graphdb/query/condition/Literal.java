@@ -21,7 +21,6 @@ import com.baidu.hugegraph.core.HugeGraphElement;
 /**
  * Abstract literal condition.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class Literal<E extends HugeGraphElement> implements Condition<E> {
 

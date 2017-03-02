@@ -21,7 +21,6 @@ import com.baidu.hugegraph.graphdb.idmanagement.IDManager;
 /**
  * Utility methods for handling HugeGraph ids and converting them between indexing and storage backend representations.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphId {
 

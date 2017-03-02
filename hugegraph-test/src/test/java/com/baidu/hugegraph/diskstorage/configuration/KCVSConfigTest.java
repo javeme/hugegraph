@@ -25,7 +25,6 @@ import com.baidu.hugegraph.diskstorage.util.StandardBaseTransactionConfig;
 import com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class KCVSConfigTest extends WritableConfigurationTest {
 

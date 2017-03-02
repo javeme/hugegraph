@@ -87,7 +87,6 @@ import static org.junit.Assert.*;
 
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphIndexTest extends HugeGraphBaseTest {
 

@@ -35,7 +35,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 public class HugeGraphSONModule extends TinkerPopJacksonModule {
 

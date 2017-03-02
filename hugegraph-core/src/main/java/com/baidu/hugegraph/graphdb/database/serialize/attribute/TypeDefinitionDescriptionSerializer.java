@@ -25,7 +25,6 @@ import com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory;
 import com.baidu.hugegraph.graphdb.types.TypeDefinitionDescription;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TypeDefinitionDescriptionSerializer implements AttributeSerializer<TypeDefinitionDescription>, SerializerInjected {
 

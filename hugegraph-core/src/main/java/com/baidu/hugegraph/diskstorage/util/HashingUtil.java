@@ -18,7 +18,6 @@ import com.google.common.hash.HashCode;
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HashingUtil {
 

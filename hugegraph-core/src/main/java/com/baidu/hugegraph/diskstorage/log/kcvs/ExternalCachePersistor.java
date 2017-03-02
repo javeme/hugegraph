@@ -23,7 +23,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.cache.CacheTransaction;
 import com.baidu.hugegraph.diskstorage.keycolumnvalue.cache.KCVSCache;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ExternalCachePersistor implements ExternalPersistor {
 

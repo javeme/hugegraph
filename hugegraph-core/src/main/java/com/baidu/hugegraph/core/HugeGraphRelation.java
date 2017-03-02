@@ -32,7 +32,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
  * with a value). A unidirected edge is a special type of directed edge where the connection is only established from the
  * perspective of the outgoing vertex. In that sense, a unidirected edge is akin to a link.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  * @see HugeGraphEdge
  * @see HugeGraphVertexProperty
  */

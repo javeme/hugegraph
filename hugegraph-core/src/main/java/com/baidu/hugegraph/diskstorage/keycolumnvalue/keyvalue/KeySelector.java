@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 /**
  * A {@link KeySelector} utility that can be generated out of a given {@link KVQuery}
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class KeySelector {
 

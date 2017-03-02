@@ -32,7 +32,6 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProvider;
 /**
  * Used to configure a {@link com.baidu.hugegraph.core.HugeGraphTransaction}.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  * @see com.baidu.hugegraph.core.HugeGraphTransaction
  */
 public class StandardTransactionBuilder implements TransactionConfiguration, TransactionBuilder {

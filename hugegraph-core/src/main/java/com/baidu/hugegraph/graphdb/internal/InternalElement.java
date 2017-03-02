@@ -21,7 +21,6 @@ import com.baidu.hugegraph.graphdb.transaction.StandardHugeGraphTx;
 /**
  * Internal Element interface adding methods that should only be used by HugeGraph
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface InternalElement extends HugeGraphElement {
 

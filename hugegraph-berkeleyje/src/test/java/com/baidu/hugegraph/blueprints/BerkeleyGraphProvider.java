@@ -24,7 +24,6 @@ import java.time.Duration;
 import java.util.Set;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class BerkeleyGraphProvider extends AbstractHugeGraphProvider {
 

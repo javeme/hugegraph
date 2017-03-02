@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.indexing.KeyInformation;
 import com.baidu.hugegraph.graphdb.query.HugeGraphPredicate;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardIndexInformation implements IndexInformation {

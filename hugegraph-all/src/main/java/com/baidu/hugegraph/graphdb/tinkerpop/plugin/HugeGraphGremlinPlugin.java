@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class HugeGraphGremlinPlugin implements GremlinPlugin {
 

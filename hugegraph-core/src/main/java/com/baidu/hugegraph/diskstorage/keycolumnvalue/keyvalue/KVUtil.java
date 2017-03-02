@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 /**
  * Utility methods for interacting with {@link KeyValueStore}.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class KVUtil {
     public static final RecordIterator<KeyValueEntry> EMPTY_ITERATOR = new RecordIterator<KeyValueEntry>() {

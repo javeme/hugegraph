@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TestMockLog implements LogManager {
 

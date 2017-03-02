@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStoreManager
 import com.baidu.hugegraph.diskstorage.keycolumnvalue.inmemory.InMemoryStoreManager;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class InMemoryKeyColumnValueStoreTest extends KeyColumnValueStoreTest {

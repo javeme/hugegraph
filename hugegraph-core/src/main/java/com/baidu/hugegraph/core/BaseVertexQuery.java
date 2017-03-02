@@ -37,7 +37,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
  *
  * @see HugeGraphVertexQuery
  * @see HugeGraphMultiVertexQuery
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public interface BaseVertexQuery<Q extends BaseVertexQuery<Q>> {
 

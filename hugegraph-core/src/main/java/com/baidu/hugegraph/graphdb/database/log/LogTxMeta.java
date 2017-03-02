@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.log.StandardTransactionId;
 import com.baidu.hugegraph.graphdb.transaction.TransactionConfiguration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum LogTxMeta {
 

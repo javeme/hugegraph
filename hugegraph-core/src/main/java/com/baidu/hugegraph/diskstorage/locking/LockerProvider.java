@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.diskstorage.locking;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface LockerProvider {
 

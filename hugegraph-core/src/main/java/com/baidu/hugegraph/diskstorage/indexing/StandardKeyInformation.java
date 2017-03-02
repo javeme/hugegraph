@@ -20,7 +20,6 @@ import com.baidu.hugegraph.core.PropertyKey;
 import com.baidu.hugegraph.core.schema.Parameter;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StandardKeyInformation implements KeyInformation {
 

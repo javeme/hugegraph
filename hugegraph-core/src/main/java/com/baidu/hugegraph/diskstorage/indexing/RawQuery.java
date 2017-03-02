@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.query.BaseQuery;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RawQuery extends BaseQuery {
 

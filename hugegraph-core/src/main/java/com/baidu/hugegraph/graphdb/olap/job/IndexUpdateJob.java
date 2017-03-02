@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class IndexUpdateJob {
 

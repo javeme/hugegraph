@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.StoreTransaction;
 /**
  * Abstract implementation of {@link StoreTransaction} to be used as the basis for more specific implementations.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class AbstractStoreTransaction implements StoreTransaction {

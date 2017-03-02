@@ -36,7 +36,6 @@ import java.util.*;
 /**
  * {@link ReadConfiguration} wrapper for Apache Configuration
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class CommonsConfiguration implements WriteConfiguration {
 

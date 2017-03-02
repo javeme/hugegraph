@@ -38,7 +38,6 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * This implementation is thread-safe. All data is held in memory, which means that the capacity of this store is
  * determined by the available heap space. No data is persisted and all data lost when the jvm terminates or store closed.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class InMemoryKeyColumnValueStore implements KeyColumnValueStore {

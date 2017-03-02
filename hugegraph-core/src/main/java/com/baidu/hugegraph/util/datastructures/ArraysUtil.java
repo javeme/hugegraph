@@ -22,7 +22,6 @@ import java.util.Arrays;
 /**
  * Utility class for sorting and retrieving from primitive arrays
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ArraysUtil {
 

@@ -20,7 +20,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class SolrHugeGraphIndexTest extends HugeGraphIndexTest {
 

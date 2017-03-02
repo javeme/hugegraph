@@ -24,7 +24,6 @@ import org.apache.tinkerpop.gremlin.structure.util.StringFactory;
 /**
  * Blueprint's features of a HugeGraph.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class HugeGraphFeatures implements Graph.Features {

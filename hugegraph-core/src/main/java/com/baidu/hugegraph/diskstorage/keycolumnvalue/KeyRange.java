@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 /**
  * A range of bytes between start and end where start is inclusive and end is exclusive.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class KeyRange {
 

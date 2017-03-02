@@ -17,7 +17,6 @@ package com.baidu.hugegraph.hadoop.formats.util.input;
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface VertexReader {
 

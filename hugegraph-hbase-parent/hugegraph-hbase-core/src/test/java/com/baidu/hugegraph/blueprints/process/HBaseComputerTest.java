@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @RunWith(ProcessComputerSuite.class)
 @GraphProviderClass(provider = HBaseGraphComputerProvider.class, graph = HugeGraph.class)

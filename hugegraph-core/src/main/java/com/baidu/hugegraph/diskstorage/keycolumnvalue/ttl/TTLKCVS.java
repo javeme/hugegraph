@@ -24,7 +24,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.StoreTransaction;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TTLKCVS extends KCVSProxy {
 

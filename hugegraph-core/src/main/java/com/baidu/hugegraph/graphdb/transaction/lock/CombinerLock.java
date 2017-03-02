@@ -22,7 +22,6 @@ import com.baidu.hugegraph.diskstorage.util.time.TimestampProvider;
 import java.time.Duration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class CombinerLock implements TransactionLock {
 

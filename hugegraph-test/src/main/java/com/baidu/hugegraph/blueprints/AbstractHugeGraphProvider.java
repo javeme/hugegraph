@@ -67,7 +67,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class AbstractHugeGraphProvider extends AbstractGraphProvider {
 

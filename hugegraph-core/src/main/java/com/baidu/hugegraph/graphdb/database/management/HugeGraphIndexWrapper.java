@@ -28,7 +28,6 @@ import com.baidu.hugegraph.graphdb.types.IndexType;
 import org.apache.tinkerpop.gremlin.structure.Element;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HugeGraphIndexWrapper implements HugeGraphIndex {
 

@@ -40,7 +40,6 @@ import com.baidu.hugegraph.util.datastructures.IntHashSet;
 import com.baidu.hugegraph.util.datastructures.IntSet;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IDPoolTest {

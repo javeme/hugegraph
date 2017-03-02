@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class WritableConfigurationTest {
 

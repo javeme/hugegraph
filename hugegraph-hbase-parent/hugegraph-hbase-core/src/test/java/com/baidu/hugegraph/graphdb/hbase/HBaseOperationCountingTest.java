@@ -25,7 +25,6 @@ import org.junit.BeforeClass;
 import java.io.IOException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class HBaseOperationCountingTest extends HugeGraphOperationCountingTest {
 

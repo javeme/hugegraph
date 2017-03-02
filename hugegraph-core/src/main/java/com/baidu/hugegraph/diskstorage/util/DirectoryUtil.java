@@ -22,7 +22,6 @@ import java.io.File;
 /**
  * Utility methods for dealing with directory structures that are not provided by Apache Commons.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class DirectoryUtil {

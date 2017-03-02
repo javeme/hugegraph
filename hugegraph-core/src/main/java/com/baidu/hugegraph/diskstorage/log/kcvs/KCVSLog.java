@@ -73,7 +73,6 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * Note: All time values in this class are in mircoseconds. Hence, there are many cases where milliseconds are converted to microseconds.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @PreInitializeConfigOptions
 public class KCVSLog implements Log, BackendOperation.TransactionalProvider {

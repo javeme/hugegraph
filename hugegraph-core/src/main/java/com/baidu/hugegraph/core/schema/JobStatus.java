@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.core.schema;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class JobStatus {
 

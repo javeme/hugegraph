@@ -52,7 +52,6 @@ import java.util.Map;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.TIMESTAMP_PROVIDER;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class KCVSConfiguration implements ConcurrentWriteConfiguration {
 

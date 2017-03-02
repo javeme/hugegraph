@@ -21,7 +21,6 @@ import java.util.concurrent.locks.Lock;
 /**
  * Implementation of a lock that has no effect, i.e. does not actually lock anything.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class NoLock implements Lock {

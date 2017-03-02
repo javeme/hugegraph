@@ -33,7 +33,6 @@ import java.time.Instant;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ImplicitKey extends EmptyRelationType implements SystemRelationType, PropertyKey {
 

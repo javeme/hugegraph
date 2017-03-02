@@ -25,7 +25,6 @@ import java.util.Set;
  * {@link ChangeProcessor#process(com.baidu.hugegraph.core.HugeGraphTransaction, TransactionId, ChangeState)}
  * for the user to retrieve changed elements and act upon it.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ChangeState {
 

@@ -38,7 +38,6 @@ import java.util.List;
  * This class override many methods in {@link com.baidu.hugegraph.graphdb.query.ElementQuery} - check there
  * for a description.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class BaseVertexCentricQuery extends BaseQuery implements ProfileObservable {
 

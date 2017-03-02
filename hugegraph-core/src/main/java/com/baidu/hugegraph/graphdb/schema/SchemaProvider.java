@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.schema;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SchemaProvider {
 

@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
  * The resource can be an external storage system, indexing system or other component.
  * <p/>
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ResourceUnavailableException extends HugeGraphException {
 

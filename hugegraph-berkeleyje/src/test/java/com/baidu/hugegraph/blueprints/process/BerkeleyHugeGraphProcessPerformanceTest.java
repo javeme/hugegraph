@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.process.ProcessPerformanceSuite;
 import org.junit.runner.RunWith;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @RunWith(ProcessPerformanceSuite.class)
 @GraphProviderClass(provider = BerkeleyGraphProvider.class, graph = HugeGraph.class)

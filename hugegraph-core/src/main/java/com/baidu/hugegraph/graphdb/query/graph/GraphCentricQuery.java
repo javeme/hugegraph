@@ -37,7 +37,6 @@ import java.util.Comparator;
  * It also maintains the ordering for the query result which is needed by the {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}
  * to correctly order the result.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class GraphCentricQuery extends BaseQuery implements ElementQuery<HugeGraphElement, JointIndexQuery>, ProfileObservable {
 

@@ -22,7 +22,6 @@ import java.util.Iterator;
 /**
  * Executes a given query and its subqueries against an underlying data store and transaction.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface QueryExecutor<Q extends ElementQuery,R extends HugeGraphElement,B extends BackendQuery> {
 

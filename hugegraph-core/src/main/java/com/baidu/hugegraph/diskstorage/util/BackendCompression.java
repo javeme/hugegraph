@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage.util;
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface BackendCompression {

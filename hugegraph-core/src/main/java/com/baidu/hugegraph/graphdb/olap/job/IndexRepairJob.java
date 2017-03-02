@@ -45,7 +45,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IndexRepairJob extends IndexUpdateJob implements VertexScanJob {
 

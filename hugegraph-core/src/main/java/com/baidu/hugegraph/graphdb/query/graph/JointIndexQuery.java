@@ -39,7 +39,6 @@ import java.util.List;
  * Those sub-queries are either targeting an external indexing backend or the internal index store which is a distinction this
  * query keeps track of through the sub-class {@link Subquery}, since their definition and execution differs starkly.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class JointIndexQuery extends BaseQuery implements BackendQuery<JointIndexQuery>, ProfileObservable {
 

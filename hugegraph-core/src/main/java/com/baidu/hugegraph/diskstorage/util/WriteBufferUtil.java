@@ -18,7 +18,6 @@ import com.baidu.hugegraph.diskstorage.StaticBuffer;
 import com.baidu.hugegraph.diskstorage.WriteBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class WriteBufferUtil {

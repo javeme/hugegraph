@@ -23,7 +23,6 @@ import com.baidu.hugegraph.graphdb.types.system.SystemTypeManager;
 import static com.baidu.hugegraph.graphdb.types.TypeDefinitionCategory.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StandardVertexLabelMaker implements VertexLabelMaker {
 

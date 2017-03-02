@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
  * retrieving more than needed elements in the first place. However, this still means the initial currentLimit in the
  * constructor should be chosen wisely.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class LimitAdjustingIterator<R> implements Iterator<R> {
 

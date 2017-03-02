@@ -26,7 +26,6 @@ import com.baidu.hugegraph.graphdb.log.StandardTransactionId;
 import java.time.Instant;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class StandardTransactionIdSerializer implements AttributeSerializer<StandardTransactionId>, SerializerInjected {
 

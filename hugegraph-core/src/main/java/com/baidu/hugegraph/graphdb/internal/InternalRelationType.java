@@ -24,7 +24,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 /**
  * Internal Type interface adding methods that should only be used by HugeGraph
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface InternalRelationType extends RelationType, InternalVertex {
 

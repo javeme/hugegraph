@@ -42,7 +42,6 @@ import java.util.Map;
  * during construction and applies it to every entry written through
  * subsequent mutate/mutateMany calls.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TTLKCVSManager extends KCVSManagerProxy {
 

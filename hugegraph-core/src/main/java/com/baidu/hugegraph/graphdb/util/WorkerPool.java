@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Utility class for implementing a thread pool that closes gracefully and provides back-pressure when submitting jobs.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class WorkerPool implements AutoCloseable {
 

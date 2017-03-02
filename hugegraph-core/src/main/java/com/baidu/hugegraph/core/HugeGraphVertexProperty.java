@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
  * HugeGraphProperty is a {@link HugeGraphRelation} connecting a vertex to a value.
  * HugeGraphProperty extends {@link HugeGraphRelation}, with methods for retrieving the property's value and key.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  * @see HugeGraphRelation
  * @see PropertyKey
  */

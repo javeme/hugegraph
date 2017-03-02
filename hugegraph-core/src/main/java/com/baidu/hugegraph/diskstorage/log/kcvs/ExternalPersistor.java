@@ -18,7 +18,6 @@ import com.baidu.hugegraph.diskstorage.Entry;
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface ExternalPersistor {
 

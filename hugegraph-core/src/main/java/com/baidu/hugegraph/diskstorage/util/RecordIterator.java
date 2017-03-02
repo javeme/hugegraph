@@ -22,7 +22,6 @@ import java.util.Iterator;
  * with an additional close method so that resources associated with this
  * iterator can be released.
  * 
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public interface RecordIterator<T> extends Iterator<T>, Closeable { }

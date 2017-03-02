@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.keycolumnvalue.KeyColumnValueStore;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class NoKCVSCache extends KCVSCache {
 

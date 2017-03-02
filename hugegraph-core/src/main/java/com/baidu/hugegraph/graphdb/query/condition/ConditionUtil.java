@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 /**
  * Utility methods for transforming and inspecting {@link Condition}s.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ConditionUtil {
 

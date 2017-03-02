@@ -37,7 +37,6 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface HasStepFolder<S, E> extends Step<S, E> {
 

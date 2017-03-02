@@ -46,7 +46,6 @@ import static com.baidu.hugegraph.testutil.HugeGraphAssert.assertCount;
 import static org.junit.Assert.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class OLAPTest extends HugeGraphBaseTest {
 

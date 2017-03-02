@@ -18,7 +18,6 @@ package com.baidu.hugegraph.core;
  * Exception thrown due to invalid configuration options or when errors
  * occur during the configuration and initialization of HugeGraph.
  * <p/>
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class HugeGraphConfigurationException extends HugeGraphException {

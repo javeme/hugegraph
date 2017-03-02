@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class PartitionedVertexProgramExecutor<M> {
 

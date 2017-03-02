@@ -48,7 +48,6 @@ import static org.junit.Assert.fail;
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.INDEX_HOSTS;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class ElasticSearchIndexTest extends IndexProviderTest {

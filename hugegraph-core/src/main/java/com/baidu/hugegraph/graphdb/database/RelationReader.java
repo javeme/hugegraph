@@ -19,7 +19,6 @@ import com.baidu.hugegraph.graphdb.relations.RelationCache;
 import com.baidu.hugegraph.graphdb.types.TypeInspector;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface RelationReader {
 

@@ -23,7 +23,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum EntryMetaData {
 

@@ -35,7 +35,6 @@ import java.util.List;
  * <p/>
  * If a SliceQuery is marked <i>static</i> it is expected that the result set does not change.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class SliceQuery extends BaseQuery implements BackendQuery<SliceQuery> {

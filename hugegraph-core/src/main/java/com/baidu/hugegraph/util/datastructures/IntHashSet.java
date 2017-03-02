@@ -22,7 +22,6 @@ import java.util.Iterator;
 /**
  * Implementation of {@link IntSet} against {@link IntIntHashMap}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class IntHashSet extends IntIntHashMap implements IntSet {
 

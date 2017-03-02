@@ -23,7 +23,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  *
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class RelationTypeCondition<E extends HugeGraphElement> extends Literal<E> {
 

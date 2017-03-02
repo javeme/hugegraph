@@ -50,7 +50,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StandardSerializer implements AttributeHandler, Serializer {

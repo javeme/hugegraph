@@ -26,7 +26,6 @@ import com.baidu.hugegraph.graphdb.types.*;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class CompositeIndexTypeWrapper extends IndexTypeWrapper implements CompositeIndexType {
 

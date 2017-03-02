@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.internal.InternalRelation;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class SimpleBufferAddedRelations implements AddedRelationsContainer {

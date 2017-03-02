@@ -20,7 +20,6 @@ package com.baidu.hugegraph.graphdb.database.serialize;
  * Furthermore, such serializers will convert the {@link com.baidu.hugegraph.diskstorage.WriteBuffer} passed into the
  * {@link com.baidu.hugegraph.core.attribute.AttributeSerializer}'s write methods to be cast to {@link com.baidu.hugegraph.graphdb.database.serialize.DataOutput}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface SerializerInjected {
 

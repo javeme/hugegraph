@@ -21,7 +21,6 @@ import java.util.Set;
 /**
  * Update actions to be executed through {@link HugeGraphManagement} in {@link HugeGraphManagement#updateIndex(Index, SchemaAction)}.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public enum SchemaAction {
 

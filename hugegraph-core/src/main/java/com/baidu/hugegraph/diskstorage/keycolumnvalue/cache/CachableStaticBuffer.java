@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage.keycolumnvalue.cache;
 import com.baidu.hugegraph.diskstorage.StaticBuffer;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface CachableStaticBuffer extends StaticBuffer {
 

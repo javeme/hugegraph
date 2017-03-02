@@ -23,7 +23,6 @@ import com.baidu.hugegraph.graphdb.HugeGraphConcurrentTest;
 import com.baidu.hugegraph.testcategory.PerformanceTests;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 @Category({PerformanceTests.class})

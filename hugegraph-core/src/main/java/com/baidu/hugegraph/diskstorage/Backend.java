@@ -67,7 +67,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
  * Orchestrates and configures all backend systems:
  * The primary backend storage ({@link KeyColumnValueStore}) and all external indexing providers ({@link IndexProvider}).
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class Backend implements LockerProvider, AutoCloseable {

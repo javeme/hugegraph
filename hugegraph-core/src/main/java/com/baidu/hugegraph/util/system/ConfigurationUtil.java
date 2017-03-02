@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ConfigurationUtil {
 

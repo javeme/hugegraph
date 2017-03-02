@@ -33,7 +33,6 @@ import java.util.List;
  * {@link com.baidu.hugegraph.graphdb.query.QueryProcessor}. Most of the query definition
  * is in the extended {@link BaseVertexCentricQuery} - this class only adds the base vertex to the mix.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class VertexCentricQuery extends BaseVertexCentricQuery implements ElementQuery<HugeGraphRelation, SliceQuery> {
 

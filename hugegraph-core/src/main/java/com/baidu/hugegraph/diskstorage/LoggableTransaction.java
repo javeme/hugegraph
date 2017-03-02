@@ -17,7 +17,6 @@ package com.baidu.hugegraph.diskstorage;
 import com.baidu.hugegraph.graphdb.database.serialize.DataOutput;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface LoggableTransaction extends BaseTransaction {
 

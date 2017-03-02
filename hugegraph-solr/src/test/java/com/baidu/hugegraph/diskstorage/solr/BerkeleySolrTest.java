@@ -20,7 +20,6 @@ import static com.baidu.hugegraph.BerkeleyStorageSetup.getBerkeleyJEConfiguratio
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class BerkeleySolrTest extends SolrHugeGraphIndexTest {

@@ -17,7 +17,6 @@ package com.baidu.hugegraph.graphdb.idmanagement;
 /**
  * Interface for determining the type of element a particular id refers to.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface IDInspector {
 

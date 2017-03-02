@@ -22,7 +22,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class ConfigElement {
 

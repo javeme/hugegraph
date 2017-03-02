@@ -21,7 +21,6 @@ import com.baidu.hugegraph.core.schema.PropertyKeyMaker;
 import com.baidu.hugegraph.core.schema.VertexLabelMaker;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class DisableDefaultSchemaMaker implements DefaultSchemaMaker {

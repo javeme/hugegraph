@@ -43,7 +43,6 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class IndexProviderTest {

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class KCVSCache extends KCVSProxy {
 

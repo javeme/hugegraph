@@ -45,7 +45,6 @@ import javax.annotation.Nullable;
 /**
  * Utility methods for working with {@link Closeable} objects.
  *
- * @author Michael Lancaster
  * @since 1.0
  */
 @Beta

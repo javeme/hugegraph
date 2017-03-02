@@ -21,7 +21,6 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 /**
  * The cardinality of the values associated with given key for a particular element.
  *
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public enum Cardinality {
 

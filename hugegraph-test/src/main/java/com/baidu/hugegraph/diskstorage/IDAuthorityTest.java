@@ -53,7 +53,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 @RunWith(Parameterized.class)
 public abstract class IDAuthorityTest {

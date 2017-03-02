@@ -27,7 +27,6 @@ import org.apache.tinkerpop.gremlin.structure.Direction;
 import static com.baidu.hugegraph.graphdb.idmanagement.IDManager.VertexIDType.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class IDHandler {

@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.util.datastructures;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ByteSize {
 

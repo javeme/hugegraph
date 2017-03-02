@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class RelationTypeVertex extends HugeGraphSchemaVertex implements InternalRelationType {
 

@@ -19,7 +19,6 @@ import com.baidu.hugegraph.blueprints.AbstractHugeGraphProvider;
 import com.baidu.hugegraph.diskstorage.configuration.ModifiableConfiguration;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ThriftGraphProvider extends AbstractHugeGraphProvider {
 

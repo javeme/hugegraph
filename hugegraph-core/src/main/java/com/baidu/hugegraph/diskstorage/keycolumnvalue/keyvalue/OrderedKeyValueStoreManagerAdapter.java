@@ -33,7 +33,6 @@ import java.util.Map;
  * An optional mapping of key-length can be defined if it is known that the {@link KeyColumnValueStore} of a given
  * name has a static key length. See {@link OrderedKeyValueStoreAdapter} for more information.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public class OrderedKeyValueStoreManagerAdapter implements KeyColumnValueStoreManager {
 

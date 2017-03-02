@@ -24,7 +24,6 @@ import com.baidu.hugegraph.core.HugeGraphRelation;
  * object and not migrated to a different transactional context. It also means that access returns the "raw" value of
  * what is stored on this relation
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface InternalRelation extends HugeGraphRelation, InternalElement {
 

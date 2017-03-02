@@ -40,7 +40,6 @@ import java.util.function.Function;
  * Blueprints specific implementation of {@link HugeGraphTransaction}.
  * Provides utility methods that wrap HugeGraph calls with Blueprints terminology.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class HugeGraphBlueprintsTransaction implements HugeGraphTransaction {
 

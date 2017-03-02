@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.graphdb.query.condition;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 import com.baidu.hugegraph.core.HugeGraphElement;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
  *
  * @see And
  * @see Or
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public abstract class MultiCondition<E extends HugeGraphElement> extends ArrayList<Condition<E>> implements Condition<E> {
 

@@ -20,7 +20,6 @@ import com.baidu.hugegraph.graphdb.types.TypeDefinitionMap;
 import com.baidu.hugegraph.graphdb.types.TypeUtil;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public enum HugeGraphSchemaCategory {

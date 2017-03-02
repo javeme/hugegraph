@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.function.Function;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public interface QueryProfiler {
 

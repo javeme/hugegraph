@@ -20,7 +20,6 @@ import com.baidu.hugegraph.util.datastructures.ExceptionUtil;
 /**
  * Most general type of exception thrown by the HugeGraph graph database.
  *
- * @author Matthias Br&ouml;cheler (http://www.matthiasb.com)
  */
 public class HugeGraphException extends RuntimeException {
 

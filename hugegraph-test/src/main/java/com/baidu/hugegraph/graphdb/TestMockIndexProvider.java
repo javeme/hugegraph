@@ -26,7 +26,6 @@ import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfigurati
 import static com.baidu.hugegraph.graphdb.configuration.GraphDatabaseConfiguration.INDEX_NS;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TestMockIndexProvider implements IndexProvider {
 

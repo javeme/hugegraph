@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
  * The byte to primitive conversion code was copied from / is inspired by Kryo's Input class:
  * {@linktourl https://code.google.com/p/kryo/source/browse/trunk/src/com/esotericsoftware/kryo/io/Input.java}
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class StaticArrayBuffer implements StaticBuffer {

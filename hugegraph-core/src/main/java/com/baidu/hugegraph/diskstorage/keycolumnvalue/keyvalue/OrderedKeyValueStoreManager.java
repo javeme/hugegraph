@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * A {@link KeyValueStoreManager} where the stores maintain keys in their natural order.
  *
- * @author Matthias Br&ouml;cheler (me@matthiasb.com);
  */
 public interface OrderedKeyValueStoreManager extends KeyValueStoreManager {
 

@@ -19,7 +19,6 @@ import com.baidu.hugegraph.diskstorage.BackendException;
 import com.baidu.hugegraph.diskstorage.keycolumnvalue.*;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public abstract class BaseKeyColumnValueAdapter implements KeyColumnValueStore {

@@ -24,7 +24,6 @@ import com.baidu.hugegraph.graphdb.database.serialize.Serializer;
 import com.baidu.hugegraph.graphdb.database.serialize.SerializerInjected;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class ParameterSerializer implements AttributeSerializer<Parameter>, SerializerInjected {
 

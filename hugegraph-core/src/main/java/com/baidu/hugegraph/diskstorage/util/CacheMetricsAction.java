@@ -15,7 +15,6 @@
 package com.baidu.hugegraph.diskstorage.util;
 
 /**
-* @author Matthias Broecheler (me@matthiasb.com)
 */
 public enum CacheMetricsAction {
 

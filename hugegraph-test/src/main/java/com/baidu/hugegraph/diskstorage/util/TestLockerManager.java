@@ -20,7 +20,6 @@ import com.baidu.hugegraph.diskstorage.locking.PermanentLockingException;
 import com.baidu.hugegraph.diskstorage.locking.TemporaryLockingException;
 
 /**
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 public class TestLockerManager {
 

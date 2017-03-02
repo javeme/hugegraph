@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  *
  * Note, polygons are not yet supported.
  *
- * @author Matthias Broecheler (me@matthiasb.com)
  */
 
 public class Geoshape {
@@ -401,7 +400,6 @@ public class Geoshape {
     }
 
     /**
-     * @author Matthias Broecheler (me@matthiasb.com)
      */
     public static class GeoshapeSerializer implements AttributeSerializer<Geoshape> {
 
@@ -591,7 +589,6 @@ public class Geoshape {
     /**
      * Serialization of Geoshape for JSON purposes uses the standard GeoJSON(http://geojson.org/) format.
      *
-     * @author Bryn Cooke
      */
     public static class GeoshapeGsonSerializer extends StdSerializer<Geoshape> {
 
