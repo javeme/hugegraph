@@ -1,4 +1,4 @@
-hugegraph Documentation
+HugeGraph Documentation
 ========================
 
 include::adoc_attributes.txt[]
