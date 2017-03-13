@@ -958,7 +958,7 @@
                 <version>${cassandra.version}</version>
                 <!-- Using avro-ipc 1.5.3 caused the following when opening the graphdb:
                      java.lang.NoSuchMethodError: org.apache.avro.io.DecoderFactory.configureDirectDecoder(Z)Lorg/apache/avro/io/DecoderFactory
-    
+
                      Stock avro 1.4.0 or 1.4.1 might work, but I'd like to see
                      what customizations were made in the cassandra copy of avro
                      before trying to drop it for the stock artifact...
@@ -1091,7 +1091,7 @@
               Sign artifacts artifacts only during release:perform
               when this profile is automatically activated or whenever
               else it is manually activated.
-    
+
               Stolen from: http://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/
             -->
             <build>
@@ -1250,7 +1250,7 @@
                 </dependencies>
             </dependencyManagement>
         </profile>
-	
+
         <!--<profile>-->
             <!--<id>coverage</id>-->
             <!--<build>-->
