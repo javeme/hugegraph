@@ -48,7 +48,6 @@ import com.baidu.hugegraph.util.system.ConfigurationUtil;
 import com.baidu.hugegraph.util.system.NetworkUtil;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
-import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -1611,8 +1610,6 @@ public class GraphDatabaseConfiguration {
         configureMetricsCsvReporter();
         configureMetricsJmxReporter();
         configureMetricsSlf4jReporter();
-        configureMetricsGangliaReporter();
-        configureMetricsGraphiteReporter();
     }
 
     private void configureMetricsConsoleReporter() {
@@ -1638,46 +1635,6 @@ public class GraphDatabaseConfiguration {
             // null loggerName is allowed -- that means Metrics will use its internal default
             MetricManager.INSTANCE.addSlf4jReporter(configuration.get(METRICS_SLF4J_INTERVAL),
                     configuration.has(METRICS_SLF4J_LOGGER) ? configuration.get(METRICS_SLF4J_LOGGER) : null);
-        }
-    }
-
-    private void configureMetricsGangliaReporter() {
-        if (configuration.has(GANGLIA_HOST_OR_GROUP)) {
-            final String host = configuration.get(GANGLIA_HOST_OR_GROUP);
-            final Duration ival = configuration.get(GANGLIA_INTERVAL);
-            final Integer port = configuration.get(GANGLIA_PORT);
-
-            final UDPAddressingMode addrMode;
-            final String addrModeStr = configuration.get(GANGLIA_ADDRESSING_MODE);
-            if (addrModeStr.equalsIgnoreCase("multicast")) {
-                addrMode = UDPAddressingMode.MULTICAST;
-            } else if (addrModeStr.equalsIgnoreCase("unicast")) {
-                addrMode = UDPAddressingMode.UNICAST;
-            } else throw new AssertionError();
-
-            final Boolean proto31 = configuration.get(GANGLIA_USE_PROTOCOL_31);
-
-            final int ttl = configuration.get(GANGLIA_TTL);
-
-            final UUID uuid = configuration.has(GANGLIA_UUID)? UUID.fromString(configuration.get(GANGLIA_UUID)):null;
-
-            String spoof = null;
-            if (configuration.has(GANGLIA_SPOOF)) spoof = configuration.get(GANGLIA_SPOOF);
-
-            try {
-                MetricManager.INSTANCE.addGangliaReporter(host, port, addrMode, ttl, proto31, uuid, spoof, ival);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private void configureMetricsGraphiteReporter() {
-        if (configuration.has(GRAPHITE_HOST)) {
-            MetricManager.INSTANCE.addGraphiteReporter(configuration.get(GRAPHITE_HOST),
-                    configuration.get(GRAPHITE_PORT),
-                    configuration.get(GRAPHITE_PREFIX),
-                    configuration.get(GRAPHITE_INTERVAL));
         }
     }
 
@@ -1902,18 +1859,6 @@ public class GraphDatabaseConfiguration {
     }
 
 
-//    static PropertiesConfiguration getPropertiesConfig(String file) {
-//        PropertiesConfiguration config = new PropertiesConfiguration();
-//        if (existsFile(file)) {
-//            try {
-//                config.load(file);
-//            } catch (ConfigurationException e) {
-//                throw new IllegalArgumentException("Cannot load existing configuration file", e);
-//            }
-//        }
-//        config.setFileName(file);
-//        config.setAutoSave(true);
-//        return config;
-//    }
+
 
 }

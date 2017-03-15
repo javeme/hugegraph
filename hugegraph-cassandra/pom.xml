@@ -240,19 +240,6 @@
                         -->
                         <id>default-cli</id>
                         <phase>none</phase>
-                        <configuration>
-                            <includes>
-                                <include>Nope.java</include>
-                            </includes>
-                            <exclude>
-                                <exclude>**/*</exclude>
-                            </exclude>
-                            <parallel />
-                            <reuseForks>false</reuseForks>
-                            <threadCount>1</threadCount>
-                            <perCoreThreadCount>false</perCoreThreadCount>
-                            <runOrder>random</runOrder>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>bop-test</id>
@@ -271,7 +258,6 @@
                             <threadCount>2</threadCount>
                             <runOrder>random</runOrder>
                             <reportNameSuffix>bop</reportNameSuffix>
-                            <skip>${test.skip.ordered}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -291,7 +277,6 @@
                             <threadCount>2</threadCount>
                             <runOrder>random</runOrder>
                             <reportNameSuffix>murmur</reportNameSuffix>
-                            <skip>${test.skip.unordered}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -317,7 +302,6 @@
                             <threadCount>1</threadCount>
                             <runOrder>random</runOrder>
                             <reportNameSuffix>ssl</reportNameSuffix>
-                            <skip>${test.skip.ssl}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -337,7 +321,6 @@
                             <threadCount>1</threadCount>
                             <runOrder>alphabetical</runOrder>
                             <reportNameSuffix>serial</reportNameSuffix>
-                            <skip>${test.skip.serial}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -385,14 +368,10 @@
 
     <profiles>
       <profile>
-	<id>coverage</id>
-	<activation>
-	  <activeByDefault>false</activeByDefault>
-	</activation>
-
-	<properties>
-	  <test.extra.jvm.opts>${jacoco.opts} -javaagent:${basedir}/target/jamm-${jamm.version}.jar</test.extra.jvm.opts>
-	</properties>
+        <id>coverage</id>
+        <activation>
+          <activeByDefault>false</activeByDefault>
+        </activation>
       </profile>
     </profiles>
 </project>
