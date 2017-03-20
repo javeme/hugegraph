@@ -30,6 +30,9 @@ public class ExampleGraphFactory {
         SchemaManager schema = graph.openSchemaManager();
         schema.propertyKey("id").Int().create();
         schema.propertyKey("name").Text().create();
+        schema.propertyKey("age").Int().create();
+
+        schema.propertyKey("age").remove();
 
         schema.desc();
 

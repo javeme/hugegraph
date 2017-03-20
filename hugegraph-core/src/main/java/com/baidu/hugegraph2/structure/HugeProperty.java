@@ -1,6 +1,5 @@
 package com.baidu.hugegraph2.structure;
 
-import com.baidu.hugegraph2.schema.base.structure.PropertyKey;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Property;
