@@ -1,21 +1,16 @@
 package com.baidu.hugegraph2.backend.store;
 
-import com.google.common.base.Function;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by jishilei on 17/3/19.
  */
-public abstract class Mutation<E,K> {
+public abstract class Mutation<E, K> {
 
     private List<E> additions;
 
@@ -24,10 +19,16 @@ public abstract class Mutation<E,K> {
     public Mutation(List<E> additions, List<K> deletions) {
         Preconditions.checkNotNull(additions);
         Preconditions.checkNotNull(deletions);
-        if (additions.isEmpty()) this.additions=null;
-        else this.additions = Lists.newArrayList(additions);
-        if (deletions.isEmpty()) this.deletions=null;
-        else this.deletions = Lists.newArrayList(deletions);
+        if (additions.isEmpty()) {
+            this.additions = null;
+        } else {
+            this.additions = Lists.newArrayList(additions);
+        }
+        if (deletions.isEmpty()) {
+            this.deletions = null;
+        } else {
+            this.deletions = Lists.newArrayList(deletions);
+        }
     }
 
     public Mutation() {
@@ -37,14 +38,16 @@ public abstract class Mutation<E,K> {
 
     /**
      * Whether this mutation has additions
+     *
      * @return
      */
     public boolean hasAdditions() {
-        return additions!=null && !additions.isEmpty();
+        return additions != null && !additions.isEmpty();
     }
 
     /**
      * Whether this mutation has deletions
+     *
      * @return
      */
     public boolean hasDeletions() {
@@ -53,10 +56,13 @@ public abstract class Mutation<E,K> {
 
     /**
      * Returns the list of additions in this mutation
+     *
      * @return
      */
     public List<E> getAdditions() {
-        if (additions==null) return ImmutableList.of();
+        if (additions == null) {
+            return ImmutableList.of();
+        }
         return additions;
     }
 
@@ -66,7 +72,9 @@ public abstract class Mutation<E,K> {
      * @return
      */
     public List<K> getDeletions() {
-        if (deletions==null) return ImmutableList.of();
+        if (deletions == null) {
+            return ImmutableList.of();
+        }
         return deletions;
     }
 
@@ -76,7 +84,9 @@ public abstract class Mutation<E,K> {
      * @param entry
      */
     public void addition(E entry) {
-        if (additions==null) additions = new ArrayList<E>();
+        if (additions == null) {
+            additions = new ArrayList<E>();
+        }
         additions.add(entry);
     }
 
@@ -86,7 +96,9 @@ public abstract class Mutation<E,K> {
      * @param key
      */
     public void deletion(K key) {
-        if (deletions==null) deletions = new ArrayList<K>();
+        if (deletions == null) {
+            deletions = new ArrayList<K>();
+        }
         deletions.add(key);
     }
 
@@ -96,30 +108,32 @@ public abstract class Mutation<E,K> {
      *
      * @param m
      */
-    public void merge(Mutation<E,K> m) {
+    public void merge(Mutation<E, K> m) {
         Preconditions.checkNotNull(m);
 
         if (null != m.additions) {
-            if (null == additions) additions = m.additions;
-            else additions.addAll(m.additions);
+            if (null == additions) {
+                additions = m.additions;
+            } else {
+                additions.addAll(m.additions);
+            }
         }
 
         if (null != m.deletions) {
-            if (null == deletions) deletions = m.deletions;
-            else deletions.addAll(m.deletions);
+            if (null == deletions) {
+                deletions = m.deletions;
+            } else {
+                deletions.addAll(m.deletions);
+            }
         }
     }
 
     public boolean isEmpty() {
-        return getTotalMutations()==0;
+        return getTotalMutations() == 0;
     }
 
     public int getTotalMutations() {
-        return (additions==null?0:additions.size()) + (deletions==null?0:deletions.size());
+        return (additions == null ? 0 : additions.size()) + (deletions == null ? 0 : deletions.size());
     }
-
-
-
-
 
 }

@@ -1,12 +1,15 @@
 package com.baidu.hugegraph2.structure;
 
-import com.baidu.hugegraph.core.HugeGraph;
-
-import org.apache.tinkerpop.gremlin.structure.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.structure.VertexProperty;
+
+import com.baidu.hugegraph.core.HugeGraph;
 
 /**
  * Created by jishilei on 17/3/16.

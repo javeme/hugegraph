@@ -1,9 +1,5 @@
 package com.baidu.hugegraph2;
 
-import com.baidu.hugegraph.core.*;
-import com.google.common.base.Preconditions;
-
-import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
  * Created by jishilei on 17/3/18.

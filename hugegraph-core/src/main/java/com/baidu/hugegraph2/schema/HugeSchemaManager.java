@@ -1,15 +1,13 @@
 package com.baidu.hugegraph2.schema;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.baidu.hugegraph2.backend.store.SchemaStore;
 import com.baidu.hugegraph2.schema.base.maker.EdgeLabelMaker;
 import com.baidu.hugegraph2.schema.base.maker.PropertyKeyMaker;
 import com.baidu.hugegraph2.schema.base.maker.SchemaManager;
 import com.baidu.hugegraph2.schema.base.maker.VertexLabelMaker;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * Created by jishilei on 17/3/17.
