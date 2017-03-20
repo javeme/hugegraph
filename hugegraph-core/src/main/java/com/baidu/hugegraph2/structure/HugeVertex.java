@@ -1,6 +1,7 @@
 package com.baidu.hugegraph2.structure;
 
 import com.baidu.hugegraph.core.HugeGraph;
+
 import org.apache.tinkerpop.gremlin.structure.*;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ public class HugeVertex extends HugeElement implements Vertex {
     public HugeVertex(final HugeGraph graph, final Object id, final String label) {
         super(graph, id, label);
     }
-
 
     @Override
     public Edge addEdge(String s, Vertex vertex, Object... objects) {
@@ -46,7 +46,7 @@ public class HugeVertex extends HugeElement implements Vertex {
     public <V> Iterator<VertexProperty<V>> properties(String... propertyKeys) {
         List<VertexProperty<V>> propertyList = new ArrayList<>();
         for (String pk : propertyKeys) {
-           //TODO : build props
+            //TODO : build props
         }
         return propertyList.iterator();
     }

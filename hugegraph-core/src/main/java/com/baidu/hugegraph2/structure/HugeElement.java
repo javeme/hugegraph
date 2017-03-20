@@ -11,8 +11,7 @@ import java.util.*;
 /**
  * Created by jishilei on 17/3/16.
  */
-public abstract class HugeElement implements Element{
-
+public abstract class HugeElement implements Element {
 
     protected final Object id;
     protected final String label;

@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by jishilei on 17/3/16.
  */
-public class HugeProperty<V> implements Property<V>  {
+public class HugeProperty<V> implements Property<V> {
 
     protected final Graph graph;
     protected final HugeElement element;

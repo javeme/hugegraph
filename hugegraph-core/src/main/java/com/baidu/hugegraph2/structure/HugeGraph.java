@@ -3,6 +3,7 @@ package com.baidu.hugegraph2.structure;
 import com.baidu.hugegraph2.configuration.HugeConfiguration;
 import com.baidu.hugegraph2.schema.HugeSchemaManager;
 import com.baidu.hugegraph2.schema.base.maker.SchemaManager;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.tinkerpop.gremlin.process.computer.GraphComputer;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -20,19 +21,18 @@ import org.slf4j.LoggerFactory;
  */
 public class HugeGraph implements Graph {
 
-
     private static final Logger logger = LoggerFactory.getLogger(HugeGraph.class);
     protected HugeConfiguration configuration = null;
-
-
 
     public HugeGraph() {
         this.configuration = new HugeConfiguration();
     }
+
     public HugeGraph(HugeConfiguration configuration) {
         this.configuration = configuration;
 
     }
+
     /**
      * Construct a HugeGraph instance
      *
@@ -44,7 +44,7 @@ public class HugeGraph implements Graph {
         return new HugeGraph(conf);
     }
 
-    public static SchemaManager openSchemaManager(){
+    public static SchemaManager openSchemaManager() {
         return new HugeSchemaManager();
     }
 
