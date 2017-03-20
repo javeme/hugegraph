@@ -49,7 +49,7 @@ public class HugeVertex extends HugeElement implements Vertex {
     public <V> Iterator<VertexProperty<V>> properties(String... propertyKeys) {
         List<VertexProperty<V>> propertyList = new ArrayList<>();
         for (String pk : propertyKeys) {
-            //TODO : build props
+            // TODO : build props
         }
         return propertyList.iterator();
     }

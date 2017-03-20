@@ -14,7 +14,7 @@ public class ExampleGraphFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ExampleGraphFactory.class);
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         logger.info("ExampleGraphFactory start!");
 
