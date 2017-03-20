@@ -10,8 +10,8 @@ public class StoreMutation extends Mutation<DBEntry,Object> {
     public StoreMutation() {
     }
 
-    public StoreMutation(List<DBEntry> additions, List<Object> deletions) {
-        super(additions, deletions);
+    public StoreMutation(List<DBEntry> additions , List<Object> deletions) {
+        super(additions , deletions);
     }
 
 }
