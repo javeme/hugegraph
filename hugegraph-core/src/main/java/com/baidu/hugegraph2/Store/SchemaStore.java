@@ -1,4 +1,4 @@
-package com.baidu.hugegraph2.Store;
+package com.baidu.hugegraph2.store;
 
 import com.baidu.hugegraph2.schema.base.PropertyKey;
 

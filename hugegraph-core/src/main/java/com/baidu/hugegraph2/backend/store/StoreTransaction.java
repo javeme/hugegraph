@@ -2,7 +2,7 @@ package com.baidu.hugegraph2.backend.store;
 
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.Transaction;
-import org.apache.commons.configuration.Configuration;
+
 
 /**
  * Created by jishilei on 17/3/19.

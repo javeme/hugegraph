@@ -1,7 +1,7 @@
 package com.baidu.hugegraph2.schema;
 
-import com.baidu.hugegraph2.Store.InMemory.InMemoryHugeSchemaStore;
-import com.baidu.hugegraph2.Store.SchemaStore;
+import com.baidu.hugegraph2.store.memory.InMemoryHugeSchemaStore;
+import com.baidu.hugegraph2.store.SchemaStore;
 import com.baidu.hugegraph2.schema.base.maker.EdgeLabelMaker;
 import com.baidu.hugegraph2.schema.base.maker.PropertyKeyMaker;
 import com.baidu.hugegraph2.schema.base.maker.SchemaManager;

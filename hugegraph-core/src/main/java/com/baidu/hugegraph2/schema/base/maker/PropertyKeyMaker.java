@@ -5,8 +5,8 @@ package com.baidu.hugegraph2.schema.base.maker;
  */
 public interface PropertyKeyMaker extends SchemaMaker {
 
-    public PropertyKeyMaker Text();
-    public PropertyKeyMaker Int();
+    public PropertyKeyMaker toText();
+    public PropertyKeyMaker toInt();
 
 
 }

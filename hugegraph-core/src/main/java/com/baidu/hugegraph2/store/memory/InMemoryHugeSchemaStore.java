@@ -1,6 +1,6 @@
-package com.baidu.hugegraph2.Store.InMemory;
+package com.baidu.hugegraph2.store.memory;
 
-import com.baidu.hugegraph2.Store.SchemaStore;
+import com.baidu.hugegraph2.store.SchemaStore;
 import com.baidu.hugegraph2.schema.base.PropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

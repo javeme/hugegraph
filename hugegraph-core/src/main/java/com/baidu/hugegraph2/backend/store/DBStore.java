@@ -2,9 +2,6 @@ package com.baidu.hugegraph2.backend.store;
 
 
 import com.baidu.hugegraph2.backend.BackendException;
-import com.baidu.hugegraph2.backend.query.KeyQuery;
-import com.baidu.hugegraph2.backend.query.SliceQuery;
-
 import java.util.List;
 
 
@@ -15,9 +12,6 @@ public interface DBStore {
 
     public void mutate(List<DBEntry> additions, List<Object> deletions, StoreTransaction tx);
 
-    //public DBEntry getEntry(KeyQuery query, StoreTransaction txh) throws BackendException ;
-
-    //public List<DBEntry> getSlice(List<Object> keys, SliceQuery query, StoreTransaction txh) throws BackendException ;
 
     public String getName();
 

@@ -28,9 +28,9 @@ public class ExampleGraphFactory {
     public static void load(final HugeGraph graph){
 
         SchemaManager schema = graph.openSchemaManager();
-        schema.propertyKey("id").Int().create();
-        schema.propertyKey("name").Text().create();
-        schema.propertyKey("age").Int().create();
+        schema.propertyKey("id").toInt().create();
+        schema.propertyKey("name").toText().create();
+        schema.propertyKey("age").toInt().create();
 
         schema.propertyKey("age").remove();
 

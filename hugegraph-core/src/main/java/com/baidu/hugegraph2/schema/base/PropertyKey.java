@@ -6,7 +6,7 @@ import com.baidu.hugegraph2.DataType;
 /**
  * Created by jishilei on 17/3/17.
  */
-public interface PropertyKey extends SchemaType{
+public interface PropertyKey extends SchemaType {
 
     public DataType dataType();
 

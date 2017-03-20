@@ -13,7 +13,7 @@ public class HugePropertyKey implements PropertyKey {
     private Cardinality cardinality;
     private String name;
 
-    public HugePropertyKey(String name){
+    public HugePropertyKey(String name) {
         this.dataType = DataType.OBJECT;
         this.cardinality = Cardinality.SINGLE;
         this.name = name;
@@ -44,7 +44,9 @@ public class HugePropertyKey implements PropertyKey {
     @Override
     public String toString(){
 
-        return "name = "+name+" , dataType="+dataType.toString() + " , cardinality="+cardinality.toString();
+        return "name = " + name
+                + " , dataType=" + dataType.toString()
+                + " , cardinality=" + cardinality.toString();
     }
 
     @Override
