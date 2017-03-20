@@ -1,7 +1,5 @@
 package com.baidu.hugegraph2.backend.store.memory;
 
-
-
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.store.*;
 import com.google.common.base.Preconditions;
@@ -16,7 +14,7 @@ public class InMemoryDBStoreProvider implements StoreProvider {
 
     private final ConcurrentHashMap<String, DBStore> stores;
 
-    public InMemoryDBStoreProvider(){
+    public InMemoryDBStoreProvider() {
         stores = new ConcurrentHashMap<String, DBStore>();
     }
 
@@ -31,12 +29,12 @@ public class InMemoryDBStoreProvider implements StoreProvider {
     }
 
     @Override
-    public void mutate(Map<String,StoreMutation> mutations, StoreTransaction tx){
+    public void mutate(Map<String, StoreMutation> mutations, StoreTransaction tx) {
 
-        mutations.forEach((k,mutation)->{
+        mutations.forEach((k, mutation) -> {
             DBStore store = stores.get(k);
             Preconditions.checkNotNull(store);
-            store.mutate(mutation.getAdditions(),mutation.getDeletions(),tx);
+            store.mutate(mutation.getAdditions(), mutation.getDeletions(), tx);
         });
     }
 
@@ -48,7 +46,7 @@ public class InMemoryDBStoreProvider implements StoreProvider {
     @Override
     public void clear() throws BackendException {
 
-        stores.forEach((String k, DBStore store) ->{
+        stores.forEach((String k, DBStore store) -> {
             store.clear();
         });
     }

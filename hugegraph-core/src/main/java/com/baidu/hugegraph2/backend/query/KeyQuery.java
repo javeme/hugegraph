@@ -9,10 +9,9 @@ public class KeyQuery implements Query {
 
     private Object key;
 
-    public KeyQuery(Object key){
+    public KeyQuery(Object key) {
         Preconditions.checkNotNull(key);
     }
-
 
     @Override
     public boolean hasLimit() {

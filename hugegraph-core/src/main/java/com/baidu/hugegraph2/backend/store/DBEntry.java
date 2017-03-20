@@ -8,8 +8,7 @@ import java.util.Map;
 public class DBEntry {
 
     private Object id;
-    private Map<String,Object> columns;
-
+    private Map<String, Object> columns;
 
     public Object getId() {
         return id;
@@ -18,7 +17,6 @@ public class DBEntry {
     public void setId(Object id) {
         this.id = id;
     }
-
 
     public Map<String, Object> getColumns() {
         return columns;

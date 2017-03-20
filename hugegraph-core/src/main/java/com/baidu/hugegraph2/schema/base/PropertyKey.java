@@ -12,6 +12,4 @@ public interface PropertyKey extends SchemaType {
 
     public Cardinality cardinality();
 
-
-
 }

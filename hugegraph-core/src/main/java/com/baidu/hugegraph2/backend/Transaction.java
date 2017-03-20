@@ -6,7 +6,7 @@ package com.baidu.hugegraph2.backend;
 public interface Transaction {
     /**
      * Commits the transaction and persists all modifications to the backend.
-     *
+     * <p>
      * Call either this method or {@link #rollback()} at most once per instance.
      *
      * @throws BackendException
@@ -15,7 +15,7 @@ public interface Transaction {
 
     /**
      * Aborts (or rolls back) the transaction.
-     *
+     * <p>
      * Call either this method or {@link #commit()} at most once per instance.
      *
      * @throws BackendException

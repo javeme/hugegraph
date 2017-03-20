@@ -2,6 +2,7 @@ package com.baidu.hugegraph2;
 
 import com.baidu.hugegraph.core.*;
 import com.google.common.base.Preconditions;
+
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 /**
@@ -30,6 +31,5 @@ public enum Multiplicity {
      * There can be only a single in and out-edge of this label for a given vertex (i.e. unique in both directions).
      */
     ONE2ONE
-
 
 }

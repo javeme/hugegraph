@@ -5,12 +5,10 @@ package com.baidu.hugegraph2.schema.base.maker;
  */
 public interface EdgeLabelMaker {
 
-    public EdgeLabelMaker connection(String fromVertexLabel , String toVertexLabel);
+    public EdgeLabelMaker connection(String fromVertexLabel, String toVertexLabel);
 
     public EdgeLabelMaker multi();
+
     public EdgeLabelMaker simple();
-
-
-
 
 }

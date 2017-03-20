@@ -5,7 +5,6 @@ package com.baidu.hugegraph2.backend;
  */
 public class BackendException extends Exception {
 
-
     /**
      * @param msg Exception message
      */

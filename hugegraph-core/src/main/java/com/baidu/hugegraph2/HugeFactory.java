@@ -1,8 +1,7 @@
 package com.baidu.hugegraph2;
 
-
-
 import com.baidu.hugegraph2.structure.HugeGraph;
+
 import org.apache.commons.configuration.Configuration;
 
 import org.apache.tinkerpop.gremlin.structure.util.GraphFactory;
@@ -14,20 +13,20 @@ import java.util.Map;
  */
 public class HugeFactory {
 
-    public HugeFactory(){
+    public HugeFactory() {
 
     }
 
     public static HugeGraph open(Configuration configuration) {
-        return (HugeGraph)GraphFactory.open(configuration);
+        return (HugeGraph) GraphFactory.open(configuration);
     }
 
     public static HugeGraph open(String configurationFile) {
-        return (HugeGraph)GraphFactory.open(configurationFile);
+        return (HugeGraph) GraphFactory.open(configurationFile);
     }
 
     public static HugeGraph open(Map configuration) {
-        return (HugeGraph)GraphFactory.open(configuration);
+        return (HugeGraph) GraphFactory.open(configuration);
     }
 
     public static HugeGraph open() {

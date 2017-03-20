@@ -7,7 +7,7 @@ import com.baidu.hugegraph2.schema.base.maker.EdgeLabelMaker;
  */
 public class HugeEdgeLabelMaker implements EdgeLabelMaker {
     @Override
-    public EdgeLabelMaker connection(String fromVertexLabel , String toVertexLabel) {
+    public EdgeLabelMaker connection(String fromVertexLabel, String toVertexLabel) {
         return null;
     }
 

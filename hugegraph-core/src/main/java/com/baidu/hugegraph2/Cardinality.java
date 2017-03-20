@@ -16,5 +16,4 @@ public enum Cardinality {
      */
     Multiple;
 
-
 }

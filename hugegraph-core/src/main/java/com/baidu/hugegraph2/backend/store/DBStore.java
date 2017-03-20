@@ -1,9 +1,8 @@
 package com.baidu.hugegraph2.backend.store;
 
-
 import com.baidu.hugegraph2.backend.BackendException;
-import java.util.List;
 
+import java.util.List;
 
 /**
  * Created by jishilei on 17/3/19.
@@ -11,7 +10,6 @@ import java.util.List;
 public interface DBStore {
 
     public void mutate(List<DBEntry> additions, List<Object> deletions, StoreTransaction tx);
-
 
     public String getName();
 

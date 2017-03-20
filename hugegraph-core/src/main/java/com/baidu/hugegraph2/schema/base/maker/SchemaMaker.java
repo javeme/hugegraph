@@ -15,6 +15,8 @@ public interface SchemaMaker {
     public String getName();
 
     public SchemaType create();
+
     public SchemaType save();
+
     public void remove();
 }

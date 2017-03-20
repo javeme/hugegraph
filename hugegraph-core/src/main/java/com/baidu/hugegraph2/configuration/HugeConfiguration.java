@@ -17,7 +17,6 @@ public class HugeConfiguration extends AbstractConfiguration {
         conf.setDelimiterParsingDisabled(true);
     }
 
-
     @Override
     protected void addPropertyDirect(String key, Object value) {
         conf.addProperty(key, value);

@@ -18,6 +18,7 @@ public class HugePropertyKey implements PropertyKey {
         this.cardinality = Cardinality.SINGLE;
         this.name = name;
     }
+
     @Override
     public DataType dataType() {
         return dataType;
@@ -28,9 +29,10 @@ public class HugePropertyKey implements PropertyKey {
         return this.cardinality;
     }
 
-    public void setCardinality(Cardinality cardinality){
+    public void setCardinality(Cardinality cardinality) {
         this.cardinality = cardinality;
     }
+
     public void setDataType(DataType dataType) {
 
         this.dataType = dataType;
@@ -42,7 +44,7 @@ public class HugePropertyKey implements PropertyKey {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
 
         return "name = " + name
                 + " , dataType=" + dataType.toString()
@@ -51,9 +53,9 @@ public class HugePropertyKey implements PropertyKey {
 
     @Override
     public String schema() {
-        return "schema.propertyKey(\""+ name +"\")"
-                +"."+cardinality.toString()+"()"
-                +"."+dataType.toString()+"()"
-                +".create();";
+        return "schema.propertyKey(\"" + name + "\")"
+                + "." + cardinality.toString() + "()"
+                + "." + dataType.toString() + "()"
+                + ".create();";
     }
 }

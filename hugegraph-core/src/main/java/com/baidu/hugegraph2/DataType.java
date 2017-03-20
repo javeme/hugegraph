@@ -8,5 +8,4 @@ public enum DataType {
     TEXT,
     INT;
 
-
 }

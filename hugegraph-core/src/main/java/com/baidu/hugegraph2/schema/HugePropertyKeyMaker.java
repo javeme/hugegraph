@@ -15,20 +15,15 @@ public class HugePropertyKeyMaker implements PropertyKeyMaker {
     private HugePropertyKey propertyKey;
     private String name;
 
-
-
-    public HugePropertyKeyMaker(SchemaStore schemaStore , String name) {
+    public HugePropertyKeyMaker(SchemaStore schemaStore, String name) {
         propertyKey = new HugePropertyKey(name);
         this.name = name;
         this.schemaStore = schemaStore;
     }
 
-
-    public PropertyKey getPropertyKey(){
+    public PropertyKey getPropertyKey() {
         return propertyKey;
     }
-
-
 
     @Override
     public PropertyKeyMaker toText() {
@@ -41,7 +36,6 @@ public class HugePropertyKeyMaker implements PropertyKeyMaker {
         this.propertyKey.setDataType(DataType.INT);
         return this;
     }
-
 
     @Override
     public String getName() {
