@@ -1,4 +1,4 @@
-package com.baidu.hugegraph2.backend.store.InMemory;
+package com.baidu.hugegraph2.backend.store.memory;
 
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.store.DBEntry;
@@ -6,8 +6,6 @@ import com.baidu.hugegraph2.backend.store.DBStore;
 import com.baidu.hugegraph2.backend.store.StoreTransaction;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 

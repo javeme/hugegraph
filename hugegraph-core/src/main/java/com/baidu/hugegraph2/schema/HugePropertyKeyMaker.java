@@ -1,7 +1,7 @@
 package com.baidu.hugegraph2.schema;
 
 import com.baidu.hugegraph2.DataType;
-import com.baidu.hugegraph2.store.SchemaStore;
+import com.baidu.hugegraph2.backend.store.SchemaStore;
 import com.baidu.hugegraph2.schema.base.maker.PropertyKeyMaker;
 import com.baidu.hugegraph2.schema.base.PropertyKey;
 import com.baidu.hugegraph2.schema.base.SchemaType;
@@ -50,20 +50,20 @@ public class HugePropertyKeyMaker implements PropertyKeyMaker {
 
     @Override
     public PropertyKey create() {
-        schemaStore.addPropertyKey(propertyKey);
+        // schemaStore.addPropertyKey(propertyKey);
         return propertyKey;
     }
 
     @Override
     public SchemaType save() {
-        schemaStore.removePropertyKey(name);
-        schemaStore.addPropertyKey(propertyKey);
+        // schemaStore.removePropertyKey(name);
+        // schemaStore.addPropertyKey(propertyKey);
         return propertyKey;
     }
 
     @Override
     public void remove() {
 
-        schemaStore.removePropertyKey(name);
+        // schemaStore.removePropertyKey(name);
     }
 }

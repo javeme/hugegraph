@@ -1,4 +1,4 @@
-package com.baidu.hugegraph2.backend.store.InMemory;
+package com.baidu.hugegraph2.backend.store.memory;
 
 
 
@@ -7,7 +7,6 @@ import com.baidu.hugegraph2.backend.store.*;
 import com.google.common.base.Preconditions;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

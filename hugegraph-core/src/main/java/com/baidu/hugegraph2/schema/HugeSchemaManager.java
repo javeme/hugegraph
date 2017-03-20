@@ -1,12 +1,10 @@
 package com.baidu.hugegraph2.schema;
 
-import com.baidu.hugegraph2.store.memory.InMemoryHugeSchemaStore;
-import com.baidu.hugegraph2.store.SchemaStore;
+import com.baidu.hugegraph2.backend.store.SchemaStore;
 import com.baidu.hugegraph2.schema.base.maker.EdgeLabelMaker;
 import com.baidu.hugegraph2.schema.base.maker.PropertyKeyMaker;
 import com.baidu.hugegraph2.schema.base.maker.SchemaManager;
 import com.baidu.hugegraph2.schema.base.maker.VertexLabelMaker;
-import com.baidu.hugegraph2.schema.base.PropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +21,11 @@ public class HugeSchemaManager implements SchemaManager {
     private SchemaStore schemaStore;
     public HugeSchemaManager(){
 
-        schemaStore = new InMemoryHugeSchemaStore();
+        schemaStore = new SchemaStore();
     }
     @Override
     public PropertyKeyMaker propertyKey(String name) {
-        propertyKeyMaker = new HugePropertyKeyMaker(schemaStore,name);
+        propertyKeyMaker = new HugePropertyKeyMaker(schemaStore , name);
         return propertyKeyMaker;
     }
 
@@ -44,8 +42,8 @@ public class HugeSchemaManager implements SchemaManager {
     @Override
     public void desc() {
 
-        for(Map.Entry<String, PropertyKey> entry : schemaStore.getPropertyKeys().entrySet()){
-            logger.info(entry.getValue().schema());
-        }
+//        for(Map.Entry<String, PropertyKey> entry : schemaStore.getPropertyKeys().entrySet()){
+//            logger.info(entry.getValue().schema());
+//        }
     }
 }
