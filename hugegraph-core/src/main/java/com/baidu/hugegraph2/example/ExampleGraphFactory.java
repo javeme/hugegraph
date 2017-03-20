@@ -1,6 +1,7 @@
 package com.baidu.hugegraph2.example;
 
 import com.baidu.hugegraph2.HugeFactory;
+import com.baidu.hugegraph2.backend.Transaction;
 import com.baidu.hugegraph2.schema.base.maker.SchemaManager;
 import com.baidu.hugegraph2.structure.HugeGraph;
 
@@ -34,6 +35,10 @@ public class ExampleGraphFactory {
         schema.propertyKey("age").remove();
 
         schema.desc();
+
+        // Transaction tx = graph.openTX();
+
+
 
     }
 }
