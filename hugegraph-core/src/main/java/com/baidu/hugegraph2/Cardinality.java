@@ -14,6 +14,6 @@ public enum Cardinality {
     /**
      * Multiple but distinct values may be associated with the given key.
      */
-    Multiple;
+    MULTIPLE;
 
 }
