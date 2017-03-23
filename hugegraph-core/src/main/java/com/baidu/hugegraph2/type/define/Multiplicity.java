@@ -1,4 +1,4 @@
-package com.baidu.hugegraph2;
+package com.baidu.hugegraph2.type.define;
 
 
 /**
