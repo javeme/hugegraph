@@ -16,6 +16,8 @@ public interface VertexLabel extends SchemaType {
 
     public void index(String indexName);
 
+    public Set<String> sortKeys();
+
     @Override
     public default HugeTypes type() {
         return HugeTypes.VERTEX_LABEL;

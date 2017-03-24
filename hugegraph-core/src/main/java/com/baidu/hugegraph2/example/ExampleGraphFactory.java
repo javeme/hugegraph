@@ -25,8 +25,7 @@ public class ExampleGraphFactory {
 //                + "xbu-data/hugegraph/hugegraph-core/src/main/resources/hugegraph.properties");
 //        HugeGraph graph = HugeFactory.open(configuration);
 
-        HugeGraph graph = HugeFactory.open("/Users/liningrui/IdeaProjects/baidu/"
-                + "xbu-data/hugegraph/hugegraph-core/src/main/resources/hugegraph.properties");
+        HugeGraph graph = HugeFactory.open("/Users/lizhangmei/baidu/xbu-data/hugegraph/hugegraph-core/src/main/resources/hugegraph.properties");
 
         ExampleGraphFactory.showFeatures(graph);
         ExampleGraphFactory.load(graph);
@@ -101,8 +100,8 @@ public class ExampleGraphFactory {
         GraphTransaction tx = graph.openGraphTransaction();
 
         System.out.println("===============  addVertex  ================");
-        tx.addVertex(T.id, "1", T.label, "book", "name", "java-1");
-        tx.addVertex(T.id, "2", T.label, "book", "name", "java-2");
+        tx.addVertex(T.label, "book", "name", "java-1");
+        tx.addVertex(T.label, "book", "name", "java-2");
 
         // commit data changes
         try {
@@ -118,7 +117,7 @@ public class ExampleGraphFactory {
         }
 
         // use the default Transaction to commit
-        graph.addVertex(T.id, "3", T.label, "book", "name", "java-3");
+        graph.addVertex(T.label, "book", "name", "java-3");
         graph.tx().commit();
     }
 }

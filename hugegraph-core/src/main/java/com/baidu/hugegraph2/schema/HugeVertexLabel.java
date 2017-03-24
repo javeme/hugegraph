@@ -24,11 +24,9 @@ public class HugeVertexLabel implements VertexLabel {
     private Set<String> partitionKeys;
     private Set<String> clusteringKeys;
 
-
     private String indexName;
     // key: indexName, val: propertyKeyName
     private Map<String, String> indexMap;
-
 
     public HugeVertexLabel(String name, SchemaTransaction transaction) {
         this.name = name;
@@ -46,7 +44,7 @@ public class HugeVertexLabel implements VertexLabel {
 
     @Override
     public String name() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -56,7 +54,7 @@ public class HugeVertexLabel implements VertexLabel {
 
     @Override
     public IndexType indexType() {
-        return indexType;
+        return this.indexType;
     }
 
     public void indexType(IndexType indexType) {
@@ -64,69 +62,79 @@ public class HugeVertexLabel implements VertexLabel {
     }
 
     public void bindIndex(String propertyKeyName) {
-        if (indexMap == null) {
-            indexMap = new HashMap<>();
+        if (this.indexMap == null) {
+            this.indexMap = new HashMap<>();
         }
-        indexMap.put(indexName, propertyKeyName);
+        this.indexMap.put(this.indexName, propertyKeyName);
     }
 
     public boolean containPropertyKey(String name) {
-        if (properties == null || properties.isEmpty()) {
+        if (this.properties == null || this.properties.isEmpty()) {
             return false;
         }
-        return properties.contains(name);
+        return this.properties.contains(name);
     }
 
     @Override
     public Set<String> properties() {
-        return properties;
+        return this.properties;
     }
 
     @Override
     public SchemaType properties(String... propertyNames) {
-        if (properties == null) {
-            properties = new HashSet<>();
+        if (this.properties == null) {
+            this.properties = new HashSet<>();
         }
-        properties.addAll(Arrays.asList(propertyNames));
+        this.properties.addAll(Arrays.asList(propertyNames));
         return this;
     }
 
     @Override
     public void create() {
-        transaction.addVertexLabel(this);
+        this.transaction.addVertexLabel(this);
     }
 
     @Override
     public void remove() {
-        transaction.removeVertexLabel(name);
+        this.transaction.removeVertexLabel(this.name);
     }
 
     public Set<String> partitionKey() {
-        return partitionKeys;
+        return this.partitionKeys;
     }
 
+    @Override
     public VertexLabel partitionKey(String... keys) {
-        if (partitionKeys == null) {
-            partitionKeys = new HashSet<>();
+        if (this.partitionKeys == null) {
+            this.partitionKeys = new HashSet<>();
         }
-        partitionKeys.addAll(Arrays.asList(keys));
+        this.partitionKeys.addAll(Arrays.asList(keys));
         return this;
     }
 
     public Set<String> clusteringKey() {
-        return clusteringKeys;
+        return this.clusteringKeys;
     }
 
+    @Override
     public VertexLabel clusteringKey(String... keys) {
-        if (clusteringKeys == null) {
-            clusteringKeys = new HashSet<>();
+        if (this.clusteringKeys == null) {
+            this.clusteringKeys = new HashSet<>();
         }
-        clusteringKeys.addAll(Arrays.asList(keys));
+        this.clusteringKeys.addAll(Arrays.asList(keys));
         return this;
     }
 
     @Override
+    public Set<String> sortKeys() {
+        // TODO: implement
+        Set<String> s = new HashSet<>();
+        s.add("name");
+        return s;
+    }
+
+    @Override
     public String toString() {
-        return String.format("{name=%s}", name);
+        return String.format("{name=%s}", this.name);
     }
 }
