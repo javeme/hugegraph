@@ -8,7 +8,6 @@ import com.baidu.hugegraph2.HugeFactory;
 import com.baidu.hugegraph2.HugeGraph;
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.tx.GraphTransaction;
-import com.baidu.hugegraph2.configuration.HugeConfiguration;
 import com.baidu.hugegraph2.schema.SchemaManager;
 
 /**
@@ -22,12 +21,14 @@ public class ExampleGraphFactory {
 
         logger.info("ExampleGraphFactory start!");
 
-        HugeConfiguration configuration = new HugeConfiguration()
-                .useMemoryBackend();
-        HugeGraph graph = HugeFactory.open(configuration);
+//        HugeConfiguration configuration = new HugeConfiguration("/Users/liningrui/IdeaProjects/baidu/"
+//                + "xbu-data/hugegraph/hugegraph-core/src/main/resources/hugegraph.properties");
+//        HugeGraph graph = HugeFactory.open(configuration);
+
+        HugeGraph graph = HugeFactory.open("/Users/liningrui/IdeaProjects/baidu/"
+                + "xbu-data/hugegraph/hugegraph-core/src/main/resources/hugegraph.properties");
 
         ExampleGraphFactory.showFeatures(graph);
-
         ExampleGraphFactory.load(graph);
     }
 
@@ -63,7 +64,7 @@ public class ExampleGraphFactory {
         // 设置顶点的schema
         schema.vertexLabel("author").properties("name").create();
         schema.vertexLabel("recipe").properties("name", "instructions").create();
-//        schema.vertexLabel("recipe").properties("name", "instructions").add();
+        //        schema.vertexLabel("recipe").properties("name", "instructions").add();
         schema.vertexLabel("ingredient").create();
         schema.vertexLabel("book").create();
         schema.vertexLabel("meal").create();
@@ -75,8 +76,8 @@ public class ExampleGraphFactory {
 
         System.out.println("===============  vertexLabel & index  ================");
         // index 表示要添加一个索引，secondary表示要添加的是二级索引，by指定了给哪一列添加索引
-//        schema.vertexLabel("author").index("byName").secondary().by("name").add();
-//        schema.vertexLabel("recipe").index("byRecipe").materialized().by("name").add();
+        //        schema.vertexLabel("author").index("byName").secondary().by("name").add();
+        //        schema.vertexLabel("recipe").index("byRecipe").materialized().by("name").add();
         // TODO: fix these errors!
         // schema.vertexLabel("meal").index("byMeal").materialized().by("name").add();
         // schema.vertexLabel("ingredient").index("byIngredient").materialized().by("name").add();

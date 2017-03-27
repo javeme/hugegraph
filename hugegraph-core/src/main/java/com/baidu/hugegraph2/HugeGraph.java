@@ -1,5 +1,9 @@
 package com.baidu.hugegraph2;
 
+import static com.baidu.hugegraph2.configuration.ConfigSpace.BACKEND;
+import static com.baidu.hugegraph2.configuration.ConfigSpace.TABLE_GRAPH;
+import static com.baidu.hugegraph2.configuration.ConfigSpace.TABLE_SCHEMA;
+
 import java.util.Iterator;
 
 import org.apache.commons.configuration.Configuration;
@@ -12,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.baidu.hugegraph2.backend.BackendException;
-import com.baidu.hugegraph2.backend.store.BackendStore;
 import com.baidu.hugegraph2.backend.store.BackendProviderFactory;
+import com.baidu.hugegraph2.backend.store.BackendStore;
 import com.baidu.hugegraph2.backend.store.BackendStoreProvider;
 import com.baidu.hugegraph2.backend.tx.GraphTransaction;
 import com.baidu.hugegraph2.backend.tx.SchemaTransaction;
@@ -39,8 +43,16 @@ public class HugeGraph implements Graph {
     private GraphTransaction graphTransaction = null;
     private SchemaTransaction schemaTransaction = null;
 
-    public HugeGraph() {
-        this(new HugeConfiguration());
+    /**
+     * Construct a HugeGraph instance
+     * @return
+     */
+    public static HugeGraph open(final Configuration configuration) {
+        return new HugeGraph(configuration);
+    }
+
+    public HugeGraph(Configuration configuration) {
+        this(new HugeConfiguration(configuration));
     }
 
     public HugeGraph(HugeConfiguration configuration) {
@@ -56,8 +68,7 @@ public class HugeGraph implements Graph {
     }
 
     public void initBackend() throws BackendException {
-
-        this.storeProvider = BackendProviderFactory.open(configuration.getGraphBackend());
+        this.storeProvider = BackendProviderFactory.open(configuration.get(BACKEND));
 
         this.schemaTransaction = this.openSchemaTransaction();
         this.graphTransaction = this.openGraphTransaction();
@@ -65,7 +76,7 @@ public class HugeGraph implements Graph {
 
     public SchemaTransaction openSchemaTransaction() {
         try {
-            BackendStore store = this.storeProvider.open(configuration.getStoreSchema());
+            BackendStore store = this.storeProvider.open(configuration.get(TABLE_SCHEMA));
             return new SchemaTransaction(store);
         } catch (BackendException e) {
             String message = "Failed to open schema transaction";
@@ -76,24 +87,13 @@ public class HugeGraph implements Graph {
 
     public GraphTransaction openGraphTransaction() {
         try {
-            BackendStore store = this.storeProvider.open(configuration.getStoreGraph());
+            BackendStore store = this.storeProvider.open(configuration.get(TABLE_GRAPH));
             return new GraphTransaction(this, store);
         } catch (BackendException e) {
             String message = "Failed to open graph transaction";
             logger.error("{}: {}", message, e.getMessage());
             throw new HugeException(message);
         }
-    }
-
-    /**
-     * Construct a HugeGraph instance
-     *
-     * @return
-     */
-    public static HugeGraph open(final Configuration configuration) {
-        HugeConfiguration conf = new HugeConfiguration();
-        conf.copy(configuration);
-        return new HugeGraph(conf);
     }
 
     public SchemaManager openSchemaManager() {
