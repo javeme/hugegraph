@@ -10,4 +10,10 @@ public interface SchemaType extends Namifiable, HugeType {
 
     // schema description
     public String schema();
+
+    public SchemaType properties(String... propertyNames);
+
+    public void create();
+
+    public void remove();
 }

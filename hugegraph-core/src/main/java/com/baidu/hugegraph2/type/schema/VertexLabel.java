@@ -20,4 +20,8 @@ public interface VertexLabel extends SchemaType {
     public default HugeTypes type() {
         return HugeTypes.VERTEX_LABEL;
     }
+
+    public VertexLabel partitionKey(String... keys);
+
+    public VertexLabel clusteringKey(String... keys);
 }

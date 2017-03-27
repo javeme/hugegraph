@@ -21,4 +21,16 @@ public interface PropertyKey extends SchemaType {
     public default HugeTypes type() {
         return HugeTypes.PROPERTY_KEY;
     }
+
+    public PropertyKey asText();
+
+    public PropertyKey asInt();
+
+    public PropertyKey asTimeStamp();
+
+    public PropertyKey asUUID();
+
+    public PropertyKey single();
+
+    public PropertyKey multiple();
 }
