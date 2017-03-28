@@ -82,7 +82,7 @@ public interface HugeGraphPredicate extends BiPredicate<Object, Object> {
          * Convert Tinkerpop's comparison operators to HugeGraph's
          *
          * @param p Any predicate
-         * @return A HugeGraphPredicate equivalent to the given predicate
+         * @return A Predicate equivalent to the given predicate
          * @throws IllegalArgumentException if the given Predicate is unknown
          */
         public static final HugeGraphPredicate convertInternal(BiPredicate p) {

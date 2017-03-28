@@ -4,6 +4,9 @@ package com.baidu.hugegraph2.backend;
  * Created by jishilei on 17/3/19.
  */
 public interface Transaction {
+
+
+
     /**
      * Commits the transaction and persists all modifications to the backend.
      * <p>
