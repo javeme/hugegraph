@@ -5,10 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.baidu.hugegraph2.HugeGraph;
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.Transaction;
 import com.baidu.hugegraph2.backend.id.Id;
 import com.baidu.hugegraph2.backend.query.Query;
+import com.baidu.hugegraph2.backend.serializer.AbstractSerializer;
 import com.baidu.hugegraph2.backend.serializer.TextBackendEntry;
 import com.baidu.hugegraph2.backend.store.BackendEntry;
 import com.baidu.hugegraph2.backend.store.BackendStore;
@@ -16,14 +18,20 @@ import com.google.common.base.Preconditions;
 
 public abstract class AbstractTransaction implements Transaction {
 
-    private BackendStore store;
+    // parent graph
+    protected final HugeGraph graph;
+    protected AbstractSerializer serializer;
 
-    private Map<Id, BackendEntry> additions;
-    private Set<Id> deletions;
+    protected BackendStore store;
 
-    public AbstractTransaction(BackendStore store) {
+    protected Map<Id, BackendEntry> additions;
+    protected Set<Id> deletions;
+
+    public AbstractTransaction(HugeGraph graph, BackendStore store) {
+        this.graph = graph;
+        this.serializer = this.graph.serializer();
+
         this.store = store;
-
         this.additions = new HashMap<Id, BackendEntry>();
         this.deletions = new HashSet<Id>();
     }
