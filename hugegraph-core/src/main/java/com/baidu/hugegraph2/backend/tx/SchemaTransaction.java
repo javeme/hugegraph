@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.baidu.hugegraph2.HugeGraph;
 import com.baidu.hugegraph2.backend.id.Id;
 import com.baidu.hugegraph2.backend.id.SplicingIdGenerator;
 import com.baidu.hugegraph2.backend.query.SliceQuery;
@@ -17,6 +18,8 @@ import com.baidu.hugegraph2.schema.HugePropertyKey;
 import com.baidu.hugegraph2.schema.HugeVertexLabel;
 import com.baidu.hugegraph2.type.define.Cardinality;
 import com.baidu.hugegraph2.type.define.DataType;
+import com.baidu.hugegraph2.type.schema.EdgeLabel;
+import com.baidu.hugegraph2.type.schema.PropertyKey;
 import com.baidu.hugegraph2.type.schema.VertexLabel;
 
 public class SchemaTransaction extends AbstractTransaction {
@@ -30,8 +33,8 @@ public class SchemaTransaction extends AbstractTransaction {
     private static final String SCHEMATYPE_COLUME = "_schema";
     private static final String TIMESTANMP_COLUME = "_timestamp";
 
-    public SchemaTransaction(BackendStore store) {
-        super(store);
+    public SchemaTransaction(HugeGraph graph, BackendStore store) {
+        super(graph, store);
         // TODO Auto-generated constructor stub
     }
 
@@ -51,7 +54,7 @@ public class SchemaTransaction extends AbstractTransaction {
             propertyKey.dataType(DataType.valueOf(entry.column("datatype").toString()));
             propertyKeys.add(propertyKey);
         });
-        return  propertyKeys;
+        return propertyKeys;
 
     }
 
@@ -73,6 +76,12 @@ public class SchemaTransaction extends AbstractTransaction {
         this.addEntry(entry);
     }
 
+    public PropertyKey getPropertyKey(String name) {
+        Id id = SplicingIdGenerator.generate(new HugePropertyKey(name, null));
+        BackendEntry entry = store.get(id);
+        return this.serializer.readPropertyKey(entry);
+    }
+
     public void removePropertyKey(String name) {
         logger.debug("SchemaTransaction remove property key " + name);
 
@@ -87,6 +96,12 @@ public class SchemaTransaction extends AbstractTransaction {
         Id id = SplicingIdGenerator.generate(vertexLabel);
         // TODO: use serializer instead
         this.addEntry(id, DEFAULT_COLUME, vertexLabel.toString());
+    }
+
+    public VertexLabel getVertexLabel(String name) {
+        Id id = SplicingIdGenerator.generate(new HugeVertexLabel(name, null));
+        BackendEntry entry = store.get(id);
+        return this.serializer.readVertexLabel(entry);
     }
 
     public void removeVertexLabel(String name) {
@@ -107,6 +122,12 @@ public class SchemaTransaction extends AbstractTransaction {
         this.addEntry(id, DEFAULT_COLUME, edgeLabel.toString());
     }
 
+    public EdgeLabel getEdgeLabel(String name) {
+        Id id = SplicingIdGenerator.generate(new HugeEdgeLabel(name, null));
+        BackendEntry entry = store.get(id);
+        return this.serializer.readEdgeLabel(entry);
+    }
+
     public void removeEdgeLabel(String name) {
         logger.info("SchemaTransaction remove edge label " + name);
 
@@ -114,13 +135,4 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeEntry(id);
     }
 
-    public VertexLabel getOrCreateVertexLabel(String label) {
-        // TODO: get from cache or db, now let it just returns a fake label
-        return new HugeVertexLabel(label, this);
-    }
-
-    public VertexLabel getVertexLabel(String label) {
-        // TODO: get from cache or db, now let it just returns a fake label
-        return new HugeVertexLabel(label, this);
-    }
 }
