@@ -1,6 +1,5 @@
 package com.baidu.hugegraph2.backend.id;
 
-import com.baidu.hugegraph2.schema.SchemaElement;
 import com.baidu.hugegraph2.util.NumericUtils;
 import com.baidu.hugegraph2.util.StringEncoding;
 
@@ -14,17 +13,13 @@ public class IdGenerator {
     }
 
     // this could be set by conf
-    public static IdType ID_SAVE_TYPE = IdType.STRING;
+    public static IdType ID_TYPE = IdType.STRING;
 
     /****************************** id generate ******************************/
 
-    public static Id generate(SchemaElement entry) {
-        String id = String.format("%02X:%s", entry.type().code(), entry.name());
-        return generate(id);
-    }
-
+    // generate a string id
     public static Id generate(String id) {
-        switch (ID_SAVE_TYPE) {
+        switch (ID_TYPE) {
             case LONG:
                 return new LongId(Long.parseLong(id));
             case STRING:
@@ -35,8 +30,9 @@ public class IdGenerator {
         }
     }
 
+    // generate a long id
     public static Id generate(long id) {
-        switch (ID_SAVE_TYPE) {
+        switch (ID_TYPE) {
             case LONG:
                 return new LongId(id);
             case STRING:
@@ -47,8 +43,9 @@ public class IdGenerator {
         }
     }
 
+    // parse an id from bytes
     public static Id parse(byte[] bytes) {
-        switch (ID_SAVE_TYPE) {
+        switch (ID_TYPE) {
             case LONG:
                 return new LongId(bytes);
             case STRING:

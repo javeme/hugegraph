@@ -21,8 +21,8 @@ public class ExampleGraphFactory {
 
         logger.info("ExampleGraphFactory start!");
 
-        String propFile = ExampleGraphFactory.class.getClassLoader().getResource("hugegraph.properties").getPath();
-        HugeGraph graph = HugeFactory.open(propFile);
+        String confFile = ExampleGraphFactory.class.getClassLoader().getResource("hugegraph.properties").getPath();
+        HugeGraph graph = HugeFactory.open(confFile);
 
         ExampleGraphFactory.showFeatures(graph);
         ExampleGraphFactory.load(graph);
@@ -98,8 +98,8 @@ public class ExampleGraphFactory {
         GraphTransaction tx = graph.openGraphTransaction();
 
         System.out.println("===============  addVertex  ================");
-        tx.addVertex(T.id, "1", T.label, "book", "name", "java-1");
-        tx.addVertex(T.id, "2", T.label, "book", "name", "java-2");
+        tx.addVertex(T.label, "book", "name", "java-1");
+        tx.addVertex(T.label, "book", "name", "java-2");
 
         // commit data changes
         try {
@@ -115,7 +115,7 @@ public class ExampleGraphFactory {
         }
 
         // use the default Transaction to commit
-        graph.addVertex(T.id, "3", T.label, "book", "name", "java-3");
+        graph.addVertex(T.label, "book", "name", "java-3");
         graph.tx().commit();
     }
 }
