@@ -37,9 +37,9 @@ import java.nio.ByteBuffer;
  * the License.
  */
 
-public final class NumericUtils {
+public final class NumericUtil {
 
-    private NumericUtils() {
+    private NumericUtil() {
     } // no instance!
 
     /**
