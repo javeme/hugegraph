@@ -9,6 +9,8 @@ import com.baidu.hugegraph2.HugeGraph;
 import com.baidu.hugegraph2.backend.BackendException;
 import com.baidu.hugegraph2.backend.Transaction;
 import com.baidu.hugegraph2.backend.id.Id;
+import com.baidu.hugegraph2.backend.id.IdGenerator;
+import com.baidu.hugegraph2.backend.id.IdGeneratorFactory;
 import com.baidu.hugegraph2.backend.query.Query;
 import com.baidu.hugegraph2.backend.serializer.AbstractSerializer;
 import com.baidu.hugegraph2.backend.serializer.TextBackendEntry;
@@ -21,6 +23,7 @@ public abstract class AbstractTransaction implements Transaction {
     // parent graph
     protected final HugeGraph graph;
     protected AbstractSerializer serializer;
+    protected IdGenerator idGenerator;
 
     protected BackendStore store;
 
@@ -30,6 +33,7 @@ public abstract class AbstractTransaction implements Transaction {
     public AbstractTransaction(HugeGraph graph, BackendStore store) {
         this.graph = graph;
         this.serializer = this.graph.serializer();
+        this.idGenerator = IdGeneratorFactory.generator();
 
         this.store = store;
         this.additions = new HashMap<Id, BackendEntry>();
@@ -37,15 +41,15 @@ public abstract class AbstractTransaction implements Transaction {
     }
 
     public Iterable<BackendEntry> query(Query query) {
-        return store.query(query);
+        return this.store.query(query);
     }
 
     public BackendEntry get(Id id) {
-        return store.get(id);
+        return this.store.get(id);
     }
 
     public void delete(Id id) {
-        store.delete(id);
+        this.store.delete(id);
     }
 
     protected void prepareCommit() {
