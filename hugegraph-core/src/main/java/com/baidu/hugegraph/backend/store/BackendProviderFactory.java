@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.backend.store;
 
+import com.baidu.hugegraph.backend.store.cassandra.CassandraStoreProvider;
 import com.baidu.hugegraph.backend.store.memory.InMemoryDBStoreProvider;
 
 public class BackendProviderFactory {
@@ -9,8 +10,7 @@ public class BackendProviderFactory {
             return new InMemoryDBStoreProvider();
         }
         else if (backend.equalsIgnoreCase("cassandra")) {
-            // TODO: return new CassandraStoreProvider();
-            return null;
+            return new CassandraStoreProvider();
         }
 
         return null;
