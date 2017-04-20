@@ -39,6 +39,11 @@ public class SnowflakeIdGenerator extends IdGenerator {
         return this.generate();
     }
 
+    @Override
+    public Id[] split(Id id) {
+        throw new RuntimeException("Not supported");
+    }
+
     static class IdWorker {
 
         protected static final Logger LOG = LoggerFactory.getLogger(IdWorker.class);
