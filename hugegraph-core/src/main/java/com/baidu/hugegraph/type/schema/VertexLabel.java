@@ -41,6 +41,6 @@ public abstract class VertexLabel extends SchemaElement {
 
     public IndexLabel index(String indexName) {
         // name reference the base-type column
-        return new HugeIndexLabel(indexName, name, transaction);
+        return new HugeIndexLabel(indexName, HugeTypes.VERTEX_LABEL, name, transaction);
     }
 }

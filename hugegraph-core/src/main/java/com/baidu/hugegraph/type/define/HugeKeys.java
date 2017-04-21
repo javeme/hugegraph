@@ -29,8 +29,9 @@ public enum HugeKeys {
 
     // column names of schema type (IndexLabel)
     BASE_TYPE(175, "baseType"),
-    INDEX_TYPE(176, "indexType"),
-    FIELDS(177, "fields"),
+    BASE_VALUE(176, "baseValue"),
+    INDEX_TYPE(177, "indexType"),
+    FIELDS(178, "fields"),
 
     // column names of data type (Vertex/Edge)
     LABEL(200, "label"),

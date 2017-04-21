@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.baidu.hugegraph.HugeException;
 import com.baidu.hugegraph.backend.tx.SchemaTransaction;
+import com.baidu.hugegraph.type.HugeTypes;
 import com.baidu.hugegraph.type.define.IndexType;
 import com.baidu.hugegraph.type.schema.IndexLabel;
 import com.baidu.hugegraph.util.StringUtil;
@@ -16,15 +17,16 @@ import com.baidu.hugegraph.util.StringUtil;
 public class HugeIndexLabel extends IndexLabel {
 
     private String indexName;
-    private String baseType;
+    private HugeTypes baseType;
+    private String baseValue;
     private IndexType indexType;
     private Set<String> indexFields;
 
-    public HugeIndexLabel(String indexName, String name, SchemaTransaction transaction) {
+    public HugeIndexLabel(String indexName, HugeTypes baseType, String name, SchemaTransaction transaction) {
         super(name, transaction);
         this.indexName = indexName;
-        // TODO: I always feel that some stranger in here.
-        this.baseType = name;
+        this.baseType = baseType;
+        this.baseValue = name;
         this.indexFields = new HashSet<>();
     }
 
@@ -34,8 +36,13 @@ public class HugeIndexLabel extends IndexLabel {
     }
 
     @Override
-    public String baseType() {
+    public HugeTypes baseType() {
         return this.baseType;
+    }
+
+    @Override
+    public String baseValue() {
+        return baseValue;
     }
 
     @Override
@@ -80,10 +87,11 @@ public class HugeIndexLabel extends IndexLabel {
 
     @Override
     public String schema() {
-        this.schema = ".index(\"" + this.indexName + "\")"
+        String schema = "";
+        schema = ".index(\"" + this.indexName + "\")"
                 + StringUtil.descSchema("by", this.indexFields)
                 + "." + this.indexType.string() + "()";
-        return this.schema;
+        return schema;
     }
 
     @Override

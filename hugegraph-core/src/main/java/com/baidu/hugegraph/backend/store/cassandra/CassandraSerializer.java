@@ -9,6 +9,7 @@ import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.backend.BackendException;
 import com.baidu.hugegraph.backend.id.Id;
 import com.baidu.hugegraph.backend.id.IdGeneratorFactory;
+import com.baidu.hugegraph.backend.query.Query;
 import com.baidu.hugegraph.backend.serializer.AbstractSerializer;
 import com.baidu.hugegraph.backend.serializer.TextBackendEntry;
 import com.baidu.hugegraph.backend.store.BackendEntry;
@@ -218,8 +219,15 @@ public class CassandraSerializer extends AbstractSerializer {
     }
 
     @Override
-    public BackendEntry writeId(Id id) {
+    public BackendEntry writeId(HugeTypes type, Id id) {
+        // NOTE: Cassandra does not need to add type prefix for id
         return newBackendEntry(id);
+    }
+
+    @Override
+    public Query writeQuery(Query query) {
+        // NOTE: Cassandra does not need to add type prefix for id
+        return query;
     }
 
     @Override
@@ -344,6 +352,7 @@ public class CassandraSerializer extends AbstractSerializer {
         CassandraBackendEntry entry = newBackendEntry(indexLabel);
         entry.column(HugeKeys.NAME, indexLabel.indexName());
         entry.column(HugeKeys.BASE_TYPE, toJson(indexLabel.baseType()));
+        entry.column(HugeKeys.BASE_VALUE, toJson(indexLabel.baseValue()));
         entry.column(HugeKeys.INDEX_TYPE, toJson(indexLabel.indexType()));
         entry.column(HugeKeys.FIELDS, toJson(indexLabel.indexFields().toArray()));
         return entry;
@@ -361,11 +370,12 @@ public class CassandraSerializer extends AbstractSerializer {
 
         CassandraBackendEntry textEntry = (CassandraBackendEntry) entry;
         String indexName = textEntry.column(HugeKeys.NAME);
-        String baseType = textEntry.column(HugeKeys.BASE_TYPE);
+        HugeTypes baseType = fromJson(textEntry.column(HugeKeys.BASE_TYPE), HugeTypes.class);
+        String baseValue = textEntry.column(HugeKeys.BASE_VALUE);
         String indexType = textEntry.column(HugeKeys.INDEX_TYPE);
         String indexFields = textEntry.column(HugeKeys.FIELDS);
 
-        HugeIndexLabel indexLabel = new HugeIndexLabel(indexName, baseType,
+        HugeIndexLabel indexLabel = new HugeIndexLabel(indexName, baseType, baseValue,
                 this.graph.schemaTransaction());
         indexLabel.indexType(fromJson(indexType, IndexType.class));
         indexLabel.by(fromJson(indexFields, String[].class));

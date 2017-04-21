@@ -26,7 +26,6 @@ public class Example2 {
         HugeGraph graph = HugeFactory.open(confFile);
         graph.clearBackend();
         graph.initBackend();
-
         Example2.load(graph);
 //        traversal(graph);
 

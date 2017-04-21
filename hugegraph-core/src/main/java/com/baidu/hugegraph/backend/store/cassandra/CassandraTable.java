@@ -238,6 +238,7 @@ public abstract class CassandraTable {
             HugeKeys[] columns = new HugeKeys[] {
                     HugeKeys.NAME,
                     HugeKeys.BASE_TYPE,
+                    HugeKeys.BASE_VALUE,
                     HugeKeys.INDEX_TYPE,
                     HugeKeys.FIELDS
             };
@@ -245,7 +246,8 @@ public abstract class CassandraTable {
             // base-type as clustering key
             HugeKeys[] primaryKeys = new HugeKeys[] {
                     HugeKeys.NAME,
-                    HugeKeys.BASE_TYPE
+                    HugeKeys.BASE_TYPE,
+                    HugeKeys.BASE_VALUE
             };
 
             super.createTable(session, columns, primaryKeys);
