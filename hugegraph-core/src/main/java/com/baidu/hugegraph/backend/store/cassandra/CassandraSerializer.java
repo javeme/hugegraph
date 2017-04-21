@@ -9,6 +9,7 @@ import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.backend.BackendException;
 import com.baidu.hugegraph.backend.id.Id;
 import com.baidu.hugegraph.backend.id.IdGeneratorFactory;
+import com.baidu.hugegraph.backend.query.Query;
 import com.baidu.hugegraph.backend.serializer.AbstractSerializer;
 import com.baidu.hugegraph.backend.store.BackendEntry;
 import com.baidu.hugegraph.backend.store.cassandra.CassandraBackendEntry.Cell;
@@ -214,8 +215,15 @@ public class CassandraSerializer extends AbstractSerializer {
     }
 
     @Override
-    public BackendEntry writeId(Id id) {
+    public BackendEntry writeId(HugeTypes type, Id id) {
+        // NOTE: Cassandra does not need to add type prefix for id
         return newBackendEntry(id);
+    }
+
+    @Override
+    public Query writeQuery(Query query) {
+        // NOTE: Cassandra does not need to add type prefix for id
+        return query;
     }
 
     @Override
