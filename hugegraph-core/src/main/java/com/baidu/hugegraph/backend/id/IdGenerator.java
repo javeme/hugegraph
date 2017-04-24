@@ -25,8 +25,6 @@ public abstract class IdGenerator {
     public abstract Id generate(HugeVertex entry);
     public abstract Id generate(HugeEdge entry);
 
-    public abstract Id[] split(Id id);
-
     // generate a string id
     public Id generate(String id) {
         switch (ID_TYPE) {

@@ -9,9 +9,9 @@ import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.backend.BackendException;
 import com.baidu.hugegraph.backend.id.Id;
 import com.baidu.hugegraph.backend.id.IdGeneratorFactory;
+import com.baidu.hugegraph.backend.id.SplicingIdGenerator;
 import com.baidu.hugegraph.backend.query.Query;
 import com.baidu.hugegraph.backend.serializer.AbstractSerializer;
-import com.baidu.hugegraph.backend.serializer.TextBackendEntry;
 import com.baidu.hugegraph.backend.store.BackendEntry;
 import com.baidu.hugegraph.backend.store.cassandra.CassandraBackendEntry.Cell;
 import com.baidu.hugegraph.backend.store.cassandra.CassandraBackendEntry.Row;
@@ -196,11 +196,10 @@ public class CassandraSerializer extends AbstractSerializer {
         assert bytesEntry instanceof CassandraBackendEntry;
         CassandraBackendEntry entry = (CassandraBackendEntry) bytesEntry;
 
-        // id with label
+        // assume id with a label
         // String labelName = entry.column(HugeKeys.LABEL);
         // TODO: improve Id split()
-        String labelName = IdGeneratorFactory.generator().split(
-                entry.id())[0].asString();
+        String labelName = SplicingIdGenerator.split(entry.id())[0];
         VertexLabel label = this.graph.openSchemaManager().vertexLabel(labelName);
 
         // id

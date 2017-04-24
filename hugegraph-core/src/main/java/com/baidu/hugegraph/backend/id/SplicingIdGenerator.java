@@ -49,13 +49,12 @@ public class SplicingIdGenerator extends IdGenerator {
         return generate(id);
     }
 
-    @Override
-    public Id[] split(Id id) {
+    public static String concat(String[] ids) {
+        return String.join(IDS_SPLITOR, ids);
+    }
+
+    public static String[] split(Id id) {
         String[] parts = id.asString().split(IDS_SPLITOR);
-        Id[] ids = new Id[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            ids[i] = generate(parts[i]);
-        }
-        return ids;
+        return parts;
     }
 }
