@@ -16,23 +16,20 @@ import com.baidu.hugegraph.util.StringUtil;
  */
 public class HugeIndexLabel extends IndexLabel {
 
-    private String indexName;
     private HugeTypes baseType;
     private String baseValue;
     private IndexType indexType;
     private Set<String> indexFields;
 
-    public HugeIndexLabel(String indexName, HugeTypes baseType, String name, SchemaTransaction transaction) {
+    public HugeIndexLabel(String name) {
+        this(name, null, null, null);
+    }
+
+    public HugeIndexLabel(String name, HugeTypes baseType, String baseValue, SchemaTransaction transaction) {
         super(name, transaction);
-        this.indexName = indexName;
         this.baseType = baseType;
         this.baseValue = name;
         this.indexFields = new HashSet<>();
-    }
-
-    @Override
-    public String indexName() {
-        return indexName;
     }
 
     @Override
@@ -88,7 +85,7 @@ public class HugeIndexLabel extends IndexLabel {
     @Override
     public String schema() {
         String schema = "";
-        schema = ".index(\"" + this.indexName + "\")"
+        schema = ".index(\"" + this.name + "\")"
                 + StringUtil.descSchema("by", this.indexFields)
                 + "." + this.indexType.string() + "()";
         return schema;
@@ -107,6 +104,6 @@ public class HugeIndexLabel extends IndexLabel {
 
     @Override
     public void remove() {
-
+        this.transaction.removeIndexLabel(this.name);
     }
 }

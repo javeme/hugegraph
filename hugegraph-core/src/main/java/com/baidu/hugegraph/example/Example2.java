@@ -62,8 +62,8 @@ public class Example2 {
 //        schema.vertexLabel("person").properties("name", "age").primaryKeys("name").create();
 //        schema.vertexLabel("software").properties("name", "lang").primaryKeys("name").create();
 
-        schema.vertexLabel("person").index("byName").by("name").secondary().create();
-        schema.vertexLabel("book").index("byName").by("name").secondary().create();
+        schema.vertexLabel("person").index("personByName").by("name").secondary().create();
+        schema.vertexLabel("book").index("bookByName").by("name").secondary().create();
 
         schema.edgeLabel("knows").properties("weight").link("person", "person").create();
         schema.edgeLabel("created").properties("weight").link("person", "software").create();

@@ -20,6 +20,7 @@ import com.baidu.hugegraph.schema.SchemaElement;
 import com.baidu.hugegraph.type.HugeTypes;
 import com.baidu.hugegraph.type.define.HugeKeys;
 import com.baidu.hugegraph.type.schema.EdgeLabel;
+import com.baidu.hugegraph.type.schema.IndexLabel;
 import com.baidu.hugegraph.type.schema.PropertyKey;
 import com.baidu.hugegraph.type.schema.VertexLabel;
 
@@ -118,16 +119,6 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeSchema(new HugeEdgeLabel(name, null));
     }
 
-    private BackendEntry querySchema(SchemaElement schema) {
-        Id id = this.idGenerator.generate(schema);
-        return this.query(schema.type(), id);
-    }
-
-    private void removeSchema(SchemaElement schema) {
-        Id id = this.idGenerator.generate(schema);
-        this.removeEntry(schema.type(), id);
-    }
-
     public void addIndexLabel(HugeIndexLabel indexLabel) {
         logger.debug("SchemaTransaction add index label, "
                 + "name: " + indexLabel.name() + ", "
@@ -139,8 +130,24 @@ public class SchemaTransaction extends AbstractTransaction {
         this.addEntry(this.serializer.writeIndexLabel(indexLabel));
     }
 
-    public Object getIndexLabel(String name) {
-        BackendEntry entry = querySchema(new HugeIndexLabel(name, null, null, null));
-        return this.serializer.readEdgeLabel(entry);
+    public IndexLabel getIndexLabel(String name) {
+        BackendEntry entry = querySchema(new HugeIndexLabel(name));
+        return this.serializer.readIndexLabel(entry);
+    }
+
+    public void removeIndexLabel(String name) {
+        logger.info("SchemaTransaction remove index label " + name);
+        // TODO: need check index data exists
+        this.removeSchema(new HugeIndexLabel(name));
+    }
+
+    private BackendEntry querySchema(SchemaElement schema) {
+        Id id = this.idGenerator.generate(schema);
+        return this.query(schema.type(), id);
+    }
+
+    private void removeSchema(SchemaElement schema) {
+        Id id = this.idGenerator.generate(schema);
+        this.removeEntry(schema.type(), id);
     }
 }
