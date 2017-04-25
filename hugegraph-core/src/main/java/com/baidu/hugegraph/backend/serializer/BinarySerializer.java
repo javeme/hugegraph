@@ -9,11 +9,12 @@ import com.baidu.hugegraph.backend.id.Id;
 import com.baidu.hugegraph.backend.query.Query;
 import com.baidu.hugegraph.backend.store.BackendEntry;
 import com.baidu.hugegraph.backend.store.BackendEntry.BackendColumn;
-import com.baidu.hugegraph.schema.HugeIndexLabel;
+import com.baidu.hugegraph.structure.HugeIndex;
 import com.baidu.hugegraph.structure.HugeProperty;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.type.HugeTypes;
 import com.baidu.hugegraph.type.define.HugeKeys;
+import com.baidu.hugegraph.type.define.IndexType;
 import com.baidu.hugegraph.type.schema.EdgeLabel;
 import com.baidu.hugegraph.type.schema.IndexLabel;
 import com.baidu.hugegraph.type.schema.PropertyKey;
@@ -180,7 +181,7 @@ public class BinarySerializer extends AbstractSerializer {
     }
 
     @Override
-    public BackendEntry writeIndexLabel(HugeIndexLabel indexLabel) {
+    public BackendEntry writeIndexLabel(IndexLabel indexLabel) {
         return null;
     }
 
@@ -211,6 +212,16 @@ public class BinarySerializer extends AbstractSerializer {
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
         return StringEncoding.decodeString(bytes);
+    }
+
+    @Override
+    public BackendEntry writeIndex(HugeIndex index) {
+        return null;
+    }
+
+    @Override
+    public HugeIndex readIndex(BackendEntry entry, IndexType indexType) {
+        return null;
     }
 }
 

@@ -1,7 +1,6 @@
 package com.baidu.hugegraph.schema;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.baidu.hugegraph.HugeException;
@@ -28,8 +27,14 @@ public class HugeIndexLabel extends IndexLabel {
     public HugeIndexLabel(String name, HugeTypes baseType, String baseValue, SchemaTransaction transaction) {
         super(name, transaction);
         this.baseType = baseType;
-        this.baseValue = name;
+        this.baseValue = baseValue;
         this.indexFields = new HashSet<>();
+    }
+
+    // TODO: index label weather contain it's indexes?
+    @Override
+    public HugeIndexLabel indexNames(String... names) {
+        return null;
     }
 
     @Override
@@ -71,12 +76,6 @@ public class HugeIndexLabel extends IndexLabel {
     }
 
     @Override
-    public IndexLabel range() {
-        this.indexType = IndexType.RANGE;
-        return this;
-    }
-
-    @Override
     public IndexLabel search() {
         this.indexType = IndexType.SEARCH;
         return this;
@@ -96,6 +95,9 @@ public class HugeIndexLabel extends IndexLabel {
         if (this.transaction.getIndexLabel(this.name) != null) {
             throw new HugeException("The indexLabel:" + this.name + " has exised.");
         }
+
+        // TODO: should implement update operation
+        this.transaction.updateSchemaElement(this.baseType, this.baseValue, this.name);
 
         // TODO: need to check param.
         this.transaction.addIndexLabel(this);

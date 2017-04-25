@@ -61,7 +61,7 @@ public class SchemaTransaction extends AbstractTransaction {
         // todo:to be implemented
     }
 
-    public void addPropertyKey(HugePropertyKey propertyKey) {
+    public void addPropertyKey(PropertyKey propertyKey) {
         logger.debug("SchemaTransaction add property key, "
                 + "name: " + propertyKey.name() + ", "
                 + "dataType: " + propertyKey.dataType() + ", "
@@ -81,7 +81,7 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeSchema(new HugePropertyKey(name, null));
     }
 
-    public void addVertexLabel(HugeVertexLabel vertexLabel) {
+    public void addVertexLabel(VertexLabel vertexLabel) {
         logger.debug("SchemaTransaction add vertex label, "
                 + "name: " + vertexLabel.name());
 
@@ -99,7 +99,7 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeSchema(new HugeVertexLabel(name, null));
     }
 
-    public void addEdgeLabel(HugeEdgeLabel edgeLabel) {
+    public void addEdgeLabel(EdgeLabel edgeLabel) {
         logger.debug("SchemaTransaction add edge label, "
                 + "name: " + edgeLabel.name() + ", "
                 + "multiplicity: " + edgeLabel.multiplicity() + ", "
@@ -119,7 +119,7 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeSchema(new HugeEdgeLabel(name, null));
     }
 
-    public void addIndexLabel(HugeIndexLabel indexLabel) {
+    public void addIndexLabel(IndexLabel indexLabel) {
         logger.debug("SchemaTransaction add index label, "
                 + "name: " + indexLabel.name() + ", "
                 + "base-type: " + indexLabel.baseType() + ", "
@@ -141,13 +141,35 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeSchema(new HugeIndexLabel(name));
     }
 
-    private BackendEntry querySchema(SchemaElement schema) {
-        Id id = this.idGenerator.generate(schema);
-        return this.query(schema.type(), id);
+    private BackendEntry querySchema(SchemaElement schemaElement) {
+        Id id = this.idGenerator.generate(schemaElement);
+        return this.query(schemaElement.type(), id);
     }
 
     private void removeSchema(SchemaElement schema) {
         Id id = this.idGenerator.generate(schema);
         this.removeEntry(schema.type(), id);
+    }
+
+
+    //****************************   update operation *************************** //
+    public void updateSchemaElement(HugeTypes baseType, String baseValue, String indexName) {
+        switch (baseType) {
+            case VERTEX_LABEL:
+                VertexLabel vertexLabel = getVertexLabel(baseValue);
+                vertexLabel.indexNames(indexName);
+                addVertexLabel(vertexLabel);
+                break;
+            case EDGE_LABEL:
+                EdgeLabel edgeLabel = getEdgeLabel(baseValue);
+                edgeLabel.indexNames(indexName);
+                addEdgeLabel(edgeLabel);
+                break;
+            case PROPERTY_KEY:
+                PropertyKey propertyKey = getPropertyKey(baseValue);
+                propertyKey.indexNames(indexName);
+                addPropertyKey(propertyKey);
+                break;
+        }
     }
 }
