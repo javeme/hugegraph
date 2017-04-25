@@ -14,6 +14,7 @@ public enum HugeKeys {
     PARTITION_KEYS(51, "partitionKeys"),
     CLUSTERING_KEYS(52, "clusteringKeys"),
     PRIMARY_KEYS(56, "primaryKeys"),
+    INDEX_NAMES(57, "indexNames"),
 
     // column names of schema type (EdgeLabel)
     MULTIPLICITY(101, "multiplicity"),
@@ -41,11 +42,13 @@ public enum HugeKeys {
     PROPERTY_VALUE(204, "propertyValue"),
     DIRECTION(205, "direction"),
     SORT_VALUES(206, "sortValues"),
+    PRIMARY_VALUES(207, "primaryValues"),
 
     // column names of index type
     INDEX_NAME(220, "indexName"),
-    INDEX_LABEL_ID(221, "indexLabelId"),
-    ELEMENT_IDS(222, "elementIds");
+    PROPERTY_VALUES(221, "propertyValues"),
+    INDEX_LABEL_NAME(222, "indexLabelName"),
+    ELEMENT_IDS(223, "elementIds");
 
 
     // HugeKeys define

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.baidu.hugegraph.HugeException;
 import com.baidu.hugegraph.schema.SchemaElement;
 import com.baidu.hugegraph.structure.HugeEdge;
-import com.baidu.hugegraph.structure.HugeIndex;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.util.TimeUtil;
 
@@ -38,16 +37,6 @@ public class SnowflakeIdGenerator extends IdGenerator {
     @Override
     public Id generate(HugeEdge entry) {
         return this.generate();
-    }
-
-    @Override
-    public Id generate(HugeIndex index) {
-        return this.generate();
-    }
-
-    @Override
-    public Id[] split(Id id) {
-        throw new RuntimeException("Not supported");
     }
 
     static class IdWorker {

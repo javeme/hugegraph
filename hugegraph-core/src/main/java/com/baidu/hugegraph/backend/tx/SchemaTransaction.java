@@ -151,25 +151,4 @@ public class SchemaTransaction extends AbstractTransaction {
         this.removeEntry(schema.type(), id);
     }
 
-
-    //****************************   update operation *************************** //
-    public void updateSchemaElement(HugeTypes baseType, String baseValue, String indexName) {
-        switch (baseType) {
-            case VERTEX_LABEL:
-                VertexLabel vertexLabel = getVertexLabel(baseValue);
-                vertexLabel.indexNames(indexName);
-                addVertexLabel(vertexLabel);
-                break;
-            case EDGE_LABEL:
-                EdgeLabel edgeLabel = getEdgeLabel(baseValue);
-                edgeLabel.indexNames(indexName);
-                addEdgeLabel(edgeLabel);
-                break;
-            case PROPERTY_KEY:
-                PropertyKey propertyKey = getPropertyKey(baseValue);
-                propertyKey.indexNames(indexName);
-                addPropertyKey(propertyKey);
-                break;
-        }
-    }
 }

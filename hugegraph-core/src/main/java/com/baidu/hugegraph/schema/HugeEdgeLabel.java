@@ -15,7 +15,6 @@ import com.baidu.hugegraph.backend.tx.SchemaTransaction;
 import com.baidu.hugegraph.type.define.Frequency;
 import com.baidu.hugegraph.type.define.Multiplicity;
 import com.baidu.hugegraph.type.schema.EdgeLabel;
-import com.baidu.hugegraph.type.schema.VertexLabel;
 import com.baidu.hugegraph.util.StringUtil;
 import com.google.common.base.Preconditions;
 
@@ -173,8 +172,9 @@ public class HugeEdgeLabel extends EdgeLabel {
 
     private void verifySortKeys() {
         if (this.frequency == Frequency.SINGLE) {
-            Preconditions.checkArgument(this.sortKeys.isEmpty(), "edgeLabel can not contain sortKeys when the cardinality"
-                    + " property is single.");
+            Preconditions
+                    .checkArgument(this.sortKeys.isEmpty(), "edgeLabel can not contain sortKeys when the cardinality"
+                            + " property is single.");
         } else {
             Preconditions.checkNotNull(this.sortKeys, "the sortKeys can not be null when the cardinality property is "
                     + "multiple.");

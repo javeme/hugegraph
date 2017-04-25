@@ -67,14 +67,12 @@ public class Example2 {
         schema.edgeLabel("knows").properties("weight").link("person", "person").create();
         schema.edgeLabel("created").properties("weight").link("person", "software").create();
 
-        GraphManager graphManager = graph.openGraphManager();
-
-        Vertex marko = graphManager.addVertex(T.label, "person", "name", "marko", "age", 29);
-        Vertex vadas = graphManager.addVertex(T.label, "person", "name", "vadas", "age", 27);
-        Vertex lop = graphManager.addVertex(T.label, "software", "name", "lop", "lang", "java");
-        Vertex josh = graphManager.addVertex(T.label, "person", "name", "josh", "age", 32);
-        Vertex ripple = graphManager.addVertex(T.label, "software", "name", "ripple", "lang", "java");
-        Vertex peter = graphManager.addVertex(T.label, "person", "name", "peter", "age", 35);
+        Vertex marko = graph.addVertex(T.label, "person", "name", "marko", "age", 29);
+        Vertex vadas = graph.addVertex(T.label, "person", "name", "vadas", "age", 27);
+        Vertex lop = graph.addVertex(T.label, "software", "name", "lop", "lang", "java");
+        Vertex josh = graph.addVertex(T.label, "person", "name", "josh", "age", 32);
+        Vertex ripple = graph.addVertex(T.label, "software", "name", "ripple", "lang", "java");
+        Vertex peter = graph.addVertex(T.label, "person", "name", "peter", "age", 35);
         marko.addEdge("knows", vadas, "weight", 5);
         marko.addEdge("knows", josh, "weight", 10);
         marko.addEdge("created", lop, "weight", 5);
@@ -82,7 +80,7 @@ public class Example2 {
         josh.addEdge("created", lop, "weight", 4);
         peter.addEdge("created", lop, "weight", 2);
 
-
+        graph.tx().commit();
     }
 
 }

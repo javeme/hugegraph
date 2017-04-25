@@ -2,7 +2,6 @@ package com.baidu.hugegraph.backend.id;
 
 import com.baidu.hugegraph.schema.SchemaElement;
 import com.baidu.hugegraph.structure.HugeEdge;
-import com.baidu.hugegraph.structure.HugeIndex;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.type.HugeTypes;
 import com.baidu.hugegraph.util.NumericUtil;
@@ -27,10 +26,6 @@ public abstract class IdGenerator {
     public abstract Id generate(HugeVertex entry);
 
     public abstract Id generate(HugeEdge entry);
-
-    public abstract Id generate(HugeIndex index);
-
-    public abstract Id[] split(Id id);
 
     // generate a string id
     public Id generate(String id) {
@@ -111,6 +106,19 @@ public abstract class IdGenerator {
         }
 
         @Override
+        public int hashCode() {
+            return this.id.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof StringId)) {
+                return false;
+            }
+            return this.id.equals(((StringId) other).id);
+        }
+
+        @Override
         public String toString() {
             return this.asString();
         }
@@ -154,6 +162,19 @@ public abstract class IdGenerator {
         public int compareTo(Id other) {
             long otherId = ((LongId) other).id;
             return Long.compare(this.id, otherId);
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) this.id;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof LongId)) {
+                return false;
+            }
+            return this.id == ((LongId) other).id;
         }
 
         @Override

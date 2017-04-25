@@ -30,7 +30,6 @@ import com.baidu.hugegraph.structure.HugeElement;
 import com.baidu.hugegraph.structure.HugeIndex;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.type.HugeTypes;
-import com.baidu.hugegraph.type.define.IndexType;
 import com.baidu.hugegraph.type.schema.IndexLabel;
 import com.baidu.hugegraph.type.schema.VertexLabel;
 import com.baidu.hugegraph.util.CollectionUtil;
@@ -65,35 +64,28 @@ public class GraphTransaction extends AbstractTransaction {
         this.vertexes.clear();
     }
 
+    protected void indexUpdate(HugeVertex vertex, boolean removed) {
+        for (String indexName : vertex.vertexLabel().indexNames()) {
+            IndexLabel indexLabel = graph.schemaTransaction().getIndexLabel(indexName);
+
+            List<String> propertyValues = new LinkedList<>();
+            indexLabel.indexFields().forEach(field ->
+                    propertyValues.add(vertex.property(field).value().toString()));
+
+            HugeIndex index = new HugeIndex(indexLabel);
+            // TODO: I feel not confortable by use static import
+            index.propertyValues(StringUtils.join(propertyValues, ID_SPLITOR));
+            index.elementIds(vertex.id().asString());
+            this.addEntry(this.serializer.writeIndex(index));
+        }
+    }
+
+
     public Vertex addVertex(HugeVertex vertex) {
         // serialize vertex to entry
         this.addEntry(this.serializer.writeVertex(vertex));
 
-        // 得到当前顶点对应的索引元数据信息
-        // fetch index names of current vertex label.
-        VertexLabel vertexLabel = graph.schemaTransaction().getVertexLabel(vertex.label());
-        Set<String> indexNames = vertexLabel.indexNames();
-        for (String indexName : indexNames) {
-            IndexLabel indexLabel = graph.schemaTransaction().getIndexLabel(indexName);
-
-            String indexLabelId = indexLabel.name();
-            Set<String> indexFields = indexLabel.indexFields();
-
-            IndexType baseType = indexLabel.indexType();
-            List<String> propertyValues = new LinkedList<>();
-
-            indexFields.forEach(field -> propertyValues.add(vertex.property(field).value().toString()));
-
-            Set<String> elemenetIds = new LinkedHashSet<>();
-            elemenetIds.add(vertex.id().asString());
-
-            HugeIndex index = new HugeIndex(baseType);
-            // TODO: I feel not confortable by use static import
-            index.setPropertyValues(StringUtils.join(propertyValues, ID_SPLITOR));
-            index.setIndexLabelId(indexLabelId);
-            index.setElementIds(elemenetIds);
-            this.addEntry(this.serializer.writeIndex(index));
-        }
+        this.indexUpdate(vertex, false);
 
         return this.vertexes.add(vertex) ? vertex : null;
     }
@@ -154,15 +146,23 @@ public class GraphTransaction extends AbstractTransaction {
     }
 
     public Iterator<Vertex> queryVertices(Query q) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Vertex> list = new ArrayList<Vertex>();
+
+        Iterator<BackendEntry> entries = super.query(q).iterator();
+        while (entries.hasNext()) {
+            Vertex vertex = this.serializer.readVertex(entries.next());
+            assert vertex != null;
+            list.add(vertex);
+        }
+
+        return list.iterator();
     }
 
     public Iterator<Edge> queryEdges(Object... edgeIds) {
         List<Edge> list = new ArrayList<Edge>(edgeIds.length);
 
-        for (Object vertexId : edgeIds) {
-            Id id = HugeElement.getIdValue(T.id, vertexId);
+        for (Object edgeId : edgeIds) {
+            Id id = HugeElement.getIdValue(T.id, edgeId);
             BackendEntry entry = this.get(HugeTypes.EDGE, id);
             Vertex vertex = this.serializer.readVertex(entry);
             assert vertex != null;
@@ -173,8 +173,15 @@ public class GraphTransaction extends AbstractTransaction {
     }
 
     public Iterator<Edge> queryEdges(Query q) {
-        // TODO Auto-generated method stub
-        return null;
+        Iterator<Vertex> vertices = this.queryVertices(q);
+
+        List<Edge> list = new ArrayList<Edge>();
+        while (vertices.hasNext()) {
+            Vertex vertex = vertices.next();
+            list.addAll(ImmutableList.copyOf(vertex.edges(Direction.BOTH)));
+        }
+
+        return list.iterator();
     }
 
     public org.apache.tinkerpop.gremlin.structure.Transaction tx() {

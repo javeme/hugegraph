@@ -14,7 +14,6 @@ import com.baidu.hugegraph.structure.HugeProperty;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.type.HugeTypes;
 import com.baidu.hugegraph.type.define.HugeKeys;
-import com.baidu.hugegraph.type.define.IndexType;
 import com.baidu.hugegraph.type.schema.EdgeLabel;
 import com.baidu.hugegraph.type.schema.IndexLabel;
 import com.baidu.hugegraph.type.schema.PropertyKey;
@@ -220,7 +219,7 @@ public class BinarySerializer extends AbstractSerializer {
     }
 
     @Override
-    public HugeIndex readIndex(BackendEntry entry, IndexType indexType) {
+    public HugeIndex readIndex(BackendEntry entry) {
         return null;
     }
 }

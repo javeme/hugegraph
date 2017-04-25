@@ -61,8 +61,7 @@ public class TextSerializer extends AbstractSerializer {
     protected BackendEntry convertEntry(BackendEntry entry) {
         if (entry instanceof TextBackendEntry) {
             return entry;
-        }
-        else {
+        } else {
             TextBackendEntry text = new TextBackendEntry(entry.id());
             text.columns(entry.columns());
             return text;
@@ -104,14 +103,12 @@ public class TextSerializer extends AbstractSerializer {
         // set properties of vertex/edge
         if (pkey.cardinality() == Cardinality.SINGLE) {
             owner.property(pkey.name(), value);
-        }
-        else {
+        } else {
             if (value instanceof Collection) {
                 for (Object v : (Collection<?>) value) {
                     owner.property(pkey.name(), v);
                 }
-            }
-            else {
+            } else {
                 assert false : "invalid value of non-sigle property";
             }
         }
@@ -208,11 +205,6 @@ public class TextSerializer extends AbstractSerializer {
                     this.formatEdgeValue(edge));
         }
 
-        // test readVertex
-//        System.out.println("writeVertex:" + entry);
-//        HugeVertex v = readVertex(entry);
-//        System.out.println("readVertex:" + v);
-
         return entry;
     }
 
@@ -267,6 +259,8 @@ public class TextSerializer extends AbstractSerializer {
         TextBackendEntry entry = this.writeId(vertexLabel.type(), id);
         entry.column(HugeKeys.NAME.string(), vertexLabel.name());
         entry.column(HugeKeys.PRIMARY_KEYS.string(), toJson(vertexLabel.primaryKeys().toArray()));
+        entry.column(HugeKeys.INDEX_NAMES.string(),
+                toJson(vertexLabel.indexNames().toArray()));
         writeProperties(vertexLabel, entry);
         return entry;
     }
@@ -320,11 +314,13 @@ public class TextSerializer extends AbstractSerializer {
         String name = textEntry.column(HugeKeys.NAME.string());
         String properties = textEntry.column(HugeKeys.PROPERTIES.string());
         String primarykeys = textEntry.column(HugeKeys.PRIMARY_KEYS.string());
+        String indexNames = textEntry.column(HugeKeys.INDEX_NAMES.string());
 
         HugeVertexLabel vertexLabel = new HugeVertexLabel(name,
                 this.graph.schemaTransaction());
         vertexLabel.properties(fromJson(properties, String[].class));
         vertexLabel.primaryKeys(fromJson(primarykeys, String[].class));
+        vertexLabel.indexNames(fromJson(indexNames, String[].class));
 
         return vertexLabel;
     }
@@ -422,11 +418,35 @@ public class TextSerializer extends AbstractSerializer {
 
     @Override
     public BackendEntry writeIndex(HugeIndex index) {
-        return null;
+
+        Id id = IdGeneratorFactory.generator().generate(index.id());
+        TextBackendEntry entry = new TextBackendEntry(id);
+        entry.column(HugeKeys.PROPERTY_VALUES.string(), index.propertyValues());
+        entry.column(HugeKeys.INDEX_LABEL_NAME.string(), index.indexLabelName());
+        entry.column(HugeKeys.ELEMENT_IDS.string(), toJson(index.elementIds().toArray()));
+        return entry;
     }
 
     @Override
-    public HugeIndex readIndex(BackendEntry entry, IndexType indexType) {
-        return null;
+    public HugeIndex readIndex(BackendEntry backendEntry) {
+        if (backendEntry == null) {
+            return null;
+        }
+
+        backendEntry = convertEntry(backendEntry);
+        assert backendEntry instanceof TextBackendEntry;
+        TextBackendEntry entry = (TextBackendEntry) backendEntry;
+
+        String indexValues = entry.column(HugeKeys.PROPERTY_VALUES.string());
+        String indexLabelName = entry.column(HugeKeys.INDEX_LABEL_NAME.string());
+        String elementIds = entry.column(HugeKeys.ELEMENT_IDS.string());
+
+        IndexLabel indexLabel = this.graph.schemaTransaction().getIndexLabel(indexLabelName);
+
+        HugeIndex index = new HugeIndex(indexLabel);
+        index.propertyValues(indexValues);
+        index.elementIds(fromJson(elementIds, String[].class));
+
+        return index;
     }
 }
