@@ -340,12 +340,14 @@ public class TextSerializer extends AbstractSerializer {
         String sortKeys = textEntry.column(HugeKeys.SORT_KEYS.string());
         String links = textEntry.column(HugeKeys.LINKS.string());
         String properties = textEntry.column(HugeKeys.PROPERTIES.string());
+        String indexNames = textEntry.column(HugeKeys.INDEX_NAMES.string());
 
         HugeEdgeLabel edgeLabel = new HugeEdgeLabel(name,
                 this.graph.schemaTransaction());
         edgeLabel.frequency(fromJson(frequency, Frequency.class));
         edgeLabel.properties(fromJson(properties, String[].class));
         edgeLabel.sortKeys(fromJson(sortKeys, String[].class));
+        edgeLabel.indexNames(fromJson(indexNames, String[].class));
         String[] linksArray = fromJson(links, String[].class);
         for (int i = 0; i < linksArray.length - 1; i += 2) {
             edgeLabel.link(linksArray[i], linksArray[i + 1]);
@@ -445,7 +447,7 @@ public class TextSerializer extends AbstractSerializer {
 
         HugeIndex index = new HugeIndex(indexLabel);
         index.propertyValues(indexValues);
-        index.elementIds(fromJson(elementIds, String[].class));
+        index.elementIds(fromJson(elementIds, Id[].class));
 
         return index;
     }
