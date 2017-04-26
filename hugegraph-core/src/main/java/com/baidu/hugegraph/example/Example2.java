@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.baidu.hugegraph.HugeFactory;
 import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.schema.SchemaManager;
-import com.baidu.hugegraph.structure.GraphManager;
 
 /**
  * Created by jishilei on 2017/4/2.
@@ -44,7 +43,7 @@ public class Example2 {
 
     public static void showSchema(final HugeGraph graph) {
         /************************* schemaManager operating *************************/
-        SchemaManager schemaManager = graph.openSchemaManager();
+        SchemaManager schemaManager = graph.schema();
 
         logger.info("===============  show schema  ================");
 
@@ -52,7 +51,7 @@ public class Example2 {
     }
 
     public static void load(final HugeGraph graph) {
-        SchemaManager schema = graph.openSchemaManager();
+        SchemaManager schema = graph.schema();
 
         schema.propertyKey("name").asText().create();
         schema.propertyKey("age").asInt().create();
@@ -73,6 +72,9 @@ public class Example2 {
         Vertex josh = graph.addVertex(T.label, "person", "name", "josh", "age", 32);
         Vertex ripple = graph.addVertex(T.label, "software", "name", "ripple", "lang", "java");
         Vertex peter = graph.addVertex(T.label, "person", "name", "peter", "age", 35);
+
+        graph.tx().open();
+
         marko.addEdge("knows", vadas, "weight", 5);
         marko.addEdge("knows", josh, "weight", 10);
         marko.addEdge("created", lop, "weight", 5);
