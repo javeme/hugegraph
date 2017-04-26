@@ -385,7 +385,10 @@ public class CassandraSerializer extends AbstractSerializer {
         CassandraBackendEntry entry = newBackendEntry(index);
         entry.column(HugeKeys.PROPERTY_VALUES, index.propertyValues());
         entry.column(HugeKeys.INDEX_LABEL_NAME, index.indexLabelName());
-        entry.column(HugeKeys.ELEMENT_IDS, toJson(index.elementIds().toArray()));
+        // TODO: try to make these code more clear.
+        String[] ids = index.elementIds().toArray(new String[0]);
+        assert ids.length == 1;
+        entry.column(HugeKeys.ELEMENT_IDS, ids[0]);
         return entry;
     }
 
