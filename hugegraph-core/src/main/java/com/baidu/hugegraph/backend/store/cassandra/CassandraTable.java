@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -574,7 +573,7 @@ public abstract class CassandraTable {
                     HugeKeys.PROPERTY_KEY
             };
 
-            Map<String, HugeKeys> indexColumns = new HashedMap();
+            Map<String, HugeKeys> indexColumns = new HashMap<>();
             indexColumns.put("vertices_label_index", HugeKeys.LABEL);
 
             super.createTable(session, columns, partitionKeys, clusterKeys);
@@ -583,7 +582,14 @@ public abstract class CassandraTable {
 
         @Override
         protected List<String> idColumnName() {
-            return ImmutableList.of(HugeKeys.LABEL.name(), HugeKeys.PRIMARY_VALUES.name());
+            return ImmutableList.of(
+                    HugeKeys.LABEL.name(),
+                    HugeKeys.PRIMARY_VALUES.name());
+        }
+
+        @Override
+        protected List<String> idColumnValue(Id id) {
+            return ImmutableList.copyOf(SplicingIdGenerator.parse(id));
         }
 
         @Override
@@ -610,13 +616,16 @@ public abstract class CassandraTable {
         @Override
         protected List<BackendEntry> mergeEntries(List<BackendEntry> entries) {
             // merge properties with same id into a vertex
-            Map<String, CassandraBackendEntry> vertices = new HashMap<>();
+            Map<Id, CassandraBackendEntry> vertices = new HashMap<>();
 
             for (BackendEntry i : entries) {
                 CassandraBackendEntry entry = (CassandraBackendEntry) i;
-                String id = entry.column(HugeKeys.ID);
+                String idStr = SplicingIdGenerator.splicing(
+                        entry.column(HugeKeys.LABEL),
+                        entry.column(HugeKeys.PRIMARY_VALUES));
+                Id id = IdGeneratorFactory.generator().generate(idStr);
                 if (!vertices.containsKey(id)) {
-                    entry.id(IdGeneratorFactory.generator().generate(id));
+                    entry.id(id);
                     vertices.put(id, entry);
                 } else {
                     assert entry.cells().size() == 1;
@@ -663,7 +672,7 @@ public abstract class CassandraTable {
                     HugeKeys.TARGET_VERTEX,
                     HugeKeys.PROPERTY_KEY};
 
-            Map<String, HugeKeys> indexColumns = new HashedMap();
+            Map<String, HugeKeys> indexColumns = new HashMap<>();
             indexColumns.put("edges_label_index", HugeKeys.LABEL);
 
             super.createTable(session, columns, primaryKeys);
