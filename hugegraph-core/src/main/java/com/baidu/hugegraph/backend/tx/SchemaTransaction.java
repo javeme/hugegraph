@@ -38,9 +38,13 @@ public class SchemaTransaction extends AbstractTransaction {
 
         List<HugePropertyKey> propertyKeys = new ArrayList<HugePropertyKey>();
 
-        Condition c = Condition.none();
+        Condition c = null;
         for (String name : names) {
-            c = c.or(Condition.eq(HugeKeys.NAME, name));
+            if (c == null) {
+                c = Condition.eq(HugeKeys.NAME, name);
+            } else {
+                c = c.or(Condition.eq(HugeKeys.NAME, name));
+            }
         }
 
         ConditionQuery q = new ConditionQuery(HugeTypes.PROPERTY_KEY);
