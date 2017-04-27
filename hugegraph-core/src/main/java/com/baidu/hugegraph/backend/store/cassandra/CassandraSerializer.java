@@ -128,7 +128,7 @@ public class CassandraSerializer extends AbstractSerializer {
 
         // TODO: fill a default property if non, it should be improved!
         if (edge.getProperties().isEmpty()) {
-            row.cell(new Cell(HugeKeys.PROPERTY_KEY, "$",
+            row.cell(new Cell(HugeKeys.PROPERTY_KEY, "~exist",
                     HugeKeys.PROPERTY_VALUE, "1"));
         }
 
@@ -411,7 +411,11 @@ public class CassandraSerializer extends AbstractSerializer {
 
         HugeIndex index = new HugeIndex(indexLabel);
         index.propertyValues(indexValues);
-        index.elementIds(fromJson(elementIds, Id[].class));
+
+        String[] ids = fromJson(elementIds, String[].class);
+        for (String id : ids) {
+            index.elementIds(IdGeneratorFactory.generator().generate(id));
+        }
 
         return index;
     }

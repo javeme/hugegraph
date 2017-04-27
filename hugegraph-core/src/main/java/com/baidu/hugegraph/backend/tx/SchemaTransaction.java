@@ -32,10 +32,8 @@ public class SchemaTransaction extends AbstractTransaction {
         super(graph, store);
     }
 
-    // these three method need to be checked!
     public List<HugePropertyKey> getPropertyKeys() {
-        List<HugePropertyKey> propertyKeys = new ArrayList<>();
-
+        List<HugePropertyKey> propertyKeys = new ArrayList<HugePropertyKey>();
         ConditionQuery q = new ConditionQuery(HugeTypes.PROPERTY_KEY);
         Iterable<BackendEntry> entries = query(q);
         entries.forEach(item -> {
@@ -46,7 +44,6 @@ public class SchemaTransaction extends AbstractTransaction {
 
     public List<HugeVertexLabel> getVertexLabels() {
         List<HugeVertexLabel> vertexLabels = new ArrayList<>();
-
         ConditionQuery q = new ConditionQuery(HugeTypes.VERTEX_LABEL);
         Iterable<BackendEntry> entries = query(q);
         entries.forEach(item -> {
@@ -57,7 +54,6 @@ public class SchemaTransaction extends AbstractTransaction {
 
     public List<HugeEdgeLabel> getEdgeLabels() {
         List<HugeEdgeLabel> edgeLabels = new ArrayList<>();
-
         ConditionQuery q = new ConditionQuery(HugeTypes.EDGE_LABEL);
         Iterable<BackendEntry> entries = query(q);
         entries.forEach(item -> {
