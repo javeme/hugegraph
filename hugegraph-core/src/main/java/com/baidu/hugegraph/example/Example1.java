@@ -24,21 +24,21 @@ import com.baidu.hugegraph.type.define.HugeKeys;
 /**
  * Created by jishilei on 17/3/16.
  */
-public class ExampleGraphFactory {
+public class Example1 {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExampleGraphFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(Example1.class);
 
     public static void main(String[] args) {
 
-        logger.info("ExampleGraphFactory start!");
+        logger.info("Example1 start!");
 
-        String confFile = ExampleGraphFactory.class.getClassLoader().getResource("hugegraph.properties").getPath();
+        String confFile = Example1.class.getClassLoader().getResource("hugegraph.properties").getPath();
         HugeGraph graph = HugeFactory.open(confFile);
         graph.clearBackend();
         graph.initBackend();
 
-        ExampleGraphFactory.showFeatures(graph);
-        ExampleGraphFactory.load(graph);
+        Example1.showFeatures(graph);
+        Example1.load(graph);
         System.exit(0);
     }
 
