@@ -68,7 +68,7 @@ public abstract class IdGenerator {
 
     /****************************** id defines ******************************/
 
-    static class StringId implements Id {
+    public static class StringId implements Id {
 
         private String id;
 
