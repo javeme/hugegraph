@@ -81,7 +81,7 @@ public class HugeGraphProvider extends AbstractGraphProvider {
     @Override
     public void clear(Graph graph, Configuration configuration) throws Exception {
         if (graph != null) {
-            // ((TestGraph) graph).hugeGraph().clearBackend();
+            ((TestGraph) graph).hugeGraph().clearBackend();
         }
     }
 
