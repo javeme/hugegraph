@@ -14,7 +14,9 @@
 
 package com.baidu.hugegraph.util;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.util.Date;
 
 /**
  * This file is copied verbatim from Apache Lucene NumericUtils.java Only the
@@ -106,6 +108,8 @@ public final class NumericUtil {
         return bits ^ (bits >> 31) & 0x7fffffff;
     }
 
+    /*************************************************************************/
+
     public static byte[] longToBytes(long value) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.putLong(value);
@@ -118,4 +122,36 @@ public final class NumericUtil {
         buffer.flip();
         return buffer.getLong();
     }
+
+    /*************************************************************************/
+
+    public static boolean isNumber(Object value) {
+        if (value == null) {
+            return false;
+        }
+        return isNumber(value.getClass());
+    }
+
+    public static boolean isNumber(Class<?> type) {
+        if (type.getSuperclass() != null
+                && type.getSuperclass().equals(Number.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*************************************************************************/
+
+    public static Object convert2Number(Object value) {
+        if (!isNumber(value) && value != null) {
+            if (value instanceof Date) {
+                value = ((Date) value).getTime();
+            }
+            // TODO: add some more types to convert
+
+            value = new BigDecimal(value.toString());
+        }
+        return value;
+    }
+
 }
