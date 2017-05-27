@@ -10,7 +10,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.TraversalEngine;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 
-import com.baidu.hugegraph.server.RegisterUtil;
+import com.baidu.hugegraph.dist.RegisterUtil;
 
 /**
  * Created by zhangsuochao on 17/5/3.
@@ -59,7 +59,7 @@ public class HugeStructureBasicSuite extends AbstractGremlinSuite {
                 TraversalEngine.Type.STANDARD);
 
         String confFile = "conf/hugegraph-test.yaml";
-        RegisterUtil.registerComponent(confFile);
+        RegisterUtil.registerBackends(confFile);
 
     }
 }
