@@ -86,7 +86,6 @@ public class HugeStructureBasicSuite extends AbstractGremlinSuite {
         super(klass, builder, allTests, null, false,
                 TraversalEngine.Type.STANDARD);
 
-        RegisterUtil.registerCore();
-        RegisterUtil.registerCassandra();
+        RegisterUtil.registerBackends();
     }
 }
