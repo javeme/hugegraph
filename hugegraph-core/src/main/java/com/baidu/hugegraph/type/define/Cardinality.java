@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.type.define;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 /**
@@ -65,5 +66,9 @@ public enum Cardinality {
             default:
                 throw new AssertionError("Unrecognized cardinality: " + cardinality);
         }
+    }
+
+    public String schema() {
+        return String.format(".value%s()", StringUtils.capitalize(this.name));
     }
 }
