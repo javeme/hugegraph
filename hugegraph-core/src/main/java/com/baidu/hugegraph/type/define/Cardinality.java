@@ -64,7 +64,8 @@ public enum Cardinality {
             case set:
                 return SET;
             default:
-                throw new AssertionError("Unrecognized cardinality: " + cardinality);
+                throw new AssertionError("Unrecognized cardinality: " +
+                                         cardinality);
         }
     }
 

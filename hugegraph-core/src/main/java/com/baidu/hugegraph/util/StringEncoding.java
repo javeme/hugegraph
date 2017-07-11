@@ -18,13 +18,15 @@ import java.io.UnsupportedEncodingException;
 
 import com.baidu.hugegraph.HugeException;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
 
 public class StringEncoding {
 
     // Similar to {@link StringSerializer}
-    public static int writeAsciiString(byte[] array, int startPos, String attribute) {
-        Preconditions.checkArgument(CharMatcher.ascii().matchesAllOf(attribute));
+    public static int writeAsciiString(byte[] array,
+                                       int startPos,
+                                       String attribute) {
+        E.checkArgument(CharMatcher.ascii().matchesAllOf(attribute),
+                        "'%s' must be ASCII string", attribute);
         int len = attribute.length();
         if (len == 0) {
             array[startPos++] = (byte) 0x80;
@@ -53,7 +55,8 @@ public class StringEncoding {
     }
 
     public static final int getAsciiByteLength(String attribute) {
-        Preconditions.checkArgument(CharMatcher.ascii().matchesAllOf(attribute));
+        E.checkArgument(CharMatcher.ascii().matchesAllOf(attribute),
+                        "'%s' must be ASCII string", attribute);
         return attribute.isEmpty() ? 1 : attribute.length();
     }
 
