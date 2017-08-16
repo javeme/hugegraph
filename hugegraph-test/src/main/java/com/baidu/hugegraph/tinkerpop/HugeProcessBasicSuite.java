@@ -16,7 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baidu.hugegraph.base;
+package com.baidu.hugegraph.tinkerpop;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.tinkerpop.gremlin.AbstractGremlinSuite;
