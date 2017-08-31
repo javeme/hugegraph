@@ -55,8 +55,7 @@ import org.junit.runners.model.RunnerBuilder;
 
 import com.baidu.hugegraph.dist.RegisterUtil;
 
-
-public class HugeStructureBasicSuite extends AbstractGremlinSuite {
+public class StructureBasicSuite extends AbstractGremlinSuite {
     /**
      * This list of tests in the suite that will be executed.
      * Gremlin developers should add to this list
@@ -94,11 +93,12 @@ public class HugeStructureBasicSuite extends AbstractGremlinSuite {
     };
 
     @SuppressWarnings("deprecation")
-    public HugeStructureBasicSuite(final Class<?> klass,
-                                   final RunnerBuilder builder)
-            throws InitializationError, ConfigurationException {
+    public StructureBasicSuite(final Class<?> klass,
+                               final RunnerBuilder builder)
+                               throws InitializationError,
+                                      ConfigurationException {
         super(klass, builder, allTests, null, false,
-                TraversalEngine.Type.STANDARD);
+              TraversalEngine.Type.STANDARD);
 
         RegisterUtil.registerBackends();
     }

@@ -22,10 +22,7 @@ package com.baidu.hugegraph.tinkerpop;
 import org.apache.tinkerpop.gremlin.GraphProviderClass;
 import org.junit.runner.RunWith;
 
-import com.baidu.hugegraph.HugeGraph;
-
-
-@RunWith(HugeProcessBasicSuite.class)
-@GraphProviderClass(provider = HugeGraphProvider.class, graph = HugeGraph.class)
-public class HugeGraphProcessStandardTest {
+@RunWith(StructureBasicSuite.class)
+@GraphProviderClass(provider = HugeGraphProvider.class, graph = TestGraph.class)
+public class StructureStandardTest {
 }
