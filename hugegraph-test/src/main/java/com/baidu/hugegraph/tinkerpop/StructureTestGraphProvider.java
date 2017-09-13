@@ -19,11 +19,13 @@
 
 package com.baidu.hugegraph.tinkerpop;
 
-import org.apache.tinkerpop.gremlin.GraphProviderClass;
-import org.junit.runner.RunWith;
+import java.io.IOException;
 
-@RunWith(ProcessBasicSuite.class)
-@GraphProviderClass(provider = ProcessTestGraphProvider.class,
-                    graph = TestGraph.class)
-public class ProcessStandardTest {
+public class StructureTestGraphProvider extends TestGraphProvider {
+
+    public static final String STRUCTURE = "structure";
+
+    public StructureTestGraphProvider() throws IOException {
+        super(STRUCTURE);
+    }
 }
