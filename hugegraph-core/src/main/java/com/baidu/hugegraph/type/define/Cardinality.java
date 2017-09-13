@@ -22,8 +22,6 @@ package com.baidu.hugegraph.type.define;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
-
-
 public enum Cardinality {
 
     /**
