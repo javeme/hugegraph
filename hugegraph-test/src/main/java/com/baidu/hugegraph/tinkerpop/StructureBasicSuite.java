@@ -21,6 +21,8 @@ package com.baidu.hugegraph.tinkerpop;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.tinkerpop.gremlin.AbstractGremlinSuite;
+import org.apache.tinkerpop.gremlin.GraphManager;
+import org.apache.tinkerpop.gremlin.GraphProvider;
 import org.apache.tinkerpop.gremlin.algorithm.generator.CommunityGeneratorTest;
 import org.apache.tinkerpop.gremlin.algorithm.generator.DistributionGeneratorTest;
 import org.apache.tinkerpop.gremlin.process.traversal.TraversalEngine;
@@ -54,6 +56,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 
 import com.baidu.hugegraph.dist.RegisterUtil;
+import org.junit.runners.model.Statement;
 
 public class StructureBasicSuite extends AbstractGremlinSuite {
     /**
@@ -101,5 +104,18 @@ public class StructureBasicSuite extends AbstractGremlinSuite {
               TraversalEngine.Type.STANDARD);
 
         RegisterUtil.registerBackends();
+    }
+
+    @Override
+    protected Statement withAfterClasses(final Statement statement) {
+        Statement wrappedStatement = new Statement() {
+            public void evaluate() throws Throwable {
+            statement.evaluate();
+            GraphProvider gp = GraphManager.setGraphProvider(null);
+            ((TestGraphProvider) gp).clearBackends();
+            GraphManager.setGraphProvider(gp);
+            }
+        };
+        return super.withAfterClasses(wrappedStatement);
     }
 }
