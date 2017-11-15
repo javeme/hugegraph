@@ -54,9 +54,9 @@ import org.apache.tinkerpop.gremlin.structure.util.reference.ReferenceVertexTest
 import org.apache.tinkerpop.gremlin.structure.util.star.StarGraphTest;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
+import org.junit.runners.model.Statement;
 
 import com.baidu.hugegraph.dist.RegisterUtil;
-import org.junit.runners.model.Statement;
 
 public class StructureBasicSuite extends AbstractGremlinSuite {
     /**
@@ -109,11 +109,12 @@ public class StructureBasicSuite extends AbstractGremlinSuite {
     @Override
     protected Statement withAfterClasses(final Statement statement) {
         Statement wrappedStatement = new Statement() {
+            @Override
             public void evaluate() throws Throwable {
-            statement.evaluate();
-            GraphProvider gp = GraphManager.setGraphProvider(null);
-            ((TestGraphProvider) gp).clearBackends();
-            GraphManager.setGraphProvider(gp);
+                statement.evaluate();
+                GraphProvider gp = GraphManager.setGraphProvider(null);
+                ((TestGraphProvider) gp).clearBackends();
+                GraphManager.setGraphProvider(gp);
             }
         };
         return super.withAfterClasses(wrappedStatement);
