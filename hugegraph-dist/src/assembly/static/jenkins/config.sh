@@ -107,8 +107,9 @@ function config_rocksdb() {
         exit 1
     fi
 
-    sed -i "s/rocksdb\.data_path=.*/rocksdb\.data_path=$DATA_PATH" $CONF
-    sed -i "s/rocksdb\.wal_path=.*/rocksdb\.wal_path=$DATA_PATH" $CONF
+    mkdir -p hugegraph-test/$DATA_PATH
+    sed -i "s/rocksdb\.data_path=.*/rocksdb\.data_path=$DATA_PATH/" $CONF
+    sed -i "s/rocksdb\.wal_path=.*/rocksdb\.wal_path=$DATA_PATH/" $CONF
 
     echo $CONF
 }
