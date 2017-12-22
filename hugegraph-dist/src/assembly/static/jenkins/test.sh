@@ -1,11 +1,9 @@
 #!/bin/bash
 
 CONFIG_PATH=$1
-CONFIG_PATH=$(echo $CONFIG_PATH|sed 's/hugegraph-test\///g')
 
 function serial_test() {
-#    mvn test "-Dtest=CoreTestSuite, UnitTestSuite, StructureStandardTest, ProcessStandardTest" -P$PROFILE
-    mvn test -Dtest=CoreTestSuite -Dconfig_path=$CONFIG_PATH
+    mvn test -Dconfig_path=$CONFIG_PATH -Pcore-test
 
     if [ $? -ne 0 ]; then
         echo "Failed to test."
@@ -15,10 +13,10 @@ function serial_test() {
 
 function parallel_test() {
     # Run tests with background process
-    (mvn test "-Dtest=CoreTestSuite" -Dconfig_path=$CONFIG_PATH) &
-    (mvn test "-Dtest=UnitTestSuite" -Dconfig_path=$CONFIG_PATH) &
-    (mvn test "-Dtest=StructureStandardTest" -Dconfig_path=$CONFIG_PATH) &
-    (mvn test "-Dtest=ProcessStandardTest" -Dconfig_path=$CONFIG_PATH) &
+    (mvn test -Dconfig_path=$CONFIG_PATH -Pcore-test) &
+    (mvn test -Dconfig_path=$CONFIG_PATH -Punit-test) &
+    (mvn test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-structure-test) &
+    (mvn test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-process-test) &
 
     # Wait for all child process finished
     for i in `seq 0 3`; do
@@ -31,10 +29,10 @@ function parallel_test() {
     done
 }
 
-echo "Start test with config $CONFIG_PATH"
+# Remove dir prefix 'hugegraph-test' as mvn test execute in hugegraph-test
+CONFIG_PATH=$(echo $CONFIG_PATH | sed 's/hugegraph-test\///g')
 
-# Enter test project
-cd hugegraph-test
+echo "Start test with config $CONFIG_PATH"
 
 # Get the run-mode and run test
 if [ $RUNMODE = "serial" ]; then
@@ -49,7 +47,4 @@ else
     exit 1
 fi
 
-cd ../
-
 echo "Finish test."
-
