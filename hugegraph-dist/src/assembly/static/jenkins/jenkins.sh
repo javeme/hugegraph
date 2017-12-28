@@ -10,6 +10,7 @@ export TRIGGER=${TRIGGER}
 export RUNMODE=${RUNMODE}
 
 export BUILD_ID=${AGILE_COMPILE_BUILD_ID}
+export BRANCH=${AGILE_COMPILE_BRANCH}
 export BRANCH_REF=${AGILE_COMPILE_BRANCH_REF}
 
 export USER="liunanke"
@@ -36,13 +37,26 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Fetch code from repo if necessary
 if [ -n "$BRANCH_REF" ]; then
+    # Fetch code from repo if necessary
     echo "Fetch code from repo: ${BRANCH_REF}..."
     git checkout .
     git fetch ssh://$USER@$REPO_URL ${BRANCH_REF} && git checkout FETCH_HEAD
     if [ $? -ne 0 ]; then
         echo "Failed to fetch code."
+        exit 1
+    fi
+else
+    # Pull or checkout release branch
+    git rev-parse --verify $BRANCH
+    if [ $? -eq 0 ]; then
+        git checkout $BRANCH && git pull
+    else
+        git pull && git checkout -b $BRANCH origin/$BRANCH
+    fi
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to pull code."
         exit 1
     fi
 fi

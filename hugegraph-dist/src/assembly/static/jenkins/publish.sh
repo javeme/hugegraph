@@ -26,11 +26,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Use maven-deploy plugin instead if 401 error
-echo "Publish maven packages..."
-mvn deploy -DskipTests
-if [ $? -ne 0 ]; then
-    echo "Failed to publish."
-    exit 1
-fi
+#echo "Publish maven packages..."
+#mvn deploy -DskipTests
+#if [ $? -ne 0 ]; then
+#    echo "Failed to publish."
+#    exit 1
+#fi
 
 echo "Finish publish."
