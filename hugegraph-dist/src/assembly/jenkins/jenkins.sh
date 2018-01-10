@@ -3,7 +3,7 @@
 # Backends contains [memory, rocksdb, cassandra, scylladb]
 export BACKEND=memory
 
-export SCRIPT_DIR="hugegraph-dist/src/assembly/static/jenkins"
+export SCRIPT_DIR="hugegraph-dist/src/assembly/jenkins"
 
 export ACTION=${ACTION}
 export TRIGGER=${TRIGGER}
