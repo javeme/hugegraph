@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import com.baidu.hugegraph.HugeException;
 import com.google.common.base.CharMatcher;
 
-public class StringEncoding {
+public final class StringEncoding {
 
     // Similar to {@link StringSerializer}
     public static int writeAsciiString(byte[] array,
