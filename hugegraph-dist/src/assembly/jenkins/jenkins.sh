@@ -40,7 +40,7 @@ fi
 if [ -n "$BRANCH_REF" ]; then
     # Fetch code from repo if necessary
     echo "Fetch code from repo: ${BRANCH_REF}..."
-    git checkout .
+    git checkout . && git checkout $BRANCH
     git fetch ssh://$USER@$REPO_URL ${BRANCH_REF} && git checkout FETCH_HEAD
     if [ $? -ne 0 ]; then
         echo "Failed to fetch code."
