@@ -3,7 +3,7 @@
 CONFIG_PATH=$1
 
 function serial_test() {
-    mvn test -Dconfig_path=$CONFIG_PATH -Pcore-test
+    mvn clean test -Dconfig_path=$CONFIG_PATH -Pcore-test
 
     if [ $? -ne 0 ]; then
         echo "Failed to test."
@@ -13,10 +13,10 @@ function serial_test() {
 
 function parallel_test() {
     # Run tests with background process
-    (mvn test -Dconfig_path=$CONFIG_PATH -Pcore-test) &
-    (mvn test -Dconfig_path=$CONFIG_PATH -Punit-test) &
-    (mvn test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-structure-test) &
-    (mvn test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-process-test) &
+    (mvn clean test -Dconfig_path=$CONFIG_PATH -Pcore-test) &
+    (mvn clean test -Dconfig_path=$CONFIG_PATH -Punit-test) &
+    (mvn clean test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-structure-test) &
+    (mvn clean test -Dconfig_path=$CONFIG_PATH -Ptinkerpop-process-test) &
 
     # Wait for all child process finished
     for i in `seq 0 3`; do
