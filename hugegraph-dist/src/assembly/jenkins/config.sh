@@ -113,3 +113,23 @@ function config_rocksdb() {
 
     echo $CONF
 }
+
+function config_mysql() {
+
+    BACKEND="mysql"
+    SERIALIZER="mysql"
+    STORE="hugegraph_$BUILD_ID"
+    JDBC_URL="jdbc:mysql:\/\/yq01-sw-hugegraph01.yq01.baidu.com:8306"
+    JDBC_USERNAME="hugegraph"
+
+    CONF=`config_common $BACKEND $SERIALIZER $STORE`
+    if [ $? -ne 0 ]; then
+        echo $CONF
+        exit 1
+    fi
+
+    sed -i "s/jdbc\.url=.*/jdbc\.url=$JDBC_URL/" $CONF
+    sed -i "s/jdbc\.username=.*/jdbc\.username=$JDBC_USERNAME/" $CONF
+
+    echo $CONF
+}
