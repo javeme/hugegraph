@@ -58,6 +58,7 @@ import org.junit.runners.model.Statement;
 
 import com.baidu.hugegraph.dist.RegisterUtil;
 
+@SuppressWarnings("deprecation")
 public class StructureBasicSuite extends AbstractGremlinSuite {
     /**
      * This list of tests in the suite that will be executed.
@@ -95,7 +96,6 @@ public class StructureBasicSuite extends AbstractGremlinSuite {
             VertexTest.class
     };
 
-    @SuppressWarnings("deprecation")
     public StructureBasicSuite(final Class<?> klass,
                                final RunnerBuilder builder)
                                throws InitializationError,
