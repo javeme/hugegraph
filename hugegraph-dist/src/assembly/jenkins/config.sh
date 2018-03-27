@@ -59,8 +59,8 @@ function config_cassandra() {
     BACKEND="cassandra"
     SERIALIZER="cassandra"
     STORE="hugegraph_$BUILD_ID"
-    HOST="yq01-sw-hugegraph01.yq01.baidu.com"
-    PORT="8052"
+    HOST=${CASSANDRA_HOST}
+    PORT=${CASSANDRA_PORT}
 
     CONF=`config_common $BACKEND $SERIALIZER $STORE`
     if [ $? -ne 0 ]; then
@@ -79,8 +79,8 @@ function config_scylladb() {
     BACKEND="scylladb"
     SERIALIZER="scylladb"
     STORE="hugegraph_${BACKEND}_${BUILD_ID}"
-    HOST="yq01-sw-hugegraph01.yq01.baidu.com"
-    PORT="8052"
+    HOST=${SCYLLADB_HOST}
+    PORT=${SCYLLADB_PORT}
 
     CONF=`config_common $BACKEND $SERIALIZER $STORE`
     if [ $? -ne 0 ]; then
@@ -119,8 +119,8 @@ function config_mysql() {
     BACKEND="mysql"
     SERIALIZER="mysql"
     STORE="hugegraph_$BUILD_ID"
-    JDBC_URL="jdbc:mysql:\/\/yq01-sw-hugegraph01.yq01.baidu.com:8306"
-    JDBC_USERNAME="hugegraph"
+    JDBC_URL=${MYSQL_JDBC_URL}
+    JDBC_USERNAME=${MYSQL_JDBC_USERNAME}
 
     CONF=`config_common $BACKEND $SERIALIZER $STORE`
     if [ $? -ne 0 ]; then

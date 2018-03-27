@@ -1,24 +1,46 @@
 #!/bin/bash
 
-# Backends contains [memory, rocksdb, cassandra, scylladb]
+# Backends contains [memory, rocksdb, cassandra, scylladb, mysql]
 export BACKEND=memory
-
+# The jenkins script store path
 export SCRIPT_DIR="hugegraph-dist/src/assembly/jenkins"
 
+# The jenkins job integrated behavior: [test, deploy, publish]
 export ACTION=${ACTION}
+# How to trigger the jenkins job: [before-merge, after-merge]
 export TRIGGER=${TRIGGER}
+# The test cases run mode: [serial, parallel]
 export RUNMODE=${RUNMODE}
 
 export BUILD_ID=${AGILE_COMPILE_BUILD_ID}
 export BRANCH=${AGILE_COMPILE_BRANCH}
 export BRANCH_REF=${AGILE_COMPILE_BRANCH_REF}
 
-export USER="liunanke"
-export REPO="hugegraph"
-export REPO_URL="icode.baidu.com:8235/baidu/xbu-data/$REPO"
+# The user who clone code repository
+export USER=${GIT_USER}
+# The name of code repository
+export REPO=${GIT_REPO}
+# The url of the code repository for cloning
+export REPO_URL=${GIT_REPO_URL}
 
-export RELEASE_SERVER="yq01-sw-hdsserver16.yq01.baidu.com 8322"
+# We will upload the compiled compressed package to a server using FTP and
+# generate a download link for the user to download, this server called
+# release server
+export RELEASE_SERVER=${RELEASE_SERVER}
+# The FTP user
 export RELEASE_SERVER_USER=${FTP_USER}
+
+# cassandra config
+export CASSANDRA_HOST=${CASSANDRA_HOST}
+export CASSANDRA_PORT=${CASSANDRA_PORT}
+
+# scylladb config
+export SCYLLADB_HOST=${SCYLLADB_HOST}
+export SCYLLADB_PORT=${SCYLLADB_PORT}
+
+# mysql config
+export MYSQL_JDBC_URL=${MYSQL_JDBC_URL}
+export MYSQL_JDBC_USERNAME=${MYSQL_JDBC_USERNAME}
 
 # Clone code from repo if necessary
 if [ ! -d $REPO ]; then
@@ -62,3 +84,4 @@ else
 fi
 
 sh $SCRIPT_DIR/build.sh
+
