@@ -69,6 +69,9 @@ public class AnsjAnalyzer implements Analyzer {
             case "IndexAnalysis":
                 terms = IndexAnalysis.parse(text);
                 break;
+            default:
+                throw new AssertionError(String.format(
+                          "Unsupported segment mode '%s'", this.analysis));
         }
 
         assert terms != null;
